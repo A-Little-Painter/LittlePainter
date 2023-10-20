@@ -60,8 +60,12 @@ export default function MainScreen({navigation}: MainScreenProps) {
           {/* 중단 */}
           <View style={styles.middleContainer}>
             <ScrollView horizontal={true}>
+              {/* 동물선택카드 */}
               <TouchableOpacity
-                style={[styles.cardFrame, {backgroundColor: '#5E9FF9'}]}>
+                style={[styles.cardFrame, {backgroundColor: '#5E9FF9'}]}
+                onPress={() => {
+                  navigation.navigate('SelectAnimalScreen');
+                }}>
                 <View style={styles.cardFrame1}>
                   <Text style={styles.cardText}>
                     <Text style={styles.cardTextBold}>동물</Text> 그리기
@@ -81,8 +85,12 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   </View>
                 </TouchableOpacity>
               </TouchableOpacity>
+              {/* 동화선택카드 */}
               <TouchableOpacity
-                style={[styles.cardFrame, {backgroundColor: '#A6D934'}]}>
+                style={[styles.cardFrame, {backgroundColor: '#A6D934'}]}
+                onPress={() => {
+                  navigation.navigate('SelectFairytaleScreen');
+                }}>
                 <View style={styles.cardFrame1}>
                   <Text style={styles.cardText}>
                     <Text style={styles.cardTextBold}>동화</Text> 그리기
@@ -102,8 +110,12 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   </View>
                 </TouchableOpacity>
               </TouchableOpacity>
+              {/* 사진따라그리기카드 */}
               <TouchableOpacity
-                style={[styles.cardFrame, {backgroundColor: '#FE7779'}]}>
+                style={[styles.cardFrame, {backgroundColor: '#FE7779'}]}
+                onPress={() => {
+                  navigation.navigate('SelectPictureScreen');
+                }}>
                 <View style={styles.cardFrame1}>
                   <Text style={styles.cardText1}>친구의 동물</Text>
                   <Text style={styles.cardText2}>그리기</Text>
@@ -122,8 +134,12 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   </View>
                 </TouchableOpacity>
               </TouchableOpacity>
+              {/* 동물 올리기 */}
               <TouchableOpacity
-                style={[styles.cardFrame, {backgroundColor: '#8C80E2'}]}>
+                style={[styles.cardFrame, {backgroundColor: '#8C80E2'}]}
+                onPress={() => {
+                  navigation.navigate('UploadPicture1Screen');
+                }}>
                 <View style={styles.cardFrame1}>
                   <Text style={styles.cardText1}>내 동물 사진</Text>
                   <Text style={styles.cardText2}>올리기</Text>

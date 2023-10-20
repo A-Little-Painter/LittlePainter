@@ -7,8 +7,19 @@ import DetailScreen from '../screens/detail/DetailScreen';
 import NodetailScreen from '../screens/detail/NodetailScreen';
 import Detail2Screen from '../screens/detail/Detail2Screen';
 
+import SelectAnimalScreen from '../screens/drawAnimal/SelectAnimalScreen';
+import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
+import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
+import UploadPicture1Screen from '../screens/uploadPicture/UploadPicture1Screen';
+
 export type RootStackParams = {
   MainScreen: undefined;
+  SelectAnimalScreen: undefined;
+  SelectPictureScreen: undefined;
+  SelectFairytaleScreen: undefined;
+  UploadPicture1Screen: undefined;
+
+  // 이하는 테스트용이었음
   MainTmpScreen: undefined;
   DetailScreen: undefined;
   NodetailScreen: undefined;
@@ -27,6 +38,24 @@ export default function AppNavigator() {
       initialRouteName="MainScreen"
       screenOptions={{headerShown: false}}>
       <RootStack.Screen name="MainScreen" component={MainScreen} />
+      <RootStack.Screen
+        name="SelectAnimalScreen"
+        component={SelectAnimalScreen}
+      />
+      <RootStack.Screen
+        name="SelectPictureScreen"
+        component={SelectPictureScreen}
+      />
+      <RootStack.Screen
+        name="SelectFairytaleScreen"
+        component={SelectFairytaleScreen}
+      />
+      <RootStack.Screen
+        name="UploadPicture1Screen"
+        component={UploadPicture1Screen}
+      />
+
+      {/* 이하는 테스트용이었음 */}
       <RootStack.Screen name="MainTmpScreen" component={MainTmpScreen} />
       <RootStack.Screen name="DetailScreen" component={DetailScreen} />
       <RootStack.Screen name="Detail1Screen" component={Detail1Screen} />
