@@ -6,14 +6,15 @@ import {
   Dimensions,
   Image,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-type SelectFairytaleScreenProps = StackScreenProps<
+type SelectPictureScreenProps = StackScreenProps<
   RootStackParams,
-  'SelectFairytaleScreen'
+  'SelectPictureScreen'
 >;
 
 const windowWidth = Dimensions.get('window').width;
@@ -92,10 +93,11 @@ const randomBackgroundColor: string[] = [
   '#E1F1A0',
   '#C3FFC9',
 ];
-export default function SelectFairytaleScreen({
+export default function SelectPictureScreen({
   navigation,
-}: SelectFairytaleScreenProps) {
-  const name = '동물선택하기';
+}: SelectPictureScreenProps) {
+  // type NameType = string | undefined;
+  // const name: NameType = '동물선택하기';
   // 드랍다운
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -146,7 +148,8 @@ export default function SelectFairytaleScreen({
             renderItem={({item, index}) => {
               return (
                 <View style={styles.pictureCard1}>
-                  <View
+                  <TouchableOpacity
+                    onPress={() => {}}
                     style={[
                       styles.pcitureCard2,
                       {
@@ -162,7 +165,7 @@ export default function SelectFairytaleScreen({
                       style={styles.logoImage}
                       source={{uri: item.image}}
                     /> */}
-                  </View>
+                  </TouchableOpacity>
                   <Text style={styles.pictureCardText}>{item.title}</Text>
                   <Text style={styles.pictureCardPainterText}>
                     {item.painter}

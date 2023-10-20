@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -98,7 +99,8 @@ const randomBackgroundColor: string[] = [
 export default function SelectAnimalScreen({
   navigation,
 }: SelectAnimalScreenProps) {
-  const name = '동물선택하기';
+  // type NameType = string | undefined;
+  // const name: NameType = '동물선택하기';
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -118,7 +120,8 @@ export default function SelectAnimalScreen({
             renderItem={({item, index}) => {
               return (
                 <View style={styles.animalCard1}>
-                  <View
+                  <TouchableOpacity
+                    onPress={() => {}}
                     style={[
                       styles.animalCard2,
                       {
@@ -134,7 +137,7 @@ export default function SelectAnimalScreen({
                       style={styles.logoImage}
                       source={{uri: item.animalImage}}
                     />
-                  </View>
+                  </TouchableOpacity>
                   <Text style={styles.animalCardText}>{item.animalName}</Text>
                 </View>
               );

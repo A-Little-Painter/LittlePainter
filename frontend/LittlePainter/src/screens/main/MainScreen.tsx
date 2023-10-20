@@ -49,7 +49,11 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 </Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.topRightView}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('LoginScreen');
+              }}
+              style={styles.topRightView}>
               <Image
                 style={styles.userLogo}
                 source={require('../../assets/images/user.png')}
