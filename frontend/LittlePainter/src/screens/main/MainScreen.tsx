@@ -18,11 +18,12 @@ import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 type MainScreenProps = StackScreenProps<RootStackParams, 'MainScreen'>;
-
+type ismuted = boolean;
 const windowWidth = Dimensions.get('window').width;
 // const windowHeight = Dimensions.get('window').height;
 
 export default function MainScreen({navigation}: MainScreenProps) {
+  const [ismuted, setIsmuted] = useState<ismuted>(false);
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
@@ -39,13 +40,25 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   source={require('../../assets/logo/rabbit.png')}
                 />
               </View>
-              <TouchableOpacity style={styles.circleBg2}>
+              <TouchableOpacity
+                style={styles.circleBg2}
+                onPress={() => {
+                  setIsmuted(!ismuted);
+                }}>
                 <Text>
-                  <IconSimpleLineIcons
-                    name="volume-2"
-                    color={'black'}
-                    size={windowWidth * 0.03}
-                  />
+                  {ismuted ? (
+                    <IconSimpleLineIcons
+                      name="volume-off"
+                      color={'black'}
+                      size={windowWidth * 0.03}
+                    />
+                  ) : (
+                    <IconSimpleLineIcons
+                      name="volume-2"
+                      color={'black'}
+                      size={windowWidth * 0.03}
+                    />
+                  )}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -84,7 +97,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <TouchableOpacity style={styles.cardFrame3}>
                   <View style={styles.playButtonCircle}>
                     <Text>
-                      <IconFontAwesome5 name="play" size={windowWidth * 0.03} />
+                      <IconFontAwesome5
+                        name="question"
+                        size={windowWidth * 0.03}
+                      />
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -109,7 +125,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <TouchableOpacity style={styles.cardFrame3}>
                   <View style={styles.playButtonCircle}>
                     <Text>
-                      <IconFontAwesome5 name="play" size={windowWidth * 0.03} />
+                      <IconFontAwesome5
+                        name="question"
+                        size={windowWidth * 0.03}
+                      />
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -133,7 +152,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <TouchableOpacity style={styles.cardFrame3}>
                   <View style={styles.playButtonCircle}>
                     <Text>
-                      <IconFontAwesome5 name="play" size={windowWidth * 0.03} />
+                      <IconFontAwesome5
+                        name="question"
+                        size={windowWidth * 0.03}
+                      />
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -157,7 +179,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <TouchableOpacity style={styles.cardFrame3}>
                   <View style={styles.playButtonCircle}>
                     <Text>
-                      <IconFontAwesome5 name="play" size={windowWidth * 0.03} />
+                      <IconFontAwesome5
+                        name="question"
+                        size={windowWidth * 0.03}
+                      />
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -309,7 +334,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingLeft: windowWidth * 0.005,
+    // paddingLeft: windowWidth * 0.005,
     opacity: 0.75,
   },
   mainOptionButton: {
