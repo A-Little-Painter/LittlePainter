@@ -8,7 +8,6 @@ import {
   ImageBackground,
   Image,
   Dimensions,
-  TextInput,
   TouchableOpacity,
   FlatList,
 } from 'react-native';
@@ -152,9 +151,9 @@ export default function MypageProfileScreen({
                   </TouchableOpacity>
                 </View>
                 {/* 회원탈퇴 */}
-                <View style={styles.unregisterView}>
+                <TouchableOpacity style={styles.unregisterView}>
                   <Text style={styles.unregisterText}>회원탈퇴 &gt;</Text>
-                </View>
+                </TouchableOpacity>
               </View>
               {/* 하단 */}
               <View style={styles.bottomContainer} />

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,6 +9,9 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  BackHandler,
+  ToastAndroid,
+  Alert,
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
@@ -24,6 +27,30 @@ const windowWidth = Dimensions.get('window').width;
 
 export default function MainScreen({navigation}: MainScreenProps) {
   const [ismuted, setIsmuted] = useState<ismuted>(false);
+  const [backHandleNum, setBackHandleNum] = useState<number>(0);
+  useEffect(() => {
+    const backAction = () => {
+      if (backHandleNum === 0) {
+        setBackHandleNum(prev => prev + 1); // 함수형 업데이트 사용
+        ToastAndroid.show(
+          '앱을 종료하려면 뒤로가기를 한 번 더 해주세요.',
+          ToastAndroid.SHORT,
+        );
+        return true; // 뒤로가기 이벤트 무시하지 않도록 설정
+      } else if (backHandleNum === 1) {
+        BackHandler.exitApp();
+        setBackHandleNum(0);
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [backHandleNum]);
   return (
     <View style={styles.mainContainer}>
       <ImageBackground

@@ -23,62 +23,62 @@ const DATA = [
   {
     id: 1,
     animalName: '공룡',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/dinosaur.png'),
   },
   {
     id: 2,
     animalName: '사자',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/dinosaur.png'),
   },
   {
     id: 3,
     animalName: '쥐',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/elephant.png'),
   },
   {
     id: 4,
     animalName: '닭',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/dinosaur.png'),
   },
   {
     id: 5,
     animalName: '코끼리',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/dinosaur.png'),
   },
   {
     id: 6,
     animalName: '토끼',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/elephant.png'),
   },
   {
     id: 7,
     animalName: '소',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/dinosaur.png'),
   },
   {
     id: 8,
     animalName: '돼지',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/dinosaur.png'),
   },
   {
     id: 9,
     animalName: '다람쥐',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/dinosaur.png'),
   },
   {
     id: 10,
     animalName: '햄스터',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/dinosaur.png'),
   },
   {
     id: 11,
     animalName: '고양이',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/dinosaur.png'),
   },
   {
     id: 12,
     animalName: '호랑이',
-    animalImage: '../../assets/images/dinosaur.png',
+    animalImage: require('../../assets/images/dinosaur.png'),
   },
 ];
 
@@ -135,7 +135,8 @@ export default function SelectAnimalScreen({
                     ]}>
                     <Image
                       style={styles.logoImage}
-                      source={{uri: item.animalImage}}
+                      // source={{uri: item.animalImage}}
+                      source={item.animalImage}
                     />
                   </TouchableOpacity>
                   <Text style={styles.animalCardText}>{item.animalName}</Text>
@@ -191,6 +192,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: windowWidth * 0.16,
     height: windowWidth * 0.16,
+    justifyContent: 'center',
   },
   animalCardText: {
     textAlign: 'center',
