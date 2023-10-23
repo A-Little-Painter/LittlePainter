@@ -3,6 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import MainScreen from '../screens/main/MainScreen';
 import InitialScreen from '../screens/main/InitialScreen';
 import LoginScreen from '../screens/mypage/LoginScreen';
+import MypageProfileScreen from '../screens/mypage/MypageProfileScreen';
 
 import SelectAnimalScreen from '../screens/drawAnimal/SelectAnimalScreen';
 import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
@@ -19,6 +20,7 @@ export type RootStackParams = {
   InitialScreen: undefined;
   MainScreen: undefined;
   LoginScreen: undefined;
+  MypageProfileScreen: undefined;
   SelectAnimalScreen: undefined;
   SelectPictureScreen: undefined;
   SelectFairytaleScreen: undefined;
@@ -46,6 +48,10 @@ export default function AppNavigator() {
       <RootStack.Screen name="MainScreen" component={MainScreen} />
       <RootStack.Screen name="InitialScreen" component={InitialScreen} />
       <RootStack.Screen name="LoginScreen" component={LoginScreen} />
+      <RootStack.Screen
+        name="MypageProfileScreen"
+        component={MypageProfileScreen}
+      />
       <RootStack.Screen
         name="SelectAnimalScreen"
         component={SelectAnimalScreen}

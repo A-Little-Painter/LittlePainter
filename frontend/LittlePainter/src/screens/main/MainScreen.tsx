@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,6 +9,9 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  BackHandler,
+  ToastAndroid,
+  Alert,
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
@@ -18,11 +21,36 @@ import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 type MainScreenProps = StackScreenProps<RootStackParams, 'MainScreen'>;
-
+type ismuted = boolean;
 const windowWidth = Dimensions.get('window').width;
 // const windowHeight = Dimensions.get('window').height;
 
 export default function MainScreen({navigation}: MainScreenProps) {
+  const [ismuted, setIsmuted] = useState<ismuted>(false);
+  const [backHandleNum, setBackHandleNum] = useState<number>(0);
+  useEffect(() => {
+    const backAction = () => {
+      if (backHandleNum === 0) {
+        setBackHandleNum(prev => prev + 1); // 함수형 업데이트 사용
+        ToastAndroid.show(
+          '앱을 종료하려면 뒤로가기를 한 번 더 해주세요.',
+          ToastAndroid.SHORT,
+        );
+        return true; // 뒤로가기 이벤트 무시하지 않도록 설정
+      } else if (backHandleNum === 1) {
+        BackHandler.exitApp();
+        setBackHandleNum(0);
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [backHandleNum]);
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
@@ -39,13 +67,25 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   source={require('../../assets/logo/rabbit.png')}
                 />
               </View>
-              <TouchableOpacity style={styles.circleBg2}>
+              <TouchableOpacity
+                style={styles.circleBg2}
+                onPress={() => {
+                  setIsmuted(!ismuted);
+                }}>
                 <Text>
-                  <IconSimpleLineIcons
-                    name="volume-2"
-                    color={'black'}
-                    size={windowWidth * 0.03}
-                  />
+                  {ismuted ? (
+                    <IconSimpleLineIcons
+                      name="volume-off"
+                      color={'black'}
+                      size={windowWidth * 0.03}
+                    />
+                  ) : (
+                    <IconSimpleLineIcons
+                      name="volume-2"
+                      color={'black'}
+                      size={windowWidth * 0.03}
+                    />
+                  )}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -84,7 +124,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <TouchableOpacity style={styles.cardFrame3}>
                   <View style={styles.playButtonCircle}>
                     <Text>
-                      <IconFontAwesome5 name="play" size={windowWidth * 0.03} />
+                      <IconFontAwesome5
+                        name="question"
+                        size={windowWidth * 0.03}
+                      />
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -109,7 +152,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <TouchableOpacity style={styles.cardFrame3}>
                   <View style={styles.playButtonCircle}>
                     <Text>
-                      <IconFontAwesome5 name="play" size={windowWidth * 0.03} />
+                      <IconFontAwesome5
+                        name="question"
+                        size={windowWidth * 0.03}
+                      />
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -133,7 +179,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <TouchableOpacity style={styles.cardFrame3}>
                   <View style={styles.playButtonCircle}>
                     <Text>
-                      <IconFontAwesome5 name="play" size={windowWidth * 0.03} />
+                      <IconFontAwesome5
+                        name="question"
+                        size={windowWidth * 0.03}
+                      />
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -157,7 +206,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <TouchableOpacity style={styles.cardFrame3}>
                   <View style={styles.playButtonCircle}>
                     <Text>
-                      <IconFontAwesome5 name="play" size={windowWidth * 0.03} />
+                      <IconFontAwesome5
+                        name="question"
+                        size={windowWidth * 0.03}
+                      />
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -309,7 +361,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingLeft: windowWidth * 0.005,
+    // paddingLeft: windowWidth * 0.005,
     opacity: 0.75,
   },
   mainOptionButton: {
