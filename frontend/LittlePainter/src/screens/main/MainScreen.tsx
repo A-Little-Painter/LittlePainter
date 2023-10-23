@@ -28,29 +28,35 @@ const windowWidth = Dimensions.get('window').width;
 export default function MainScreen({navigation}: MainScreenProps) {
   const [ismuted, setIsmuted] = useState<ismuted>(false);
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
+
   useEffect(() => {
     const backAction = () => {
-      if (backHandleNum === 0) {
-        setBackHandleNum(prev => prev + 1); // 함수형 업데이트 사용
-        ToastAndroid.show(
-          '앱을 종료하려면 뒤로가기를 한 번 더 해주세요.',
-          ToastAndroid.SHORT,
-        );
-        return true; // 뒤로가기 이벤트 무시하지 않도록 설정
-      } else if (backHandleNum === 1) {
-        BackHandler.exitApp();
-        setBackHandleNum(0);
+      if (navigation.isFocused()) {
+        // Check if the MainScreen is focused
+        if (backHandleNum === 0) {
+          setBackHandleNum(1);
+          ToastAndroid.show(
+            '뒤로가기를 한 번 더 누르면 앱이 종료됩니다.',
+            ToastAndroid.SHORT,
+          );
+          setTimeout(() => {
+            setBackHandleNum(0);
+          }, 1000);
+          return true; // 뒤로가기 이벤트 무시하지 않도록 설정
+        } else if (backHandleNum === 1) {
+          BackHandler.exitApp();
+        }
+        return true;
       }
-      return true;
+      return false; // 다른 페이지에서는 뒤로가기 이벤트를 처리하지 않음
     };
-
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       backAction,
     );
-
     return () => backHandler.remove();
-  }, [backHandleNum]);
+  }, [backHandleNum, navigation]);
+
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
