@@ -1,6 +1,7 @@
-package com.yehah.draw.global.config;
+package com.yehah.draw.global.similarity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yehah.draw.global.similarity.entity.Message;
 
 public class Utils {
     private static final ObjectMapper objectMapper = new ObjectMapper();
