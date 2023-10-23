@@ -1,9 +1,7 @@
 import React from 'react';
 import {
   StyleSheet,
-  // Button,
   View,
-  // Alert,
   Text,
   ImageBackground,
   Image,
@@ -121,7 +119,8 @@ export default function MypageProfileScreen({
                           <Image
                             style={styles.childCardImage}
                             resizeMode="contain"
-                            source={require('../../assets/logo/littlePainterRabbit.png')} />
+                            source={require('../../assets/logo/littlePainterRabbit.png')}
+                          />
                           <View style={styles.childTextView}>
                             <Text style={styles.childNameText}>
                               {item.childName}
