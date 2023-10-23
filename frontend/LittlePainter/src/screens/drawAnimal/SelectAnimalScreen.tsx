@@ -121,7 +121,10 @@ export default function SelectAnimalScreen({
               return (
                 <View style={styles.animalCard1}>
                   <TouchableOpacity
-                    onPress={() => {}}
+                    onPress={() => {
+                      // 일단 여기로 옮김. 실제론 각 동물 id에 맞게 보내야함.
+                      navigation.navigate('DrawAnimalScreen');
+                    }}
                     style={[
                       styles.animalCard2,
                       {

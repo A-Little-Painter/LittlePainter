@@ -6,6 +6,9 @@ import LoginScreen from '../screens/mypage/LoginScreen';
 import MypageProfileScreen from '../screens/mypage/MypageProfileScreen';
 
 import SelectAnimalScreen from '../screens/drawAnimal/SelectAnimalScreen';
+import DrawAnimalScreen from '../screens/drawAnimal/DrawAnimalScreen';
+
+import DrawTestScreen from '../screens/drawAnimal/DrawTestScreen';
 import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
 import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
 import UploadPicture1Screen from '../screens/uploadPicture/UploadPicture1Screen';
@@ -22,6 +25,7 @@ export type RootStackParams = {
   LoginScreen: undefined;
   MypageProfileScreen: undefined;
   SelectAnimalScreen: undefined;
+  DrawAnimalScreen: undefined;
   SelectPictureScreen: undefined;
   SelectFairytaleScreen: undefined;
   UploadPicture1Screen: undefined;
@@ -30,6 +34,7 @@ export type RootStackParams = {
   MainTmpScreen: undefined;
   DetailScreen: undefined;
   NodetailScreen: undefined;
+  DrawTestScreen: undefined;
   Detail1Screen: {
     name: string;
   };
@@ -56,6 +61,7 @@ export default function AppNavigator() {
         name="SelectAnimalScreen"
         component={SelectAnimalScreen}
       />
+      <RootStack.Screen name="DrawAnimalScreen" component={DrawAnimalScreen} />
       <RootStack.Screen
         name="SelectPictureScreen"
         component={SelectPictureScreen}
@@ -75,6 +81,7 @@ export default function AppNavigator() {
       <RootStack.Screen name="Detail1Screen" component={Detail1Screen} />
       <RootStack.Screen name="Detail2Screen" component={Detail2Screen} />
       <RootStack.Screen name="NodetailScreen" component={NodetailScreen} />
+      <RootStack.Screen name="DrawTestScreen" component={DrawTestScreen} />
     </RootStack.Navigator>
   );
 }
