@@ -1,9 +1,9 @@
 package com.yehah.draw.global.config;
 
-import com.yehah.draw.global.similarity.Utils;
-import com.yehah.draw.global.similarity.entity.Message;
-import com.yehah.draw.global.similarity.entity.WebSocketState;
-import com.yehah.draw.global.similarity.entity.WebSocketType;
+import com.yehah.draw.global.webSocket.Utils;
+import com.yehah.draw.global.webSocket.entity.Message;
+import com.yehah.draw.global.webSocket.entity.WebSocketState;
+import com.yehah.draw.global.webSocket.entity.WebSocketType;
 import com.yehah.draw.global.webSocket.WebSocketDB;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

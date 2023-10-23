@@ -1,7 +1,7 @@
-package com.yehah.draw.global.similarity;
+package com.yehah.draw.global.webSocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yehah.draw.global.similarity.entity.Message;
+import com.yehah.draw.global.webSocket.entity.Message;
 
 public class Utils {
     private static final ObjectMapper objectMapper = new ObjectMapper();

@@ -1,7 +1,5 @@
-package com.yehah.draw.global.similarity.entity;
+package com.yehah.draw.global.webSocket.entity;
 
-import com.yehah.draw.global.similarity.entity.WebSocketState;
-import com.yehah.draw.global.similarity.entity.WebSocketType;
 import lombok.*;
 
 @Getter
