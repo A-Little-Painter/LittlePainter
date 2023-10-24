@@ -5,7 +5,7 @@
 gitpython>=3.1.30
 matplotlib>=3.3
 numpy>=1.22.2
-opencv-python>=4.1.1
+opencv-python==4.8.1.78
 Pillow>=7.1.2
 psutil  # system resources
 PyYAML>=5.3.1
@@ -49,4 +49,4 @@ setuptools>=65.5.1 # Snyk vulnerability fix
 # pycocotools>=2.0.6  # COCO mAP
 
 Flask==3.0.0
-rebmg==2.0.51
+rembg==2.0.51
