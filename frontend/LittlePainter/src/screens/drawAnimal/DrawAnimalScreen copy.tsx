@@ -7,20 +7,11 @@ import {
   TouchableOpacity,
   Image,
   Pressable,
-  Alert,
 } from 'react-native';
 import {Svg, Path} from 'react-native-svg';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
-import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
-import {RootState} from '../../redux/store';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  handleLineThickness,
-  handleisDrawLineThicknessModalVisible,
-} from '../../redux/slices/draw/draw';
 
 type DrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -34,21 +25,13 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const [paths, setPaths] = useState<
     {path: string; color: string; strokeWidth: number}[]
   >([]);
-  const [tmpPaths, setTmpPaths] = useState<
-    {path: string; color: string; strokeWidth: number}[]
-  >([]);
   const [currentPath, setCurrentPath] = useState<string>('');
   const [isClearButtonClicked, setClearButtonClicked] =
     useState<boolean>(false);
   const [selectColor, setSelectColor] = useState<string>('black');
-  // const [lineWidth, setLineWidth] = useState<number>(5);
-
-  const dispatch = useDispatch();
-  // 선 굵기 모달을 위한 라인
-  // const LineThickness = useSelector(state.draw.LineThickness);
-  const LineThickness = useSelector(
-    (state: RootState) => state.draw.LineThickness,
-  );
+  const [lineWidth, setLineWidth] = useState<number>(5);
+  // 지우개 활성화
+  const [isEraserActive, setIsEraserActive] = useState<boolean>(false);
 
   // 그림 그리기 함수
   const onTouchStart = event => {
@@ -60,7 +43,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
       0,
     )} L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
     setCurrentPath(point);
-    setTmpPaths([]);
   };
 
   const onTouchMove = event => {
@@ -83,7 +65,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
       // Only save the path if there are points in it
       setPaths([
         ...paths,
-        {path: currentPath, color: selectColor, strokeWidth: LineThickness},
+        {path: currentPath, color: selectColor, strokeWidth: lineWidth},
       ]);
     }
     setCurrentPath('');
@@ -96,70 +78,40 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     setClearButtonClicked(true);
   };
 
-  const handlePrevButtonClick = () => {
-    const tmpPosition:
-      | {path: string; color: string; strokeWidth: number}
-      | undefined = paths.pop();
-    if (tmpPosition) {
-      setTmpPaths([...tmpPaths, tmpPosition]);
-    }
-  };
-  const handleNextButtonClick = () => {
-    const tmpPosition:
-      | {path: string; color: string; strokeWidth: number}
-      | undefined = tmpPaths.pop();
-    if (tmpPosition) {
-      setPaths([...paths, tmpPosition]);
-    }
-  };
-
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
         {/* 상단 */}
         <View style={styles.topContainer}>
           {/* 연필 및 지우개 */}
-          {/* <View style={styles.topLeft}>
-          </View> */}
-          <View style={styles.topMiddle}>
-            {/* 연필 및 ctrl z, ctrl shift z */}
-            <Pressable style={styles.pencilImageCircle} onPress={() => {}}>
+          <View style={styles.topLeft}>
+            <Pressable
+              style={styles.pencilImageCircle}
+              onPress={() => setIsEraserActive(false)}>
               <Image
                 style={styles.drawEquipImage}
                 source={require('../../assets/images/pencil.png')}
               />
             </Pressable>
-            {/* 되돌리기 */}
-            <TouchableOpacity
+            <Pressable
               style={styles.eraserImageCircle}
-              disabled={!paths.length}
-              onPress={() => {
-                handlePrevButtonClick();
-              }}>
-              <Text>
-                <IconFontAwesome
-                  name="reply"
-                  size={windowWidth * 0.05}
-                  color={paths.length ? '#5E9FF9' : 'gray'}
-                />
-              </Text>
-            </TouchableOpacity>
-            {/* 되돌리기 취소 */}
-            <TouchableOpacity
+              onPress={() => setIsEraserActive(true)}>
+              <Image
+                style={styles.drawEquipImage}
+                source={require('../../assets/images/eraser.png')}
+              />
+            </Pressable>
+            <Pressable
               style={styles.eraserImageCircle}
-              disabled={!tmpPaths.length}
-              onPress={() => {
-                handleNextButtonClick();
-              }}>
-              <Text>
-                <IconFontAwesome
-                  name="share"
-                  size={windowWidth * 0.05}
-                  color={tmpPaths.length ? '#5E9FF9' : 'gray'}
-                />
-              </Text>
-            </TouchableOpacity>
-            {/* 색깔 */}
+              onPress={() => setIsEraserActive(true)}>
+              <Image
+                style={styles.drawEquipImage}
+                source={require('../../assets/images/eraser.png')}
+              />
+            </Pressable>
+          </View>
+          {/* 색깔 */}
+          <View style={styles.topMiddle}>
             <Pressable
               style={[styles.colorCircle, {backgroundColor: '#FF0000'}]}
               onPress={() => {
@@ -241,7 +193,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
         {/* 중단 */}
         <View style={styles.middleContainer}>
           <View
-            style={{justifyContent: 'flex-end'}}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}>
@@ -261,7 +212,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
                 d={currentPath}
                 stroke={isClearButtonClicked ? 'transparent' : selectColor}
                 fill={'transparent'}
-                strokeWidth={LineThickness}
+                strokeWidth={lineWidth}
                 strokeLinejoin={'round'}
                 strokeLinecap={'round'}
               />
@@ -271,30 +222,9 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
         {/* 하단 */}
         <View style={styles.bottomContainer}>
           <TouchableOpacity
-            style={styles.ideaLightView}
-            onPress={() => {
-              Alert.alert('', '메롱');
-            }}>
-            <Image
-              style={styles.ideaLight}
-              source={require('../../assets/images/ideaLight.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.lineThicknessView}
-            onPress={() => {
-              // 이 부분 차후 모달에서 rage slide로 가능하게 해야함.
-              dispatch(handleLineThickness(20));
-            }}>
-            <View style={styles.lineThickness} />
-          </TouchableOpacity>
-          <TouchableOpacity
             style={styles.clearButton}
             onPress={handleClearButtonClick}>
-            <Text style={styles.clearButtonText}>모두 지우기</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.doneButton} onPress={() => {}}>
-            <Text style={styles.doneButtonText}>완성하기</Text>
+            <Text style={styles.clearButtonText}>Clear</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -310,25 +240,12 @@ const styles = StyleSheet.create({
   subContainer: {
     alignSelf: 'center',
     flex: 1,
-    width: '100%',
+    width: '95%',
     // backgroundColor: 'green',
   },
-  ideaLightView: {
-    // position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '5%',
-    height: '100%',
-  },
-  ideaLight: {
-    resizeMode: 'contain',
-    width: windowWidth * 0.04,
-  },
   topContainer: {
-    flex: 0.1,
+    flex: 0.15,
     flexDirection: 'row',
-    width: '95%',
-    alignSelf: 'center',
   },
   topLeft: {
     flexDirection: 'row',
@@ -337,7 +254,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pencilImageCircle: {
-    // backgroundColor: '#ECECEC',
+    backgroundColor: '#ECECEC',
     width: windowWidth * 0.07,
     height: windowWidth * 0.07,
     borderRadius: windowWidth * 0.07 * 0.5,
@@ -345,7 +262,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   eraserImageCircle: {
-    // backgroundColor: '#ECECEC',
+    backgroundColor: '#ECECEC',
     width: windowWidth * 0.07,
     height: windowWidth * 0.07,
     borderRadius: windowWidth * 0.07 * 0.5,
@@ -358,10 +275,10 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch',
   },
   topMiddle: {
-    flex: 0.9,
+    flex: 0.7,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   colorCircle: {
     width: windowWidth * 0.04,
@@ -372,7 +289,7 @@ const styles = StyleSheet.create({
   topRight: {
     flex: 0.1,
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   xCircle: {
     justifyContent: 'center',
@@ -387,52 +304,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   middleContainer: {
-    flex: 0.8,
-    borderWidth: 1,
+    flex: 0.78,
   },
   bottomContainer: {
-    marginHorizontal: windowWidth * 0.01,
-    flex: 0.1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  lineThicknessView: {
-    width: '8%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  lineThickness: {
-    backgroundColor: 'black',
-    width: '100%',
-    height: '15%',
-    borderRadius: windowHeight * 0.1 * 0.15 * 0.5,
+    flex: 0.07,
   },
   clearButton: {
-    backgroundColor: '#F6F6F6',
-    // borderWidth: 1,
-    // width: '5%',
-    // height: '80%',
-    padding: windowHeight * 0.02,
-    borderRadius: windowWidth * 0.05 * 0.2,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: 10,
+    backgroundColor: 'black',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
   },
   clearButtonText: {
-    color: 'black',
-    fontSize: windowHeight * 0.02,
-  },
-  doneButton: {
-    backgroundColor: '#A8CEFF',
-    width: '15%',
-    height: '80%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: windowWidth * 0.2 * 0.07,
-  },
-  doneButtonText: {
-    color: 'black',
-    fontSize: windowHeight * 0.04,
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

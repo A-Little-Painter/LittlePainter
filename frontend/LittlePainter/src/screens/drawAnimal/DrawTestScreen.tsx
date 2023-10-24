@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     height: height * 0.7,
     width,
     borderColor: 'black',
-    backgroundColor: 'white',
+    backgroundColor: 'yellow',
     borderWidth: 1,
   },
   clearButton: {
