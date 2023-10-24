@@ -38,6 +38,8 @@ def detect_objects():
 
         # return Response(img_encoded.tobytes(), mimetype='image/jpeg')
 
+
+
         return jsonify({
             "image": img_to_base64(im0),
             "animal_type": animal_type[0]
