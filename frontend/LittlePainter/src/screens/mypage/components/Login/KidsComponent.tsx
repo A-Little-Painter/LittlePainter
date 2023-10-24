@@ -1,14 +1,18 @@
 import React from 'react';
-import {StyleSheet, View, Text, TextInput, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Dimensions,
+  Image,
+} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import IconFontisto from 'react-native-vector-icons/Fontisto';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import IconIonicons from 'react-native-vector-icons/Ionicons';
 
-type EmailComponentsProps = {
+type KidsComponentsProps = {
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
-  handleLogin: () => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
 };
@@ -16,10 +20,9 @@ type EmailComponentsProps = {
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const EmailComponents: React.FC<EmailComponentsProps> = ({
+const KidsComponents: React.FC<KidsComponentsProps> = ({
   setEmail,
   setPassword,
-  handleLogin,
   navigation,
   selectComponent,
 }) => {
@@ -48,44 +51,34 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
         </View>
         {/* 중단 */}
         <View style={styles.middleContainer}>
+          <View>
+            <Image
+              style={styles.kids}
+              source={require('../../../../assets/images/kids.png')}
+              resizeMode="contain"
+            />
+          </View>
           <View style={styles.infoView}>
-            <Text style={styles.infoText}>비밀번호를 찾을</Text>
-            <Text style={styles.infoText}>계정 정보를 입력해 주세요</Text>
+            <Text style={styles.infoText}>꼬마화가를 이용할</Text>
+            <Text style={styles.infoText}>아이의 정보를 알려 주세요</Text>
           </View>
           {/* 이메일 */}
           <View style={styles.loginArea}>
-            <View style={styles.loginTextBox1}>
-              <Text style={styles.loginTextVector}>
-                <IconFontisto
-                  name="email"
-                  size={windowWidth * 0.03}
-                  color={'#645454'}
-                />
-              </Text>
+            <View style={styles.loginTextBox}>
+              <Text style={styles.loginTextVector}>아이애칭</Text>
               <TextInput
-                placeholder="이메일"
+                placeholder="아이 애칭"
                 placeholderTextColor={'black'}
                 style={styles.loginInputText}
                 onChangeText={text => setEmail(text)}
               />
             </View>
-            <View style={styles.ConfirmButton}>
-              <TouchableOpacity onPress={handleLogin}>
-                <Text style={styles.ConfirmButtonText}>인증번호 전송</Text>
-              </TouchableOpacity>
-            </View>
           </View>
           {/* 비밀번호 */}
-          <View style={styles.loginTextBox2}>
-            <Text style={styles.loginTextVector}>
-              <IconIonicons
-                name="checkbox-outline"
-                size={windowWidth * 0.03}
-                color={'#645454'}
-              />
-            </Text>
+          <View style={styles.loginTextBox}>
+            <Text style={styles.loginTextVector}>생년월일</Text>
             <TextInput
-              placeholder="인증코드"
+              placeholder="생년월일"
               placeholderTextColor={'black'}
               style={styles.loginInputText}
               onChangeText={text => setPassword(text)}
@@ -94,9 +87,9 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
           <View style={styles.loginButtonBox}>
             <TouchableOpacity
               onPress={() => {
-                handleComponentChange('password');
+                handleComponentChange('email');
               }}>
-              <Text style={styles.loginText}>확인</Text>
+              <Text style={styles.loginText}>회원가입</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -118,6 +111,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '90%',
     height: '90%',
+    // backgroundColor: 'green',
   },
   leftImage: {
     alignSelf: 'center',
@@ -133,7 +127,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   topContainer: {
-    flex: 0.2,
+    flex: 0.06,
     // justifyContent: 'center',
   },
   xCircle: {
@@ -152,51 +146,19 @@ const styles = StyleSheet.create({
   textLogoImage: {
     width: windowWidth * 0.25,
     height: windowHeight * 0.1,
-    marginVertical: windowWidth * 0.01,
   },
   loginArea: {
     flexDirection: 'row',
   },
-  loginTextBox1: {
-    flexDirection: 'row',
-    borderWidth: 0,
-    borderColor: 'black',
-    backgroundColor: '#F8F8F8',
-    width: windowWidth * 0.32,
-    height: windowWidth * 0.45 * 0.12,
-    marginVertical: windowWidth * 0.01,
-    borderTopLeftRadius: 5,
-    borderBottomLeftRadius: 5,
-  },
-  ConfirmButton: {
-    backgroundColor: '#F8F8F8',
-    width: windowWidth * 0.13,
-    height: windowWidth * 0.45 * 0.12,
-    marginVertical: windowWidth * 0.01,
-    justifyContent: 'center',
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
-  },
-  ConfirmButtonText: {
-    backgroundColor: '#dfecc2',
-    color: '#383535',
-    fontSize: windowWidth * 0.016,
-    borderRadius: 1000,
-    width: windowWidth * 0.12,
-    height: windowHeight * 0.07,
-    alignItems: 'center',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-  },
-  loginTextBox2: {
+  loginTextBox: {
     flexDirection: 'row',
     borderWidth: 0,
     borderColor: 'black',
     backgroundColor: '#F8F8F8',
     width: windowWidth * 0.45,
     height: windowWidth * 0.45 * 0.12,
-    marginVertical: windowWidth * 0.01,
     borderRadius: 5,
+    marginBottom: windowHeight * 0.01,
   },
   loginInputText: {
     fontSize: windowWidth * 0.017,
@@ -204,11 +166,12 @@ const styles = StyleSheet.create({
   loginTextVector: {
     alignSelf: 'center',
     paddingHorizontal: windowWidth * 0.01,
+    fontSize: windowWidth * 0.013,
   },
   loginButtonBox: {
     borderWidth: 0,
     borderColor: 'black',
-    backgroundColor: '#525252',
+    backgroundColor: '#DBE7B5',
     width: windowWidth * 0.15,
     height: windowWidth * 0.45 * 0.12,
     justifyContent: 'center',
@@ -219,8 +182,8 @@ const styles = StyleSheet.create({
   loginText: {
     textAlign: 'center',
     fontSize: windowWidth * 0.025,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: '300',
+    color: '#0D0C0C',
   },
   subLoginView: {
     flexDirection: 'row',
@@ -240,7 +203,11 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   infoView: {
-    marginBottom: windowWidth * 0.01,
+    marginBottom: windowHeight * 0.01,
+  },
+  kids: {
+    height: windowHeight * 0.2,
+    width: windowWidth * 0.2,
   },
 });
-export default EmailComponents;
+export default KidsComponents;

@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
-import EmailComponent from './components/EmailComponents';
-import PasswordComponents from './components/PasswordComponents';
-import KidsComponents from './components/KidsComponents';
+import EmailComponent from './components/Login/EmailComponent';
+import PasswordComponents from './components/Login/PasswordComponent';
+import KidsComponents from './components/Login/KidsComponent';
 
 type SignupScreenProps = StackScreenProps<RootStackParams, 'SignupScreen'>;
 

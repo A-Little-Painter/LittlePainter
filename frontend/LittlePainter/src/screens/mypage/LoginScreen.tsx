@@ -26,6 +26,13 @@ const windowHeight = Dimensions.get('window').height;
 export default function LoginScreen({navigation}: LoginScreenProps) {
   const [imageSource, setImageSource] = useState<{uri: string} | null>(null);
 
+  // 이미지 픽커 실사용 예시
+  const imagetemp = () => {
+    openImagePicker(setImageSource);
+    console.log('4');
+    console.log(imageSource);
+  };
+
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
@@ -65,9 +72,10 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
               </View>
               {/* 중단 */}
               <View style={styles.middleContainer}>
+                {/* 나중에 여기 터치 뺴야함(테스트를 위해 넣은 부분) */}
                 <TouchableOpacity
                   onPress={() => {
-                    openImagePicker(setImageSource);
+                    imagetemp();
                   }}>
                   <Image
                     resizeMode="contain"

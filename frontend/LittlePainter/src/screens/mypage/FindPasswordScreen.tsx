@@ -10,8 +10,8 @@ import {
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
 
-import ComfirmComponent from './components/ConfirmComponents';
-import PasswordChangeComponent from './components/PasswordChangeComponents';
+import ComfirmComponent from './components/Login/ConfirmComponent';
+import PasswordChangeComponent from './components/Login/PasswordChangeComponent';
 
 type FindPasswordScreenProps = StackScreenProps<
   RootStackParams,
