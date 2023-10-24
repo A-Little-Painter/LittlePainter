@@ -55,6 +55,7 @@ def run(
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
 ):
+    global max_area_cls, cropped_img
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
     is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
@@ -187,8 +188,8 @@ def run(
         if max_area_box:
             cropped_img = im0[int(max_area_box[1]):int(max_area_box[3]),
                           int(max_area_box[0]):int(max_area_box[2])]
-            cv2.imwrite(str(save_dir / f"largest_{names[int(max_area_cls)]}.jpg"), cropped_img)
-            print(f"Largest detected section is: {names[int(max_area_cls)]}")
+            # cv2.imwrite(str(save_dir / f"largest_{names[int(max_area_cls)]}.jpg"), cropped_img)
+            # print(f"Largest detected section is: {names[int(max_area_cls)]}")
 
         # Print time (inference-only)
         LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
@@ -202,7 +203,8 @@ def run(
     if update:
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
-    return cropped_img
+    print(f"Largest detected section is: {names[int(max_area_cls)]}")
+    return cropped_img, {names[int(max_area_cls)]}
     # return result_images
 
 
