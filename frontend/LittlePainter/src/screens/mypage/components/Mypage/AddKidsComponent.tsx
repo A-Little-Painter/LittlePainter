@@ -16,8 +16,10 @@ import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 type AddKidsComponentsProps = {
-  setEmail: (email: string) => void;
-  setPassword: (password: string) => void;
+  setName: (name: string) => void;
+  setBirth: (birth: string) => void;
+  profileImage: number;
+  setProfileImage: (profileImage: string) => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
 };
@@ -81,8 +83,10 @@ const childs = [
 ];
 
 const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
-  setEmail,
-  setPassword,
+  setName,
+  setBirth,
+  profileImage,
+  setProfileImage,
   navigation,
   selectComponent,
 }) => {
@@ -92,8 +96,9 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
   };
 
   const [modalVisible, setModalVisible] = useState(false);
-  const itemNumber = (value: number) => {
-    console.log(value);
+  const itemNumber = (value: any) => {
+    setProfileImage(value);
+    setModalVisible(false);
   };
   return (
     <View style={styles.rightContainer}>
@@ -125,10 +130,7 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
           {/* 아이 정보 */}
           <View style={styles.contextArea}>
             <View style={styles.kidProfile}>
-              <Image
-                source={require('../../../../assets/logo/rabbit.png')}
-                style={styles.profilePicture}
-              />
+              <Image source={profileImage} style={styles.profilePicture} />
               <View style={styles.searchIcon}>
                 <TouchableOpacity onPress={() => setModalVisible(true)}>
                   <IconFontAwesome
@@ -147,7 +149,9 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
                   Alert.alert('Modal has been closed.');
                   setModalVisible(!modalVisible);
                 }}>
-                <View style={styles.centeredView}>
+                <Pressable
+                  style={styles.centeredView}
+                  onPress={() => setModalVisible(!modalVisible)}>
                   <View style={styles.modalView}>
                     <FlatList
                       data={childs}
@@ -155,8 +159,9 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
                         return (
                           <TouchableOpacity
                             onPress={() => {
-                              itemNumber(item.id);
-                            }}>
+                              itemNumber(item.source);
+                            }}
+                            style={styles.modalContents}>
                             <Image
                               style={styles.childCardImage}
                               resizeMode="contain"
@@ -166,7 +171,7 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
                         );
                       }}
                       keyExtractor={item => item.id.toString()}
-                      numColumns={2}
+                      numColumns={7}
                     />
                     <Pressable
                       style={[styles.button]}
@@ -174,7 +179,7 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
                       <Text style={styles.textStyle}>안바꿀래요</Text>
                     </Pressable>
                   </View>
-                </View>
+                </Pressable>
               </Modal>
               {/* 모달 끝 */}
             </View>
@@ -185,7 +190,7 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
                   placeholder="아이 애칭"
                   placeholderTextColor={'black'}
                   style={styles.loginInputText}
-                  onChangeText={text => setEmail(text)}
+                  onChangeText={text => setName(text)}
                 />
               </View>
               <View style={styles.loginTextBox}>
@@ -194,7 +199,7 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
                   placeholder="생년월일"
                   placeholderTextColor={'black'}
                   style={styles.loginInputText}
-                  onChangeText={text => setPassword(text)}
+                  onChangeText={text => setBirth(text)}
                 />
               </View>
             </View>
@@ -248,10 +253,6 @@ const styles = StyleSheet.create({
     color: 'black',
     marginLeft: windowWidth * 0.15,
   },
-  nicknameText: {
-    fontSize: windowWidth * 0.033,
-    fontWeight: 'bold',
-  },
   xCircle: {
     justifyContent: 'center',
     borderRadius: 500,
@@ -269,87 +270,10 @@ const styles = StyleSheet.create({
     marginRight: windowWidth * 0.05,
     marginTop: windowHeight * 0.1,
   },
-  childInformationView: {
-    marginVertical: windowHeight * 0.02,
-  },
-  childInformationText: {
-    color: 'black',
-    fontWeight: '700',
-    fontSize: windowWidth * 0.02,
-  },
-  childCardContainer: {
-    width: '95%',
-    flexDirection: 'row',
-    alignSelf: 'center',
-  },
-  childCardView: {
-    backgroundColor: '#9AC5F4',
-    marginHorizontal: windowWidth * 0.01,
-    borderRadius: windowWidth * 0.137 * 0.1,
-    borderColor: 'black',
-    borderWidth: 1,
-    width: windowWidth * 0.137,
-    height: windowWidth * 0.137 * 1.24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   childCardImage: {
-    height: windowWidth * 0.137 * 1.24 * 0.5,
-    width: windowWidth * 0.137 * 1.24 * 0.5,
+    height: windowWidth * 0.137 * 1.24 * 0.7,
+    width: windowWidth * 0.137 * 1.24 * 0.7,
     margin: windowHeight * 0.002,
-  },
-  childPlusView: {
-    width: windowWidth * 0.137,
-    height: windowWidth * 0.137 * 1.24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  childPlusText: {
-    fontSize: windowWidth * 0.08,
-    color: '#D9D9D9',
-  },
-  childTextView: {
-    height: '30%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  childNameText: {
-    fontWeight: 'bold',
-    fontSize: windowWidth * 0.018,
-    color: 'black',
-  },
-  birthdayText: {
-    color: 'black',
-    fontSize: windowWidth * 0.015,
-  },
-  passwordView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginVertical: windowHeight * 0.02,
-  },
-  passwordText: {
-    color: 'black',
-    fontWeight: '700',
-    fontSize: windowWidth * 0.02,
-  },
-  passwordChangeView: {
-    borderWidth: 1,
-    backgroundColor: '#DBE7B5',
-    width: windowWidth * 0.05,
-    height: windowWidth * 0.05 * 0.6,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  passwordChangeText: {
-    color: 'black',
-    fontSize: windowWidth * 0.018,
-  },
-  unregisterView: {
-    alignItems: 'flex-end',
-  },
-  unregisterText: {
-    fontSize: windowWidth * 0.015,
   },
   bottomContainer: {
     flex: 0.1,
@@ -427,6 +351,7 @@ const styles = StyleSheet.create({
   },
   profilePicture: {
     height: windowHeight * 0.23,
+    resizeMode: 'contain',
   },
   profilePictureA: {
     width: windowWidth * 0.1,
@@ -453,10 +378,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: windowWidth * 0.137 * 0.1,
     padding: windowHeight * 0.04,
-    paddingBottom: windowHeight * 0.12,
+    paddingBottom: windowHeight * 0.01,
     alignItems: 'center',
     elevation: 5,
-    height: windowHeight * 0.65,
+    height: windowHeight * 0.6,
   },
   button: {
     borderRadius: windowWidth * 0.137 * 0.1,
@@ -472,6 +397,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: windowWidth * 0.015,
+  },
+  modalContents: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 export default AddKidsComponents;

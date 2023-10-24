@@ -10,6 +10,10 @@ import {
 } from 'react-native';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 type ProfileComponentsProps = {
+  setName: (name: string) => void;
+  setBirth: (birth: string) => void;
+  profileImage: number;
+  setProfileImage: (profileImage: string) => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
 };
@@ -36,6 +40,10 @@ const childs = [
 ];
 
 const ProfileComponents: React.FC<ProfileComponentsProps> = ({
+  setName,
+  setBirth,
+  profileImage,
+  setProfileImage,
   navigation,
   selectComponent,
 }) => {

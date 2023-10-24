@@ -7,12 +7,12 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
 import ProfileComponents from './components/Mypage/ProfileComponent';
 import AddKidsComponents from './components/Mypage/AddKidsComponent';
+import PasswordChangeMyComponents from './components/Mypage/PasswordChangeMyComponent';
 
 type MypageProfileScreenProps = StackScreenProps<
   RootStackParams,
@@ -24,42 +24,43 @@ const windowHeight = Dimensions.get('window').height;
 export default function MypageProfileScreen({
   navigation,
 }: MypageProfileScreenProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [birth, setBirth] = useState('');
   const [selectedComponent, setSelectedComponent] = useState('profile');
-
-  const handleLogin = () => {
-    if (email && password) {
-      Alert.alert(`로그인 시도: 이메일 - ${email}, 비밀번호 - ${password}`);
-    } else {
-      Alert.alert('이메일과 비밀번호를 입력하세요.');
-    }
-  };
+  const [profileImage, setProfileImage] = useState(
+    require('../../assets/logo/rabbit.png'),
+  );
 
   const renderSelectedComponent = () => {
     if (selectedComponent === 'profile') {
       return (
         <ProfileComponents
+          setName={setName}
+          setBirth={setBirth}
+          profileImage={profileImage}
+          setProfileImage={setProfileImage}
           navigation={navigation}
           selectComponent={(componentName: string) =>
             setSelectedComponent(componentName)
           }
         />
       );
-      // } else if (selectedComponent === 'password') {
-      //   return (
-      //     <AddKidsComponents
-      //       navigation={navigation}
-      //       selectComponent={(componentName: string) =>
-      //         setSelectedComponent(componentName)
-      //       }
-      //     />
-      //   );
+    } else if (selectedComponent === 'password') {
+      return (
+        <PasswordChangeMyComponents
+          navigation={navigation}
+          selectComponent={(componentName: string) =>
+            setSelectedComponent(componentName)
+          }
+        />
+      );
     } else if (selectedComponent === 'kids') {
       return (
         <AddKidsComponents
-          setEmail={setEmail}
-          setPassword={setPassword}
+          setName={setName}
+          setBirth={setBirth}
+          profileImage={profileImage}
+          setProfileImage={setProfileImage}
           navigation={navigation}
           selectComponent={(componentName: string) =>
             setSelectedComponent(componentName)
