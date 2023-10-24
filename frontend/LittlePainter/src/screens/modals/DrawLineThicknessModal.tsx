@@ -1,28 +1,55 @@
 import React, {useState} from 'react';
 import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
+import {RootState} from '../../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  handleLineThickness,
+  handleisDrawLineThicknessModalVisible,
+} from '../../redux/slices/draw/draw';
+// import Slider from '@react-native-community/slider';
 
 const DrawLineThicknessModal = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const dispatch = useDispatch();
+  // 선 굵기 모달을 위한 라인
+  const LineThickness = useSelector(
+    (state: RootState) => state.draw.LineThickness,
+  );
+  const isDrawLineThicknessModalVisible = useSelector(
+    (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
+  );
   return (
-    <View style={styles.centeredView}>
+    <View>
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={isDrawLineThicknessModalVisible}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
+          dispatch(handleisDrawLineThicknessModalVisible(false));
         }}>
-        <View style={styles.centeredView}>
+        <Pressable
+          style={styles.centeredView}
+          onPress={() => {
+            dispatch(handleisDrawLineThicknessModalVisible(false));
+          }}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Hello World!</Text>
+            {/* <Slider
+              style={{width: 200, height: 40}}
+              minimumValue={0}
+              maximumValue={1}
+              minimumTrackTintColor="#FFFFFF"
+              maximumTrackTintColor="#000000"
+            /> */}
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
+              onPress={() =>
+                dispatch(handleisDrawLineThicknessModalVisible(false))
+              }>
               <Text style={styles.textStyle}>Hide Modal</Text>
             </Pressable>
           </View>
-        </View>
+        </Pressable>
       </Modal>
     </View>
   );
@@ -33,7 +60,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
   },
   modalView: {
     margin: 20,

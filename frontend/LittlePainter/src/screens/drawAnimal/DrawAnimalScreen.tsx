@@ -45,9 +45,11 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
 
   const dispatch = useDispatch();
   // 선 굵기 모달을 위한 라인
-  // const LineThickness = useSelector(state.draw.LineThickness);
   const LineThickness = useSelector(
     (state: RootState) => state.draw.LineThickness,
+  );
+  const isDrawLineThicknessModalVisible = useSelector(
+    (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
   );
 
   // 그림 그리기 함수
@@ -91,9 +93,11 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   };
 
   const handleClearButtonClick = () => {
+    // setTmpPaths([...tmpPaths, ...paths]);
     setPaths([]);
     setCurrentPath('');
     setClearButtonClicked(true);
+    setClearButtonClicked(false);
   };
 
   const handlePrevButtonClick = () => {
@@ -284,7 +288,8 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             style={styles.lineThicknessView}
             onPress={() => {
               // 이 부분 차후 모달에서 rage slide로 가능하게 해야함.
-              dispatch(handleLineThickness(20));
+              // dispatch(handleLineThickness(5));
+              dispatch(handleisDrawLineThicknessModalVisible(true));
             }}>
             <View style={styles.lineThickness} />
           </TouchableOpacity>
@@ -298,6 +303,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
           </TouchableOpacity>
         </View>
       </View>
+      {isDrawLineThicknessModalVisible ? <DrawLineThicknessModal /> : null}
     </View>
   );
 }
