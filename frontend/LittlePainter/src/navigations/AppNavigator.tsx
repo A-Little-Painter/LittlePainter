@@ -10,6 +10,9 @@ import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
 import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
 import UploadPicture1Screen from '../screens/uploadPicture/UploadPicture1Screen';
 
+import FindPasswordScreen from '../screens/mypage/FindPasswordScreen';
+import SignupScreen from '../screens/mypage/SignupScreen';
+
 import MainTmpScreen from '../screens/main/MainTmpScreen';
 import Detail1Screen from '../screens/detail/Detail1Screen';
 import DetailScreen from '../screens/detail/DetailScreen';
@@ -25,6 +28,8 @@ export type RootStackParams = {
   SelectPictureScreen: undefined;
   SelectFairytaleScreen: undefined;
   UploadPicture1Screen: undefined;
+  SignupScreen: undefined;
+  FindPasswordScreen: undefined;
 
   // 이하는 테스트용이었음
   MainTmpScreen: undefined;
@@ -67,6 +72,11 @@ export default function AppNavigator() {
       <RootStack.Screen
         name="UploadPicture1Screen"
         component={UploadPicture1Screen}
+      />
+      <RootStack.Screen name="SignupScreen" component={SignupScreen} />
+      <RootStack.Screen
+        name="FindPasswordScreen"
+        component={FindPasswordScreen}
       />
 
       {/* 이하는 테스트용이었음 */}
