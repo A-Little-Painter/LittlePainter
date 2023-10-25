@@ -1,9 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
-  // Button,
   View,
-  // Alert,
   Text,
   ImageBackground,
   Image,
@@ -17,11 +15,24 @@ import IconFontisto from 'react-native-vector-icons/Fontisto';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
+// temp
+import {openImagePicker} from '../detail/ImagePicker';
+// temp
+
 type LoginScreenProps = StackScreenProps<RootStackParams, 'LoginScreen'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function LoginScreen({navigation}: LoginScreenProps) {
+  const [imageSource, setImageSource] = useState<{uri: string} | null>(null);
+
+  // 이미지 픽커 실사용 예시
+  const imagetemp = () => {
+    openImagePicker(setImageSource);
+    console.log('4');
+    console.log(imageSource);
+  };
+
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
@@ -61,15 +72,25 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
               </View>
               {/* 중단 */}
               <View style={styles.middleContainer}>
-                <Image
-                  resizeMode="contain"
-                  style={styles.textLogoImage}
-                  source={require('../../assets/logo/littlePainterTextLogo.png')}
-                />
+                {/* 나중에 여기 터치 뺴야함(테스트를 위해 넣은 부분) */}
+                <TouchableOpacity
+                  onPress={() => {
+                    imagetemp();
+                  }}>
+                  <Image
+                    resizeMode="contain"
+                    style={styles.textLogoImage}
+                    source={require('../../assets/logo/littlePainterTextLogo.png')}
+                  />
+                </TouchableOpacity>
                 {/* 이메일 */}
                 <View style={styles.loginTextBox}>
                   <Text style={styles.loginTextVector}>
-                    <IconFontisto name="email" size={windowWidth * 0.03} />
+                    <IconFontisto
+                      name="email"
+                      size={windowWidth * 0.03}
+                      color={'#645454'}
+                    />
                   </Text>
                   <TextInput
                     placeholder="이메일"
@@ -83,12 +104,14 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
                     <IconSimpleLineIcons
                       name="lock"
                       size={windowWidth * 0.03}
+                      color={'#645454'}
                     />
                   </Text>
                   <TextInput
                     placeholder="비밀번호"
                     placeholderTextColor={'black'}
                     style={styles.loginInputText}
+                    secureTextEntry={true}
                   />
                 </View>
                 <TouchableOpacity
@@ -99,11 +122,17 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
                   <Text style={styles.loginText}>로그인</Text>
                 </TouchableOpacity>
                 <View style={styles.subLoginView}>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('FindPasswordScreen');
+                    }}>
                     <Text style={styles.subLoginText}>비밀번호 찾기</Text>
                   </TouchableOpacity>
                   <Text style={styles.subLoginText}>|</Text>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('SignupScreen');
+                    }}>
                     <Text style={styles.subLoginText}>회원가입</Text>
                   </TouchableOpacity>
                 </View>
@@ -123,8 +152,6 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     flex: 1,
-    // alignSelf: 'center',
-    // width: '95%',
     flexDirection: 'row',
   },
   backgroundImage: {
@@ -146,7 +173,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '90%',
     height: '90%',
-    // backgroundColor: 'green',
   },
   leftImage: {
     alignSelf: 'center',
@@ -163,14 +189,12 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flex: 0.2,
-    // justifyContent: 'center',
   },
   xCircle: {
     alignSelf: 'flex-end',
     justifyContent: 'center',
     borderRadius: 500,
     backgroundColor: 'white',
-    // borderWidth: 1,
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
     elevation: 3,
@@ -180,16 +204,18 @@ const styles = StyleSheet.create({
   },
   textLogoImage: {
     width: windowWidth * 0.25,
+    height: windowHeight * 0.1,
     marginVertical: windowWidth * 0.01,
   },
   loginTextBox: {
     flexDirection: 'row',
-    borderWidth: 1,
+    borderWidth: 0,
     borderColor: 'black',
     backgroundColor: '#F8F8F8',
     width: windowWidth * 0.45,
     height: windowWidth * 0.45 * 0.12,
     marginVertical: windowWidth * 0.005,
+    borderRadius: 5,
   },
   loginInputText: {
     fontSize: windowWidth * 0.017,
@@ -199,13 +225,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: windowWidth * 0.01,
   },
   loginButtonBox: {
-    borderWidth: 1,
+    borderWidth: 0,
     borderColor: 'black',
     backgroundColor: '#DFECC2',
     width: windowWidth * 0.45,
     height: windowWidth * 0.45 * 0.12,
     justifyContent: 'center',
     marginVertical: windowWidth * 0.01,
+    borderRadius: 5,
   },
   loginText: {
     textAlign: 'center',
