@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class AnimalController {
 
     @Operation(summary = "동물의 유사도를 확인한다.", description = "ALL")
     @PostMapping("/conn-similarity")
-    public void animalSimilarCheck(@RequestBody Picture picture){
+    public void animalSimilarCheck(@RequestBody Picture picture) throws IOException {
         fileUploader.uploadFile(picture);
         return;
     }
