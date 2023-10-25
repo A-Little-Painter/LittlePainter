@@ -15,5 +15,5 @@ public class Picture {
     private WebSocketType type; // ANIMAL, FRIEND, TALE
     private Long idx;
     private String sessionId;
-    private MultipartFile multipartFile;//
+    private MultipartFile multipartFile;
 }
