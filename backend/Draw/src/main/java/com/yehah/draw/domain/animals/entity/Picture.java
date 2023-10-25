@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class Picture {
     private WebSocketType type; // ANIMAL, FRIEND, TALE
-    private Long idx;
+    private Long id;
     private String sessionId;
-    private MultipartFile multipartFile;
 }
