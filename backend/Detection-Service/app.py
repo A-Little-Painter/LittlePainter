@@ -28,21 +28,16 @@ def detect_objects():
 
     try:
         # Directly call the detect function from yolov5, assuming it's modified to return the processed image
-        im0, animal_type = detect.run(weights='yolov5s.pt', source=filename)
+        rembg_with_border, border_only, animal_type = detect.run(weights='yolov5s.pt', source=filename)
 
         print(animal_type)
 
         os.remove(filename)  # Remove the temporarily saved file
 
-        # _, img_encoded = cv2.imencode('.jpg', im0)
-
-        # return Response(img_encoded.tobytes(), mimetype='image/jpeg')
-
-
-
         return jsonify({
-            "image": img_to_base64(im0),
-            "animal_type": animal_type[0]
+            "border_image": img_to_base64(rembg_with_border),
+            "trace_image": img_to_base64(border_only),
+            "animal_type": animal_type
         })
 
     except Exception as e:
