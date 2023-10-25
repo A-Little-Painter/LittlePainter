@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Image,
   Pressable,
-  Alert,
 } from 'react-native';
 import {Svg, Path} from 'react-native-svg';
 import type {StackScreenProps} from '@react-navigation/stack';
@@ -15,10 +14,12 @@ import {RootStackParams} from '../../navigations/AppNavigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
+import OriginCompareModal from '../modals/OriginCompareModal';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   handleLineThickness,
+  handleisOriginCompareModalVisible,
   handleisDrawLineThicknessModalVisible,
 } from '../../redux/slices/draw/draw';
 
@@ -50,6 +51,9 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   );
   const isDrawLineThicknessModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
+  );
+  const isOriginCompareModalVisible = useSelector(
+    (state: RootState) => state.draw.isOriginCompareModalVisible,
   );
 
   // 그림 그리기 함수
@@ -116,6 +120,15 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
       setPaths([...paths, tmpPosition]);
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // 화면에 들어올 때 실행될 코드
+      dispatch(handleLineThickness(5));
+    });
+
+    return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
+  }, [dispatch, navigation]);
 
   return (
     <View style={styles.mainContainer}>
@@ -274,36 +287,49 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
         </View>
         {/* 하단 */}
         <View style={styles.bottomContainer}>
-          <TouchableOpacity
-            style={styles.ideaLightView}
-            onPress={() => {
-              Alert.alert('', '메롱');
-            }}>
-            <Image
-              style={styles.ideaLight}
-              source={require('../../assets/images/ideaLight.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.lineThicknessView}
-            onPress={() => {
-              // 이 부분 차후 모달에서 rage slide로 가능하게 해야함.
-              // dispatch(handleLineThickness(5));
-              dispatch(handleisDrawLineThicknessModalVisible(true));
-            }}>
-            <View style={styles.lineThickness} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.clearButton}
-            onPress={handleClearButtonClick}>
-            <Text style={styles.clearButtonText}>모두 지우기</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.doneButton} onPress={() => {}}>
-            <Text style={styles.doneButtonText}>완성하기</Text>
-          </TouchableOpacity>
+          {/* 하단 좌측 */}
+          <View style={styles.bottomContainerLeft}>
+            <TouchableOpacity
+              style={styles.ideaLightView}
+              onPress={() => {
+                dispatch(handleisOriginCompareModalVisible(true));
+              }}>
+              <Image
+                style={styles.ideaLight}
+                source={require('../../assets/images/ideaLight.png')}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.lineThicknessView}
+              onPress={() => {
+                dispatch(handleisDrawLineThicknessModalVisible(true));
+              }}>
+              <View
+                style={[styles.lineThickness, {backgroundColor: selectColor}]}
+              />
+            </TouchableOpacity>
+            <View style={styles.bottomContainerLeftRight} />
+          </View>
+          {/* 하단 중앙 */}
+          <View style={styles.bottomContainerMiddle}>
+            <TouchableOpacity
+              style={styles.clearButton}
+              onPress={handleClearButtonClick}>
+              <Text style={styles.clearButtonText}>모두 지우기</Text>
+            </TouchableOpacity>
+          </View>
+          {/* 하단 우측 */}
+          <View style={styles.bottomContainerRight}>
+            <TouchableOpacity style={styles.doneButton} onPress={() => {}}>
+              <Text style={styles.doneButtonText}>완성하기</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-      {isDrawLineThicknessModalVisible ? <DrawLineThicknessModal /> : null}
+      {isDrawLineThicknessModalVisible ? (
+        <DrawLineThicknessModal selectColor={selectColor} />
+      ) : null}
+      {isOriginCompareModalVisible ? <OriginCompareModal /> : null}
     </View>
   );
 }
@@ -322,8 +348,9 @@ const styles = StyleSheet.create({
   ideaLightView: {
     // position: 'absolute',
     justifyContent: 'center',
-    alignItems: 'center',
-    width: '5%',
+    // alignItems: 'center',
+    // width: '5%',
+    flex: 0.3,
     height: '100%',
   },
   ideaLight: {
@@ -403,37 +430,51 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  lineThicknessView: {
-    width: '8%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+  bottomContainerLeft: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    flex: 0.4,
   },
-  lineThickness: {
-    backgroundColor: 'black',
-    width: '100%',
-    height: '15%',
-    borderRadius: windowHeight * 0.1 * 0.15 * 0.5,
+  bottomContainerLeftRight: {
+    flex: 0.3,
+  },
+  bottomContainerMiddle: {
+    flex: 0.2,
   },
   clearButton: {
     backgroundColor: '#F6F6F6',
-    // borderWidth: 1,
-    // width: '5%',
-    // height: '80%',
-    padding: windowHeight * 0.02,
+    height: windowHeight * 0.1 * 0.7,
+    width: '80%',
     borderRadius: windowWidth * 0.05 * 0.2,
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
   },
   clearButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.02,
   },
+  bottomContainerRight: {
+    flex: 0.4,
+  },
+  lineThicknessView: {
+    flex: 0.3,
+    // width: '20%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lineThickness: {
+    width: '100%',
+    height: '15%',
+    borderRadius: windowHeight * 0.1 * 0.15 * 0.5,
+  },
   doneButton: {
     backgroundColor: '#A8CEFF',
-    width: '15%',
+    width: '40%',
     height: '80%',
     alignItems: 'center',
+    alignSelf: 'flex-end',
     justifyContent: 'center',
     borderRadius: windowWidth * 0.2 * 0.07,
   },
