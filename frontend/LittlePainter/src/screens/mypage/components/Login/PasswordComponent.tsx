@@ -48,7 +48,6 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
           <View style={styles.infoView}>
             <Text style={styles.infoText}>비밀번호를 설정해 주세요</Text>
           </View>
-          {/* 이메일 */}
           <View style={styles.loginArea}>
             <View style={styles.loginTextBox}>
               <Text style={styles.loginTextVector}>
@@ -63,10 +62,10 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
                 placeholderTextColor={'black'}
                 style={styles.loginInputText}
                 onChangeText={text => setEmail(text)}
+                secureTextEntry={true}
               />
             </View>
           </View>
-          {/* 비밀번호 */}
           <View style={styles.loginTextBox}>
             <Text style={styles.loginTextVector}>
               <IconSimpleLineIcons
@@ -80,6 +79,7 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
               placeholderTextColor={'black'}
               style={styles.loginInputText}
               onChangeText={text => setPassword(text)}
+              secureTextEntry={true}
             />
           </View>
           <View style={styles.loginButtonBox}>

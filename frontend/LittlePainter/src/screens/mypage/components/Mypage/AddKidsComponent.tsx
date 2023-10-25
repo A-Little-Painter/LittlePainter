@@ -87,7 +87,6 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
   setBirth,
   profileImage,
   setProfileImage,
-  navigation,
   selectComponent,
 }) => {
   const handleComponentChange = (value: string) => {
@@ -114,7 +113,7 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
           <TouchableOpacity
             style={styles.xCircle}
             onPress={() => {
-              navigation.goBack();
+              handleComponentChange('profile');
             }}>
             <Text style={styles.xText}>
               <IconFontAwesome6
@@ -268,7 +267,6 @@ const styles = StyleSheet.create({
     flex: 0.7,
     justifyContent: 'center',
     marginRight: windowWidth * 0.05,
-    marginTop: windowHeight * 0.1,
   },
   childCardImage: {
     height: windowWidth * 0.137 * 1.24 * 0.7,

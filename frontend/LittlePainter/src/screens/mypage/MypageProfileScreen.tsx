@@ -13,6 +13,9 @@ import type {StackScreenProps} from '@react-navigation/stack';
 import ProfileComponents from './components/Mypage/ProfileComponent';
 import AddKidsComponents from './components/Mypage/AddKidsComponent';
 import PasswordChangeMyComponents from './components/Mypage/PasswordChangeMyComponent';
+import WithdrawalComponents from './components/Mypage/WithdrawalComponent';
+import MyPictureComponents from './components/Mypage/MyPictureComponent';
+import VolumeComponents from './components/Mypage/VolumeComponent';
 
 type MypageProfileScreenProps = StackScreenProps<
   RootStackParams,
@@ -26,7 +29,11 @@ export default function MypageProfileScreen({
 }: MypageProfileScreenProps) {
   const [name, setName] = useState('');
   const [birth, setBirth] = useState('');
+  const [oldPw, setOldPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [newPwConfirm, setNewPwConfirm] = useState('');
   const [selectedComponent, setSelectedComponent] = useState('profile');
+  const [selectedMenu, setSelectedMenu] = useState('profile');
   const [profileImage, setProfileImage] = useState(
     require('../../assets/logo/rabbit.png'),
   );
@@ -48,6 +55,19 @@ export default function MypageProfileScreen({
     } else if (selectedComponent === 'password') {
       return (
         <PasswordChangeMyComponents
+          setOldPw={setOldPw}
+          setNewPw={setNewPw}
+          setNewPwConfirm={setNewPwConfirm}
+          navigation={navigation}
+          selectComponent={(componentName: string) =>
+            setSelectedComponent(componentName)
+          }
+        />
+      );
+    } else if (selectedComponent === 'withdraw') {
+      return (
+        <WithdrawalComponents
+          setPwConfirm={setNewPwConfirm}
           navigation={navigation}
           selectComponent={(componentName: string) =>
             setSelectedComponent(componentName)
@@ -67,7 +87,16 @@ export default function MypageProfileScreen({
           }
         />
       );
+    } else if (selectedComponent === 'pic') {
+      return <MyPictureComponents navigation={navigation} />;
+    } else if (selectedComponent === 'vol') {
+      return <VolumeComponents navigation={navigation} />;
     }
+  };
+  const handleComponentChangeA = (value: string) => {
+    const newComponentName = value;
+    setSelectedComponent(newComponentName);
+    setSelectedMenu(value);
   };
   return (
     <View style={styles.mainContainer}>
@@ -93,16 +122,46 @@ export default function MypageProfileScreen({
               </View>
               {/* 태그 */}
               <View style={styles.tagView}>
-                <TouchableOpacity>
-                  <Text style={styles.tagTextSelect}>프로필</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleComponentChangeA('profile');
+                  }}>
+                  <Text
+                    style={[
+                      styles.tagText,
+                      selectedMenu === 'profile' && styles.tagTextSelected,
+                    ]}>
+                    프로필
+                  </Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <Text style={styles.tagText}>내그림</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleComponentChangeA('pic');
+                  }}>
+                  <Text
+                    style={[
+                      styles.tagText,
+                      selectedMenu === 'pic' && styles.tagTextSelected,
+                    ]}>
+                    내그림
+                  </Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <Text style={styles.tagText}>음량 설정</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleComponentChangeA('vol');
+                  }}>
+                  <Text
+                    style={[
+                      styles.tagText,
+                      selectedMenu === 'vol' && styles.tagTextSelected,
+                    ]}>
+                    음성 설정
+                  </Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('LoginScreen');
+                  }}>
                   <Text style={styles.tagText}>로그아웃</Text>
                 </TouchableOpacity>
               </View>
@@ -157,15 +216,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: windowWidth * 0.02,
     // backgroundColor: 'green',
   },
-  tagTextSelect: {
-    color: 'black',
-    fontSize: windowWidth * 0.025,
-    fontWeight: 'bold',
-    paddingTop: windowHeight * 0.015,
-  },
   tagText: {
     color: '#484848',
     fontSize: windowWidth * 0.025,
     paddingTop: windowHeight * 0.015,
+  },
+  tagTextSelected: {
+    fontWeight: 'bold',
   },
 });

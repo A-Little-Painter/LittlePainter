@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Image,
   Dimensions,
   TouchableOpacity,
   TextInput,
@@ -12,10 +11,9 @@ import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 type PasswordChangeMyComponentsProps = {
-  setName: (name: string) => void;
-  setBirth: (birth: string) => void;
-  profileImage: number;
-  setProfileImage: (profileImage: string) => void;
+  setOldPw: (oldPw: string) => void;
+  setNewPw: (newPw: string) => void;
+  setNewPwConfirm: (newPwConfirm: string) => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
 };
@@ -24,10 +22,9 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const PasswordChangeMyComponents: React.FC<PasswordChangeMyComponentsProps> = ({
-  setName,
-  setBirth,
-  profileImage,
-  navigation,
+  setOldPw,
+  setNewPw,
+  setNewPwConfirm,
   selectComponent,
 }) => {
   const handleComponentChange = (value: string) => {
@@ -46,7 +43,7 @@ const PasswordChangeMyComponents: React.FC<PasswordChangeMyComponentsProps> = ({
           <TouchableOpacity
             style={styles.xCircle}
             onPress={() => {
-              navigation.goBack();
+              handleComponentChange('profile');
             }}>
             <Text style={styles.xText}>
               <IconFontAwesome6
@@ -77,7 +74,8 @@ const PasswordChangeMyComponents: React.FC<PasswordChangeMyComponentsProps> = ({
                   placeholder="기존 비밀번호"
                   placeholderTextColor={'black'}
                   style={styles.loginInputText}
-                  onChangeText={text => setName(text)}
+                  onChangeText={text => setOldPw(text)}
+                  secureTextEntry={true}
                 />
               </View>
               <View style={styles.loginTextBox}>
@@ -92,7 +90,8 @@ const PasswordChangeMyComponents: React.FC<PasswordChangeMyComponentsProps> = ({
                   placeholder="새 비밀번호"
                   placeholderTextColor={'black'}
                   style={styles.loginInputText}
-                  onChangeText={text => setBirth(text)}
+                  onChangeText={text => setNewPw(text)}
+                  secureTextEntry={true}
                 />
               </View>
               <View style={styles.loginTextBox}>
@@ -107,7 +106,8 @@ const PasswordChangeMyComponents: React.FC<PasswordChangeMyComponentsProps> = ({
                   placeholder="새 비밀번호 확인"
                   placeholderTextColor={'black'}
                   style={styles.loginInputText}
-                  onChangeText={text => setBirth(text)}
+                  onChangeText={text => setNewPwConfirm(text)}
+                  secureTextEntry={true}
                 />
               </View>
             </View>
@@ -176,7 +176,6 @@ const styles = StyleSheet.create({
     flex: 0.7,
     justifyContent: 'center',
     marginRight: windowWidth * 0.05,
-    marginTop: windowHeight * 0.1,
   },
   childCardImage: {
     height: windowWidth * 0.137 * 1.24 * 0.7,

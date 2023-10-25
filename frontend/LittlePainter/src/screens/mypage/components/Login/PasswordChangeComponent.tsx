@@ -63,6 +63,7 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
                 placeholderTextColor={'black'}
                 style={styles.loginInputText}
                 onChangeText={text => setEmail(text)}
+                secureTextEntry={true}
               />
             </View>
           </View>
@@ -80,6 +81,7 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
               placeholderTextColor={'black'}
               style={styles.loginInputText}
               onChangeText={text => setPassword(text)}
+              secureTextEntry={true}
             />
           </View>
           <View style={styles.loginButtonBox}>

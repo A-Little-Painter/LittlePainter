@@ -111,6 +111,7 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
                     placeholder="비밀번호"
                     placeholderTextColor={'black'}
                     style={styles.loginInputText}
+                    secureTextEntry={true}
                   />
                 </View>
                 <TouchableOpacity

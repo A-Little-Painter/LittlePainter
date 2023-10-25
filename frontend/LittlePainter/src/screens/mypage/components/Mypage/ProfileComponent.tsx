@@ -129,7 +129,11 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
             </TouchableOpacity>
           </View>
           {/* 회원탈퇴 */}
-          <TouchableOpacity style={styles.unregisterView}>
+          <TouchableOpacity
+            style={styles.unregisterView}
+            onPress={() => {
+              handleComponentChange('withdraw');
+            }}>
             <Text style={styles.unregisterText}>회원탈퇴 &gt;</Text>
           </TouchableOpacity>
         </View>
