@@ -8,6 +8,7 @@ import {
   Image,
   Pressable,
 } from 'react-native';
+import {GestureResponderEvent} from 'react-native';
 import {Svg, Path} from 'react-native-svg';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -15,12 +16,15 @@ import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
 import OriginCompareModal from '../modals/OriginCompareModal';
+import DrawColorPaletteModal from '../modals/DrawColorPaletteModal';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   handleLineThickness,
   handleisOriginCompareModalVisible,
   handleisDrawLineThicknessModalVisible,
+  handleisDrawColorPaletteModalVisible,
+  handleDrawColorSelect,
 } from '../../redux/slices/draw/draw';
 
 type DrawAnimalScreenProps = StackScreenProps<
@@ -41,7 +45,8 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const [currentPath, setCurrentPath] = useState<string>('');
   const [isClearButtonClicked, setClearButtonClicked] =
     useState<boolean>(false);
-  const [selectColor, setSelectColor] = useState<string>('black');
+  // const [selectColor, setSelectColor] = useState<string>('black');
+  // const [selectColor, dispatch(handleDrawColorSelect())] = useState<string>('black');
   // const [lineWidth, setLineWidth] = useState<number>(5);
 
   const dispatch = useDispatch();
@@ -55,9 +60,16 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const isOriginCompareModalVisible = useSelector(
     (state: RootState) => state.draw.isOriginCompareModalVisible,
   );
+  const isDrawColorPaletteModalVisible = useSelector(
+    (state: RootState) => state.draw.isDrawColorPaletteModalVisible,
+  );
+  // 선 색깔
+  const drawColorSelect = useSelector(
+    (state: RootState) => state.draw.drawColorSelect,
+  );
 
   // 그림 그리기 함수
-  const onTouchStart = event => {
+  const onTouchStart = (event: GestureResponderEvent) => {
     setClearButtonClicked(false);
     const locationX = event.nativeEvent.locationX;
     const locationY = event.nativeEvent.locationY;
@@ -69,7 +81,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     setTmpPaths([]);
   };
 
-  const onTouchMove = event => {
+  const onTouchMove = (event: GestureResponderEvent) => {
     if (currentPath === '') {
       // If there's no current path, start a new one with a "M" command
       const locationX = event.nativeEvent.locationX;
@@ -89,7 +101,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
       // Only save the path if there are points in it
       setPaths([
         ...paths,
-        {path: currentPath, color: selectColor, strokeWidth: LineThickness},
+        {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
       ]);
     }
     setCurrentPath('');
@@ -98,6 +110,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
 
   const handleClearButtonClick = () => {
     // setTmpPaths([...tmpPaths, ...paths]);
+    setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
     setClearButtonClicked(true);
@@ -180,63 +193,64 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             <Pressable
               style={[styles.colorCircle, {backgroundColor: '#FF0000'}]}
               onPress={() => {
-                setSelectColor('#FF0000');
+                dispatch(handleDrawColorSelect('#FF0000'));
               }}
             />
             <Pressable
               style={[styles.colorCircle, {backgroundColor: '#FF7A00'}]}
               onPress={() => {
-                setSelectColor('#FF7A00');
+                dispatch(handleDrawColorSelect('#FF7A00'));
               }}
             />
             <Pressable
               style={[styles.colorCircle, {backgroundColor: '#FAFF00'}]}
               onPress={() => {
-                setSelectColor('#FAFF00');
+                dispatch(handleDrawColorSelect('#FAFF00'));
               }}
             />
             <Pressable
               style={[styles.colorCircle, {backgroundColor: '#05FF00'}]}
               onPress={() => {
-                setSelectColor('#05FF00');
+                dispatch(handleDrawColorSelect('#05FF00'));
               }}
             />
             <Pressable
               style={[styles.colorCircle, {backgroundColor: '#0500FF'}]}
               onPress={() => {
-                setSelectColor('#0500FF');
+                dispatch(handleDrawColorSelect('#0500FF'));
               }}
             />
             <Pressable
               style={[styles.colorCircle, {backgroundColor: '#0300AA'}]}
               onPress={() => {
-                setSelectColor('#0300AA');
+                dispatch(handleDrawColorSelect('#0300AA'));
               }}
             />
             <Pressable
               style={[styles.colorCircle, {backgroundColor: '#9E00FF'}]}
               onPress={() => {
-                setSelectColor('#9E00FF');
+                dispatch(handleDrawColorSelect('#9E00FF'));
               }}
             />
             <Pressable
               // style={[styles.colorCircle, {backgroundColor: '#BA4300'}]}
               style={[styles.colorCircle, {backgroundColor: 'black'}]}
               onPress={() => {
-                // setSelectColor('#BA4300');
-                setSelectColor('black');
+                // dispatch(handleDrawColorSelect('#BA4300'));
+                dispatch(handleDrawColorSelect('#000000'));
               }}
             />
-            <Pressable
+            <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
-                // setSelectColor('#FF0000');
+                // dispatch(handleDrawColorSelect('#FF0000'));
+                dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image
                 style={styles.colorCircle}
                 source={require('../../assets/images/colorSelect.png')}
               />
-            </Pressable>
+            </TouchableOpacity>
           </View>
           {/* X버튼 */}
           <View style={styles.topRight}>
@@ -276,7 +290,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
               ))}
               <Path
                 d={currentPath}
-                stroke={isClearButtonClicked ? 'transparent' : selectColor}
+                stroke={isClearButtonClicked ? 'transparent' : drawColorSelect}
                 fill={'transparent'}
                 strokeWidth={LineThickness}
                 strokeLinejoin={'round'}
@@ -305,7 +319,13 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
                 dispatch(handleisDrawLineThicknessModalVisible(true));
               }}>
               <View
-                style={[styles.lineThickness, {backgroundColor: selectColor}]}
+                style={[
+                  styles.lineThickness,
+                  {
+                    height: windowWidth * 0.1 * 0.005 * LineThickness,
+                    backgroundColor: drawColorSelect,
+                  },
+                ]}
               />
             </TouchableOpacity>
             <View style={styles.bottomContainerLeftRight} />
@@ -327,9 +347,10 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
         </View>
       </View>
       {isDrawLineThicknessModalVisible ? (
-        <DrawLineThicknessModal selectColor={selectColor} />
+        <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
       {isOriginCompareModalVisible ? <OriginCompareModal /> : null}
+      {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
     </View>
   );
 }
@@ -343,19 +364,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flex: 1,
     width: '100%',
-    // backgroundColor: 'green',
-  },
-  ideaLightView: {
-    // position: 'absolute',
-    justifyContent: 'center',
-    // alignItems: 'center',
-    // width: '5%',
-    flex: 0.3,
-    height: '100%',
-  },
-  ideaLight: {
-    resizeMode: 'contain',
-    width: windowWidth * 0.04,
   },
   topContainer: {
     flex: 0.1,
@@ -434,6 +442,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     flex: 0.4,
+    height: '100%',
+  },
+  ideaLightView: {
+    justifyContent: 'center',
+    flex: 0.3,
+  },
+  ideaLight: {
+    resizeMode: 'contain',
+    height: windowHeight * 0.07,
+  },
+  lineThicknessView: {
+    flex: 0.4,
+    height: '100%',
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  lineThickness: {
+    width: windowWidth * 0.4 * 0.4,
+    // height: windowWidth * 0.1 * 0.1,
+    borderRadius: windowHeight * 0.1 * 0.15,
   },
   bottomContainerLeftRight: {
     flex: 0.3,
@@ -456,18 +484,6 @@ const styles = StyleSheet.create({
   },
   bottomContainerRight: {
     flex: 0.4,
-  },
-  lineThicknessView: {
-    flex: 0.3,
-    // width: '20%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  lineThickness: {
-    width: '100%',
-    height: '15%',
-    borderRadius: windowHeight * 0.1 * 0.15 * 0.5,
   },
   doneButton: {
     backgroundColor: '#A8CEFF',
