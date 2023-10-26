@@ -1,81 +1,73 @@
 package com.yehah.draw.global.config;
 
 import com.yehah.draw.global.webSocket.Utils;
-import com.yehah.draw.global.webSocket.entity.Message;
+import com.yehah.draw.global.webSocket.entity.ErrorMessage;
+import com.yehah.draw.global.webSocket.entity.SuccessMessage;
 import com.yehah.draw.global.webSocket.entity.WebSocketState;
 import com.yehah.draw.global.webSocket.entity.WebSocketType;
 import com.yehah.draw.global.webSocket.WebSocketDB;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
 public class AnimalHandler extends TextWebSocketHandler {
     public WebSocketSession currentSession;
-    public Message message;
+    public SuccessMessage successMessage;
+    public ErrorMessage errorMessage;
 
+    // NOTE : 처음 웹소켓을 연결하는 경우
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception{
         currentSession = WebSocketDB.getWebSocket();
-
-        if(currentSession != null && currentSession.isOpen()){
-            message = Message.builder().type(WebSocketType.FRIEND)
-                    .state(WebSocketState.TERMINATED).sessionID(currentSession.getId()).build();
-            currentSession.sendMessage(new TextMessage(Utils.getString(message)));
+        log.info("처음 웹소켓을 연결하는 경우");
+        if(currentSession != null && currentSession.isOpen()){ // 처음 연결했을 때 세션이 진행중이라면 세션을 끊는다.
+            errorMessage = ErrorMessage.builder().text("실행중인 세션을 종료하겠습니다.").build();
+            currentSession.sendMessage(new TextMessage(Utils.getString(errorMessage)));
             currentSession.close();
         }
 
         var sessionId = session.getId();
 
-        message = Message.builder().type(WebSocketType.FRIEND).state(WebSocketState.CONNECTED)
-                .sessionID(sessionId).build();
+        successMessage = SuccessMessage.builder().type(WebSocketType.ANIMAL).state(WebSocketState.CONNECTED)
+                .sessionId(sessionId).build();
 
-        WebSocketDB.setWebSocket(session);
+        WebSocketDB.setWebSocket(session); // 세션을 연결한다.
 
-        session.sendMessage(new TextMessage(Utils.getString(message)));
+        session.sendMessage(new TextMessage(Utils.getString(successMessage)));
     }
 
-    // 양방향 데이터 통신
+    // NOTE : 양방향 통신을 진행하고 있다.
     @Override
     protected void handleTextMessage (WebSocketSession session, TextMessage textMessage) throws Exception {
-        // testMessage에 animalId를 보내준다.
+        currentSession = WebSocketDB.getWebSocket();
+        log.info("양방향 통신을 진행하고 있다.");
+        if(session.getId().equals(currentSession.getId())){ // 현재 진행중인 세션과 같은 세션을 호출한 경우
+            successMessage = SuccessMessage.builder().sessionId(session.getId()).type(WebSocketType.ANIMAL)
+                    .state(WebSocketState.ACTIVE).build();
+            session.sendMessage(new TextMessage(Utils.getString(successMessage)));
+        }else{ // 현재 진행중인 세션과 다른 세션을 호출한 경우
+            errorMessage = ErrorMessage.builder().text("현재와 다른 세션을 호출하셨습니다.").build();
+            session.sendMessage(new TextMessage(Utils.getString(errorMessage)));
+        }
 
-
-//        Message message = Utils.getObject(textMessage.getPayload());
-//        message.setType(WebSocketType.ANIMAL);
-//        message.setState(WebSocketState.ACTIVE);
-//
-//        WebSocketSession receiver = sessions.get(message.getReceiver()); // 메세지를 전달할 타겟 상대방을 찾는다.
-//
-//        if(receiver != null && receiver.isOpen()) { // 타겟이 존재하고 연결된 상태라면, 메세지를 전송한다.
-//            receiver.sendMessage(new TextMessage(Utils.getString(message)));
-//        }
-
-
-        log.info("HIHIHI");
     }
-//
-//    // 웹소켓 종료
-//    @Override
-//    public void afterConnectionClosed(WebSocketSession session, CloseStatus status){
-//        var sessionId = session.getId();
-//        sessions.remove(sessionId); // 세션 저장소에서 연결이 끊긴 사용자를 삭제한다.
-//
-//        final Message message = new Message();
-//        message.closeConnect();
-//        message.setSender(sessionId);
-//
-//        sessions.values().forEach(s -> { // 다른 사용자에게 연결이 끊겼다는 알림 메세지를 보내준다.
-//            try{
-//                s.sendMessage(new TextMessage(Utils.getString(message)));
-//            }catch(Exception e){
-//                // TODO : throw
-//            }
-//        });
-//
-//    }
+
+    // NOTE : 웹소켓을 종료한다.
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        currentSession = WebSocketDB.getWebSocket();
+        log.info("웹소켓을 종료한다.");
+        if(session.getId().equals(currentSession.getId())){
+            successMessage = SuccessMessage.builder().sessionId(session.getId()).type(WebSocketType.ANIMAL)
+                    .state(WebSocketState.TERMINATED).build();
+        }
+    }
 
 }

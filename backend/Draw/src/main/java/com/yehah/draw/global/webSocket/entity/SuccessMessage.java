@@ -2,16 +2,23 @@ package com.yehah.draw.global.webSocket.entity;
 
 import lombok.*;
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
+
+
+@Data
 @NoArgsConstructor
-public class Message {
+public class SuccessMessage {
+    private static final String message = "SUCCESS";
+    private String sessionId; // sessionId
     private WebSocketType type; // ANIMAL, FRIEND, TALE
     private WebSocketState state; // CONNECTED, ACTIVE, TERMINATED
-    private String sessionID; // sessionID
 
+
+    @Builder
+    public SuccessMessage(String sessionId, WebSocketType type, WebSocketState state){
+        this.sessionId = sessionId;
+        this.type = type;
+        this.state = state;
+    }
 
 
 //    public void setSender(String sender){this.sender = sender;}

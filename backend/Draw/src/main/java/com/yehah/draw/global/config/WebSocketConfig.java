@@ -10,11 +10,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry
-                .addHandler(signalAnimalHandler(), "/draws/animals/conn-similarity")
+                .addHandler(signalAnimalHandler(), "/draws/animals/comm-similarity")
                 .setAllowedOrigins("*");
 
         registry
-                .addHandler(signalFriendHandler(), "/draws/friends/conn-similarity")
+                .addHandler(signalFriendHandler(), "/draws/friends/comm-similarity")
                 .setAllowedOrigins("*");
     }
 
