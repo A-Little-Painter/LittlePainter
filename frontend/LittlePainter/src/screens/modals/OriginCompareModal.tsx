@@ -26,7 +26,6 @@ const OriginCompareModal = () => {
   const isOriginCompareModalVisible = useSelector(
     (state: RootState) => state.draw.isOriginCompareModalVisible,
   );
-  // const [lineThickness, setLineThickness] = useState<number>(LineThickness);
   return (
     <View>
       <Modal
