@@ -13,7 +13,7 @@ interface CounterState {
 const initialState: CounterState = {
   isDrawLineThicknessModalVisible: false,
   isOriginCompareModalVisible: false,
-  LineThickness: 5,
+  LineThickness: 10,
   // 테스트 후 적용여부 결정
   isDrawColorPaletteModalVisible: false,
   drawColorSelect: 'black',

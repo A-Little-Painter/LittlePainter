@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+// import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -7,18 +8,20 @@ import {
   TouchableOpacity,
   Image,
   Pressable,
+  ToastAndroid, // 토스트안드로이드 잠깐 사용
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
+import ViewShot from 'react-native-view-shot';
 import {Svg, Path} from 'react-native-svg';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import {RootState} from '../../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
 import OriginCompareModal from '../modals/OriginCompareModal';
 import DrawColorPaletteModal from '../modals/DrawColorPaletteModal';
-import {RootState} from '../../redux/store';
-import {useDispatch, useSelector} from 'react-redux';
 import {
   handleLineThickness,
   handleisOriginCompareModalVisible,
@@ -35,6 +38,9 @@ type DrawAnimalScreenProps = StackScreenProps<
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
+  // 캡쳐 변수
+  const captureRef = useRef();
+
   // 그림 그리기 변수
   const [paths, setPaths] = useState<
     {path: string; color: string; strokeWidth: number}[]
@@ -45,9 +51,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const [currentPath, setCurrentPath] = useState<string>('');
   const [isClearButtonClicked, setClearButtonClicked] =
     useState<boolean>(false);
-  // const [selectColor, setSelectColor] = useState<string>('black');
-  // const [selectColor, dispatch(handleDrawColorSelect())] = useState<string>('black');
-  // const [lineWidth, setLineWidth] = useState<number>(5);
 
   const dispatch = useDispatch();
   // 선 굵기 모달을 위한 라인
@@ -60,41 +63,45 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const isOriginCompareModalVisible = useSelector(
     (state: RootState) => state.draw.isOriginCompareModalVisible,
   );
+  // 선 색깔 및 모달
   const isDrawColorPaletteModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawColorPaletteModalVisible,
   );
-  // 선 색깔
   const drawColorSelect = useSelector(
     (state: RootState) => state.draw.drawColorSelect,
   );
 
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
-    setClearButtonClicked(false);
     const locationX = event.nativeEvent.locationX;
     const locationY = event.nativeEvent.locationY;
-    // const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    const point = `M${locationX.toFixed(0)},${locationY.toFixed(
-      0,
-    )} L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+    const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+    // const point = `M${locationX.toFixed(0)},${locationY.toFixed(
+    //   0,
+    // )} L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
     setCurrentPath(point);
     setTmpPaths([]);
   };
 
   const onTouchMove = (event: GestureResponderEvent) => {
-    if (currentPath === '') {
-      // If there's no current path, start a new one with a "M" command
-      const locationX = event.nativeEvent.locationX;
-      const locationY = event.nativeEvent.locationY;
-      const newPoint = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-      setCurrentPath(newPoint);
-    } else {
-      const locationX = event.nativeEvent.locationX;
-      const locationY = event.nativeEvent.locationY;
-      const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-      setCurrentPath(prevPath => prevPath + newPoint);
-    }
+    const locationX = event.nativeEvent.locationX;
+    const locationY = event.nativeEvent.locationY;
+    const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+    setCurrentPath(prevPath => prevPath + newPoint);
   };
+  // const onTouchMove = (event: GestureResponderEvent) => {
+  //   if (currentPath === '') {
+  //     const locationX = event.nativeEvent.locationX;
+  //     const locationY = event.nativeEvent.locationY;
+  //     const newPoint = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+  //     setCurrentPath(newPoint);
+  //   } else {
+  //     const locationX = event.nativeEvent.locationX;
+  //     const locationY = event.nativeEvent.locationY;
+  //     const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+  //     setCurrentPath(prevPath => prevPath + newPoint);
+  //   }
+  // };
 
   const onTouchEnd = () => {
     if (currentPath) {
@@ -106,6 +113,10 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     }
     setCurrentPath('');
     setClearButtonClicked(false);
+    captureRef.current.capture().then((uri: string) => {
+      console.log('do something with ', uri);
+      ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
+    });
   };
 
   const handleClearButtonClick = () => {
@@ -137,7 +148,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
-      dispatch(handleLineThickness(5));
+      dispatch(handleLineThickness(10));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
@@ -145,6 +156,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
 
   return (
     <View style={styles.mainContainer}>
+      {/* <View style={styles.subContainer}> */}
       <View style={styles.subContainer}>
         {/* 상단 */}
         <View style={styles.topContainer}>
@@ -153,7 +165,11 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
           </View> */}
           <View style={styles.topMiddle}>
             {/* 연필 및 ctrl z, ctrl shift z */}
-            <Pressable style={styles.pencilImageCircle} onPress={() => {}}>
+            <Pressable
+              style={styles.pencilImageCircle}
+              onPress={() => {
+                navigation.navigate('DrawCaptureScreen');
+              }}>
               <Image
                 style={styles.drawEquipImage}
                 source={require('../../assets/images/pencil.png')}
@@ -270,7 +286,8 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
           </View>
         </View>
         {/* 중단 */}
-        <View style={styles.middleContainer}>
+        {/* <View style={styles.middleContainer}> */}
+        <ViewShot style={styles.middleContainer} ref={captureRef} options={{ fileName: "drawAnimalCapture", format: "jpg", quality: 0.9 }}>
           <View
             style={{justifyContent: 'flex-end'}}
             onTouchStart={onTouchStart}
@@ -298,7 +315,8 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
               />
             </Svg>
           </View>
-        </View>
+        {/* </View> */}
+        </ViewShot>
         {/* 하단 */}
         <View style={styles.bottomContainer}>
           {/* 하단 좌측 */}
