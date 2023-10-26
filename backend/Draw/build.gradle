@@ -52,6 +52,11 @@ dependencies {
     // Spring Cloud Config Client
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
 
+    // mysql
+    implementation 'mysql:mysql-connector-java:8.0.32'
+
+    // @Valid
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.2'
 
 }
 

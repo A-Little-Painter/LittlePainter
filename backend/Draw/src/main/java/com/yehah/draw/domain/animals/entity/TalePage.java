@@ -37,6 +37,6 @@ public class TalePage {
 	@Column(columnDefinition = "TEXT", nullable = false)
 	private String narration;
 
-	@Column(columnDefinition = "TINYINT(1)", nullable = false)
-	private Boolean isExist;
+	@Column(name = "draw_needed", columnDefinition = "TINYINT(1)", nullable = false)
+	private Boolean drawNeeded;
 }

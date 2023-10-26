@@ -12,12 +12,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tale_drawing")
+@Table(name = "tale_animation")
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaleDrawing {
+public class TaleAnimation {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -25,9 +25,7 @@ public class TaleDrawing {
 	@Column(name = "tale_page_id", nullable = false)
 	private Long talePageId;
 
-	@Column(name = "url_original", length = 200, nullable = false)
-	private String urlOriginal;
+	@Column(name = "`character`", length = 20, nullable = false)
+	private String character;
 
-	@Column(name = "url_trace", length = 200, nullable = false)
-	private String urlTrace;
 }
