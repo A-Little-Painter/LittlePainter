@@ -1,11 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, Text, TextInput, Dimensions} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 type PasswordComponentsProps = {
-  setEmail: (email: string) => void;
   setPassword: (password: string) => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
@@ -15,11 +14,11 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const PasswordComponents: React.FC<PasswordComponentsProps> = ({
-  setEmail,
   setPassword,
   navigation,
   selectComponent,
 }) => {
+  const [passwordConfirm, setPasswordConfirm] = useState('');
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
     selectComponent(newComponentName);
@@ -61,7 +60,7 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
                 placeholder="비밀번호"
                 placeholderTextColor={'black'}
                 style={styles.loginInputText}
-                onChangeText={text => setEmail(text)}
+                onChangeText={text => setPassword(text)}
                 secureTextEntry={true}
               />
             </View>
@@ -78,7 +77,7 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
               placeholder="비밀번호 확인"
               placeholderTextColor={'black'}
               style={styles.loginInputText}
-              onChangeText={text => setPassword(text)}
+              onChangeText={text => setPasswordConfirm(text)}
               secureTextEntry={true}
             />
           </View>
@@ -161,6 +160,7 @@ const styles = StyleSheet.create({
   },
   loginInputText: {
     fontSize: windowWidth * 0.017,
+    width: windowWidth * 0.4,
   },
   loginTextVector: {
     alignSelf: 'center',

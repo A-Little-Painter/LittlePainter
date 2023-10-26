@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
+import {useAppDispatch} from '../../redux/hooks';
+import {logOut} from '../../redux/slices/user/user';
 import ProfileComponents from './components/Mypage/ProfileComponent';
 import AddKidsComponents from './components/Mypage/AddKidsComponent';
 import PasswordChangeMyComponents from './components/Mypage/PasswordChangeMyComponent';
@@ -98,6 +100,14 @@ export default function MypageProfileScreen({
     setSelectedComponent(newComponentName);
     setSelectedMenu(value);
   };
+
+  const dispatch = useAppDispatch();
+
+  const logoutFonc = () => {
+    dispatch(logOut());
+    navigation.navigate('MainScreen');
+  };
+
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
@@ -160,7 +170,7 @@ export default function MypageProfileScreen({
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('LoginScreen');
+                    logoutFonc();
                   }}>
                   <Text style={styles.tagText}>로그아웃</Text>
                 </TouchableOpacity>

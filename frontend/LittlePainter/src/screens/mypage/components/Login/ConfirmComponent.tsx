@@ -65,7 +65,7 @@ const ConfirmComponents: React.FC<ConfirmComponentsProps> = ({
               <TextInput
                 placeholder="이메일"
                 placeholderTextColor={'black'}
-                style={styles.loginInputText}
+                style={styles.loginInputText1}
                 onChangeText={text => setEmail(text)}
               />
             </View>
@@ -87,7 +87,7 @@ const ConfirmComponents: React.FC<ConfirmComponentsProps> = ({
             <TextInput
               placeholder="인증코드"
               placeholderTextColor={'black'}
-              style={styles.loginInputText}
+              style={styles.loginInputText2}
               onChangeText={text => setPassword(text)}
             />
           </View>
@@ -198,8 +198,13 @@ const styles = StyleSheet.create({
     marginVertical: windowWidth * 0.01,
     borderRadius: 5,
   },
-  loginInputText: {
+  loginInputText1: {
     fontSize: windowWidth * 0.017,
+    width: windowWidth * 0.25,
+  },
+  loginInputText2: {
+    fontSize: windowWidth * 0.017,
+    width: windowWidth * 0.4,
   },
   loginTextVector: {
     alignSelf: 'center',

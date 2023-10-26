@@ -30,7 +30,7 @@ const VolumeComponents: React.FC<VolumeComponentsProps> = ({navigation}) => {
           <TouchableOpacity
             style={styles.xCircle}
             onPress={() => {
-              navigation.navigate('LoginScreen');
+              navigation.goBack();
             }}>
             <Text style={styles.xText}>
               <IconFontAwesome6

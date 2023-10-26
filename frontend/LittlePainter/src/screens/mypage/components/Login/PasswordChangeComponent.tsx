@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
   },
   loginInputText: {
     fontSize: windowWidth * 0.017,
+    width: windowWidth * 0.4,
   },
   loginTextVector: {
     alignSelf: 'center',

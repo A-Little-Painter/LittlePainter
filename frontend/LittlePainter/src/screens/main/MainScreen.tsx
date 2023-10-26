@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
+import {useAppSelector} from '../../redux/hooks';
 // import {useAppSelector, useAppDispatch} from '../../redux/hooks';
 import IconOcticons from 'react-native-vector-icons/Octicons';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -27,6 +28,14 @@ const windowWidth = Dimensions.get('window').width;
 export default function MainScreen({navigation}: MainScreenProps) {
   const [ismuted, setIsmuted] = useState<ismuted>(false);
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
+  const isLogin = useAppSelector(state => state.user.isLogin);
+  let loginTF: string;
+
+  if (!isLogin) {
+    loginTF = '로그인';
+  } else {
+    loginTF = '뽀송이';
+  }
 
   useEffect(() => {
     const backAction = () => {
@@ -98,14 +107,20 @@ export default function MainScreen({navigation}: MainScreenProps) {
             </View>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('LoginScreen');
+                if (!isLogin) {
+                  navigation.navigate('LoginScreen');
+                } else {
+                  navigation.navigate('MypageProfileScreen');
+                }
               }}
               style={styles.topRightView}>
-              <Image
-                style={styles.userLogo}
-                source={require('../../assets/images/user.png')}
-              />
-              <Text style={styles.loginText}>로그인</Text>
+              {isLogin ? null : (
+                <Image
+                  style={styles.userLogo}
+                  source={require('../../assets/images/user.png')}
+                />
+              )}
+              <Text style={styles.loginText}> {loginTF} </Text>
             </TouchableOpacity>
           </View>
           {/* 중단 */}
@@ -224,13 +239,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
             </ScrollView>
           </View>
           {/* 하단 */}
-          <View style={styles.bottomContainer}>
-            <TouchableOpacity>
-              <Text style={styles.mainOptionButton}>
-                <IconOcticons name="gear" size={windowWidth * 0.03} />;
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <View style={styles.bottomContainer} />
         </View>
       </ImageBackground>
     </View>

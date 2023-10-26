@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
+import {openImagePicker} from '../detail/ImagePicker';
 
 type UploadPicture1ScreenProps = StackScreenProps<
   RootStackParams,
@@ -22,6 +23,21 @@ const windowWidth = Dimensions.get('window').width;
 export default function UploadPicture1Screen({
   navigation,
 }: UploadPicture1ScreenProps) {
+  const [imageSource, setImageSource] = useState<{
+    uri: string;
+    fileName: string;
+    originalPath: string;
+  } | null>(null);
+  const imagetemp = () => {
+    openImagePicker(setImageSource);
+    console.log(imageSource);
+  };
+  let srcText: string;
+  if (imageSource) {
+    srcText = imageSource['fileName'];
+  } else {
+    srcText = ' ';
+  }
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -66,8 +82,12 @@ export default function UploadPicture1Screen({
               </View>
               {/* 파일선택 */}
               <View style={styles.bottomcontentContainer}>
-                <Text> </Text>
-                <TouchableOpacity style={styles.fileSelectView}>
+                <Text> {srcText} </Text>
+                <TouchableOpacity
+                  style={styles.fileSelectView}
+                  onPress={() => {
+                    imagetemp();
+                  }}>
                   <Image
                     resizeMode="contain"
                     style={styles.fileSelectImage}
@@ -78,6 +98,11 @@ export default function UploadPicture1Screen({
               </View>
             </View>
           </View>
+          <View>
+            <TouchableOpacity style={styles.uploadButton}>
+              <Text style={styles.uploadText}>올리기</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>
@@ -87,7 +112,7 @@ export default function UploadPicture1Screen({
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#FDDFE0',
+    backgroundColor: '#BAC0CA',
   },
   subContainer: {
     alignSelf: 'center',
@@ -193,5 +218,19 @@ const styles = StyleSheet.create({
   fileSelectText: {
     paddingLeft: windowWidth * 0.003,
     color: 'black',
+  },
+  uploadButton: {
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    backgroundColor: '#C68AEB',
+    marginRight: windowWidth * 0.045,
+    marginTop: windowWidth * 0.02,
+    width: windowWidth * 0.15,
+    height: windowWidth * 0.04,
+    borderRadius: windowWidth * 0.01,
+  },
+  uploadText: {
+    textAlign: 'center',
+    fontSize: windowWidth * 0.018,
   },
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, Text, TextInput, Dimensions} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import IconFontisto from 'react-native-vector-icons/Fontisto';
@@ -7,8 +7,6 @@ import IconIonicons from 'react-native-vector-icons/Ionicons';
 
 type EmailComponentsProps = {
   setEmail: (email: string) => void;
-  setPassword: (password: string) => void;
-  handleLogin: () => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
 };
@@ -18,11 +16,10 @@ const windowHeight = Dimensions.get('window').height;
 
 const EmailComponents: React.FC<EmailComponentsProps> = ({
   setEmail,
-  setPassword,
-  handleLogin,
   navigation,
   selectComponent,
 }) => {
+  const [code, setCode] = useState('');
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
     selectComponent(newComponentName);
@@ -65,12 +62,12 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
               <TextInput
                 placeholder="이메일"
                 placeholderTextColor={'black'}
-                style={styles.loginInputText}
+                style={styles.loginInputText1}
                 onChangeText={text => setEmail(text)}
               />
             </View>
             <View style={styles.ConfirmButton}>
-              <TouchableOpacity onPress={handleLogin}>
+              <TouchableOpacity>
                 <Text style={styles.ConfirmButtonText}>인증번호 전송</Text>
               </TouchableOpacity>
             </View>
@@ -87,8 +84,8 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
             <TextInput
               placeholder="인증코드"
               placeholderTextColor={'black'}
-              style={styles.loginInputText}
-              onChangeText={text => setPassword(text)}
+              style={styles.loginInputText2}
+              onChangeText={text => setCode(text)}
             />
           </View>
           <View style={styles.loginButtonBox}>
@@ -198,8 +195,13 @@ const styles = StyleSheet.create({
     marginVertical: windowWidth * 0.01,
     borderRadius: 5,
   },
-  loginInputText: {
+  loginInputText1: {
     fontSize: windowWidth * 0.017,
+    width: windowWidth * 0.25,
+  },
+  loginInputText2: {
+    fontSize: windowWidth * 0.017,
+    width: windowWidth * 0.4,
   },
   loginTextVector: {
     alignSelf: 'center',

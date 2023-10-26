@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
+import {useAppDispatch} from '../../redux/hooks';
+import {logIn} from '../../redux/slices/user/user';
 import IconFontisto from 'react-native-vector-icons/Fontisto';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -24,13 +26,24 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function LoginScreen({navigation}: LoginScreenProps) {
-  const [imageSource, setImageSource] = useState<{uri: string} | null>(null);
+  const [imageSource, setImageSource] = useState<{
+    uri: string;
+    fileName: string;
+    originalPath: string;
+  } | null>(null);
 
   // 이미지 픽커 실사용 예시
   const imagetemp = () => {
     openImagePicker(setImageSource);
     console.log('4');
     console.log(imageSource);
+  };
+
+  const dispatch = useAppDispatch();
+
+  const loginFonc = () => {
+    dispatch(logIn());
+    navigation.navigate('MainScreen');
   };
 
   return (
@@ -117,7 +130,7 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
                 <TouchableOpacity
                   style={styles.loginButtonBox}
                   onPress={() => {
-                    navigation.navigate('MypageProfileScreen');
+                    loginFonc();
                   }}>
                   <Text style={styles.loginText}>로그인</Text>
                 </TouchableOpacity>
@@ -219,6 +232,7 @@ const styles = StyleSheet.create({
   },
   loginInputText: {
     fontSize: windowWidth * 0.017,
+    width: windowWidth * 0.4,
   },
   loginTextVector: {
     alignSelf: 'center',

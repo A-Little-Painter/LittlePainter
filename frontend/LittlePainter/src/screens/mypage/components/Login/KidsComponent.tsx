@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,29 +6,45 @@ import {
   TextInput,
   Dimensions,
   Image,
+  Modal,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {signUp} from '../../../../apis/user/userApi';
+import {Calendar} from 'react-native-calendars';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 type KidsComponentsProps = {
-  setEmail: (email: string) => void;
-  setPassword: (password: string) => void;
+  email: string;
+  password: string;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
-  selectComponent: (componentName: string) => void;
 };
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const KidsComponents: React.FC<KidsComponentsProps> = ({
-  setEmail,
-  setPassword,
+  email,
+  password,
   navigation,
-  selectComponent,
 }) => {
-  const handleComponentChange = (value: string) => {
-    const newComponentName = value;
-    selectComponent(newComponentName);
+  const [kidName, setKidName] = useState('');
+  const [kidBirthday, setKidBirthday] = useState('');
+  const [isCalendarVisible, setCalendarVisible] = useState(false);
+
+  const handleDayPress = day => {
+    setKidBirthday(day.dateString); // 선택한 날짜를 상태 변수에 저장
+    setCalendarVisible(false); // 모달 닫기
+  };
+
+  const signUpFunc = () => {
+    const userData = {
+      Email: email,
+      password: password,
+      kidName: kidName,
+      kidBirthday: kidBirthday,
+    };
+    console.log(userData);
+    signUp(userData);
   };
   return (
     <View style={styles.rightContainer}>
@@ -70,24 +86,45 @@ const KidsComponents: React.FC<KidsComponentsProps> = ({
                 placeholder="아이 애칭"
                 placeholderTextColor={'black'}
                 style={styles.loginInputText}
-                onChangeText={text => setEmail(text)}
+                onChangeText={text => setKidName(text)}
               />
             </View>
           </View>
           {/* 비밀번호 */}
-          <View style={styles.loginTextBox}>
-            <Text style={styles.loginTextVector}>생년월일</Text>
-            <TextInput
-              placeholder="생년월일"
-              placeholderTextColor={'black'}
-              style={styles.loginInputText}
-              onChangeText={text => setPassword(text)}
-            />
+          <View style={styles.loginArea}>
+            <View style={styles.loginTextBox1}>
+              <Text style={styles.loginTextVector}>생년월일</Text>
+              <TextInput
+                placeholder="생년월일"
+                placeholderTextColor={'black'}
+                style={styles.loginInputText1}
+                value={kidBirthday}
+                editable={false}
+              />
+            </View>
+            <View style={styles.ConfirmButton}>
+              <TouchableOpacity onPress={() => setCalendarVisible(true)}>
+                <Text style={styles.ConfirmButtonText}>날짜 선택</Text>
+              </TouchableOpacity>
+            </View>
           </View>
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={isCalendarVisible}
+            onRequestClose={() => setCalendarVisible(false)}>
+            <View style={styles.modal}>
+              {/* 캘린더 */}
+              <Calendar
+                onDayPress={handleDayPress} // 날짜를 선택하면 실행될 함수
+              />
+            </View>
+          </Modal>
           <View style={styles.loginButtonBox}>
             <TouchableOpacity
               onPress={() => {
-                handleComponentChange('email');
+                signUpFunc();
+                navigation.goBack();
               }}>
               <Text style={styles.loginText}>회원가입</Text>
             </TouchableOpacity>
@@ -160,8 +197,45 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: windowHeight * 0.01,
   },
+  loginTextBox1: {
+    flexDirection: 'row',
+    borderWidth: 0,
+    borderColor: 'black',
+    backgroundColor: '#F8F8F8',
+    width: windowWidth * 0.32,
+    height: windowWidth * 0.45 * 0.12,
+    marginVertical: windowWidth * 0.01,
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
+  },
+  ConfirmButton: {
+    backgroundColor: '#F8F8F8',
+    width: windowWidth * 0.13,
+    height: windowWidth * 0.45 * 0.12,
+    marginVertical: windowWidth * 0.01,
+    justifyContent: 'center',
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+  },
+  ConfirmButtonText: {
+    backgroundColor: '#525252',
+    color: '#FFFFFF',
+    fontSize: windowWidth * 0.016,
+    borderRadius: 1000,
+    width: windowWidth * 0.1,
+    height: windowHeight * 0.07,
+    alignItems: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    marginLeft: windowWidth * 0.02,
+  },
   loginInputText: {
     fontSize: windowWidth * 0.017,
+    width: windowWidth * 0.38,
+  },
+  loginInputText1: {
+    fontSize: windowWidth * 0.017,
+    width: windowWidth * 0.25,
   },
   loginTextVector: {
     alignSelf: 'center',
@@ -208,6 +282,9 @@ const styles = StyleSheet.create({
   kids: {
     height: windowHeight * 0.2,
     width: windowWidth * 0.2,
+  },
+  modal: {
+    height: windowHeight * 0.2,
   },
 });
 export default KidsComponents;
