@@ -27,7 +27,7 @@ public class Similarity {
     private RestTemplate restTemplate;
 
     // NOTE : multipart/form-data로 유사도 비교하기
-    public Double callSimilarityCheck(MultiValueMap<String, Object> bodyData){
+    public Double postSimilarityCheck(MultiValueMap<String, Object> bodyData){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 

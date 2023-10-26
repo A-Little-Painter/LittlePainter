@@ -1,7 +1,7 @@
 package com.yehah.draw.global.webSocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yehah.draw.global.webSocket.entity.SuccessMessage;
+import com.yehah.draw.global.webSocket.entity.response.SuccessMessage;
 
 
 public class Utils {

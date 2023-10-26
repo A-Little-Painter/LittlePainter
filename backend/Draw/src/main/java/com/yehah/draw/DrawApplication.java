@@ -11,11 +11,4 @@ public class DrawApplication {
     public static void main(String[] args) {
         SpringApplication.run(DrawApplication.class, args);
     }
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
-
 }

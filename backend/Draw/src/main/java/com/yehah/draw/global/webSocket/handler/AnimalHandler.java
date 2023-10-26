@@ -1,8 +1,8 @@
-package com.yehah.draw.global.config;
+package com.yehah.draw.global.webSocket.handler;
 
 import com.yehah.draw.global.webSocket.Utils;
-import com.yehah.draw.global.webSocket.entity.ErrorMessage;
-import com.yehah.draw.global.webSocket.entity.SuccessMessage;
+import com.yehah.draw.global.webSocket.entity.response.ErrorMessage;
+import com.yehah.draw.global.webSocket.entity.response.SuccessMessage;
 import com.yehah.draw.global.webSocket.entity.WebSocketState;
 import com.yehah.draw.global.webSocket.entity.WebSocketType;
 import com.yehah.draw.global.webSocket.WebSocketDB;
@@ -15,8 +15,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FriendHandler extends TextWebSocketHandler {
-
+public class AnimalHandler extends TextWebSocketHandler {
     public WebSocketSession currentSession;
     public SuccessMessage successMessage;
     public ErrorMessage errorMessage;
@@ -34,7 +33,7 @@ public class FriendHandler extends TextWebSocketHandler {
 
         var sessionId = session.getId();
 
-        successMessage = SuccessMessage.builder().type(WebSocketType.FRIEND).state(WebSocketState.CONNECTED)
+        successMessage = SuccessMessage.builder().type(WebSocketType.ANIMAL).state(WebSocketState.CONNECTED)
                 .sessionId(sessionId).build();
 
         WebSocketDB.setWebSocket(session); // 세션을 연결한다.
@@ -48,7 +47,7 @@ public class FriendHandler extends TextWebSocketHandler {
         currentSession = WebSocketDB.getWebSocket();
         log.info("양방향 통신을 진행하고 있다.");
         if(session.getId().equals(currentSession.getId())){ // 현재 진행중인 세션과 같은 세션을 호출한 경우
-            successMessage = SuccessMessage.builder().sessionId(session.getId()).type(WebSocketType.FRIEND)
+            successMessage = SuccessMessage.builder().sessionId(session.getId()).type(WebSocketType.ANIMAL)
                     .state(WebSocketState.ACTIVE).build();
             session.sendMessage(new TextMessage(Utils.getString(successMessage)));
         }else{ // 현재 진행중인 세션과 다른 세션을 호출한 경우
@@ -64,8 +63,9 @@ public class FriendHandler extends TextWebSocketHandler {
         currentSession = WebSocketDB.getWebSocket();
         log.info("웹소켓을 종료한다.");
         if(session.getId().equals(currentSession.getId())){
-            successMessage = SuccessMessage.builder().sessionId(session.getId()).type(WebSocketType.FRIEND)
+            successMessage = SuccessMessage.builder().sessionId(session.getId()).type(WebSocketType.ANIMAL)
                     .state(WebSocketState.TERMINATED).build();
         }
     }
+
 }

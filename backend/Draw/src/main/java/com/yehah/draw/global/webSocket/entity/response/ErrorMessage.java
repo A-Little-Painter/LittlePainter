@@ -1,4 +1,4 @@
-package com.yehah.draw.global.webSocket.entity;
+package com.yehah.draw.global.webSocket.entity.response;
 
 import lombok.Builder;
 import lombok.Data;

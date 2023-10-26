@@ -57,7 +57,7 @@ public class AnimalController {
         bodyData.add("newFile", newFileResource); // 새로운 이미지 바이트로 변경함
 
         try{
-            double result = similarity.callSimilarityCheck(bodyData); // SimilarCheck에 전송, 결과 받기
+            double result = similarity.postSimilarityCheck(bodyData); // SimilarCheck에 전송, 결과 받기
             if(result <= 0.8){
                 return ResponseEntity.ok("END"); // 계속 유사도를 진행한다.
             }else{
