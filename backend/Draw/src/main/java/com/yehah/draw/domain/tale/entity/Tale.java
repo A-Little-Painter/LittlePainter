@@ -1,4 +1,4 @@
-package com.yehah.draw.domain.animals.entity;
+package com.yehah.draw.domain.tale.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

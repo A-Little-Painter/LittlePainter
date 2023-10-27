@@ -1,16 +1,10 @@
-package com.yehah.draw.domain.animals.controller;
+package com.yehah.draw.domain.animal.controller;
 
-import com.yehah.draw.domain.animals.dto.FileUploader;
-import com.yehah.draw.domain.animals.entity.Picture;
-import com.yehah.draw.domain.animals.exception.SimilarityCheckException;
+import com.yehah.draw.domain.animal.exception.SimilarityCheckException;
 import com.yehah.draw.global.communication.Similarity;
-import com.yehah.draw.global.webSocket.entity.WebSocketType;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -18,10 +12,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -58,6 +49,7 @@ public class AnimalController {
 
         try{
             double result = similarity.postSimilarityCheck(bodyData); // SimilarCheck에 전송, 결과 받기
+            log.info("유사도 검사 결과 : "+ result);
             if(result <= 0.8){
                 return ResponseEntity.ok("END"); // 계속 유사도를 진행한다.
             }else{

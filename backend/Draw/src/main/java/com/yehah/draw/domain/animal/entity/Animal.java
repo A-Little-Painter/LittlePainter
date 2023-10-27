@@ -1,4 +1,4 @@
-package com.yehah.draw.domain.animals.entity;
+package com.yehah.draw.domain.animal.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,19 +12,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "animal_type")
+@Table(name = "animal")
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AnimalType {
+public class Animal {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "name", length = 20, nullable = false)
-	private String name;
+	@Column(length = 20, nullable = false)
+	private String animalType;
 
-	@Column(name = "url_sound", length = 200, nullable = false)
+	@Column(columnDefinition = "TEXT", nullable = false)
+	private String detail;
+
+	@Column(length = 200, nullable = false)
+	private String urlOriginal;
+
+	@Column(length = 200, nullable = false)
+	private String urlTrace;
+
+	@Column(length = 200, nullable = false)
 	private String urlSound;
 }

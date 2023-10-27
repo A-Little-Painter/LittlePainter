@@ -1,4 +1,4 @@
-package com.yehah.draw.domain.animals.entity;
+package com.yehah.draw.domain.animal.entity;
 
 import com.yehah.draw.global.webSocket.entity.WebSocketType;
 import lombok.AllArgsConstructor;
