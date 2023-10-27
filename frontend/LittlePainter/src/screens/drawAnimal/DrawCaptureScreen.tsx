@@ -49,8 +49,8 @@ const DrawCaptureScreen = () => {
         <Image
           source={{uri: imageURI}}
           style={{
-            width: 200,
-            height: 300,
+            width: 1000,
+            height: 400,
             resizeMode: 'contain',
             marginTop: 5,
           }}
