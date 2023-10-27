@@ -12,6 +12,7 @@ import {
   Pressable,
   FlatList,
 } from 'react-native';
+import {useAppSelector} from '../../../../redux/hooks';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
@@ -99,6 +100,13 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
     setProfileImage(value);
     setModalVisible(false);
   };
+  const add = useAppSelector(state => state.user.isAddKids);
+  let addOrupdate: string;
+  if (add) {
+    addOrupdate = '등록';
+  } else {
+    addOrupdate = '변경';
+  }
   return (
     <View style={styles.rightContainer}>
       <View style={styles.subrightContainer}>
@@ -204,20 +212,12 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
             </View>
           </View>
           <View style={styles.confirmButtons}>
-            <View style={styles.loginButtonBox1}>
-              <TouchableOpacity
-                onPress={() => {
-                  handleComponentChange('profile');
-                }}>
-                <Text style={styles.loginText1}>이전</Text>
-              </TouchableOpacity>
-            </View>
             <View style={styles.loginButtonBox2}>
               <TouchableOpacity
                 onPress={() => {
                   handleComponentChange('profile');
                 }}>
-                <Text style={styles.loginText2}>변경</Text>
+                <Text style={styles.loginText2}>{addOrupdate}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -295,18 +295,6 @@ const styles = StyleSheet.create({
   loginInputText: {
     fontSize: windowWidth * 0.017,
   },
-  loginButtonBox1: {
-    borderWidth: 0,
-    borderColor: 'black',
-    backgroundColor: '#A3A3A3',
-    width: windowWidth * 0.15,
-    height: windowWidth * 0.45 * 0.12,
-    justifyContent: 'center',
-    marginVertical: windowWidth * 0.01,
-    borderRadius: 5,
-    alignSelf: 'flex-end',
-    marginRight: windowWidth * 0.01,
-  },
   loginButtonBox2: {
     borderWidth: 0,
     borderColor: 'black',
@@ -317,12 +305,6 @@ const styles = StyleSheet.create({
     marginVertical: windowWidth * 0.01,
     borderRadius: 5,
     alignSelf: 'flex-end',
-  },
-  loginText1: {
-    textAlign: 'center',
-    fontSize: windowWidth * 0.025,
-    fontWeight: '300',
-    color: '#FFFFFF',
   },
   loginText2: {
     textAlign: 'center',
@@ -350,11 +332,6 @@ const styles = StyleSheet.create({
   profilePicture: {
     height: windowHeight * 0.23,
     resizeMode: 'contain',
-  },
-  profilePictureA: {
-    width: windowWidth * 0.1,
-    height: windowWidth * 0.1,
-    margin: windowWidth * 0.01,
   },
   searchIcon: {
     backgroundColor: '#E6E6E6',

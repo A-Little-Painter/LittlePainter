@@ -22,7 +22,7 @@ const MyPictureComponents: React.FC<MyPictureComponentsProps> = ({
   navigation,
 }) => {
   const [selectedMenu, setSelectedMenu] = useState('animal');
-  const [selectedSubComponent, setSelectedSubComponent] = useState('fairy');
+  const [selectedSubComponent, setSelectedSubComponent] = useState('animal');
 
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
@@ -69,7 +69,7 @@ const MyPictureComponents: React.FC<MyPictureComponentsProps> = ({
           <TouchableOpacity
             style={styles.xCircle}
             onPress={() => {
-              navigation.navigate('LoginScreen');
+              navigation.goBack();
             }}>
             <Text style={styles.xText}>
               <IconFontAwesome6

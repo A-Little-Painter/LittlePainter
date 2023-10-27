@@ -23,21 +23,11 @@ export default function SignupScreen({navigation}: SignupScreenProps) {
   const [password, setPassword] = useState('');
   const [selectedComponent, setSelectedComponent] = useState('email');
 
-  const handleLogin = () => {
-    if (email && password) {
-      Alert.alert(`로그인 시도: 이메일 - ${email}, 비밀번호 - ${password}`);
-    } else {
-      Alert.alert('이메일과 비밀번호를 입력하세요.');
-    }
-  };
-
   const renderSelectedComponent = () => {
     if (selectedComponent === 'email') {
       return (
         <EmailComponent
           setEmail={setEmail}
-          setPassword={setPassword}
-          handleLogin={handleLogin}
           navigation={navigation}
           selectComponent={(componentName: string) =>
             setSelectedComponent(componentName)
@@ -47,7 +37,7 @@ export default function SignupScreen({navigation}: SignupScreenProps) {
     } else if (selectedComponent === 'password') {
       return (
         <PasswordComponents
-          setEmail={setEmail}
+          password={password}
           setPassword={setPassword}
           navigation={navigation}
           selectComponent={(componentName: string) =>
@@ -58,12 +48,9 @@ export default function SignupScreen({navigation}: SignupScreenProps) {
     } else if (selectedComponent === 'kids') {
       return (
         <KidsComponents
-          setEmail={setEmail}
-          setPassword={setPassword}
+          email={email}
+          password={password}
           navigation={navigation}
-          selectComponent={(componentName: string) =>
-            setSelectedComponent(componentName)
-          }
         />
       );
     }

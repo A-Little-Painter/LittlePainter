@@ -9,6 +9,8 @@ import {
   FlatList,
 } from 'react-native';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import {useAppDispatch} from '../../../../redux/hooks';
+import {addKids, updateKids} from '../../../../redux/slices/user/user';
 type ProfileComponentsProps = {
   setName: (name: string) => void;
   setBirth: (birth: string) => void;
@@ -51,6 +53,7 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
     const newComponentName = value;
     selectComponent(newComponentName);
   };
+  const dispatch = useAppDispatch();
   return (
     <View style={styles.rightContainer}>
       <View style={styles.subrightContainer}>
@@ -91,6 +94,7 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
                     <TouchableOpacity
                       onPress={() => {
                         handleComponentChange('kids');
+                        dispatch(updateKids());
                       }}>
                       <Image
                         style={styles.childCardImage}
@@ -109,7 +113,12 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
               }}
               keyExtractor={item => item.id}
               ListFooterComponent={
-                <TouchableOpacity style={styles.childPlusView}>
+                <TouchableOpacity
+                  style={styles.childPlusView}
+                  onPress={() => {
+                    handleComponentChange('kids');
+                    dispatch(addKids());
+                  }}>
                   <View>
                     <Text style={styles.childPlusText}>+</Text>
                   </View>
