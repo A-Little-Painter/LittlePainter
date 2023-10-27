@@ -5883,8 +5883,6 @@ react-native-wheel-color-picker@^1.2.0:
   integrity sha512-j4IcN7so9dZAkXyrPTTaPqCKsjkGBZkd5F7HqLo0OTRB1EZX3Ww5VMKsKjloxv6Omv193wGOhwfG20ec2KnxJQ==
   dependencies:
     react-native-elevation "^1.0.0"
-
-
 react-native@*, "react-native@>= 0.55.x", react-native@>=0.59, react-native@0.72.6:
   version "0.72.6"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.72.6.tgz"
