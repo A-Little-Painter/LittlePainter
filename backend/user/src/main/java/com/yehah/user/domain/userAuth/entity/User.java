@@ -1,0 +1,51 @@
+package com.yehah.user.domain.userAuth.entity;
+
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Getter
+@NoArgsConstructor
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column
+    private LocalDateTime deletedDate;
+
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean tts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Child> children = new ArrayList<>();
+
+    @Builder
+    public User(String email, String password, boolean tts, Child child){
+        this.email = email;
+        this.password = password;
+        this.tts = tts;
+        if(child != null) {
+            addChild(child);
+        }
+    }
+
+    public void addChild(Child child) {
+        this.children.add(child);
+        if (child.getUser() != this) {
+            child.setUser(this);
+        }
+    }
+}
