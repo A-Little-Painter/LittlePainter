@@ -1,14 +1,19 @@
-import React from 'react';
-import {StyleSheet, View, Text, TextInput, Dimensions} from 'react-native';
+import React, {useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Dimensions,
+  Alert,
+} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import IconFontisto from 'react-native-vector-icons/Fontisto';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconIonicons from 'react-native-vector-icons/Ionicons';
 
-type ConfirmComponentsProps = {
+type EmailComponentsProps = {
   setEmail: (email: string) => void;
-  setPassword: (password: string) => void;
-  handleLogin: () => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
 };
@@ -16,16 +21,46 @@ type ConfirmComponentsProps = {
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const ConfirmComponents: React.FC<ConfirmComponentsProps> = ({
+const EmailComponents: React.FC<EmailComponentsProps> = ({
   setEmail,
-  setPassword,
-  handleLogin,
   navigation,
   selectComponent,
 }) => {
+  const [code, setCode] = useState('');
+  const [duplication, setDuplication] = useState(false);
+  const [codeConfirm, setCodeConfirm] = useState(false);
+
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
     selectComponent(newComponentName);
+  };
+  const emailConfirm = (text: string) => {
+    setEmail(text);
+    if (text.includes('.')) {
+      // 이 이하의 부분을 갈아치워야 함
+      if (text === 'poi1229@hanmail.net') {
+        setDuplication(true);
+      } else {
+        setDuplication(false);
+      }
+    }
+  };
+  const passCode = (text: string) => {
+    setCode(text);
+    if (text === '1234') {
+      setCodeConfirm(true);
+    } else {
+      setCodeConfirm(false);
+    }
+  };
+  const goNext = () => {
+    if (duplication === false && codeConfirm === true) {
+      handleComponentChange('password');
+    } else if (duplication === true) {
+      Alert.alert('', '이메일을 다시 확인해 주세요');
+    } else {
+      Alert.alert('', '인증번호를 다시 확인해 주세요');
+    }
   };
   return (
     <View style={styles.rightContainer}>
@@ -66,11 +101,11 @@ const ConfirmComponents: React.FC<ConfirmComponentsProps> = ({
                 placeholder="이메일"
                 placeholderTextColor={'black'}
                 style={styles.loginInputText1}
-                onChangeText={text => setEmail(text)}
+                onChangeText={text => emailConfirm(text)}
               />
             </View>
             <View style={styles.ConfirmButton}>
-              <TouchableOpacity onPress={handleLogin}>
+              <TouchableOpacity>
                 <Text style={styles.ConfirmButtonText}>인증번호 전송</Text>
               </TouchableOpacity>
             </View>
@@ -88,16 +123,30 @@ const ConfirmComponents: React.FC<ConfirmComponentsProps> = ({
               placeholder="인증코드"
               placeholderTextColor={'black'}
               style={styles.loginInputText2}
-              onChangeText={text => setPassword(text)}
+              onChangeText={text => passCode(text)}
             />
           </View>
-          <View style={styles.loginButtonBox}>
-            <TouchableOpacity
-              onPress={() => {
-                handleComponentChange('password');
-              }}>
-              <Text style={styles.loginText}>확인</Text>
-            </TouchableOpacity>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View>
+              {duplication ? (
+                <Text style={styles.alert}>등록되지 않은 이메일입니다.</Text>
+              ) : (
+                <Text> </Text>
+              )}
+              {code.length >= 4 && !codeConfirm ? (
+                <Text style={styles.alert}>인증코드를 다시 확인해 주세요.</Text>
+              ) : (
+                <Text> </Text>
+              )}
+            </View>
+            <View style={styles.loginButtonBox}>
+              <TouchableOpacity
+                onPress={() => {
+                  goNext();
+                }}>
+                <Text style={styles.loginText}>확인</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
         {/* 하단 */}
@@ -118,15 +167,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '90%',
     height: '90%',
-  },
-  leftImage: {
-    alignSelf: 'center',
-  },
-  logoRabbitImage: {
-    alignSelf: 'center',
-    margin: windowWidth * 0.01,
-    width: windowWidth * 0.2,
-    height: windowHeight * 0.455,
   },
   middleContainer: {
     flex: 0.6,
@@ -227,15 +267,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  subLoginView: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-  },
-  subLoginText: {
-    color: '#645454',
-    marginHorizontal: windowWidth * 0.005,
-    fontSize: windowWidth * 0.02,
-  },
   bottomContainer: {
     flex: 0.2,
   },
@@ -247,5 +278,9 @@ const styles = StyleSheet.create({
   infoView: {
     marginBottom: windowWidth * 0.01,
   },
+  alert: {
+    color: '#DF5050E0',
+    paddingLeft: windowHeight * 0.01,
+  },
 });
-export default ConfirmComponents;
+export default EmailComponents;

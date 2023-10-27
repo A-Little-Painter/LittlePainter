@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   View,
@@ -17,28 +17,11 @@ import IconFontisto from 'react-native-vector-icons/Fontisto';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
-// temp
-import {openImagePicker} from '../detail/ImagePicker';
-// temp
-
 type LoginScreenProps = StackScreenProps<RootStackParams, 'LoginScreen'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function LoginScreen({navigation}: LoginScreenProps) {
-  const [imageSource, setImageSource] = useState<{
-    uri: string;
-    fileName: string;
-    originalPath: string;
-  } | null>(null);
-
-  // 이미지 픽커 실사용 예시
-  const imagetemp = () => {
-    openImagePicker(setImageSource);
-    console.log('4');
-    console.log(imageSource);
-  };
-
   const dispatch = useAppDispatch();
 
   const loginFonc = () => {
@@ -86,16 +69,13 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
               {/* 중단 */}
               <View style={styles.middleContainer}>
                 {/* 나중에 여기 터치 뺴야함(테스트를 위해 넣은 부분) */}
-                <TouchableOpacity
-                  onPress={() => {
-                    imagetemp();
-                  }}>
+                <View>
                   <Image
                     resizeMode="contain"
                     style={styles.textLogoImage}
                     source={require('../../assets/logo/littlePainterTextLogo.png')}
                   />
-                </TouchableOpacity>
+                </View>
                 {/* 이메일 */}
                 <View style={styles.loginTextBox}>
                   <Text style={styles.loginTextVector}>

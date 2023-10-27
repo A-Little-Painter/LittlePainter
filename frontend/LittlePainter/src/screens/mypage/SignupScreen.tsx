@@ -37,6 +37,7 @@ export default function SignupScreen({navigation}: SignupScreenProps) {
     } else if (selectedComponent === 'password') {
       return (
         <PasswordComponents
+          password={password}
           setPassword={setPassword}
           navigation={navigation}
           selectComponent={(componentName: string) =>

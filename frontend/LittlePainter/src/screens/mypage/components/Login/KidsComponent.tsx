@@ -7,11 +7,55 @@ import {
   Dimensions,
   Image,
   Modal,
+  Pressable,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {signUp} from '../../../../apis/user/userApi';
-import {Calendar} from 'react-native-calendars';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+
+LocaleConfig.locales['kr'] = {
+  monthNames: [
+    '1월',
+    '2월',
+    '3월',
+    '4월',
+    '5월',
+    '6월',
+    '7월',
+    '8월',
+    '9월',
+    '10월',
+    '11월',
+    '12월',
+  ],
+  monthNamesShort: [
+    '1.',
+    '2.',
+    '3.',
+    '4.',
+    '5.',
+    '6.',
+    '7.',
+    '8.',
+    '9.',
+    '10.',
+    '11.',
+    '12.',
+  ],
+  dayNames: [
+    '일요일',
+    '월요일',
+    '화요일',
+    '수요일',
+    '목요일',
+    '금요일',
+    '토요일',
+  ],
+  dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+};
+
+LocaleConfig.defaultLocale = 'kr';
 
 type KidsComponentsProps = {
   email: string;
@@ -31,7 +75,7 @@ const KidsComponents: React.FC<KidsComponentsProps> = ({
   const [kidBirthday, setKidBirthday] = useState('');
   const [isCalendarVisible, setCalendarVisible] = useState(false);
 
-  const handleDayPress = day => {
+  const handleDayPress = (day: any) => {
     setKidBirthday(day.dateString); // 선택한 날짜를 상태 변수에 저장
     setCalendarVisible(false); // 모달 닫기
   };
@@ -110,15 +154,17 @@ const KidsComponents: React.FC<KidsComponentsProps> = ({
           </View>
           <Modal
             animationType="slide"
-            transparent={false}
-            visible={isCalendarVisible}
-            onRequestClose={() => setCalendarVisible(false)}>
-            <View style={styles.modal}>
+            transparent={true}
+            visible={isCalendarVisible}>
+            <Pressable
+              style={styles.modal}
+              onPress={() => setCalendarVisible(false)}>
               {/* 캘린더 */}
               <Calendar
+                style={styles.calender}
                 onDayPress={handleDayPress} // 날짜를 선택하면 실행될 함수
               />
-            </View>
+            </Pressable>
           </Modal>
           <View style={styles.loginButtonBox}>
             <TouchableOpacity
@@ -150,15 +196,6 @@ const styles = StyleSheet.create({
     height: '90%',
     // backgroundColor: 'green',
   },
-  leftImage: {
-    alignSelf: 'center',
-  },
-  logoRabbitImage: {
-    alignSelf: 'center',
-    margin: windowWidth * 0.01,
-    width: windowWidth * 0.2,
-    height: windowHeight * 0.455,
-  },
   middleContainer: {
     flex: 0.6,
     alignSelf: 'center',
@@ -179,10 +216,6 @@ const styles = StyleSheet.create({
   },
   xText: {
     textAlign: 'center',
-  },
-  textLogoImage: {
-    width: windowWidth * 0.25,
-    height: windowHeight * 0.1,
   },
   loginArea: {
     flexDirection: 'row',
@@ -236,6 +269,7 @@ const styles = StyleSheet.create({
   loginInputText1: {
     fontSize: windowWidth * 0.017,
     width: windowWidth * 0.25,
+    color: '#000000',
   },
   loginTextVector: {
     alignSelf: 'center',
@@ -259,15 +293,6 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     color: '#0D0C0C',
   },
-  subLoginView: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-  },
-  subLoginText: {
-    color: '#645454',
-    marginHorizontal: windowWidth * 0.005,
-    fontSize: windowWidth * 0.02,
-  },
   bottomContainer: {
     flex: 0.2,
   },
@@ -284,7 +309,13 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.2,
   },
   modal: {
-    height: windowHeight * 0.2,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  calender: {
+    height: windowHeight * 0.43,
+    width: windowWidth * 0.5,
   },
 });
 export default KidsComponents;

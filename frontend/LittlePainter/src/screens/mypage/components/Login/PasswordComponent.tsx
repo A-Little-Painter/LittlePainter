@@ -1,10 +1,18 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, TextInput, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Dimensions,
+  Alert,
+} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 type PasswordComponentsProps = {
+  password: string;
   setPassword: (password: string) => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
@@ -14,14 +22,42 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const PasswordComponents: React.FC<PasswordComponentsProps> = ({
+  password,
   setPassword,
   navigation,
   selectComponent,
 }) => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [checkPassword, setCheckPassword] = useState(false);
+  const [showText1, setShowText1] = useState(true);
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
     selectComponent(newComponentName);
+  };
+  const checkShow = (text: string) => {
+    setPassword(text);
+    if (text.length >= 4) {
+      setShowText1(true);
+    } else {
+      setShowText1(false);
+    }
+  };
+  const checkThis = (text: string) => {
+    setPasswordConfirm(text);
+    if (text === password) {
+      setCheckPassword(true);
+    } else {
+      setCheckPassword(false);
+    }
+  };
+  const goNext = () => {
+    if (showText1 === true && checkPassword === true) {
+      handleComponentChange('kids');
+    } else if (showText1 === false) {
+      Alert.alert('', '비밀번호의 길이는 4자 이상으로 해주세요');
+    } else {
+      Alert.alert('', '비밀번호를 다시 확인해주세요');
+    }
   };
   return (
     <View style={styles.rightContainer}>
@@ -60,7 +96,7 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
                 placeholder="비밀번호"
                 placeholderTextColor={'black'}
                 style={styles.loginInputText}
-                onChangeText={text => setPassword(text)}
+                onChangeText={text => checkShow(text)}
                 secureTextEntry={true}
               />
             </View>
@@ -77,17 +113,31 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
               placeholder="비밀번호 확인"
               placeholderTextColor={'black'}
               style={styles.loginInputText}
-              onChangeText={text => setPasswordConfirm(text)}
+              onChangeText={text => checkThis(text)}
               secureTextEntry={true}
             />
           </View>
-          <View style={styles.loginButtonBox}>
-            <TouchableOpacity
-              onPress={() => {
-                handleComponentChange('kids');
-              }}>
-              <Text style={styles.loginText}>확인</Text>
-            </TouchableOpacity>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View>
+              {showText1 ? null : (
+                <Text style={styles.alert}>
+                  비밀번호는 4자리 이상이어야 합니다.
+                </Text>
+              )}
+              {passwordConfirm.length >= 4 && !checkPassword ? (
+                <Text style={styles.alert}>비밀번호가 다릅니다.</Text>
+              ) : (
+                <Text> </Text>
+              )}
+            </View>
+            <View style={styles.loginButtonBox}>
+              <TouchableOpacity
+                onPress={() => {
+                  goNext();
+                }}>
+                <Text style={styles.loginText}>확인</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
         {/* 하단 */}
@@ -202,6 +252,10 @@ const styles = StyleSheet.create({
   },
   infoView: {
     marginVertical: windowWidth * 0.025,
+  },
+  alert: {
+    color: '#DF5050E0',
+    paddingLeft: windowHeight * 0.01,
   },
 });
 export default PasswordComponents;

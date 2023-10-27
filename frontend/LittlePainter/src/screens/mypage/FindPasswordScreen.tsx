@@ -27,21 +27,11 @@ export default function FindPasswordScreen({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedComponent, setSelectedComponent] = useState('email');
-
-  const handleLogin = () => {
-    if (email && password) {
-      Alert.alert(`로그인 시도: 이메일 - ${email}, 비밀번호 - ${password}`);
-    } else {
-      Alert.alert('이메일과 비밀번호를 입력하세요.');
-    }
-  };
   const renderSelectedComponent = () => {
     if (selectedComponent === 'email') {
       return (
         <ComfirmComponent
           setEmail={setEmail}
-          setPassword={setPassword}
-          handleLogin={handleLogin}
           navigation={navigation}
           selectComponent={(componentName: string) =>
             setSelectedComponent(componentName)
@@ -51,7 +41,7 @@ export default function FindPasswordScreen({
     } else if (selectedComponent === 'password') {
       return (
         <PasswordChangeComponent
-          setEmail={setEmail}
+          password={password}
           setPassword={setPassword}
           navigation={navigation}
           selectComponent={(componentName: string) =>
