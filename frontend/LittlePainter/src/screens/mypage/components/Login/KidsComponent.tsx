@@ -82,12 +82,11 @@ const KidsComponents: React.FC<KidsComponentsProps> = ({
 
   const signUpFunc = () => {
     const userData = {
-      Email: email,
+      email: email,
       password: password,
-      kidName: kidName,
-      kidBirthday: kidBirthday,
+      childName: kidName,
+      birthday: kidBirthday,
     };
-    console.log(userData);
     signUp(userData);
   };
   return (
