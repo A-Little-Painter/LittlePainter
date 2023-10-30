@@ -357,7 +357,8 @@ export default function ColoringAnimalScreen({
         {/* 중단 */}
         {/* <View style={styles.middleContainer}> */}
         <ViewShot
-          style={[styles.middleContainer, {backgroundColor: 'white'}]}
+          // style={[styles.middleContainer, {backgroundColor: 'white'}]}
+          style={[styles.middleContainer]}
           ref={captureRef}
           options={{
             fileName: 'drawAnimalCapture',
@@ -454,7 +455,7 @@ export default function ColoringAnimalScreen({
             <TouchableOpacity
               style={styles.clearButton}
               onPress={() => {
-                handleClearButtonClick;
+                handleClearButtonClick();
               }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
             </TouchableOpacity>

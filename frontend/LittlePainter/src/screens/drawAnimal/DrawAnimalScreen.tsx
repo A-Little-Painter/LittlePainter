@@ -135,7 +135,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   };
 
   const handleClearButtonClick = () => {
-    // setTmpPaths([...tmpPaths, ...paths]);
     setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
@@ -222,6 +221,12 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
+  // 테두리 그리기 완료 후
+  const handleGoColoring = () => {
+    navigation.navigate('ColoringAnimalScreen', {
+      completeLineUri: captureImagePath,
+    });
+  };
   return (
     <View style={styles.mainContainer}>
       {/* <View style={styles.subContainer}> */}
@@ -458,12 +463,14 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
-              style={styles.doneButton}
+              style={[
+                styles.doneButton,
+                {backgroundColor: captureImagePath === '' ? 'gray' : '#A8CEFF'},
+              ]}
               onPress={() => {
-                navigation.navigate('ColoringAnimalScreen', {
-                  completeLineUri: captureImagePath,
-                });
-              }}>
+                handleGoColoring();
+              }}
+              disabled={captureImagePath === ''}>
               <Text style={styles.doneButtonText}>완성하기</Text>
             </TouchableOpacity>
           </View>
