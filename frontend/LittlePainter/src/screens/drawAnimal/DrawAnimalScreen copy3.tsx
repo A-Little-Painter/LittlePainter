@@ -9,10 +9,10 @@ import {
   Image,
   Pressable,
   ToastAndroid, // 토스트안드로이드 잠깐 사용
-  ImageBackground,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
+import ImagePicker from 'react-native-image-crop-picker';
 import {Svg, Path} from 'react-native-svg';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -32,6 +32,9 @@ import {
   handleDrawColorSelect,
   handleIsDrawScreenshotModalVisible,
 } from '../../redux/slices/draw/draw';
+
+// 캡쳐 후 이미지 조정을 위함
+import RNFetchBlob from 'rn-fetch-blob';
 
 type DrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -77,7 +80,50 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const isDrawScreenshotModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawScreenshotModalVisible,
   );
-  const [isToCaptureDrawing, setIsToCaptureDrawing] = useState<boolean>(false);
+
+  // 캡쳐 이미지 조정하기
+  const [selectedImage, setSelectedImage] = useState<string | null>(null); // 선택된 이미지의 URI를 저장하는 상태 변수
+
+  const captureAndCropImage = () => {
+    captureRef.current.capture().then((uri: string) => {
+      Image.getSize(uri, (originalWidth, originalHeight) => {
+        const aspectRatio = 3 / 2; // 3:2 비율
+        let newWidth, newHeight;
+
+        if (originalWidth / originalHeight > aspectRatio) {
+          // 원본 이미지의 가로/세로 비율이 3:2보다 큰 경우
+          newWidth = originalHeight * aspectRatio;
+          newHeight = originalHeight;
+        } else {
+          // 원본 이미지의 가로/세로 비율이 3:2보다 작거나 같은 경우
+          newWidth = originalWidth;
+          newHeight = originalWidth / aspectRatio;
+        }
+
+        // 이미지 중앙에서 자르기
+        const left = (originalWidth - newWidth) / 2;
+        const top = (originalHeight - newHeight) / 2;
+
+        // 이미지 자르기
+        ImageEditor.cropImage(
+          uri,
+          {
+            offset: {x: left, y: top},
+            size: {width: newWidth, height: newHeight},
+          },
+          croppedUri => {
+            setSelectedImage(croppedUri); // 자른 이미지의 URI를 저장
+            dispatch(handleIsDrawScreenshotModalVisible(true));
+          },
+          error => {
+            // 오류 처리
+            console.error('이미지 자르기 오류:', error);
+          },
+        );
+      });
+    });
+  };
+
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
     const locationX = event.nativeEvent.locationX;
@@ -96,23 +142,9 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
     setCurrentPath(prevPath => prevPath + newPoint);
   };
-  // const onTouchMove = (event: GestureResponderEvent) => {
-  //   if (currentPath === '') {
-  //     const locationX = event.nativeEvent.locationX;
-  //     const locationY = event.nativeEvent.locationY;
-  //     const newPoint = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-  //     setCurrentPath(newPoint);
-  //   } else {
-  //     const locationX = event.nativeEvent.locationX;
-  //     const locationY = event.nativeEvent.locationY;
-  //     const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-  //     setCurrentPath(prevPath => prevPath + newPoint);
-  //   }
-  // };
-  const [captureImagePath, setCaptureImagePath] = useState<string>('');
+
   const onTouchEnd = () => {
     if (currentPath) {
-      // Only save the path if there are points in it
       setPaths([
         ...paths,
         {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
@@ -120,15 +152,12 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     }
     setCurrentPath('');
     setClearButtonClicked(false);
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      // ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
-      setCaptureImagePath(uri);
-      // dispatch(handleIsDrawScreenshotModalVisible(true));
-      setIsToCaptureDrawing(false);
-    });
-    // dispatch(handleIsDrawScreenshotModalVisible(true));
+    // captureRef.current.capture().then((uri: string) => {
+    //   console.log('do something with ', uri);
+    //   // ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
+    //   captureAndCropImage(uri);
+    // });
+    captureAndCropImage();
   };
 
   const handleClearButtonClick = () => {
@@ -147,14 +176,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
     }
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      // ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-      // dispatch(handleIsDrawScreenshotModalVisible(true));
-    });
   };
   const handleNextButtonClick = () => {
     const tmpPosition:
@@ -163,14 +184,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     if (tmpPosition) {
       setPaths([...paths, tmpPosition]);
     }
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      // ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-      // dispatch(handleIsDrawScreenshotModalVisible(true));
-    });
   };
 
   useEffect(() => {
@@ -321,22 +334,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             format: 'jpg',
             quality: 0.9,
           }}>
-          {/* <ImageBackground
-            source={require('../../assets/images/animalImage/deerTest1.png')}
-            style={{}}
-            resizeMode="center"> */}
-          {isToCaptureDrawing ? null : (
-            <Image
-              style={{
-                position: 'absolute',
-                width: windowWidth,
-                height: windowHeight * 0.8,
-                resizeMode: 'contain',
-              }}
-              source={require('../../assets/images/animalImage/deerTest1.png')}
-            />
-          )}
-
           <View
             style={{justifyContent: 'flex-end'}}
             onTouchStart={onTouchStart}
@@ -364,7 +361,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
               />
             </Svg>
           </View>
-          {/* </ImageBackground> */}
           {/* </View> */}
         </ViewShot>
         {/* 하단 */}
@@ -376,17 +372,11 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
               onPress={() => {
                 dispatch(handleisOriginCompareModalVisible(true));
               }}>
-              {captureImagePath ? (
-                <Image
-                  style={styles.ideaLight}
-                  // source={require('../../assets/images/ideaLight.png')}
-                  source={{uri: captureImagePath}}
-                />
-              ) : null}
-              {/* // <Image */}
-              {/* //   style={styles.ideaLight} */}
-              {/* //   source={require('../../assets/images/ideaLight.png')} */}
-              {/* // /> */}
+              <Image
+                style={styles.ideaLight}
+                source={require('../../assets/images/ideaLight.png')}
+                // source={{uri: captureImagePath}}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.lineThicknessView}
@@ -427,7 +417,8 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
       {isOriginCompareModalVisible ? <OriginCompareModal /> : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
       {isDrawScreenshotModalVisible ? (
-        <DrawScreenshotModal captureUri={captureImagePath} />
+        // <DrawScreenshotModal captureUri={captureImagePath} />
+        <DrawScreenshotModal captureUri={selectedImage} />
       ) : null}
     </View>
   );
@@ -444,10 +435,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   topContainer: {
+    paddingHorizontal: windowWidth * 0.01,
     flex: 0.1,
     flexDirection: 'row',
-    width: '95%',
+    width: '100%',
     alignSelf: 'center',
+    borderBottomWidth: 1,
   },
   topLeft: {
     flexDirection: 'row',
@@ -507,14 +500,15 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
-    borderWidth: 1,
+    // borderWidth: 1,
   },
   bottomContainer: {
-    marginHorizontal: windowWidth * 0.01,
+    paddingHorizontal: windowWidth * 0.01,
     flex: 0.1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderTopWidth: 1,
   },
   bottomContainerLeft: {
     flexDirection: 'row',

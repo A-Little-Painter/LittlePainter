@@ -1,9 +1,8 @@
-import React from 'react';
+import React, {useState, useRef} from 'react';
 import {
   Dimensions,
   Modal,
   StyleSheet,
-  Text,
   Pressable,
   View,
   Image,
@@ -11,68 +10,67 @@ import {
 } from 'react-native';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {handleisOriginCompareModalVisible} from '../../redux/slices/draw/draw';
+import {handleIsDrawScreenshotModalVisible} from '../../redux/slices/draw/draw';
 
-export type OriginCompareModalProps = {
-  selectColor: string;
+export type DrawScreenshotModalProps = {
+  captureUri: string;
 };
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const OriginCompareModal = () => {
+const DrawScreenshotModal = (props: DrawScreenshotModalProps) => {
+  const [captureUri] = useState<string>(props.captureUri);
   const dispatch = useDispatch();
   // 선 굵기 모달을 위한 라인
-  const isOriginCompareModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginCompareModalVisible,
+  const isDrawScreenshotModalVisible = useSelector(
+    (state: RootState) => state.draw.isDrawScreenshotModalVisible,
   );
+  const captureRef = useRef();
   return (
     <View>
       <Modal
         animationType="none"
         transparent={true}
-        visible={isOriginCompareModalVisible}
+        visible={isDrawScreenshotModalVisible}
         onRequestClose={() => {
-          dispatch(handleisOriginCompareModalVisible(false));
+          dispatch(handleIsDrawScreenshotModalVisible(false));
         }}>
         <Pressable
           style={styles.centeredView}
           onPress={() => {
-            dispatch(handleisOriginCompareModalVisible(false));
+            dispatch(handleIsDrawScreenshotModalVisible(false));
           }}>
           <Pressable
             style={styles.modalView}
             onPress={() => {
-              dispatch(handleisOriginCompareModalVisible(true));
+              dispatch(handleIsDrawScreenshotModalVisible(false));
             }}>
             {/* 최상단 */}
             <View style={styles.modalTop}>
               <View style={styles.modalTopLeft} />
               <View style={styles.modalTopMiddle}>
-                <Text style={styles.modalTitleText}>
-                  이제, '쥐'를 그려볼까요?
-                </Text>
+                {/* <Text style={styles.modalTitleText}>
+                    이제, '쥐'를 그려볼까요?
+                  </Text> */}
               </View>
               <TouchableOpacity
                 style={styles.modalTopRight}
                 onPress={() =>
-                  dispatch(handleisOriginCompareModalVisible(false))
+                  dispatch(handleIsDrawScreenshotModalVisible(false))
                 }>
-                <Text style={styles.modalCloseX}>X</Text>
+                {/* <Text style={styles.modalCloseX}>X</Text> */}
               </TouchableOpacity>
             </View>
             {/* 중단 */}
             <View style={styles.modalMiddle}>
-              <Image
-                style={styles.originImage}
-                source={require('../../assets/images/elephant.png')}
-              />
+              <Image style={styles.originImage} source={{uri: captureUri}} />
             </View>
             {/* 하단 */}
             <View style={styles.modalBottom}>
-              <Text style={styles.contentText}>
-                쥐는 구미에 사는 동물입니다.{'\n'}아주 더러워요.
-              </Text>
+              {/* <Text style={styles.contentText}>
+                  쥐는 구미에 사는 동물입니다.{'\n'}아주 더러워요.
+                </Text> */}
             </View>
           </Pressable>
         </Pressable>
@@ -88,7 +86,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     borderRadius: 20,
     width: windowWidth * 0.7,
     height: windowHeight * 0.7,
@@ -136,7 +134,8 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.03,
   },
   modalMiddle: {
-    flex: 0.7,
+    backgroundColor: 'skyblue',
+    flex: 0.8,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -146,7 +145,7 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.7 * 0.8,
   },
   modalBottom: {
-    flex: 0.2,
+    flex: 0.1,
     alignItems: 'center',
   },
   contentText: {
@@ -157,4 +156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OriginCompareModal;
+export default DrawScreenshotModal;

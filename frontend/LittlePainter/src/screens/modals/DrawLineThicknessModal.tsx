@@ -33,7 +33,6 @@ const DrawLineThicknessModal = (props: DrawLineThicknessModalProps) => {
   const isDrawLineThicknessModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
   );
-  // const [lineThickness, setLineThickness] = useState<number>(LineThickness);
   return (
     <View>
       <Modal
