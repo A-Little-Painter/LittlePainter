@@ -6,10 +6,10 @@ import java.util.Date;
 
 import org.springframework.stereotype.Service;
 
-import com.yehah.image.dto.SaveImageRequestDto;
-import com.yehah.image.dto.SaveImageResponseDto;
-import com.yehah.image.dto.SaveMyAnimalRequestDto;
-import com.yehah.image.dto.SaveMyAnimalResponseDto;
+import com.yehah.image.dto.request.SaveImageRequest;
+import com.yehah.image.dto.response.SaveImageResponse;
+import com.yehah.image.dto.request.SaveMyAnimalRequest;
+import com.yehah.image.dto.response.SaveMyAnimalResponse;
 import com.yehah.image.exception.CustomException;
 import com.yehah.image.exception.ExceptionEnum;
 import com.yehah.image.s3.S3Util;
@@ -23,7 +23,7 @@ public class ImageService {
 
 	private final S3Util s3Util;
 
-	public SaveImageResponseDto uploadMyPage(SaveImageRequestDto imageRequestDto) throws IOException {
+	public SaveImageResponse uploadMyPage(SaveImageRequest imageRequestDto) throws IOException {
 		if(imageRequestDto.getImage().isEmpty()){
 			throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
 		} else if(imageRequestDto.getCategory().isBlank()){
@@ -41,27 +41,27 @@ public class ImageService {
 		}
 		String dirName = "child-work/" + imageRequestDto.getCategory() +"/" + formattedDate;
 
-		return SaveImageResponseDto.builder()
+		return SaveImageResponse.builder()
 			.imageUrl(s3Util.upload(imageRequestDto.getImage(), dirName))
 			.build();
 	}
 
-	public SaveMyAnimalResponseDto uploadMyAnimalImage(SaveMyAnimalRequestDto saveMyAnimalRequestDto) throws IOException {
-		if(saveMyAnimalRequestDto.getOriginalImage().isEmpty() || saveMyAnimalRequestDto.getTraceImage().isEmpty()){
+	public SaveMyAnimalResponse uploadMyAnimalImage(SaveMyAnimalRequest saveMyAnimalRequest) throws IOException {
+		if(saveMyAnimalRequest.getOriginalImage().isEmpty() || saveMyAnimalRequest.getTraceImage().isEmpty()){
 			throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
 		}
 
 		Date currentDate = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
-		String formattedDate = saveMyAnimalRequestDto.getUserId() + "-" + dateFormat.format(currentDate);
+		String formattedDate = saveMyAnimalRequest.getUserId() + "-" + dateFormat.format(currentDate);
 
 		// 원본이미지 S3 저장
-		String originalUrl = s3Util.upload(saveMyAnimalRequestDto.getOriginalImage(), "friendsAnimal/original/" + formattedDate);
+		String originalUrl = s3Util.upload(saveMyAnimalRequest.getOriginalImage(), "friendsAnimal/original/" + formattedDate);
 
 		// 테두리 S3 저장
-		String traceUrl = s3Util.upload(saveMyAnimalRequestDto.getTraceImage(), "friendsAnimal/trace/" + formattedDate);
+		String traceUrl = s3Util.upload(saveMyAnimalRequest.getTraceImage(), "friendsAnimal/trace/" + formattedDate);
 
-		return SaveMyAnimalResponseDto.builder()
+		return SaveMyAnimalResponse.builder()
 			.originalUrl(originalUrl)
 			.traceUrl(traceUrl)
 			.build();

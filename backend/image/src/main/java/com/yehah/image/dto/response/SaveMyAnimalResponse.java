@@ -1,6 +1,4 @@
-package com.yehah.image.dto;
-
-import org.springframework.web.multipart.MultipartFile;
+package com.yehah.image.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +11,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveImageRequestDto {
-	Long userId;
-	String category;
-	MultipartFile image;
+public class SaveMyAnimalResponse {
+	String originalUrl;
+	String traceUrl;
 }
