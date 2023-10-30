@@ -3,6 +3,7 @@ package com.yehah.auth.domain.auth.service;
 import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
 import com.yehah.auth.domain.auth.dto.response.TokenResponseDTO;
+import com.yehah.auth.domain.auth.exception.SignInException;
 import com.yehah.auth.global.email.EmailService;
 import com.yehah.auth.global.redis.entity.EmailAuth;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Random;
@@ -64,9 +66,13 @@ public class AuthServiceImpl implements AuthService{
 
     //로그인
     public ResponseEntity<?> signIn(SignInRequestDTO signInRequestDTO){
-        String path=user_service_url+"/comm/signin";
-        ResponseEntity<TokenResponseDTO> response = restTemplate.postForEntity(path, signInRequestDTO, TokenResponseDTO.class);
+        String path = user_service_url + "/comm/signin";
 
-        return response;
+        try {
+            ResponseEntity<?> response = restTemplate.postForEntity(path, signInRequestDTO, TokenResponseDTO.class);
+            return response;
+        } catch (HttpClientErrorException.BadRequest ex) {
+            throw new SignInException("아이디 혹은 비밀번호를 확인해 주세요.");
+        }
     }
 }
