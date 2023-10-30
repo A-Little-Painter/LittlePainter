@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
-  Alert,
   Image,
   Dimensions,
   ImageBackground,
@@ -27,6 +26,7 @@ export default function SignupScreen({navigation}: SignupScreenProps) {
     if (selectedComponent === 'email') {
       return (
         <EmailComponent
+          email={email}
           setEmail={setEmail}
           navigation={navigation}
           selectComponent={(componentName: string) =>
