@@ -34,14 +34,18 @@ import {
   handleIsDrawScreenshotModalVisible,
 } from '../../redux/slices/draw/draw';
 
-type DrawAnimalScreenProps = StackScreenProps<
+type ColoringAnimalScreenProps = StackScreenProps<
   RootStackParams,
-  'DrawAnimalScreen'
+  'ColoringAnimalScreen'
 >;
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
+export default function ColoringAnimalScreen({
+  route,
+  navigation,
+}: ColoringAnimalScreenProps) {
+  const [completeLineUri] = useState(route.params.completeLineUri);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
@@ -135,7 +139,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   };
 
   const handleClearButtonClick = () => {
-    // setTmpPaths([...tmpPaths, ...paths]);
     setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
@@ -209,7 +212,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
         } else if (backHandleNum === 1) {
           // BackHandler.exitApp();
           // BackHandler.addEventListener('hardwareBackPress', backAction);
-          navigation.goBack();
+          navigation.navigate('SelectAnimalScreen');
         }
         return true;
       }
@@ -361,50 +364,51 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             format: 'jpg',
             quality: 0.9,
           }}>
-          {/* <ImageBackground
-            source={require('../../assets/images/animalImage/deerTest1.png')}
+          <ImageBackground
+            // source={require('../../assets/images/animalImage/deerTest1.png')}
+            source={{uri: completeLineUri}}
             style={{}}
-            resizeMode="center"> */}
-          {isToCaptureDrawing ? null : (
-            <Image
+            resizeMode="center">
+            {/* <Image
               style={{
                 position: 'absolute',
                 width: windowWidth,
                 height: windowHeight * 0.8,
                 resizeMode: 'contain',
               }}
-              source={require('../../assets/images/animalImage/deerTest1.png')}
-            />
-          )}
+              source={{uri: completeLineUri}}
+            /> */}
 
-          <View
-            style={{justifyContent: 'flex-end'}}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}>
-            <Svg>
-              {paths.map((item, index) => (
+            <View
+              style={{justifyContent: 'flex-end'}}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}>
+              <Svg>
+                {paths.map((item, index) => (
+                  <Path
+                    key={`path-${index}`}
+                    d={item.path}
+                    stroke={isClearButtonClicked ? 'transparent' : item.color}
+                    fill={'transparent'}
+                    strokeWidth={item.strokeWidth}
+                    strokeLinejoin={'round'}
+                    strokeLinecap={'round'}
+                  />
+                ))}
                 <Path
-                  key={`path-${index}`}
-                  d={item.path}
-                  stroke={isClearButtonClicked ? 'transparent' : item.color}
+                  d={currentPath}
+                  stroke={
+                    isClearButtonClicked ? 'transparent' : drawColorSelect
+                  }
                   fill={'transparent'}
-                  strokeWidth={item.strokeWidth}
+                  strokeWidth={LineThickness}
                   strokeLinejoin={'round'}
                   strokeLinecap={'round'}
                 />
-              ))}
-              <Path
-                d={currentPath}
-                stroke={isClearButtonClicked ? 'transparent' : drawColorSelect}
-                fill={'transparent'}
-                strokeWidth={LineThickness}
-                strokeLinejoin={'round'}
-                strokeLinecap={'round'}
-              />
-            </Svg>
-          </View>
-          {/* </ImageBackground> */}
+              </Svg>
+            </View>
+          </ImageBackground>
           {/* </View> */}
         </ViewShot>
         {/* 하단 */}
@@ -450,20 +454,14 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             <TouchableOpacity
               style={styles.clearButton}
               onPress={() => {
-                handleClearButtonClick();
+                handleClearButtonClick;
               }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
             </TouchableOpacity>
           </View>
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
-            <TouchableOpacity
-              style={styles.doneButton}
-              onPress={() => {
-                navigation.navigate('ColoringAnimalScreen', {
-                  completeLineUri: captureImagePath,
-                });
-              }}>
+            <TouchableOpacity style={styles.doneButton} onPress={() => {}}>
               <Text style={styles.doneButtonText}>완성하기</Text>
             </TouchableOpacity>
           </View>
