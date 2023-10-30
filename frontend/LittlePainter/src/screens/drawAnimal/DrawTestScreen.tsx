@@ -10,10 +10,10 @@ import {Svg, Path} from 'react-native-svg';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 
-type DetailScreenProps = StackScreenProps<RootStackParams, 'DetailScreen'>;
+type DrawTestScreenProps = StackScreenProps<RootStackParams, 'DrawTestScreen'>;
 const {height, width} = Dimensions.get('window');
 
-export default function DetailScreen({navigation}: DetailScreenProps) {
+export default function DrawTestScreen({navigation}: DrawTestScreenProps) {
   const [paths, setPaths] = useState<string[]>([]);
   const [currentPath, setCurrentPath] = useState<string>('');
   const [isClearButtonClicked, setClearButtonClicked] = useState(false);

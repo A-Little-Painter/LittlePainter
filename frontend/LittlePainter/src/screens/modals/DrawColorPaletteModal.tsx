@@ -6,73 +6,101 @@ import {
   Text,
   Pressable,
   View,
-  Image,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
+
+import ColorPicker from 'react-native-wheel-color-picker';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {handleisOriginCompareModalVisible} from '../../redux/slices/draw/draw';
+import {
+  handleisDrawColorPaletteModalVisible,
+  handleDrawColorSelect,
+} from '../../redux/slices/draw/draw';
 
-export type OriginCompareModalProps = {
+export type DrawColorPaletteModalProps = {
   selectColor: string;
 };
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const OriginCompareModal = () => {
+const DrawColorPaletteModal = () => {
   const dispatch = useDispatch();
-  // 선 굵기 모달을 위한 라인
-  const isOriginCompareModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginCompareModalVisible,
+  const isDrawColorPaletteModalVisible = useSelector(
+    (state: RootState) => state.draw.isDrawColorPaletteModalVisible,
   );
+  const drawColorSelect = useSelector(
+    (state: RootState) => state.draw.drawColorSelect,
+  );
+
   return (
     <View>
       <Modal
         animationType="none"
         transparent={true}
-        visible={isOriginCompareModalVisible}
+        visible={isDrawColorPaletteModalVisible}
         onRequestClose={() => {
-          dispatch(handleisOriginCompareModalVisible(false));
+          dispatch(handleisDrawColorPaletteModalVisible(false));
         }}>
         <Pressable
           style={styles.centeredView}
           onPress={() => {
-            dispatch(handleisOriginCompareModalVisible(false));
+            dispatch(handleisDrawColorPaletteModalVisible(false));
           }}>
           <Pressable
             style={styles.modalView}
             onPress={() => {
-              dispatch(handleisOriginCompareModalVisible(true));
+              dispatch(handleisDrawColorPaletteModalVisible(true));
             }}>
             {/* 최상단 */}
             <View style={styles.modalTop}>
               <View style={styles.modalTopLeft} />
               <View style={styles.modalTopMiddle}>
                 <Text style={styles.modalTitleText}>
-                  이제, '쥐'를 그려볼까요?
+                  원하는 색을 선택해 보아요
                 </Text>
               </View>
               <TouchableOpacity
                 style={styles.modalTopRight}
                 onPress={() =>
-                  dispatch(handleisOriginCompareModalVisible(false))
+                  dispatch(handleisDrawColorPaletteModalVisible(false))
                 }>
                 <Text style={styles.modalCloseX}>X</Text>
               </TouchableOpacity>
             </View>
             {/* 중단 */}
             <View style={styles.modalMiddle}>
-              <Image
-                style={styles.originImage}
-                source={require('../../assets/images/elephant.png')}
-              />
+              {/* 팔레트를 위치시킬 화면*/}
+              <SafeAreaView style={styles.colorPaletteContainer}>
+                <View style={styles.sectionContainer}>
+                  <ColorPicker
+                    color={drawColorSelect}
+                    // onColorChange={color =>
+                    // dispatch(handleDrawColorSelect(color))
+                    // }
+                    onColorChangeComplete={color =>
+                      dispatch(handleDrawColorSelect(color))
+                    }
+                    thumbSize={15}
+                    sliderSize={30}
+                    noSnap={true}
+                    row={false}
+                    autoResetSlider={true}
+                  />
+                </View>
+              </SafeAreaView>
             </View>
             {/* 하단 */}
             <View style={styles.modalBottom}>
-              <Text style={styles.contentText}>
-                쥐는 구미에 사는 동물입니다.{'\n'}아주 더러워요.
-              </Text>
+              {/* <View
+                style={{
+                  width: windowHeight * 0.7 * 0.07,
+                  height: windowHeight * 0.7 * 0.07,
+                  backgroundColor: drawColorSelect,
+                  borderRadius: windowHeight * 0.7 * 0.07 * 0.5,
+                }}
+              /> */}
             </View>
           </Pressable>
         </Pressable>
@@ -93,8 +121,6 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.7,
     height: windowHeight * 0.7,
     justifyContent: 'center',
-    // padding: 35,
-    // alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -105,7 +131,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalTop: {
-    flex: 0.1,
+    flex: 0.2,
     justifyContent: 'center',
     alignSelf: 'center',
     flexDirection: 'row',
@@ -140,14 +166,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  originImage: {
-    resizeMode: 'contain',
-    height: windowHeight * 0.7 * 0.6,
-    width: windowWidth * 0.7 * 0.8,
+  sectionContainer: {
+    // paddingHorizontal: 24,
+  },
+  colorPaletteContainer: {
+    width: windowWidth * 0.7 * 0.7,
+    height: windowHeight * 0.7 * 0.7,
   },
   modalBottom: {
-    flex: 0.2,
+    flex: 0.1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   contentText: {
     flexWrap: 'wrap',
@@ -157,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OriginCompareModal;
+export default DrawColorPaletteModal;
