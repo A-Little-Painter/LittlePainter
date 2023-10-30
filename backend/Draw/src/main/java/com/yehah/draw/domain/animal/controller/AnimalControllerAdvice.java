@@ -1,7 +1,6 @@
-package com.yehah.draw.domain.animals.controller;
+package com.yehah.draw.domain.animal.controller;
 
-import com.yehah.draw.domain.animals.exception.SimilarityCheckException;
-import org.springframework.http.HttpStatus;
+import com.yehah.draw.domain.animal.exception.SimilarityCheckException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

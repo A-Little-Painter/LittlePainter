@@ -1,6 +1,5 @@
-package com.yehah.draw.domain.animals.dto;
+package com.yehah.draw.domain.animal.dto;
 
-import com.yehah.draw.domain.animals.entity.Picture;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
