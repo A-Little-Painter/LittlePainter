@@ -1,4 +1,4 @@
-package com.yehah.user.global.security;
+package com.yehah.user.global.security.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
