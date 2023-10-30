@@ -1,1 +1,1 @@
-export const BASE_URL = 'http://k9d106.p.ssafy.io:8100/api/v1';
+export const BASE_URL = 'https://k9d106.p.ssafy.io:9001/api/v1';

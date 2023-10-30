@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -81,8 +81,9 @@ const KidsComponents: React.FC<KidsComponentsProps> = ({
   };
 
   const signUpFunc = () => {
+    const cleanText = email.replace(/\s/g, '');
     const userData = {
-      email: email,
+      email: cleanText,
       password: password,
       childName: kidName,
       birthday: kidBirthday,
@@ -121,7 +122,7 @@ const KidsComponents: React.FC<KidsComponentsProps> = ({
             <Text style={styles.infoText}>꼬마화가를 이용할</Text>
             <Text style={styles.infoText}>아이의 정보를 알려 주세요</Text>
           </View>
-          {/* 이메일 */}
+          {/* 이름 */}
           <View style={styles.loginArea}>
             <View style={styles.loginTextBox}>
               <Text style={styles.loginTextVector}>아이애칭</Text>
@@ -130,10 +131,11 @@ const KidsComponents: React.FC<KidsComponentsProps> = ({
                 placeholderTextColor={'black'}
                 style={styles.loginInputText}
                 onChangeText={text => setKidName(text)}
+                onSubmitEditing={() => setCalendarVisible(true)}
               />
             </View>
           </View>
-          {/* 비밀번호 */}
+          {/* 생년월일 */}
           <View style={styles.loginArea}>
             <View style={styles.loginTextBox1}>
               <Text style={styles.loginTextVector}>생년월일</Text>

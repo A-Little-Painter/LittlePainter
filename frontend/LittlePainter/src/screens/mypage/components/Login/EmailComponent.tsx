@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -36,6 +36,12 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
   const [code, setCode] = useState('');
   const [duplication, setDuplication] = useState(false);
   const [codeConfirm, setCodeConfirm] = useState(false);
+  const emailInputRef = useRef(null);
+  const codeInputRef = useRef(null);
+
+  const moveToCodeInput = () => {
+    codeInputRef.current.focus();
+  };
 
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
@@ -50,6 +56,7 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
   const sendCode = (value: string) => {
     const emailData = {email: value};
     confirmCodeSend(emailData);
+    moveToCodeInput();
   };
   const passCode = (text: string) => {
     setCode(text);
@@ -104,10 +111,12 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
                 />
               </Text>
               <TextInput
+                ref={emailInputRef}
                 placeholder="이메일"
                 placeholderTextColor={'black'}
                 style={styles.loginInputText1}
                 onChangeText={text => emailConfirm(text)}
+                onSubmitEditing={() => sendCode(email)}
               />
             </View>
             <View style={styles.ConfirmButton}>
@@ -126,10 +135,12 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
               />
             </Text>
             <TextInput
+              ref={codeInputRef}
               placeholder="인증코드"
               placeholderTextColor={'black'}
               style={styles.loginInputText2}
               onChangeText={text => passCode(text)}
+              onSubmitEditing={() => goNext()}
             />
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>

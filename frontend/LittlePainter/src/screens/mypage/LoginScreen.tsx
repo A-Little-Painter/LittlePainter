@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -16,17 +16,48 @@ import {logIn} from '../../redux/slices/user/user';
 import IconFontisto from 'react-native-vector-icons/Fontisto';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import {Alert} from 'react-native';
+import {signIn} from '../../apis/user/userApi';
+import * as Keychain from 'react-native-keychain';
 
 type LoginScreenProps = StackScreenProps<RootStackParams, 'LoginScreen'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function LoginScreen({navigation}: LoginScreenProps) {
+  const emailInputRef = useRef(null);
+  const passwordInputRef = useRef(null);
+  const [email, setEmail] = useState('');
+  const [password, setPasword] = useState('');
   const dispatch = useAppDispatch();
 
-  const loginFonc = () => {
-    dispatch(logIn());
-    navigation.navigate('MainScreen');
+  const moveToPasswordInput = () => {
+    passwordInputRef.current.focus();
+  };
+
+  const loginFonc = async () => {
+    try {
+      const cleanText = email.replace(/\s/g, '');
+      const data = {
+        email: cleanText,
+        password: password,
+      };
+      const signInResponse = await signIn(data);
+      console.log(signInResponse);
+
+      if (signInResponse) {
+        await Keychain.setGenericPassword(
+          'authTokens',
+          JSON.stringify(signInResponse),
+        );
+        dispatch(logIn());
+        navigation.navigate('MainScreen');
+      } else {
+        Alert.alert('이메일과 패스워드를 다시 한번 확인해 주세요');
+      }
+    } catch (error) {
+      console.error('로그인 오류:', error);
+    }
   };
 
   return (
@@ -68,7 +99,6 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
               </View>
               {/* 중단 */}
               <View style={styles.middleContainer}>
-                {/* 나중에 여기 터치 뺴야함(테스트를 위해 넣은 부분) */}
                 <View>
                   <Image
                     resizeMode="contain"
@@ -86,9 +116,12 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
                     />
                   </Text>
                   <TextInput
+                    ref={emailInputRef}
                     placeholder="이메일"
                     placeholderTextColor={'black'}
                     style={styles.loginInputText}
+                    onChangeText={text => setEmail(text)}
+                    onSubmitEditing={() => moveToPasswordInput()}
                   />
                 </View>
                 {/* 비밀번호 */}
@@ -101,10 +134,13 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
                     />
                   </Text>
                   <TextInput
+                    ref={passwordInputRef}
                     placeholder="비밀번호"
                     placeholderTextColor={'black'}
                     style={styles.loginInputText}
                     secureTextEntry={true}
+                    onChangeText={text => setPasword(text)}
+                    onSubmitEditing={() => loginFonc()}
                   />
                 </View>
                 <TouchableOpacity
