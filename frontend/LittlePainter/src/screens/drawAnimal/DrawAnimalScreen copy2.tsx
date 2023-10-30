@@ -271,7 +271,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
-                // dispatch(handleDrawColorSelect('#FF0000'));
                 dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image

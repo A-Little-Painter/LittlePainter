@@ -1,4 +1,3 @@
-// import React, {useCallback, useEffect, useRef, useState} from 'react';
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -41,6 +40,18 @@ type DrawAnimalScreenProps = StackScreenProps<
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
+const fastcolorData = [
+  '#FF0000',
+  '#FF7A00',
+  '#FAFF00',
+  '#05FF00',
+  '#0500FF',
+  '#0300AA',
+  '#9E00FF',
+  '#000000',
+];
+
 export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
@@ -140,12 +151,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     setCurrentPath('');
     setClearButtonClicked(true);
     setClearButtonClicked(false);
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-    });
+    setCaptureImagePath('');
   };
 
   const handlePrevButtonClick = () => {
@@ -180,6 +186,10 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
       // dispatch(handleIsDrawScreenshotModalVisible(true));
     });
   };
+
+  useEffect(() => {
+    dispatch(handleDrawColorSelect('#000000'));
+  }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -279,59 +289,27 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
               </Text>
             </TouchableOpacity>
             {/* 색깔 */}
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#FF0000'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#FF0000'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#FF7A00'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#FF7A00'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#FAFF00'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#FAFF00'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#05FF00'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#05FF00'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#0500FF'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#0500FF'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#0300AA'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#0300AA'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#9E00FF'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#9E00FF'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#000000'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#000000'));
-              }}
-            />
+            {fastcolorData.map((color, index) => (
+              <Pressable
+                key={index}
+                style={[styles.colorCircle, {backgroundColor: color}]}
+                onPress={() => {
+                  // dispatch(handleDrawColorSelect(color));
+                  ToastAndroid.show(
+                    '테두리 그리기에서는 색을 고를 수 없어요.',
+                    ToastAndroid.SHORT,
+                  );
+                }}
+              />
+            ))}
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
-                // dispatch(handleDrawColorSelect('#FF0000'));
-                dispatch(handleisDrawColorPaletteModalVisible(true));
+                // dispatch(handleisDrawColorPaletteModalVisible(true));
+                ToastAndroid.show(
+                  '테두리 그리기에서는 색을 고를 수 없어요.',
+                  ToastAndroid.SHORT,
+                );
               }}>
               <Image
                 style={styles.colorCircle}
@@ -436,7 +414,11 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             <TouchableOpacity
               style={styles.lineThicknessView}
               onPress={() => {
-                dispatch(handleisDrawLineThicknessModalVisible(true));
+                // dispatch(handleisDrawLineThicknessModalVisible(true));
+                ToastAndroid.show(
+                  '테두리 그리기에서는 선의 굵기를 바꿀 수 없어요.',
+                  ToastAndroid.SHORT,
+                );
               }}>
               <View
                 style={[
@@ -465,13 +447,19 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             <TouchableOpacity
               style={[
                 styles.doneButton,
-                {backgroundColor: captureImagePath === '' ? 'gray' : '#A8CEFF'},
+                // eslint-disable-next-line react-native/no-inline-styles
+                {
+                  backgroundColor:
+                    captureImagePath === '' || paths.length === 0
+                      ? 'gray'
+                      : '#A8CEFF',
+                },
               ]}
               onPress={() => {
                 handleGoColoring();
               }}
-              disabled={captureImagePath === ''}>
-              <Text style={styles.doneButtonText}>완성하기</Text>
+              disabled={captureImagePath === '' || paths.length === 0}>
+              <Text style={styles.doneButtonText}>테두리완성</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -540,9 +528,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   colorCircle: {
-    width: windowWidth * 0.04,
-    height: windowWidth * 0.04,
-    borderRadius: windowWidth * 0.04 * 0.5,
+    width: windowHeight * 0.07,
+    height: windowHeight * 0.07,
+    borderRadius: windowHeight * 0.07 * 0.5,
     overflow: 'hidden',
   },
   topRight: {

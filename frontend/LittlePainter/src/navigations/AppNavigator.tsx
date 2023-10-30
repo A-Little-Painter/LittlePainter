@@ -8,6 +8,7 @@ import MypageProfileScreen from '../screens/mypage/MypageProfileScreen';
 import SelectAnimalScreen from '../screens/drawAnimal/SelectAnimalScreen';
 import DrawAnimalScreen from '../screens/drawAnimal/DrawAnimalScreen';
 import ColoringAnimalScreen from '../screens/drawAnimal/ColoringAnimalScreen';
+import CompleteDrawAnimalScreen from '../screens/drawAnimal/CompleteDrawAnimalScreen';
 
 import DrawTestScreen from '../screens/drawAnimal/DrawTestScreen';
 import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
@@ -33,6 +34,9 @@ export type RootStackParams = {
   DrawAnimalScreen: undefined;
   ColoringAnimalScreen: {
     completeLineUri: string;
+  };
+  CompleteDrawAnimalScreen: {
+    completeDrawUri: string;
   };
   SelectPictureScreen: undefined;
   SelectFairytaleScreen: undefined;
@@ -76,6 +80,10 @@ export default function AppNavigator() {
       <RootStack.Screen
         name="ColoringAnimalScreen"
         component={ColoringAnimalScreen}
+      />
+      <RootStack.Screen
+        name="CompleteDrawAnimalScreen"
+        component={CompleteDrawAnimalScreen}
       />
       <RootStack.Screen
         name="SelectPictureScreen"
