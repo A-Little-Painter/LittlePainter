@@ -1,13 +1,8 @@
 package com.yehah.auth.domain.auth.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
 public class CheckAuthCodeRequestDTO {
     private String email;

@@ -1,5 +1,8 @@
 package com.yehah.auth.domain.auth.service;
 
+import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
+import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
+import com.yehah.auth.domain.auth.dto.response.TokenResponseDTO;
 import com.yehah.auth.global.email.EmailService;
 import com.yehah.auth.global.redis.entity.EmailAuth;
 import lombok.RequiredArgsConstructor;
@@ -49,5 +52,21 @@ public class AuthServiceImpl implements AuthService{
 
     public void deleteEmailAuth(String email){
         emailService.deletEmailAuth(email);
+    }
+
+    //회원가입
+    public ResponseEntity<Void> signup(SignUpRequestDTO signUpRequestDTO){
+        String path=user_service_url+"/comm/signup";
+        ResponseEntity<Void> response = restTemplate.postForEntity(path, signUpRequestDTO, Void.class);
+
+        return response;
+    }
+
+    //로그인
+    public ResponseEntity<?> signIn(SignInRequestDTO signInRequestDTO){
+        String path=user_service_url+"/comm/signin";
+        ResponseEntity<TokenResponseDTO> response = restTemplate.postForEntity(path, signInRequestDTO, TokenResponseDTO.class);
+
+        return response;
     }
 }

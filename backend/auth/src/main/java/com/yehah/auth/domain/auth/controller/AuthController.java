@@ -2,6 +2,8 @@ package com.yehah.auth.domain.auth.controller;
 
 import com.yehah.auth.domain.auth.dto.request.CheckAuthCodeRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SendAuthCodeRequestDTO;
+import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
+import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
 import com.yehah.auth.domain.auth.exception.ExpiredAuthCodeException;
 import com.yehah.auth.domain.auth.exception.InvalidCodeException;
 import com.yehah.auth.domain.auth.service.AuthService;
@@ -9,6 +11,7 @@ import com.yehah.auth.global.redis.entity.EmailAuth;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,8 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-//    @Autowired
-//    private final PasswordEncoder passwordEncoder;
 
     //이메일 중복확인
     @GetMapping("/email/{email}")
@@ -53,12 +54,18 @@ public class AuthController {
         }
     }
 
+    //회원가입
+    @PostMapping("/signup")
+    public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDTO signUpRequestDTO){
+        authService.signup(signUpRequestDTO);
+        return ResponseEntity.ok().build();
+    }
 
-//    @PostMapping("/signup")
-//    public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDTO signUpRequestDTO){
-//        return ResponseEntity.ok().build();
-//    }
+    //로그인
+    @PostMapping("/signin")
+    public ResponseEntity<?> signIn(@RequestBody SignInRequestDTO signInRequestDTO){
 
-
+        return authService.signIn(signInRequestDTO);
+    }
 
 }
