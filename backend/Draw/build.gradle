@@ -57,9 +57,6 @@ dependencies {
 
     // @Valid
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.2'
-
-    // s3 버전
-    implementation 'com.amazonaws:aws-java-sdk-s3:1.11.1033'
 }
 
 dependencyManagement {

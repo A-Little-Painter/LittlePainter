@@ -1,14 +1,15 @@
 package com.yehah.draw.domain.animal.controller;
 
 import com.yehah.draw.domain.animal.dto.response.AnimalResDto;
-import com.yehah.draw.domain.animal.entity.Animal;
 import com.yehah.draw.domain.animal.exception.SimilarityCheckException;
 import com.yehah.draw.domain.animal.service.AnimalService;
-import com.yehah.draw.global.communication.Similarity;
+import com.yehah.draw.global.common.AnimalType;
+import com.yehah.draw.global.communication.CommMethod;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -24,11 +25,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/draws/animals")
 public class AnimalController {
+    @Value("${micro.path.similarityCheck}")
+    private String similarityUrl;
 
-    @Autowired
-    private AnimalService animalService;
+    @Value("${micro.path.image}")
+    private String imageUrl;
 
-    private final Similarity similarity;
+
+    private final AnimalService animalService;
+
+    private final CommMethod commMethod;
 
     @Operation(summary = "전체 동물의 아이디, 종류, 원본 사진을 가져온다." , description = "ALL")
     @GetMapping
@@ -68,9 +74,9 @@ public class AnimalController {
         bodyData.add("newFile", newFileResource); // 새로운 이미지 바이트로 변경함
 
         try{
-            double result = similarity.postSimilarityCheck(bodyData); // SimilarCheck에 전송, 결과 받기
+            double result = Double.parseDouble(commMethod.postMultipartMethod(bodyData, similarityUrl)); // SimilarCheck에 전송, 결과 받기
             log.info("유사도 검사 결과 : "+ result);
-            if(result <= 0.8){
+            if(result <= 0.09){
                 return ResponseEntity.ok("END"); // 계속 유사도를 진행한다.
             }else{
                 return ResponseEntity.ok("CONTINUE"); // 유사도 측정을 끝낸다.
@@ -80,6 +86,31 @@ public class AnimalController {
         }
     }
 
+
     // TODO : 내가 그린 이미지 S3에 저장하기
+    @PostMapping
+    public ResponseEntity<Void> saveUserImage(@RequestPart MultipartFile userImageFile) throws IOException {
+        MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
+
+        // TODO : contextHolder에서 userId 가져오기
+        bodyData.set("userId", 1);
+        bodyData.set("category", AnimalType.ANIMAL);
+        bodyData.set("image", userImageFile);
+
+
+        log.info(imageUrl);
+
+        String result = commMethod.postMultipartMethod(bodyData, imageUrl+"/comm/myWork");
+
+        return ResponseEntity.ok().build();
+    }
+
+    //        ByteArrayResource userImageResource = new ByteArrayResource(userImageFile.getBytes()){
+//            @Override
+//            public String getFilename() {
+//                return "file.jpg";
+//            }
+//        };
+//        bodyData.add("file", userImageResource);
 
 }

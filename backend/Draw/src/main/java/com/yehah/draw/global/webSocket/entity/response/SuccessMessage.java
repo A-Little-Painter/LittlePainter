@@ -1,7 +1,7 @@
 package com.yehah.draw.global.webSocket.entity.response;
 
 import com.yehah.draw.global.webSocket.entity.WebSocketState;
-import com.yehah.draw.global.webSocket.entity.WebSocketType;
+import com.yehah.draw.global.common.AnimalType;
 import lombok.*;
 
 
@@ -11,12 +11,12 @@ import lombok.*;
 public class SuccessMessage {
     private static final String message = "SUCCESS";
     private String sessionId; // sessionId
-    private WebSocketType type; // ANIMAL, FRIEND, TALE
+    private AnimalType type; // ANIMAL, FRIEND, TALE
     private WebSocketState state; // CONNECTED, ACTIVE, TERMINATED
 
 
     @Builder
-    public SuccessMessage(String sessionId, WebSocketType type, WebSocketState state){
+    public SuccessMessage(String sessionId, AnimalType type, WebSocketState state){
         this.sessionId = sessionId;
         this.type = type;
         this.state = state;
