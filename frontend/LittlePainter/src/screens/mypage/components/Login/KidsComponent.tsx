@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,6 +8,7 @@ import {
   Image,
   Modal,
   Pressable,
+  Alert,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {signUp} from '../../../../apis/user/userApi';
@@ -88,7 +89,12 @@ const KidsComponents: React.FC<KidsComponentsProps> = ({
       childName: kidName,
       birthday: kidBirthday,
     };
-    signUp(userData);
+    try {
+      signUp(userData);
+      navigation.goBack();
+    } catch {
+      Alert.alert('error');
+    }
   };
   return (
     <View style={styles.rightContainer}>
@@ -171,7 +177,6 @@ const KidsComponents: React.FC<KidsComponentsProps> = ({
             <TouchableOpacity
               onPress={() => {
                 signUpFunc();
-                navigation.goBack();
               }}>
               <Text style={styles.loginText}>회원가입</Text>
             </TouchableOpacity>

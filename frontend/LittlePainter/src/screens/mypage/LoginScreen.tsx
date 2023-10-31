@@ -35,6 +35,26 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
     passwordInputRef.current.focus();
   };
 
+  const loadTokenFromKeychain = async () => {
+    try {
+      const credentials = await Keychain.getGenericPassword({
+        service: 'accessTokens',
+      });
+      console.log(credentials);
+      if (credentials) {
+        const token = credentials.password;
+        console.log('엑세스:', token);
+        return token;
+      } else {
+        console.error('저장된 토큰이 없습니다.');
+        return null;
+      }
+    } catch (error) {
+      console.error('토큰 불러오기에 실패했습니다.', error);
+      return null;
+    }
+  };
+
   const loginFonc = async () => {
     try {
       const cleanText = email.replace(/\s/g, '');
@@ -44,14 +64,20 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
       };
       const signInResponse = await signIn(data);
       console.log(signInResponse);
-
       if (signInResponse) {
         await Keychain.setGenericPassword(
-          'authTokens',
-          JSON.stringify(signInResponse),
+          'accessToken',
+          signInResponse['accessToken'],
+          {service: 'accessTokens'},
+        );
+        await Keychain.setGenericPassword(
+          'refreshToken',
+          signInResponse['refreshToken'],
+          {service: 'refreshTokens'},
         );
         dispatch(logIn());
         navigation.navigate('MainScreen');
+        loadTokenFromKeychain();
       } else {
         Alert.alert('이메일과 패스워드를 다시 한번 확인해 주세요');
       }

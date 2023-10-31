@@ -15,8 +15,55 @@ import {
 import {useAppSelector} from '../../../../redux/hooks';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
+import {addUserChild} from '../../../../apis/mypage/mypageApi';
+
+LocaleConfig.locales['kr'] = {
+  monthNames: [
+    '1월',
+    '2월',
+    '3월',
+    '4월',
+    '5월',
+    '6월',
+    '7월',
+    '8월',
+    '9월',
+    '10월',
+    '11월',
+    '12월',
+  ],
+  monthNamesShort: [
+    '1.',
+    '2.',
+    '3.',
+    '4.',
+    '5.',
+    '6.',
+    '7.',
+    '8.',
+    '9.',
+    '10.',
+    '11.',
+    '12.',
+  ],
+  dayNames: [
+    '일요일',
+    '월요일',
+    '화요일',
+    '수요일',
+    '목요일',
+    '금요일',
+    '토요일',
+  ],
+  dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+};
+
+LocaleConfig.defaultLocale = 'kr';
 
 type AddKidsComponentsProps = {
+  name: string;
+  birth: string;
   setName: (name: string) => void;
   setBirth: (birth: string) => void;
   profileImage: number;
@@ -84,18 +131,31 @@ const childs = [
 ];
 
 const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
+  name,
+  birth,
   setName,
   setBirth,
   profileImage,
   setProfileImage,
   selectComponent,
 }) => {
+  const kidIconUpdate = useAppSelector(state => state.user.kidIcon);
+  // const kidIdUpdate = useAppSelector(state => state.user.kidId); api요청시 필요함
+  const kidNameUpdate = useAppSelector(state => state.user.kidName);
+  const kidBirthdayUpdate = useAppSelector(state => state.user.kidBirthday);
+
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
     selectComponent(newComponentName);
   };
-
+  const [isCalendarVisible, setCalendarVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const handleDayPress = (day: any) => {
+    setBirth(day.dateString); // 선택한 날짜를 상태 변수에 저장
+    setCalendarVisible(false); // 모달 닫기
+  };
+
   const itemNumber = (value: any) => {
     setProfileImage(value);
     setModalVisible(false);
@@ -106,7 +166,24 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
     addOrupdate = '등록';
   } else {
     addOrupdate = '변경';
+    console.log(kidIconUpdate);
   }
+  const kidAddAndUpdate = async () => {
+    if (add) {
+      console.log('add');
+
+      const data = {
+        nickname: name,
+        birthday: birth,
+        iconId: 1,
+      };
+      await addUserChild(data);
+      handleComponentChange('profile');
+    } else {
+      console.log('나중에');
+      handleComponentChange('profile');
+    }
+  };
   return (
     <View style={styles.rightContainer}>
       <View style={styles.subrightContainer}>
@@ -137,7 +214,14 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
           {/* 아이 정보 */}
           <View style={styles.contextArea}>
             <View style={styles.kidProfile}>
-              <Image source={profileImage} style={styles.profilePicture} />
+              {add ? (
+                <Image source={profileImage} style={styles.profilePicture} />
+              ) : (
+                <Image
+                  source={{uri: kidIconUpdate}}
+                  style={styles.profilePicture}
+                />
+              )}
               <View style={styles.searchIcon}>
                 <TouchableOpacity onPress={() => setModalVisible(true)}>
                   <IconFontAwesome
@@ -193,29 +277,69 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
             <View>
               <View style={styles.loginTextBox}>
                 <Text style={styles.loginTextVector}>아이애칭</Text>
-                <TextInput
-                  placeholder="아이 애칭"
-                  placeholderTextColor={'black'}
-                  style={styles.loginInputText}
-                  onChangeText={text => setName(text)}
-                />
+                {add ? (
+                  <TextInput
+                    placeholder="아이 애칭"
+                    placeholderTextColor={'black'}
+                    style={styles.loginInputText}
+                    onChangeText={text => setName(text)}
+                  />
+                ) : (
+                  <TextInput
+                    placeholder={kidNameUpdate}
+                    placeholderTextColor={'black'}
+                    style={styles.loginInputText}
+                    onChangeText={text => setName(text)}
+                  />
+                )}
               </View>
-              <View style={styles.loginTextBox}>
-                <Text style={styles.loginTextVector}>생년월일</Text>
-                <TextInput
-                  placeholder="생년월일"
-                  placeholderTextColor={'black'}
-                  style={styles.loginInputText}
-                  onChangeText={text => setBirth(text)}
-                />
+              <View style={styles.birthAria}>
+                <View style={styles.loginTextBox1}>
+                  <Text style={styles.loginTextVector}>생년월일</Text>
+                  {add ? (
+                    <TextInput
+                      placeholder="생년월일"
+                      placeholderTextColor={'black'}
+                      style={styles.loginInputText}
+                      onChangeText={text => setBirth(text)}
+                      value={birth}
+                      editable={false}
+                    />
+                  ) : (
+                    <TextInput
+                      placeholder={kidBirthdayUpdate}
+                      placeholderTextColor={'black'}
+                      style={styles.loginInputText}
+                      onChangeText={text => setBirth(text)}
+                      value={birth}
+                      editable={false}
+                    />
+                  )}
+                </View>
+                <View style={styles.ConfirmButton}>
+                  <TouchableOpacity onPress={() => setCalendarVisible(true)}>
+                    <Text style={styles.ConfirmButtonText}>날짜 선택</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={isCalendarVisible}>
+              <Pressable
+                style={styles.modal}
+                onPress={() => setCalendarVisible(false)}>
+                {/* 캘린더 */}
+                <Calendar style={styles.calender} onDayPress={handleDayPress} />
+              </Pressable>
+            </Modal>
           </View>
           <View style={styles.confirmButtons}>
             <View style={styles.loginButtonBox2}>
               <TouchableOpacity
                 onPress={() => {
-                  handleComponentChange('profile');
+                  kidAddAndUpdate();
                 }}>
                 <Text style={styles.loginText2}>{addOrupdate}</Text>
               </TouchableOpacity>
@@ -287,13 +411,26 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
   },
+  loginTextBox1: {
+    flexDirection: 'row',
+    borderWidth: 0,
+    borderColor: 'black',
+    backgroundColor: '#F8F8F8',
+    width: windowWidth * 0.23,
+    height: windowWidth * 0.45 * 0.12,
+    marginVertical: windowWidth * 0.01,
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
+  },
   loginTextVector: {
     alignSelf: 'center',
     paddingHorizontal: windowWidth * 0.01,
     fontSize: windowWidth * 0.013,
   },
   loginInputText: {
+    width: windowWidth * 0.27,
     fontSize: windowWidth * 0.017,
+    color: '#000000',
   },
   loginButtonBox2: {
     borderWidth: 0,
@@ -376,6 +513,39 @@ const styles = StyleSheet.create({
   modalContents: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  ConfirmButton: {
+    backgroundColor: '#F8F8F8',
+    width: windowWidth * 0.13,
+    height: windowWidth * 0.45 * 0.12,
+    marginVertical: windowWidth * 0.01,
+    justifyContent: 'center',
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+  },
+  ConfirmButtonText: {
+    backgroundColor: '#525252',
+    color: '#FFFFFF',
+    fontSize: windowWidth * 0.016,
+    borderRadius: 1000,
+    width: windowWidth * 0.1,
+    height: windowHeight * 0.07,
+    alignItems: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    marginLeft: windowWidth * 0.02,
+  },
+  modal: {
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  calender: {
+    height: windowHeight * 0.43,
+    width: windowWidth * 0.5,
+  },
+  birthAria: {
+    flexDirection: 'row',
   },
 });
 export default AddKidsComponents;
