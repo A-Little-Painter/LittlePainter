@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.yehah.draw.domain.animal_type.entity.AnimalType;
 import com.yehah.draw.domain.animal_type.repository.AnimalTypeRepository;
-import com.yehah.draw.domain.friends_animal.dto.response.FriendsAnimalListResponse;
+import com.yehah.draw.domain.friends_animal.dto.response.FriendsAnimalListResDto;
 import com.yehah.draw.domain.friends_animal.entity.FriendsAnimal;
 import com.yehah.draw.domain.friends_animal.repository.FriendsAnimalRepository;
 
@@ -16,14 +16,13 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class FriendsAnimalServiceImpl {
+public class FriendsAnimalServiceImpl implements FriendsAnimalService{
 
 	private final AnimalTypeRepository animalTypeRepository;
 	private final FriendsAnimalRepository friendsAnimalRepository;
 
 	@Transactional(readOnly = true)
-	public Slice<FriendsAnimalListResponse> getFriendsAnimals (String animalTypeName, int pages){
-
+	public Slice<FriendsAnimalListResDto> getFriendsAnimalList(String animalTypeName, int pages){
 		PageRequest pageRequest = PageRequest.of(pages, 30, Sort.by(Sort.Direction.DESC, "id"));
 		Slice<FriendsAnimal> friendsAnimals;
 
@@ -39,15 +38,15 @@ public class FriendsAnimalServiceImpl {
 	}
 
 	@Transactional
-	public FriendsAnimalListResponse convertToDto(FriendsAnimal friendsAnimal){
-		FriendsAnimalListResponse friendsAnimalListResponse = FriendsAnimalListResponse.builder()
+	public FriendsAnimalListResDto convertToDto(FriendsAnimal friendsAnimal){
+		FriendsAnimalListResDto friendsAnimalListResDto = FriendsAnimalListResDto.builder()
 			.friendsAnimalId(friendsAnimal.getId())
 			.userEmail(friendsAnimal.getUserEmail())
 			.title(friendsAnimal.getTitle())
 			.originalImageUrl(friendsAnimal.getUrlOriginal())
 			.build();
 
-		return friendsAnimalListResponse;
+		return friendsAnimalListResDto;
 	}
 }
 

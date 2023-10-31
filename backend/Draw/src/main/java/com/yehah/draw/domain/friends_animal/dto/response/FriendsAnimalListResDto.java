@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class FriendsAnimalListResponse {
+public class FriendsAnimalListResDto {
 	private Long friendsAnimalId;
 	private String userEmail;
 	private String title;

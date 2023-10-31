@@ -2,8 +2,8 @@ package com.yehah.draw.domain.friends_animal.service;
 
 import org.springframework.data.domain.Slice;
 
-import com.yehah.draw.domain.friends_animal.dto.response.FriendsAnimalListResponse;
+import com.yehah.draw.domain.friends_animal.dto.response.FriendsAnimalListResDto;
 
 public interface FriendsAnimalService {
-	public Slice<FriendsAnimalListResponse> getFriendsAnimals (String animalTypeName, int pages);
+	public Slice<FriendsAnimalListResDto> getFriendsAnimalList(String animalTypeName, int pages);
 }
