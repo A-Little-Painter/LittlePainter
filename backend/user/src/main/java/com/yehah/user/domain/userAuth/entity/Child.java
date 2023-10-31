@@ -43,9 +43,10 @@ public class Child {
     }
 
     @Builder
-    public Child(String nickname, LocalDate birthday){
+    public Child(String nickname, LocalDate birthday, Icon icon){
         this.nickname = nickname;
         this.birthday = birthday;
+        this.icon = icon;
 //        setUser(user);
     }
 }

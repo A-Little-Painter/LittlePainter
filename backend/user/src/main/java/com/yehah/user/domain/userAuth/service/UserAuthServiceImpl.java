@@ -1,7 +1,9 @@
 package com.yehah.user.domain.userAuth.service;
 
+import com.yehah.user.domain.user.repository.IconRepository;
 import com.yehah.user.domain.userAuth.dto.SignUpRequestDTO;
 import com.yehah.user.domain.userAuth.entity.Child;
+import com.yehah.user.domain.userAuth.entity.Icon;
 import com.yehah.user.domain.userAuth.entity.User;
 import com.yehah.user.domain.userAuth.exception.AlreadyUsedEmailException;
 import com.yehah.user.domain.userAuth.repository.UserAuthRepository;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserAuthServiceImpl implements UserAuthService {
     private final UserAuthRepository userAuthRepository;
+    private final IconRepository iconRepository;
 
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
@@ -36,7 +39,14 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     public void signup(SignUpRequestDTO signUpRequestDTO){
-        Child child = Child.builder().nickname(signUpRequestDTO.getChildName()).birthday(signUpRequestDTO.getBirthday()).build();
+        Icon icon = iconRepository.findById(1L).orElseThrow(() -> new RuntimeException("Icon not found"));
+
+
+        Child child = Child.builder()
+                .nickname(signUpRequestDTO.getChildName())
+                .birthday(signUpRequestDTO.getBirthday())
+                .icon(icon)
+                .build();
 
         User user = User.builder()
                 .email(signUpRequestDTO.getEmail())
@@ -55,7 +65,7 @@ public class UserAuthServiceImpl implements UserAuthService {
             throw new IllegalArgumentException("아이디 혹은 비밀번호를 확인해 주세요.");
         }
 
-        Token token = jwtProvider.generateToken(user.getEmail());
+        Token token = jwtProvider.generateToken(user.getEmail(), user.getRole());
 
         refreshTokenRedisRepository.save(RefreshToken.builder()
                 .email(user.getEmail())
