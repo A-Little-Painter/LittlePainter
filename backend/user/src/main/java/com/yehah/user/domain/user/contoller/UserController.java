@@ -5,9 +5,11 @@ import com.yehah.user.domain.user.dto.response.AddChildResponseDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
 import com.yehah.user.domain.user.service.UserService;
+import com.yehah.user.domain.userAuth.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name= "users", description = "사용자 API")
 @RequestMapping("/api/v1/user")
 public class UserController {
     private final UserService userService;
@@ -53,5 +56,12 @@ public class UserController {
     @PatchMapping("/sound")
     public ResponseEntity<?> switchSound(){
         return userService.switchSound();
+    }
+
+    //유저 정보 가져오기(타 마이크로서비스 유저 정보가져오기)
+    @PostMapping("/userInfo")
+    public ResponseEntity<?> getUserInfo(@RequestBody String email){
+        User user = userService.getUserInfo(email);
+        return ResponseEntity.ok(user);
     }
 }
