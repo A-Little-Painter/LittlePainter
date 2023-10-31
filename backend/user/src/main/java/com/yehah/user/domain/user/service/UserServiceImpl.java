@@ -1,8 +1,13 @@
 package com.yehah.user.domain.user.service;
 
+import com.mysql.cj.exceptions.DataConversionException;
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
+import com.yehah.user.domain.user.exception.DTOConversionException;
+import com.yehah.user.domain.user.exception.DatabaseException;
+import com.yehah.user.domain.user.exception.NoDataFoundException;
+import com.yehah.user.domain.user.exception.UserNotFoundException;
 import com.yehah.user.domain.user.repository.IconRepository;
 import com.yehah.user.domain.user.repository.UserRepository;
 import com.yehah.user.domain.userAuth.entity.Child;
@@ -32,34 +37,33 @@ public class UserServiceImpl implements UserService{
     public List<ChildrenResponseDTO> getChildren() {
         User user = getLoginUser();
         log.info("user.getEmail() "+user.getEmail());
-        return userRepository.findById(user.getId())
+        List<ChildrenResponseDTO> children = userRepository.findById(user.getId())
                 .map(userFromDB -> userFromDB.getChildren().stream()
                         .map(this::toDTO)
                         .collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 DB에서 찾을 수 없습니다."));
+
+        if(children.isEmpty()){
+            throw new NoDataFoundException("아이를 찾을 수 없습니다.");
+        }
+
+        return children;
     }
 
     public List<GetIconsResponseDTO> getIcons(){
-        return iconRepository.findAll().stream()
+        List<GetIconsResponseDTO> icons = iconRepository.findAll().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
+
+        if(icons.isEmpty()){
+            throw new NoDataFoundException("아이콘을 찾을 수 없습니다.");
+        }
+
+        return icons;
+
     }
 
-    public ChildrenResponseDTO toDTO(Child child){
-        return ChildrenResponseDTO.builder()
-                .id(child.getId())
-                .nickname(child.getNickname())
-                .birthday(child.getBirthday())
-                .iconUrl(child.getIcon().getUrlIcon())
-                .build();
-    }
 
-    public GetIconsResponseDTO toDTO(Icon icon){
-        return GetIconsResponseDTO.builder()
-                .iconId(icon.getId())
-                .iconUrl(icon.getUrlIcon())
-                .build();
-    }
 
     @Transactional
     public ResponseEntity<?> addChild(AddChildRequestDTO addChildRequestDTO){
@@ -76,10 +80,14 @@ public class UserServiceImpl implements UserService{
                             .build();
                     child.setUser(userFromDB);
                     userFromDB.getChildren().add(child);
-                    userRepository.save(userFromDB);
+                    try{
+                        userRepository.save(userFromDB);
+                    }catch(Exception e){
+                        throw new DatabaseException("DB에 저장할 수 없습니다.");
+                    }
                     return ResponseEntity.ok().build();
                 })
-                .orElse(ResponseEntity.badRequest().build());
+                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 찾을 수 없습니다."));
     }
 
     public ResponseEntity<?> switchSound(){
@@ -88,15 +96,45 @@ public class UserServiceImpl implements UserService{
         return userRepository.findById(user.getId())
                 .map(userFromDB -> {
                     userFromDB.toggleTts();
-                    userRepository.save(userFromDB);
+                    try{
+                        userRepository.save(userFromDB);
+                    }catch (Exception e){
+                        throw new DatabaseException("DB에 저장할 수 없습니다.");
+                    }
                     return ResponseEntity.ok().build();
                 })
-                .orElse(ResponseEntity.badRequest().build());
+                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 찾을 수 없습니다."));
     }
 
 
 
     private User getLoginUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    public ChildrenResponseDTO toDTO(Child child){
+        try{
+            return ChildrenResponseDTO.builder()
+                    .id(child.getId())
+                    .nickname(child.getNickname())
+                    .birthday(child.getBirthday())
+                    .iconUrl(child.getIcon().getUrlIcon())
+                    .build();
+        }catch (Exception e){
+            throw new DTOConversionException("Child에서 DTO 변환 시 오류");
+        }
+
+    }
+
+    public GetIconsResponseDTO toDTO(Icon icon){
+        try{
+            return GetIconsResponseDTO.builder()
+                    .iconId(icon.getId())
+                    .iconUrl(icon.getUrlIcon())
+                    .build();
+        }catch (Exception e){
+            throw new DTOConversionException("Child에서 DTO 변환 시 오류");
+        }
+
     }
 }
