@@ -13,29 +13,35 @@ import ViewShot from 'react-native-view-shot';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-// import {RootState} from '../../redux/store';
-// import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
+import DrawScreenshotModal from '../modals/DrawScreenshotModal';
 
-type CompleteDrawAnimalScreenProps = StackScreenProps<
+type CompleteDrawPictureScreenProps = StackScreenProps<
   RootStackParams,
-  'CompleteDrawAnimalScreen'
+  'CompleteDrawPictureScreen'
 >;
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default function CompleteDrawAnimalScreen({
+export default function CompleteDrawPictureScreen({
   route,
   navigation,
-}: CompleteDrawAnimalScreenProps) {
+}: CompleteDrawPictureScreenProps) {
   const [completeDrawUri] = useState(route.params.completeDrawUri);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
   const captureRef = useRef();
 
-  // const [captureImagePath, setCaptureImagePath] =
-  //   useState<string>(completeDrawUri);
+  const dispatch = useDispatch();
+  // 스크린샷 관련 모달
+  const isDrawScreenshotModalVisible = useSelector(
+    (state: RootState) => state.draw.isDrawScreenshotModalVisible,
+  );
+  const [captureImagePath, setCaptureImagePath] =
+    useState<string>(completeDrawUri);
 
   //뒤로가기 2번시 뒤로가기
   useEffect(() => {
@@ -135,6 +141,9 @@ export default function CompleteDrawAnimalScreen({
           </View>
         </View>
       </View>
+      {isDrawScreenshotModalVisible ? (
+        <DrawScreenshotModal captureUri={captureImagePath} />
+      ) : null}
     </View>
   );
 }

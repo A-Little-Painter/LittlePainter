@@ -108,6 +108,10 @@ export default function SelectPictureScreen({
     {label: '토끼', value: 'rabbit'},
   ]);
 
+  function handleGoDrawPictureScreen() {
+    navigation.navigate('DrawPictureScreen');
+  }
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -119,7 +123,7 @@ export default function SelectPictureScreen({
               style={styles.logoImage}
               source={require('../../assets/images/rabbitFace.png')}
             />
-            <Text style={styles.titleText}>사진 그리기</Text>
+            <Text style={styles.titleText}>친구의 동물 그리기</Text>
           </View>
           {/* 상단 우측 */}
           <View style={styles.topRightContainer}>
@@ -149,7 +153,9 @@ export default function SelectPictureScreen({
               return (
                 <View style={styles.pictureCard1}>
                   <TouchableOpacity
-                    onPress={() => {}}
+                    onPress={() => {
+                      handleGoDrawPictureScreen();
+                    }}
                     style={[
                       styles.pcitureCard2,
                       {

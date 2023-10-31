@@ -12,7 +12,12 @@ import CompleteDrawAnimalScreen from '../screens/drawAnimal/CompleteDrawAnimalSc
 
 import DrawTestScreen from '../screens/drawAnimal/DrawTestScreen';
 import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
+import DrawPictureScreen from '../screens/drawPicture/DrawPictureScreen';
+import ColoringPictureScreen from '../screens/drawPicture/ColoringPictureScreen';
+
 import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
+import ReadFairytaleScreen from '../screens/fairytale/Fairtytale1Screen.tsx/ReadFairytaleScreen';
+
 import UploadPicture1Screen from '../screens/uploadPicture/UploadPicture1Screen';
 
 import FindPasswordScreen from '../screens/mypage/FindPasswordScreen';
@@ -33,13 +38,24 @@ export type RootStackParams = {
   SelectAnimalScreen: undefined;
   DrawAnimalScreen: undefined;
   ColoringAnimalScreen: {
-    completeLineUri: string;
+    // completeLineUri: string;
+    completeLine: {path: string; color: string; strokeWidth: number}[];
   };
   CompleteDrawAnimalScreen: {
     completeDrawUri: string;
   };
   SelectPictureScreen: undefined;
+  DrawPictureScreen: undefined;
+  ColoringPictureScreen: {
+    // completeLineUri: string;
+    completeLine: {path: string; color: string; strokeWidth: number}[];
+  };
+  CompleteDrawPictureScreen: {
+    completeDrawUri: string;
+  };
   SelectFairytaleScreen: undefined;
+  ReadFairytaleScreen: {title: string};
+
   UploadPicture1Screen: undefined;
   SignupScreen: undefined;
   FindPasswordScreen: undefined;
@@ -90,8 +106,20 @@ export default function AppNavigator() {
         component={SelectPictureScreen}
       />
       <RootStack.Screen
+        name="DrawPictureScreen"
+        component={DrawPictureScreen}
+      />
+      <RootStack.Screen
+        name="ColoringPictureScreen"
+        component={ColoringPictureScreen}
+      />
+      <RootStack.Screen
         name="SelectFairytaleScreen"
         component={SelectFairytaleScreen}
+      />
+      <RootStack.Screen
+        name="ReadFairytaleScreen"
+        component={ReadFairytaleScreen}
       />
       <RootStack.Screen
         name="UploadPicture1Screen"
