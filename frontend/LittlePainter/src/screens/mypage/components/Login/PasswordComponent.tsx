@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -27,9 +27,16 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
   navigation,
   selectComponent,
 }) => {
+  const passwordInputRef = useRef(null);
+  const passwordConfirmInputRef = useRef(null);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [checkPassword, setCheckPassword] = useState(false);
   const [showText1, setShowText1] = useState(true);
+
+  const moveToPasswordConfirmInput = () => {
+    passwordConfirmInputRef.current.focus();
+  };
+
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
     selectComponent(newComponentName);
@@ -93,11 +100,13 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
                 />
               </Text>
               <TextInput
+                ref={passwordInputRef}
                 placeholder="비밀번호"
                 placeholderTextColor={'black'}
                 style={styles.loginInputText}
                 onChangeText={text => checkShow(text)}
                 secureTextEntry={true}
+                onSubmitEditing={() => moveToPasswordConfirmInput()}
               />
             </View>
           </View>
@@ -110,11 +119,13 @@ const PasswordComponents: React.FC<PasswordComponentsProps> = ({
               />
             </Text>
             <TextInput
+              ref={passwordConfirmInputRef}
               placeholder="비밀번호 확인"
               placeholderTextColor={'black'}
               style={styles.loginInputText}
               onChangeText={text => checkThis(text)}
               secureTextEntry={true}
+              onSubmitEditing={() => goNext()}
             />
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>

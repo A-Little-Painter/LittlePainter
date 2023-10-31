@@ -1,11 +1,13 @@
 import axios from 'axios';
 import {BASE_URL} from '../baseUrl';
+import {Alert} from 'react-native';
 
 export const signUp = async data => {
   console.log(data);
   try {
     const response = await axios.post(`${BASE_URL}/auth/signup`, data);
     console.log('success');
+    Alert.alert('정상적으로 가입 되었습니다.');
     return response;
   } catch (error) {
     console.log('fail');
@@ -56,5 +58,17 @@ export const authCode = async (data, setCodeConfirm) => {
     const response = error.response;
     setCodeConfirm(false);
     return response;
+  }
+};
+
+export const signIn = async data => {
+  console.log(data);
+  try {
+    const response = await axios.post(`${BASE_URL}/auth/signin`, data);
+    console.log('success');
+    return response.data;
+  } catch (error) {
+    console.log('fail');
+    return null;
   }
 };
