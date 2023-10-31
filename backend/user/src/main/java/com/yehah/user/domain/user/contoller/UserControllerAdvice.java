@@ -12,21 +12,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class UserControllerAdvice {
     @ExceptionHandler
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
-        return ResponseEntity.status(404).body(e.getMessage());
+        return ResponseEntity.status(514).body(e.getMessage());
     }
 
     @ExceptionHandler
     public ResponseEntity<String> handleDTOConversionException(DTOConversionException e) {
-        return ResponseEntity.status(402).body(e.getMessage());
+        return ResponseEntity.status(513).body(e.getMessage());
     }
 
     @ExceptionHandler
     public ResponseEntity<String> handleDatabaseException(DatabaseException e){
-        return ResponseEntity.status(400).body(e.getMessage());
+        return ResponseEntity.status(511).body(e.getMessage());
     }
 
     @ExceptionHandler
     public ResponseEntity<String> handleNoDataFoundException(NoDataFoundException e){
-        return ResponseEntity.status(401).body(e.getMessage());
+        return ResponseEntity.status(512).body(e.getMessage());
     }
 }
