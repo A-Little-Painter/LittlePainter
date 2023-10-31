@@ -1,8 +1,11 @@
 package com.yehah.user.domain.user.service;
 
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
+import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
+import com.yehah.user.domain.user.repository.IconRepository;
 import com.yehah.user.domain.user.repository.UserRepository;
 import com.yehah.user.domain.userAuth.entity.Child;
+import com.yehah.user.domain.userAuth.entity.Icon;
 import com.yehah.user.domain.userAuth.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final IconRepository iconRepository;
 
 
     //User클래스에 있는 child를 가져오는 메소드
@@ -33,7 +37,11 @@ public class UserServiceImpl implements UserService{
                 .orElse(Collections.emptyList());
     }
 
-    //TODO : IconUrl DB에 넣기
+    public List<GetIconsResponseDTO> getIcons(){
+        return iconRepository.findAll().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
 
     public ChildrenResponseDTO toDTO(Child child){
         return ChildrenResponseDTO.builder()
@@ -41,6 +49,13 @@ public class UserServiceImpl implements UserService{
                 .nickname(child.getNickname())
                 .birthday(child.getBirthday())
                 .iconUrl(child.getIcon().getUrlIcon())
+                .build();
+    }
+
+    public GetIconsResponseDTO toDTO(Icon icon){
+        return GetIconsResponseDTO.builder()
+                .iconId(icon.getId())
+                .iconUrl(icon.getUrlIcon())
                 .build();
     }
 
