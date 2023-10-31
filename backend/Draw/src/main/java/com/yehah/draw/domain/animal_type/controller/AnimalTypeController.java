@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequestMapping("/api/v1/animal-type")
+@RequestMapping("/api/v1/draws/animal-types")
 @RestController
 @RequiredArgsConstructor
 public class AnimalTypeController {
