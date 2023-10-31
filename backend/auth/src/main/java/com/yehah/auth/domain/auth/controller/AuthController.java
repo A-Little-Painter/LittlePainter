@@ -56,9 +56,9 @@ public class AuthController {
 
     //회원가입
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDTO signUpRequestDTO){
-        authService.signup(signUpRequestDTO);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> signUp(@RequestBody SignUpRequestDTO signUpRequestDTO){
+
+        return authService.signup(signUpRequestDTO);
     }
 
     //로그인
