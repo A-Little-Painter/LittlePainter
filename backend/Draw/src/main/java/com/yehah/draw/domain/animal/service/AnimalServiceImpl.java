@@ -18,8 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnimalServiceImpl implements AnimalService {
 
-    @Autowired
-    public AnimalRepository animalRepository;
+    public final AnimalRepository animalRepository;
 
     public List<AnimalResDto> getAnimalList(){
         List<AnimalResDto> animalList = new ArrayList<>();

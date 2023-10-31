@@ -8,7 +8,6 @@ import com.yehah.draw.global.communication.CommMethod;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +24,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/draws/animals")
 public class AnimalController {
+
     @Value("${micro.path.similarityCheck}")
     private String similarityUrl;
 
     @Value("${micro.path.image}")
     private String imageUrl;
-
 
     private final AnimalService animalService;
 
@@ -89,28 +88,21 @@ public class AnimalController {
 
     // TODO : 내가 그린 이미지 S3에 저장하기
     @PostMapping
-    public ResponseEntity<Void> saveUserImage(@RequestPart MultipartFile userImageFile) throws IOException {
+    public ResponseEntity<Void> saveUserImage(@RequestParam("file") MultipartFile file) throws IOException {
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
         // TODO : contextHolder에서 userId 가져오기
-        bodyData.set("userId", 1);
-        bodyData.set("category", AnimalType.ANIMAL);
-        bodyData.set("image", userImageFile);
+        bodyData.set("userId", 1L);
+        bodyData.set("category", AnimalType.animal.name());
+        bodyData.set("image", file.getResource());
 
-
-        log.info(imageUrl);
-
-        String result = commMethod.postMultipartMethod(bodyData, imageUrl+"/comm/myWork");
-
-        return ResponseEntity.ok().build();
+        try{
+            commMethod.postMultipartMethod(bodyData, imageUrl+"/comm/myWork");
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return ResponseEntity.status(201).build();
+        }
     }
 
-    //        ByteArrayResource userImageResource = new ByteArrayResource(userImageFile.getBytes()){
-//            @Override
-//            public String getFilename() {
-//                return "file.jpg";
-//            }
-//        };
-//        bodyData.add("file", userImageResource);
 
 }
