@@ -1,8 +1,6 @@
 package com.yehah.auth.domain.auth.controller;
 
-import com.yehah.auth.domain.auth.exception.ExpiredAuthCodeException;
-import com.yehah.auth.domain.auth.exception.InvalidCodeException;
-import com.yehah.auth.domain.auth.exception.SignInException;
+import com.yehah.auth.domain.auth.exception.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,16 +9,26 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class AuthControllerAdvice {
     @ExceptionHandler
     public ResponseEntity<?> handleExpiredAuthCodeException(ExpiredAuthCodeException e){
-        return ResponseEntity.status(409).body(e.getMessage());
+        return ResponseEntity.status(503).body(e.getMessage());
     }
 
     @ExceptionHandler
     public ResponseEntity<?> handleInvalidCodeException(InvalidCodeException e){
-        return ResponseEntity.status(404).body(e.getMessage());
+        return ResponseEntity.status(504).body(e.getMessage());
+    }
+
+//    @ExceptionHandler
+//    public ResponseEntity<?> handleSignInException(SignInException e){
+//        return ResponseEntity.status(401).body(e.getMessage());
+//    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleEmailSendingException(EmailSendingException e){
+        return ResponseEntity.status(501).body(e.getMessage());
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleSignInException(SignInException e){
-        return ResponseEntity.status(401).body(e.getMessage());
+    public ResponseEntity<?> handleDatabaseInsertException(DatabaseInsertException e){
+        return ResponseEntity.status(502).body(e.getMessage());
     }
 }

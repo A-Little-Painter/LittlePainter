@@ -1,5 +1,6 @@
 package com.yehah.auth.domain.auth.service;
 
+import com.yehah.auth.domain.auth.dto.request.CheckAuthCodeRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
 import com.yehah.auth.domain.auth.dto.response.TokenResponseDTO;
@@ -15,9 +16,9 @@ public interface AuthService {
 
     public void sendAuthCode(String email);
 
-    public EmailAuth getEmailAuth(String authCode);
+    public ResponseEntity<?> getEmailAuth(CheckAuthCodeRequestDTO checkAuthCodeRequestDTO);
 
-    public void deleteEmailAuth(String email);
+//    public void deleteEmailAuth(String email);
 
     public ResponseEntity<?> signup(SignUpRequestDTO signUpRequestDTO);
 

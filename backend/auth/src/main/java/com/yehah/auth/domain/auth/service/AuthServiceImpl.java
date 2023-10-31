@@ -1,5 +1,6 @@
 package com.yehah.auth.domain.auth.service;
 
+import com.yehah.auth.domain.auth.dto.request.CheckAuthCodeRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
 import com.yehah.auth.domain.auth.dto.response.TokenResponseDTO;
@@ -61,13 +62,13 @@ public class AuthServiceImpl implements AuthService{
 
     }
 
-    public EmailAuth getEmailAuth(String authCode){
-        return emailService.getEmailAuth(authCode);
+    public ResponseEntity<?> getEmailAuth(CheckAuthCodeRequestDTO checkAuthCodeRequestDTO){
+        return emailService.getEmailAuth(checkAuthCodeRequestDTO);
     }
 
-    public void deleteEmailAuth(String email){
-        emailService.deletEmailAuth(email);
-    }
+//    public void deleteEmailAuth(String email){
+//        emailService.deletEmailAuth(email);
+//    }
 
     //회원가입
     @Transactional
