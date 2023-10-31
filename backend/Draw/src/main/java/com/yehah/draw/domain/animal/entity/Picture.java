@@ -1,6 +1,6 @@
 package com.yehah.draw.domain.animal.entity;
 
-import com.yehah.draw.global.webSocket.entity.WebSocketType;
+import com.yehah.draw.global.common.AnimalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Picture {
-    private WebSocketType type; // ANIMAL, FRIEND, TALE
+    private AnimalType type; // ANIMAL, FRIEND, TALE
     private Long id;
     private String sessionId;
 }
