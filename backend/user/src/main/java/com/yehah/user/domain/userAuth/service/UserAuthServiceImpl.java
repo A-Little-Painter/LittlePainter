@@ -1,5 +1,7 @@
 package com.yehah.user.domain.userAuth.service;
 
+import com.yehah.user.domain.user.exception.DatabaseException;
+import com.yehah.user.domain.user.exception.NoDataFoundException;
 import com.yehah.user.domain.user.repository.IconRepository;
 import com.yehah.user.domain.userAuth.dto.SignUpRequestDTO;
 import com.yehah.user.domain.userAuth.entity.Child;
@@ -31,7 +33,6 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     private final JwtProvider jwtProvider;
 
-//    @Transactional(readOnly = true)
     public void checkEmail(String email){
         if(userAuthRepository.existsByEmail(email)){
             throw new AlreadyUsedEmailException("이미 사용중인 이메일입니다.");
@@ -39,8 +40,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     public void signup(SignUpRequestDTO signUpRequestDTO){
-        Icon icon = iconRepository.findById(1L).orElseThrow(() -> new RuntimeException("Icon not found"));
-
+        Icon icon = iconRepository.findById(1L).orElseThrow(() -> new NoDataFoundException("아이콘을 찾을 수 없음"));
 
         Child child = Child.builder()
                 .nickname(signUpRequestDTO.getChildName())
@@ -54,8 +54,11 @@ public class UserAuthServiceImpl implements UserAuthService {
                 .tts(true)
                 .child(child)
                 .build();
-
-        userAuthRepository.save(user);
+        try{
+            userAuthRepository.save(user);
+        }catch (Exception e){
+            throw new DatabaseException("DB에 저장할 수 없습니다.");
+        }
     }
 
     public ResponseEntity<?> signIn(String email, String password) {
@@ -67,13 +70,15 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         Token token = jwtProvider.generateToken(user.getEmail(), user.getRole());
 
-        refreshTokenRedisRepository.save(RefreshToken.builder()
-                .email(user.getEmail())
-                .refreshToken(token.getRefreshToken())
-                .build());
+        try{
+            refreshTokenRedisRepository.save(RefreshToken.builder()
+                    .email(user.getEmail())
+                    .refreshToken(token.getRefreshToken())
+                    .build());
 
-
-
+        }catch (Exception e) {
+            throw new DatabaseException("DB에 저장할 수 없습니다.");
+        }
         return ResponseEntity.ok().body(token);
     }
 }
