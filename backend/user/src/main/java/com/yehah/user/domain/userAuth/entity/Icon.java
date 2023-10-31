@@ -15,4 +15,7 @@ public class Icon {
     @Column(nullable = false)
     private String urlIcon;
 
+    @OneToOne(mappedBy = "icon", cascade = CascadeType.ALL)
+    private Child child;
+
 }

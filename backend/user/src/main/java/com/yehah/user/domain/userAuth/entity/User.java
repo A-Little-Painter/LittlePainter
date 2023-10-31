@@ -1,5 +1,7 @@
 package com.yehah.user.domain.userAuth.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yehah.user.domain.userAuth.enums.Role;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,14 +31,19 @@ public class User {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean tts;
 
+//    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Child> children = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Builder
     public User(String email, String password, boolean tts, Child child){
         this.email = email;
         this.password = password;
         this.tts = tts;
+        this.role = Role.ROLE_USER;
         if(child != null) {
             addChild(child);
         }
