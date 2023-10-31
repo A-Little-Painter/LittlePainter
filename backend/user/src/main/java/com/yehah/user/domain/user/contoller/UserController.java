@@ -43,4 +43,10 @@ public class UserController {
 
         return userService.addChild(addChildRequestDTO);
     }
+
+    //음성 설정(tts 설정)
+    @PatchMapping("/sound")
+    public ResponseEntity<?> switchSound(){
+        return userService.switchSound();
+    }
 }

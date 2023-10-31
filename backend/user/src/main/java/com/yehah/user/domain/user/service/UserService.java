@@ -15,4 +15,6 @@ public interface UserService {
     public List<GetIconsResponseDTO> getIcons();
 
     public ResponseEntity<?> addChild(AddChildRequestDTO addChildRequestDTO);
+
+    public ResponseEntity<?> switchSound();
 }

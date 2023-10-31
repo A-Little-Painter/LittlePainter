@@ -82,6 +82,18 @@ public class UserServiceImpl implements UserService{
                 .orElse(ResponseEntity.badRequest().build());
     }
 
+    public ResponseEntity<?> switchSound(){
+        User user = getLoginUser();
+        log.info("user.getEmail() "+user.getEmail());
+        return userRepository.findById(user.getId())
+                .map(userFromDB -> {
+                    userFromDB.toggleTts();
+                    userRepository.save(userFromDB);
+                    return ResponseEntity.ok().build();
+                })
+                .orElse(ResponseEntity.badRequest().build());
+    }
+
 
 
     private User getLoginUser() {

@@ -55,4 +55,8 @@ public class User {
             child.setUser(this);
         }
     }
+
+    public void toggleTts() {
+        this.tts = !this.tts;
+    }
 }
