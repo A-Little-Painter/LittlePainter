@@ -1,5 +1,7 @@
 package com.yehah.user.domain.user.contoller;
 
+import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
+import com.yehah.user.domain.user.dto.response.AddChildResponseDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
 import com.yehah.user.domain.user.service.UserService;
@@ -35,9 +37,10 @@ public class UserController {
         return ResponseEntity.ok(icons);
     }
 
-//    //아이 추가
-//    @PostMapping("/child")
-//    public ResponseEntity<?> addChild(){
-//        return ResponseEntity.ok().build();
-//    }
+    //아이 추가
+    @PostMapping("/child")
+    public ResponseEntity<?> addChild(@RequestBody AddChildRequestDTO addChildRequestDTO){
+
+        return userService.addChild(addChildRequestDTO);
+    }
 }

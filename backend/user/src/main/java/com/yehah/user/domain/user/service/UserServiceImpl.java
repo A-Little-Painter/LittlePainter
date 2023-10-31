@@ -1,5 +1,6 @@
 package com.yehah.user.domain.user.service;
 
+import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
 import com.yehah.user.domain.user.repository.IconRepository;
@@ -7,6 +8,7 @@ import com.yehah.user.domain.user.repository.UserRepository;
 import com.yehah.user.domain.userAuth.entity.Child;
 import com.yehah.user.domain.userAuth.entity.Icon;
 import com.yehah.user.domain.userAuth.entity.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +59,27 @@ public class UserServiceImpl implements UserService{
                 .iconId(icon.getId())
                 .iconUrl(icon.getUrlIcon())
                 .build();
+    }
+
+    @Transactional
+    public ResponseEntity<?> addChild(AddChildRequestDTO addChildRequestDTO){
+        User user = getLoginUser();
+        log.info("user.getEmail() "+user.getEmail());
+        Icon icon = iconRepository.findById(addChildRequestDTO.getIconId())
+                .orElseThrow(() -> new IllegalArgumentException("아이콘을 찾을 수 없습니다."));
+        return userRepository.findById(user.getId())
+                .map(userFromDB -> {
+                    Child child = Child.builder().
+                            nickname(addChildRequestDTO.getNickname())
+                            .birthday(addChildRequestDTO.getBirthday())
+                            .icon(icon)
+                            .build();
+                    child.setUser(userFromDB);
+                    userFromDB.getChildren().add(child);
+                    userRepository.save(userFromDB);
+                    return ResponseEntity.ok().build();
+                })
+                .orElse(ResponseEntity.badRequest().build());
     }
 
 

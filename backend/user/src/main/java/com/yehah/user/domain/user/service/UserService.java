@@ -1,5 +1,6 @@
 package com.yehah.user.domain.user.service;
 
+import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
 import com.yehah.user.domain.userAuth.entity.Child;
@@ -12,4 +13,6 @@ public interface UserService {
     public List<ChildrenResponseDTO> getChildren();
 
     public List<GetIconsResponseDTO> getIcons();
+
+    public ResponseEntity<?> addChild(AddChildRequestDTO addChildRequestDTO);
 }
