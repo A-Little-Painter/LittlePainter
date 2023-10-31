@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yehah.draw.domain.friends_animal.dto.response.FriendsAnimalListResponse;
-import com.yehah.draw.domain.friends_animal.service.FriendsAnimalService;
+import com.yehah.draw.domain.friends_animal.service.FriendsAnimalServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/v1/draws/friends")
 public class FriendsAnimalController {
 
-	private final FriendsAnimalService friendsAnimalService;
+	private final FriendsAnimalServiceImpl friendsAnimalServiceImpl;
 
 	@Operation(summary = "친구의 동물 전체 목록을 조회", description = "친구의 동물 전체 목록을 페이징 처리하여 리턴한다.")
 	@GetMapping("")
 	public ResponseEntity<Slice<FriendsAnimalListResponse>> getFriendsAnimals(@RequestParam(name = "animalType", required = false) String animalTypeName, @RequestParam(value = "page", defaultValue = "0") int page){
 		log.debug("getFriendsAnimals() : animalTypeName = {}, page = {}, ", animalTypeName, page);
-		return ResponseEntity.ok(friendsAnimalService.getFriendsAnimals(animalTypeName, page));
+		return ResponseEntity.ok(friendsAnimalServiceImpl.getFriendsAnimals(animalTypeName, page));
 	}
 }
