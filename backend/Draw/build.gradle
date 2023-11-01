@@ -58,6 +58,8 @@ dependencies {
     // @Valid
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.2'
 
+    // webclient
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
 }
 
 dependencyManagement {

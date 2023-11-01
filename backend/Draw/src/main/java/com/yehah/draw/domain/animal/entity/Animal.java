@@ -18,22 +18,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Animal {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(length = 20, nullable = false)
-	private String animalType;
+	private String animalType; // 동물 종류 ex) 토끼, 사슴
 
 	@Column(columnDefinition = "TEXT", nullable = false)
-	private String detail;
+	private String detail; // 동물에 대한 설명
 
 	@Column(length = 200, nullable = false)
-	private String urlOriginal;
+	private String urlOriginal; // 원본 url
 
 	@Column(length = 200, nullable = false)
-	private String urlTrace;
+	private String urlTrace; // 테두리 url
 
-	@Column(length = 200, nullable = false)
-	private String urlSound;
+	@Column(length = 200)
+	private String urlSound; // 동물의 울음소리
 }

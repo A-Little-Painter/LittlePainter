@@ -29,6 +29,9 @@ public class FriendsAnimal {
 	@JoinColumn(name = "animal_type_id")
 	private AnimalType animalType;
 
+	@Column(name = "user_email", length = 50, nullable = false)
+	private String userEmail;
+
 	@Column(length = 50, nullable = false)
 	private String title;
 

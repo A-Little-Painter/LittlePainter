@@ -17,5 +17,3 @@ eureka:
 
 encrypt:
   key: ${ENCRYPT_KEY}
-
-
