@@ -15,6 +15,7 @@ import CompleteDrawAnimalScreen from '../screens/drawAnimal/CompleteDrawAnimalSc
 import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
 import DrawPictureScreen from '../screens/drawPicture/DrawPictureScreen';
 import ColoringPictureScreen from '../screens/drawPicture/ColoringPictureScreen';
+import CompleteDrawPictureScreen from '../screens/drawPicture/CompleteDrawPictureScreen';
 // 동화그리기
 import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
 import ReadFairytaleScreen from '../screens/fairytale/Fairtytale1Screen.tsx/ReadFairytaleScreen';
@@ -43,7 +44,9 @@ export type RootStackParams = {
   LoginScreen: undefined;
   MypageProfileScreen: undefined;
   SelectAnimalScreen: undefined;
-  DrawAnimalScreen: undefined;
+  DrawAnimalScreen: {
+    animalId: number;
+  };
   ColoringAnimalScreen: {
     // completeLineUri: string;
     completeLine: {path: string; color: string; strokeWidth: number}[];
@@ -125,6 +128,10 @@ export default function AppNavigator() {
       <RootStack.Screen
         name="ColoringPictureScreen"
         component={ColoringPictureScreen}
+      />
+      <RootStack.Screen
+        name="CompleteDrawPictureScreen"
+        component={CompleteDrawPictureScreen}
       />
       <RootStack.Screen
         name="SelectFairytaleScreen"

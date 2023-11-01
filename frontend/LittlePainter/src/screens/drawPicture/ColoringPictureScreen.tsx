@@ -162,7 +162,7 @@ export default function ColoringPictureScreen({
   };
 
   const handleGoComplete = () => {
-    navigation.navigate('CompleteDrawAnimalScreen', {
+    navigation.navigate('CompleteDrawPictureScreen', {
       completeDrawUri: captureImagePath,
     });
   };
@@ -308,7 +308,7 @@ export default function ColoringPictureScreen({
           style={[styles.middleContainer, {backgroundColor: 'white'}]}
           ref={captureRef}
           options={{
-            fileName: 'drawAnimalCapture',
+            fileName: 'drawPictureCapture',
             format: 'jpg',
             quality: 0.9,
           }}>

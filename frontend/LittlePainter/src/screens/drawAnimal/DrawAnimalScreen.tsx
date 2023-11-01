@@ -28,6 +28,7 @@ import {
   handleisOriginCompareModalVisible,
   handleDrawColorSelect,
 } from '../../redux/slices/draw/draw';
+import {animalBorder} from '../../apis/draw/draw';
 
 type DrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -48,7 +49,29 @@ const fastcolorData = [
   '#000000',
 ];
 
-export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
+export default function DrawAnimalScreen({
+  route,
+  navigation,
+}: DrawAnimalScreenProps) {
+  const [animalId] = useState<number>(route.params.animalId);
+  const [animalBorderURI, setAnimalBorderURI] = useState<string>('');
+  const handleAnimalBorder = async () => {
+    try {
+      const response = await animalBorder(animalId);
+      if (response.status === 200) {
+        console.log('선택 동물 테두리 가져오기 성공', response.data);
+        setAnimalBorderURI(response.data);
+      } else {
+        console.log('선택 동물 테두리 가져오기 실패', response.status);
+      }
+    } catch (error) {
+      console.log('선택 동물 테두리 가져오기 실패', error);
+    }
+  };
+  useEffect(() => {
+    handleAnimalBorder();
+  }, []);
+
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
@@ -315,15 +338,11 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             source={require('../../assets/images/animalImage/deerTest1.png')}
             style={{}}
             resizeMode="center"> */}
-          {isToCaptureDrawing ? null : (
+          {animalBorderURI === '' || isToCaptureDrawing ? null : (
             <Image
-              style={{
-                position: 'absolute',
-                width: windowWidth,
-                height: windowHeight * 0.8,
-                resizeMode: 'contain',
-              }}
-              source={require('../../assets/images/animalImage/deerTest1.png')}
+              style={styles.borderImage}
+              source={{uri: animalBorderURI}}
+              // source={require('../../assets/images/animalImage/deerTest1.png')}
             />
           )}
 
@@ -519,6 +538,12 @@ const styles = StyleSheet.create({
   middleContainer: {
     flex: 0.8,
     // borderWidth: 1,
+  },
+  borderImage: {
+    position: 'absolute',
+    width: windowWidth,
+    height: windowHeight * 0.8,
+    resizeMode: 'contain',
   },
   bottomContainer: {
     borderTopWidth: 1,

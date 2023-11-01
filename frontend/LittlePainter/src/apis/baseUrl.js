@@ -1,7 +1,8 @@
 // import axios from 'axios';
 // import * as Keychain from 'react-native-keychain';
 
-export const BASE_URL = 'https://k9d106.p.ssafy.io:9001/api/v1';
+export const BASE_URL = 'http://k9d106.p.ssafy.io:8300/api/v1';
+// export const BASE_URL = 'https://k9d106.p.ssafy.io:9001/api/v1';
 
 // const getToken = () => {
 //   Keychain.getGenericPassword('authTokens');
