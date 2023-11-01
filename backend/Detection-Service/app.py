@@ -16,7 +16,7 @@ UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-@app.route('/api/v1/comm/detect', methods=['POST'])
+@app.route('/api/v1/detection/comm/detect', methods=['POST'])
 def detect_objects():
 
     if 'file' not in request.files:
