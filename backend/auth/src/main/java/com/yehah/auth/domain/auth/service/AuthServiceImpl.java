@@ -4,6 +4,7 @@ import com.yehah.auth.domain.auth.dto.request.CheckAuthCodeRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.RefreshTokenRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
+import com.yehah.auth.domain.auth.dto.response.SignInResponseDTO;
 import com.yehah.auth.domain.auth.dto.response.TokenResponseDTO;
 import com.yehah.auth.global.email.EmailService;
 import com.yehah.auth.global.redis.entity.EmailAuth;
@@ -106,7 +107,7 @@ public class AuthServiceImpl implements AuthService{
                     .uri(path)
                     .bodyValue(signInRequestDTO)
                     .retrieve()
-                    .toEntity(TokenResponseDTO.class).block();
+                    .toEntity(SignInResponseDTO.class).block();
         }catch(WebClientResponseException e){
             if(e.getStatusCode().is5xxServerError()){
                 return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
