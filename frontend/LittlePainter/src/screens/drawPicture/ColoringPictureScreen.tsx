@@ -1,4 +1,3 @@
-// import React, {useCallback, useEffect, useRef, useState} from 'react';
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -9,10 +8,10 @@ import {
   Image,
   Pressable,
   ToastAndroid, // 토스트안드로이드 잠깐 사용
+  BackHandler,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
-import ImagePicker from 'react-native-image-crop-picker';
 import {Svg, Path} from 'react-native-svg';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -21,26 +20,44 @@ import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
-import OriginCompareModal from '../modals/OriginCompareModal';
+import OriginPictureModal from '../modals/OriginPictureModal';
 import DrawColorPaletteModal from '../modals/DrawColorPaletteModal';
 import DrawScreenshotModal from '../modals/DrawScreenshotModal';
 import {
   handleLineThickness,
-  handleisOriginCompareModalVisible,
+  handleisOriginPictureModalVisible,
   handleisDrawLineThicknessModalVisible,
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
-  handleIsDrawScreenshotModalVisible,
 } from '../../redux/slices/draw/draw';
 
-type DrawAnimalScreenProps = StackScreenProps<
+type ColoringPictureScreenProps = StackScreenProps<
   RootStackParams,
-  'DrawAnimalScreen'
+  'ColoringPictureScreen'
 >;
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
+
+const fastcolorData = [
+  '#FF0000',
+  '#FF7A00',
+  '#FAFF00',
+  '#05FF00',
+  '#0500FF',
+  '#0300AA',
+  '#9E00FF',
+  '#000000',
+];
+
+export default function ColoringPictureScreen({
+  route,
+  navigation,
+}: ColoringPictureScreenProps) {
+  // const [completeLineUri] = useState(route.params.completeLineUri);
+  const [completeLine] = useState(route.params.completeLine);
+  // 뒤로가기 변수
+  const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
   const captureRef = useRef();
 
@@ -63,8 +80,8 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const isDrawLineThicknessModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
   );
-  const isOriginCompareModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginCompareModalVisible,
+  const isOriginPictureModalVisible = useSelector(
+    (state: RootState) => state.draw.isOriginPictureModalVisible,
   );
   // 선 색깔 및 모달
   const isDrawColorPaletteModalVisible = useSelector(
@@ -77,33 +94,13 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const isDrawScreenshotModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawScreenshotModalVisible,
   );
-
-  // 캡쳐 이미지 조정하기
-  const [croppedImage, setCroppedImage] = useState<string>('');
-  const cropAndDisplayImage = async (captureUri: string) => {
-    try {
-      const image = await ImagePicker.openCropper({
-        path: captureUri,
-        width: 400,
-        height: 400,
-        cropping: false,
-        mediaType: 'photo',
-      });
-      setCroppedImage(image.path);
-      dispatch(handleIsDrawScreenshotModalVisible(true));
-    } catch (error) {
-      console.error('Image cropping error:', error);
-    }
-  };
+  const [captureImagePath, setCaptureImagePath] = useState<string>('');
 
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
     const locationX = event.nativeEvent.locationX;
     const locationY = event.nativeEvent.locationY;
     const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    // const point = `M${locationX.toFixed(0)},${locationY.toFixed(
-    //   0,
-    // )} L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
     setCurrentPath(point);
     setTmpPaths([]);
   };
@@ -115,7 +112,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     setCurrentPath(prevPath => prevPath + newPoint);
   };
 
-  const [captureImagePath, setCaptureImagePath] = useState<string>('');
   const onTouchEnd = () => {
     if (currentPath) {
       setPaths([
@@ -127,19 +123,17 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     setClearButtonClicked(false);
     captureRef.current.capture().then((uri: string) => {
       console.log('do something with ', uri);
-      ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
       setCaptureImagePath(uri);
-      cropAndDisplayImage(uri);
     });
   };
 
   const handleClearButtonClick = () => {
-    // setTmpPaths([...tmpPaths, ...paths]);
     setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
     setClearButtonClicked(true);
     setClearButtonClicked(false);
+    setCaptureImagePath('');
   };
 
   const handlePrevButtonClick = () => {
@@ -149,6 +143,10 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
     }
+    captureRef.current.capture().then((uri: string) => {
+      console.log('do something with ', uri);
+      setCaptureImagePath(uri);
+    });
   };
   const handleNextButtonClick = () => {
     const tmpPosition:
@@ -157,16 +155,63 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     if (tmpPosition) {
       setPaths([...paths, tmpPosition]);
     }
+    captureRef.current.capture().then((uri: string) => {
+      console.log('do something with ', uri);
+      setCaptureImagePath(uri);
+    });
+  };
+
+  const handleGoComplete = () => {
+    navigation.navigate('CompleteDrawAnimalScreen', {
+      completeDrawUri: captureImagePath,
+    });
   };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
-      dispatch(handleLineThickness(10));
+      dispatch(handleLineThickness(25));
+      dispatch(handleDrawColorSelect('#05FF00'));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
   }, [dispatch, navigation]);
+
+  //뒤로가기 2번시 뒤로가기
+  useEffect(() => {
+    const backAction = () => {
+      if (navigation.isFocused()) {
+        // Check if the MainScreen is focused
+        if (backHandleNum === 0) {
+          setBackHandleNum(1);
+          ToastAndroid.show(
+            '뒤로가기를 한 번 더 누르면 선택화면으로 돌아갑니다.',
+            ToastAndroid.SHORT,
+          );
+          setTimeout(() => {
+            setBackHandleNum(0);
+          }, 1000);
+          return true; // 뒤로가기 이벤트 무시하지 않도록 설정
+        } else if (backHandleNum === 1) {
+          navigation.navigate('SelectAnimalScreen');
+        }
+        return true;
+      }
+      return false; // 다른 페이지에서는 뒤로가기 이벤트를 처리하지 않음
+    };
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, [backHandleNum, navigation]);
+
+  useEffect(() => {
+    captureRef.current.capture().then((uri: string) => {
+      console.log('do something with ', uri);
+      setCaptureImagePath(uri);
+    });
+  }, []);
 
   return (
     <View style={styles.mainContainer}>
@@ -220,58 +265,18 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
               </Text>
             </TouchableOpacity>
             {/* 색깔 */}
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#FF0000'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#FF0000'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#FF7A00'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#FF7A00'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#FAFF00'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#FAFF00'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#05FF00'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#05FF00'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#0500FF'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#0500FF'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#0300AA'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#0300AA'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#9E00FF'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#9E00FF'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#000000'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#000000'));
-              }}
-            />
+            {fastcolorData.map((color, index) => (
+              <Pressable
+                key={index}
+                style={[styles.colorCircle, {backgroundColor: color}]}
+                onPress={() => {
+                  dispatch(handleDrawColorSelect(color));
+                }}
+              />
+            ))}
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
-                // dispatch(handleDrawColorSelect('#FF0000'));
                 dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image
@@ -332,6 +337,17 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
                 strokeLinejoin={'round'}
                 strokeLinecap={'round'}
               />
+              {completeLine.map((item, index) => (
+                <Path
+                  key={`path-${index}`}
+                  d={item.path}
+                  stroke={isClearButtonClicked ? 'transparent' : item.color}
+                  fill={'transparent'}
+                  strokeWidth={item.strokeWidth}
+                  strokeLinejoin={'round'}
+                  strokeLinecap={'round'}
+                />
+              ))}
             </Svg>
           </View>
           {/* </View> */}
@@ -343,12 +359,18 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
-                dispatch(handleisOriginCompareModalVisible(true));
+                dispatch(handleisOriginPictureModalVisible(true));
               }}>
+              {/* {captureImagePath ? (
+                <Image
+                  style={styles.ideaLight}
+                  // source={require('../../assets/images/ideaLight.png')}
+                  source={{uri: captureImagePath}}
+                />
+              ) : null} */}
               <Image
                 style={styles.ideaLight}
                 source={require('../../assets/images/ideaLight.png')}
-                // source={{uri: captureImagePath}}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -372,13 +394,19 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
           <View style={styles.bottomContainerMiddle}>
             <TouchableOpacity
               style={styles.clearButton}
-              onPress={handleClearButtonClick}>
+              onPress={() => {
+                handleClearButtonClick();
+              }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
             </TouchableOpacity>
           </View>
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
-            <TouchableOpacity style={styles.doneButton} onPress={() => {}}>
+            <TouchableOpacity
+              style={[styles.doneButton]}
+              onPress={() => {
+                handleGoComplete();
+              }}>
               <Text style={styles.doneButtonText}>완성하기</Text>
             </TouchableOpacity>
           </View>
@@ -387,11 +415,10 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginCompareModalVisible ? <OriginCompareModal /> : null}
+      {isOriginPictureModalVisible ? <OriginPictureModal /> : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
       {isDrawScreenshotModalVisible ? (
-        // <DrawScreenshotModal captureUri={captureImagePath} />
-        <DrawScreenshotModal captureUri={croppedImage} />
+        <DrawScreenshotModal captureUri={captureImagePath} />
       ) : null}
     </View>
   );
@@ -408,12 +435,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   topContainer: {
-    paddingHorizontal: windowWidth * 0.01,
     flex: 0.1,
     flexDirection: 'row',
-    width: '100%',
-    alignSelf: 'center',
     borderBottomWidth: 1,
+    // width: '95%',
+    paddingHorizontal: windowWidth * 0.025,
+    alignSelf: 'center',
   },
   topLeft: {
     flexDirection: 'row',
@@ -449,9 +476,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   colorCircle: {
-    width: windowWidth * 0.04,
-    height: windowWidth * 0.04,
-    borderRadius: windowWidth * 0.04 * 0.5,
+    width: windowHeight * 0.07,
+    height: windowHeight * 0.07,
+    borderRadius: windowHeight * 0.07 * 0.5,
     overflow: 'hidden',
   },
   topRight: {
@@ -476,12 +503,13 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
   },
   bottomContainer: {
+    borderTopWidth: 1,
+    // marginHorizontal: windowWidth * 0.01,
     paddingHorizontal: windowWidth * 0.01,
     flex: 0.1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderTopWidth: 1,
   },
   bottomContainerLeft: {
     flexDirection: 'row',

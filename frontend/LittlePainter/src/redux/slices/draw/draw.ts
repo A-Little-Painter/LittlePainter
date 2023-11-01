@@ -4,6 +4,7 @@ import type {RootState} from '../../store';
 interface CounterState {
   isDrawLineThicknessModalVisible: boolean;
   isOriginCompareModalVisible: boolean;
+  isOriginPictureModalVisible: boolean;
   LineThickness: number;
   isDrawColorPaletteModalVisible: boolean;
   drawColorSelect: string;
@@ -14,6 +15,7 @@ interface CounterState {
 const initialState: CounterState = {
   isDrawLineThicknessModalVisible: false,
   isOriginCompareModalVisible: false,
+  isOriginPictureModalVisible: false,
   LineThickness: 10,
   // 테스트 후 적용여부 결정
   isDrawColorPaletteModalVisible: false,
@@ -40,6 +42,12 @@ export const drawSlice = createSlice({
     ) => {
       state.isOriginCompareModalVisible = action.payload;
     },
+    handleisOriginPictureModalVisible: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.isOriginPictureModalVisible = action.payload;
+    },
     handleisDrawColorPaletteModalVisible: (
       state,
       action: PayloadAction<boolean>,
@@ -63,6 +71,7 @@ export const {
   handleLineThickness,
   handleisDrawLineThicknessModalVisible,
   handleisOriginCompareModalVisible,
+  handleisOriginPictureModalVisible,
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
   handleIsDrawScreenshotModalVisible,
@@ -72,6 +81,8 @@ export const isDrawLineThicknessModalVisible = (state: RootState) =>
   state.draw.isDrawLineThicknessModalVisible;
 export const isOriginCompareModalVisible = (state: RootState) =>
   state.draw.isOriginCompareModalVisible;
+export const isOriginPictureModalVisible = (state: RootState) =>
+  state.draw.isOriginPictureModalVisible;
 export const isDrawColorPaletteModalVisible = (state: RootState) => {
   state.draw.isDrawColorPaletteModalVisible;
 };

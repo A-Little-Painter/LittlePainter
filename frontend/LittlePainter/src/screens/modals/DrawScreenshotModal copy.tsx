@@ -1,10 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
   Dimensions,
-  useWindowDimensions,
   Modal,
   StyleSheet,
-  Text,
   Pressable,
   View,
   Image,
@@ -61,7 +59,7 @@ const DrawScreenshotModal = () => {
             dispatch(handleIsDrawScreenshotModalVisible(false));
           }}>
           <ViewShot
-            style={{flex:0.8}}
+            style={{flex: 0.8}}
             ref={captureRef}
             options={{
               fileName: 'drawAnimalCapture',
