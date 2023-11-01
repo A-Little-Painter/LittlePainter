@@ -2,6 +2,7 @@ package com.yehah.user.domain.user.service;
 
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
+import com.yehah.user.domain.user.dto.response.GetChildInfoResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
 import com.yehah.user.domain.userAuth.entity.Child;
 import com.yehah.user.domain.userAuth.entity.Icon;
@@ -20,4 +21,6 @@ public interface UserService {
     public ResponseEntity<?> switchSound();
 
     public User getUserInfo(String email);
+
+    public GetChildInfoResponseDTO getChildInfo(String email);
 }

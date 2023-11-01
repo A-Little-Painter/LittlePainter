@@ -3,6 +3,7 @@ package com.yehah.user.domain.user.service;
 import com.mysql.cj.exceptions.DataConversionException;
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
+import com.yehah.user.domain.user.dto.response.GetChildInfoResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
 import com.yehah.user.domain.user.exception.DTOConversionException;
 import com.yehah.user.domain.user.exception.DatabaseException;
@@ -60,7 +61,6 @@ public class UserServiceImpl implements UserService{
         }
 
         return icons;
-
     }
 
 
@@ -112,6 +112,16 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
     }
 
+    @Transactional
+    public GetChildInfoResponseDTO getChildInfo(String email){
+        log.info(email);
+        return userRepository.findByEmail(email)
+                .map(user -> GetChildInfoResponseDTO.builder()
+                        .userId(user.getId())
+                        .childId(user.getLastSelectedChildId())
+                        .build())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+    }
 
 
     private User getLoginUser() {
@@ -139,7 +149,7 @@ public class UserServiceImpl implements UserService{
                     .iconUrl(icon.getUrlIcon())
                     .build();
         }catch (Exception e){
-            throw new DTOConversionException("Child에서 DTO 변환 시 오류");
+            throw new DTOConversionException("ICON에서 DTO 변환 시 오류");
         }
 
     }

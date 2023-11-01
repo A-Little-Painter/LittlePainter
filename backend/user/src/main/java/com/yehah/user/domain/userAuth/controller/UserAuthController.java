@@ -1,12 +1,11 @@
 package com.yehah.user.domain.userAuth.controller;
 
-import com.yehah.user.domain.userAuth.dto.SignInRequestDTO;
-import com.yehah.user.domain.userAuth.dto.SignUpRequestDTO;
-import com.yehah.user.domain.userAuth.exception.AlreadyUsedEmailException;
+import com.yehah.user.domain.userAuth.dto.request.RefreshTokenRequestDTO;
+import com.yehah.user.domain.userAuth.dto.request.SignInRequestDTO;
+import com.yehah.user.domain.userAuth.dto.request.SignUpRequestDTO;
 import com.yehah.user.domain.userAuth.service.UserAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,5 +35,10 @@ public class UserAuthController {
         return userAuthService.signIn(signInRequestDTO.getEmail(), signInRequestDTO.getPassword());
     }
 
+    //리프레시 토큰 재발급
+    @PostMapping("/comm/refresh")
+    public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
+        return userAuthService.refresh(refreshTokenRequestDTO.getRefreshToken());
+    }
 
 }

@@ -25,7 +25,8 @@ public class Child {
     @Column
     private LocalDateTime deletedDate;
 
-    @OneToOne
+
+    @ManyToOne
     @JoinColumn(name = "icon_id")
     private Icon icon;
 
