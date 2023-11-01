@@ -28,5 +28,9 @@ public class Tale {
 	@Column(columnDefinition = "TEXT", nullable = false)
 	private String detail;
 
+	@Column(name = "max_page", nullable = false)
 	private int maxPage;
+
+	@Column(name = "url_cover", columnDefinition = "VARCHAR(200)", nullable = false)
+	private String urlCover;
 }

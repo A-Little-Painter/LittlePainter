@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.yehah.draw.domain.friends_animal.entity.FriendsAnimal;
 
 @Repository
-public interface FriendsAnimalRepository  extends JpaRepository<FriendsAnimal, Long> {
+public interface FriendsAnimalRepository extends JpaRepository<FriendsAnimal, Long> {
 	Optional<FriendsAnimal> findById(Long id);
 	Slice<FriendsAnimal> findSliceBy(Pageable pageable);
 
