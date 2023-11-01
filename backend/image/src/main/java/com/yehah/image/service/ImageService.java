@@ -23,7 +23,7 @@ public class ImageService {
 
 	private final S3Util s3Util;
 
-	public SaveImageResDto uploadMyPage(Long userId, String category, MultipartFile image) throws IOException {
+	public String uploadMyPage(Long userId, String category, MultipartFile image) throws IOException {
 		if(image.isEmpty()){
 			throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
 		} else if(category.isBlank()){
@@ -41,9 +41,7 @@ public class ImageService {
 		}
 		String dirName = "child-work/" + category +"/" + formattedDate;
 
-		return SaveImageResDto.builder()
-			.imageUrl(s3Util.upload(image, dirName))
-			.build();
+		return s3Util.upload(image, dirName);
 	}
 
 	public Mono<SaveMyAnimalResDto> uploadMyAnimalImage(MultipartFile originalImage, MultipartFile traceImage, Long userId) throws IOException {

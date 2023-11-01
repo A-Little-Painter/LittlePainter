@@ -29,9 +29,9 @@ public class ImageController {
 
 	@Operation(summary = "S3- 마이페이지에 그림 저장하기", description = "(draw -> image) aws s3에 마이페이지에 저장할 그림을 저장한다.")
 	@PostMapping(value = "/myWork")
-	public ResponseEntity<SaveImageResDto> uploadMyPage(@RequestParam Long userId,@RequestParam String category,@RequestParam MultipartFile image) throws IOException {
+	public String uploadMyPage(@RequestParam Long userId,@RequestParam String category,@RequestParam MultipartFile image) throws IOException {
 		log.info("uploadMyPage() : image = {}, category = {}, userId = {}", image, category, userId);
-		return ResponseEntity.status(201).body(imageService.uploadMyPage(userId, category, image));
+		return imageService.uploadMyPage(userId, category, image);
 	}
 
 	@Operation(summary = "S3- 내 동물 사진 올리기", description = "(최종본)(draw -> image) aws s3에 내 동물 사진 올리기에 업로드할 사진을 저장한다.")
