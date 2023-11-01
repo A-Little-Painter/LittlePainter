@@ -1,8 +1,10 @@
 package com.yehah.user.domain.user.contoller;
 
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
+import com.yehah.user.domain.user.dto.request.GetChildInfoRequestDTO;
 import com.yehah.user.domain.user.dto.response.AddChildResponseDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
+import com.yehah.user.domain.user.dto.response.GetChildInfoResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
 import com.yehah.user.domain.user.service.UserService;
 import com.yehah.user.domain.userAuth.entity.User;
@@ -86,5 +88,11 @@ public class UserController {
     public ResponseEntity<?> getUserInfo(@RequestBody String email){
         User user = userService.getUserInfo(email);
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/child-info")
+    public ResponseEntity<?> getChildInfo(@RequestBody GetChildInfoRequestDTO getChildInfoRequestDTO){
+        GetChildInfoResponseDTO getChildInfoResponseDTO = userService.getChildInfo(getChildInfoRequestDTO.getEmail());
+        return ResponseEntity.ok(getChildInfoResponseDTO);
     }
 }
