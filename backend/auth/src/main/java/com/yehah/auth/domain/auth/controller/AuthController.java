@@ -1,9 +1,6 @@
 package com.yehah.auth.domain.auth.controller;
 
-import com.yehah.auth.domain.auth.dto.request.CheckAuthCodeRequestDTO;
-import com.yehah.auth.domain.auth.dto.request.SendAuthCodeRequestDTO;
-import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
-import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
+import com.yehah.auth.domain.auth.dto.request.*;
 import com.yehah.auth.domain.auth.exception.ExpiredAuthCodeException;
 import com.yehah.auth.domain.auth.exception.InvalidCodeException;
 import com.yehah.auth.domain.auth.service.AuthService;
@@ -94,6 +91,18 @@ public class AuthController {
     public ResponseEntity<?> signIn(@RequestBody SignInRequestDTO signInRequestDTO){
 
         return authService.signIn(signInRequestDTO);
+    }
+
+    //토큰 재발급
+    @Operation(summary = "토큰 재발급", description = "AUTH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "토큰 재발급 성공"),
+            @ApiResponse(responseCode = "500", description = "토큰 재발급 실패"),
+            @ApiResponse(responseCode = "510", description = "토큰 재발급 실패")
+    })
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
+        return authService.refresh(refreshTokenRequestDTO);
     }
 
 }

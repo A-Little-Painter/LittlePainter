@@ -1,6 +1,7 @@
 package com.yehah.auth.domain.auth.service;
 
 import com.yehah.auth.domain.auth.dto.request.CheckAuthCodeRequestDTO;
+import com.yehah.auth.domain.auth.dto.request.RefreshTokenRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
 import com.yehah.auth.domain.auth.dto.response.TokenResponseDTO;
@@ -23,4 +24,6 @@ public interface AuthService {
     public ResponseEntity<?> signup(SignUpRequestDTO signUpRequestDTO);
 
     public ResponseEntity<?> signIn(SignInRequestDTO signInRequestDTO);
+
+    public ResponseEntity<?> refresh(RefreshTokenRequestDTO refreshTokenRequestDTO);
 }

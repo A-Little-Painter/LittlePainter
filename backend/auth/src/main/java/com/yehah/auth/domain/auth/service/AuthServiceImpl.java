@@ -1,6 +1,7 @@
 package com.yehah.auth.domain.auth.service;
 
 import com.yehah.auth.domain.auth.dto.request.CheckAuthCodeRequestDTO;
+import com.yehah.auth.domain.auth.dto.request.RefreshTokenRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
 import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
 import com.yehah.auth.domain.auth.dto.response.TokenResponseDTO;
@@ -134,4 +135,23 @@ public class AuthServiceImpl implements AuthService{
 //                });
 //    }
 
+    //토큰 재발급
+    public ResponseEntity<?> refresh(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        String path = user_service_url + "/comm/refresh";
+
+        WebClient webClient = webClientBuilder.build();
+
+        try{
+            return webClient.post()
+                    .uri(path)
+                    .bodyValue(refreshTokenRequestDTO)
+                    .retrieve()
+                    .toEntity(TokenResponseDTO.class).block();
+        }catch(WebClientResponseException e){
+            if(e.getStatusCode().is5xxServerError()){
+                return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
+            }
+            throw e;
+        }
+    }
 }
