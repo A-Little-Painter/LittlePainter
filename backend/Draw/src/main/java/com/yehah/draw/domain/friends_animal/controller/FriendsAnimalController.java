@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FriendsAnimalController {
 
 	private final FriendsAnimalService friendsAnimalService;
-	private final FriendsAnimalCommService FriendsAnimalCommService;
+	private final FriendsAnimalCommService friendsAnimalCommService;
 
 	@Operation(summary = "친구의 동물 전체 목록을 조회", description = "친구의 동물 전체 목록을 페이징 처리하여 리턴한다.")
 	@GetMapping("")
@@ -41,7 +41,7 @@ public class FriendsAnimalController {
 	public ResponseEntity<Long> addMyAnimalImage(@RequestPart(value="originalImage") MultipartFile originalImage,
 		@RequestPart(value="traceImage") MultipartFile traceImage, @RequestPart(value = "addFriendsAnimalReqDto") AddFriendsAnimalReqDto addFriendsAnimalReqDto){
 		log.debug("addMyAnimalImage() : ");
-		return ResponseEntity.ok(FriendsAnimalCommService.addMyAnimalImage(originalImage, traceImage, addFriendsAnimalReqDto));
+		return ResponseEntity.ok(friendsAnimalCommService.addMyAnimalImage(originalImage, traceImage, addFriendsAnimalReqDto));
 	}
 
 	// @Operation(summary = "내 동물 사진 업로드", description = "(테스트 완료 버전)나의 동물 사진을 업로드한다.")
