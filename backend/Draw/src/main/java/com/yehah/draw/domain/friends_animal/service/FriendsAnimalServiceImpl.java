@@ -48,5 +48,11 @@ public class FriendsAnimalServiceImpl implements FriendsAnimalService{
 
 		return friendsAnimalListResDto;
 	}
+
+	public String getFriendsAnimalTraceUrl(Long friendsAnimalId){
+		FriendsAnimal friendsAnimal = friendsAnimalRepository.findById(friendsAnimalId).orElseThrow(
+				() -> new IllegalArgumentException("테두리 정보를 가지고 있지 않습니다."));
+		return friendsAnimal.getUrlTrace();
+	}
 }
 

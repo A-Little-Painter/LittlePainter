@@ -1,5 +1,6 @@
 package com.yehah.draw.domain.animal.controller;
 
+import com.yehah.draw.domain.animal.dto.request.AnimalSimilarReqDto;
 import com.yehah.draw.domain.animal.dto.request.AnimalUploadReqDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalResDto;
 import com.yehah.draw.domain.animal.exception.SimilarityCheckException;
@@ -52,21 +53,16 @@ public class AnimalController {
         return ResponseEntity.ok(animalService.getAnimalTraceUrl(animalId));
     }
 
-    @Operation(summary = "동물의 유사도를 확인한다.", description = "ALL")
+    @Operation(summary = "친구의 유사도를 확인한다.", description = "ALL")
     @PostMapping("/similarcheck")
-    public ResponseEntity<String> animalSimilarCheck(@RequestParam String sessionId, @RequestPart MultipartFile originalFile
-            , @RequestPart MultipartFile newFile) throws IOException {
-
-        // NOTE : 이미지의 유사도를 확인한다.
+    public ResponseEntity<String> animalSimilarCheck(@ModelAttribute AnimalSimilarReqDto animalSimilarReqDto) throws IOException {
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
-        bodyData.add("sessionId", sessionId); // 세션 아이디 전송
-        bodyData.add("originalFile", originalFile.getResource());
-        bodyData.add("newFile", newFile.getResource());
-
+        bodyData.add("sessionId", animalSimilarReqDto.getSessionId()); // 세션 아이디 전송
+        bodyData.add("originalFile", animalSimilarReqDto.getOriginalFile().getResource());
+        bodyData.add("newFile", animalSimilarReqDto.getNewFile().getResource());
         try{
-            double result = Double.parseDouble(commMethod.postMultipartMethod(bodyData, similarityUrl)); // SimilarCheck에 전송, 결과 받기
-            log.info("유사도 검사 결과 : "+ result);
+            double result = Double.parseDouble(commMethod.postMultipartMethod(bodyData, similarityUrl));
             if(result <= 0.09){
                 return ResponseEntity.ok("END"); // 계속 유사도를 진행한다.
             }else{
@@ -86,19 +82,16 @@ public class AnimalController {
 
         // TODO : contextHolder에서 userId 가져오기
         bodyData.set("userId", 1L);
-
         bodyData.set("category", AnimalType.animal.name());
         bodyData.set("image", animalUploadReqDto.getFile().getResource());
-
         try{
             String urlWork = commMethod.postMultipartMethod(bodyData, imageUrl+"/comm/myWork");
 
             // NOTE : childWork에 정보 저장하기
             childWorkService.saveChildWork(animalUploadReqDto.getAnimalId(), AnimalType.animal.name(), urlWork);
-
             return ResponseEntity.ok().build();
         }catch (Exception e){
-            return ResponseEntity.status(201).build();
+            return ResponseEntity.status(404).build();
         }
     }
 

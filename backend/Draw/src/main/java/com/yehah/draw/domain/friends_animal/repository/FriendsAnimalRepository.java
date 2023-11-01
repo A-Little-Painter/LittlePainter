@@ -13,6 +13,6 @@ import com.yehah.draw.domain.friends_animal.entity.FriendsAnimal;
 public interface FriendsAnimalRepository extends JpaRepository<FriendsAnimal, Long> {
 	Optional<FriendsAnimal> findById(Long id);
 	Slice<FriendsAnimal> findSliceBy(Pageable pageable);
-
 	Slice<FriendsAnimal> findByAnimalType_Id(Long animalTypeId, Pageable pageable);
+
 }
