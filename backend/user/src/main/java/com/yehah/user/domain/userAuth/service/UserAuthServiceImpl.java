@@ -5,6 +5,7 @@ import com.yehah.user.domain.user.exception.NoDataFoundException;
 import com.yehah.user.domain.user.repository.ChildRepository;
 import com.yehah.user.domain.user.repository.IconRepository;
 import com.yehah.user.domain.userAuth.dto.request.SignUpRequestDTO;
+import com.yehah.user.domain.userAuth.dto.response.SignInResponseDTO;
 import com.yehah.user.domain.userAuth.entity.Child;
 import com.yehah.user.domain.userAuth.entity.Icon;
 import com.yehah.user.domain.userAuth.entity.User;
@@ -89,7 +90,20 @@ public class UserAuthServiceImpl implements UserAuthService {
         }catch (Exception e) {
             throw new DatabaseException("DB에 저장할 수 없습니다.");
         }
-        return ResponseEntity.ok().body(token);
+
+        Long lastSelectedChildId = user.getLastSelectedChildId();
+        Child selectedChild = childRepository.findById(lastSelectedChildId).orElseThrow(() -> new NoDataFoundException("아이를 찾을 수 없음"));
+
+
+
+        SignInResponseDTO signInResponseDTO = SignInResponseDTO.builder()
+                .accessToken(token.getAccessToken())
+                .refreshToken(token.getRefreshToken())
+                .childId(user.getLastSelectedChildId())
+                .iconUrl(selectedChild.getIcon().getUrlIcon())
+                .nickname(selectedChild.getNickname()).build();
+
+        return ResponseEntity.ok().body(signInResponseDTO);
     }
 
     public ResponseEntity<?> refresh(String token){
