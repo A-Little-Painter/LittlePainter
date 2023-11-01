@@ -59,7 +59,7 @@ export default function CompleteDrawPictureScreen({
           }, 1000);
           return true; // 뒤로가기 이벤트 무시하지 않도록 설정
         } else if (backHandleNum === 1) {
-          navigation.navigate('SelectAnimalScreen');
+          navigation.navigate('SelectPictureScreen');
         }
         return true;
       }

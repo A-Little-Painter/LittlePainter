@@ -13,8 +13,10 @@ import ViewShot from 'react-native-view-shot';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-// import {RootState} from '../../redux/store';
-// import {useDispatch, useSelector} from 'react-redux';
+import {handleisSaveDrawnToLoginModalVisible} from '../../redux/slices/draw/draw';
+import {RootState} from '../../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
+import SaveDrawnToLoginModal from '../modals/SaveDrawnToLoginModal';
 
 type CompleteDrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -28,6 +30,10 @@ export default function CompleteDrawAnimalScreen({
   route,
   navigation,
 }: CompleteDrawAnimalScreenProps) {
+  const dispatch = useDispatch();
+  const isSaveDrawnToLoginModalVisible = useSelector(
+    (state: RootState) => state.draw.isSaveDrawnToLoginModalVisible,
+  );
   const [completeDrawUri] = useState(route.params.completeDrawUri);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
@@ -129,12 +135,17 @@ export default function CompleteDrawAnimalScreen({
           <View style={styles.bottomContainerMiddle} />
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
-            <TouchableOpacity style={[styles.doneButton]} onPress={() => {}}>
+            <TouchableOpacity
+              style={[styles.doneButton]}
+              onPress={() => {
+                dispatch(handleisSaveDrawnToLoginModalVisible(true));
+              }}>
               <Text style={styles.doneButtonText}>저장하기</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
+      {isSaveDrawnToLoginModalVisible ? <SaveDrawnToLoginModal /> : null}
     </View>
   );
 }

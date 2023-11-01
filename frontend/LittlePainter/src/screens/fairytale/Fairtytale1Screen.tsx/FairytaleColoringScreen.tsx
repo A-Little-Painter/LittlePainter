@@ -9,33 +9,32 @@ import {
   Pressable,
   ToastAndroid, // 토스트안드로이드 잠깐 사용
   BackHandler,
-  ImageBackground,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
 import {Svg, Path} from 'react-native-svg';
 import type {StackScreenProps} from '@react-navigation/stack';
-import {RootStackParams} from '../../navigations/AppNavigator';
+import {RootStackParams} from '../../../navigations/AppNavigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import {RootState} from '../../redux/store';
+import {RootState} from '../../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
-import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
-import OriginCompareModal from '../modals/OriginCompareModal';
-import DrawColorPaletteModal from '../modals/DrawColorPaletteModal';
-import DrawScreenshotModal from '../modals/DrawScreenshotModal';
+import DrawLineThicknessModal from '../../modals/DrawLineThicknessModal';
+import OriginCompareModal from '../../modals/OriginCompareModal';
+import DrawColorPaletteModal from '../../modals/DrawColorPaletteModal';
+import DrawScreenshotModal from '../../modals/DrawScreenshotModal';
 import {
   handleLineThickness,
   handleisOriginCompareModalVisible,
   handleisDrawLineThicknessModalVisible,
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
-  handleIsDrawScreenshotModalVisible,
-} from '../../redux/slices/draw/draw';
+} from '../../../redux/slices/draw/draw';
+import {handleisDrawnFairytale} from '../../../redux/slices/tale/tale';
 
-type DrawAnimalScreenProps = StackScreenProps<
+type FairytaleColoringScreenProps = StackScreenProps<
   RootStackParams,
-  'DrawAnimalScreen'
+  'FairytaleColoringScreen'
 >;
 
 const windowWidth = Dimensions.get('window').width;
@@ -52,7 +51,16 @@ const fastcolorData = [
   '#000000',
 ];
 
-export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
+export default function FairytaleColoringScreen({
+  route,
+  navigation,
+}: FairytaleColoringScreenProps) {
+  // const [completeLineUri] = useState(route.params.completeLineUri);
+  const [completeLine] = useState(route.params.completeLine);
+  // 동화 그리기 그림 여부
+  const isDrawnFairytale = useSelector(
+    (state: RootState) => state.tale.isDrawnFairytale,
+  );
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
@@ -62,7 +70,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const [paths, setPaths] = useState<
     {path: string; color: string; strokeWidth: number}[]
   >([]);
-  console.log(paths)
   const [tmpPaths, setTmpPaths] = useState<
     {path: string; color: string; strokeWidth: number}[]
   >([]);
@@ -92,15 +99,13 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const isDrawScreenshotModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawScreenshotModalVisible,
   );
-  const [isToCaptureDrawing, setIsToCaptureDrawing] = useState<boolean>(false);
+  const [captureImagePath, setCaptureImagePath] = useState<string>('');
+
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
     const locationX = event.nativeEvent.locationX;
     const locationY = event.nativeEvent.locationY;
     const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    // const point = `M${locationX.toFixed(0)},${locationY.toFixed(
-    //   0,
-    // )} L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
     setCurrentPath(point);
     setTmpPaths([]);
   };
@@ -111,23 +116,9 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
     setCurrentPath(prevPath => prevPath + newPoint);
   };
-  // const onTouchMove = (event: GestureResponderEvent) => {
-  //   if (currentPath === '') {
-  //     const locationX = event.nativeEvent.locationX;
-  //     const locationY = event.nativeEvent.locationY;
-  //     const newPoint = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-  //     setCurrentPath(newPoint);
-  //   } else {
-  //     const locationX = event.nativeEvent.locationX;
-  //     const locationY = event.nativeEvent.locationY;
-  //     const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-  //     setCurrentPath(prevPath => prevPath + newPoint);
-  //   }
-  // };
-  const [captureImagePath, setCaptureImagePath] = useState<string>('');
+
   const onTouchEnd = () => {
     if (currentPath) {
-      // Only save the path if there are points in it
       setPaths([
         ...paths,
         {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
@@ -135,15 +126,10 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     }
     setCurrentPath('');
     setClearButtonClicked(false);
-    setIsToCaptureDrawing(true);
     captureRef.current.capture().then((uri: string) => {
       console.log('do something with ', uri);
-      // ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
       setCaptureImagePath(uri);
-      // dispatch(handleIsDrawScreenshotModalVisible(true));
-      setIsToCaptureDrawing(false);
     });
-    // dispatch(handleIsDrawScreenshotModalVisible(true));
   };
 
   const handleClearButtonClick = () => {
@@ -162,13 +148,9 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
     }
-    setIsToCaptureDrawing(true);
     captureRef.current.capture().then((uri: string) => {
       console.log('do something with ', uri);
-      // ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
       setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-      // dispatch(handleIsDrawScreenshotModalVisible(true));
     });
   };
   const handleNextButtonClick = () => {
@@ -178,24 +160,25 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     if (tmpPosition) {
       setPaths([...paths, tmpPosition]);
     }
-    setIsToCaptureDrawing(true);
     captureRef.current.capture().then((uri: string) => {
       console.log('do something with ', uri);
-      // ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
       setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-      // dispatch(handleIsDrawScreenshotModalVisible(true));
+    });
+  };
+
+  const handleGoComplete = () => {
+    dispatch(handleisDrawnFairytale(true));
+    navigation.navigate('ReadFairytaleScreen', {
+      title: '흥부놀부',
+      // title: '흥부놀부',
     });
   };
 
   useEffect(() => {
-    dispatch(handleDrawColorSelect('#000000'));
-  }, []);
-
-  useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
-      dispatch(handleLineThickness(10));
+      dispatch(handleLineThickness(25));
+      dispatch(handleDrawColorSelect('#05FF00'));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
@@ -209,7 +192,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
         if (backHandleNum === 0) {
           setBackHandleNum(1);
           ToastAndroid.show(
-            '뒤로가기를 한 번 더 누르면 선택화면으로 돌아갑니다.',
+            '뒤로가기를 한 번 더 누르면 테두리 그리기 화면으로 돌아갑니다.',
             ToastAndroid.SHORT,
           );
           setTimeout(() => {
@@ -217,8 +200,8 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
           }, 1000);
           return true; // 뒤로가기 이벤트 무시하지 않도록 설정
         } else if (backHandleNum === 1) {
-          // BackHandler.exitApp();
-          // BackHandler.addEventListener('hardwareBackPress', backAction);
+          dispatch(handleLineThickness(10));
+          dispatch(handleDrawColorSelect('#000000'));
           navigation.goBack();
         }
         return true;
@@ -232,12 +215,13 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
-  // 테두리 그리기 완료 후
-  const handleGoColoring = () => {
-    navigation.navigate('ColoringAnimalScreen', {
-      completeLineUri: captureImagePath,
+  useEffect(() => {
+    captureRef.current.capture().then((uri: string) => {
+      console.log('do something with ', uri);
+      setCaptureImagePath(uri);
     });
-  };
+  }, []);
+
   return (
     <View style={styles.mainContainer}>
       {/* <View style={styles.subContainer}> */}
@@ -256,7 +240,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
               }}>
               <Image
                 style={styles.drawEquipImage}
-                source={require('../../assets/images/pencil.png')}
+                source={require('../../../assets/images/pencil.png')}
               />
             </Pressable>
             {/* 되돌리기 */}
@@ -295,26 +279,18 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
-                  // dispatch(handleDrawColorSelect(color));
-                  ToastAndroid.show(
-                    '테두리 그리기에서는 색을 고를 수 없어요.',
-                    ToastAndroid.SHORT,
-                  );
+                  dispatch(handleDrawColorSelect(color));
                 }}
               />
             ))}
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
-                // dispatch(handleisDrawColorPaletteModalVisible(true));
-                ToastAndroid.show(
-                  '테두리 그리기에서는 색을 고를 수 없어요.',
-                  ToastAndroid.SHORT,
-                );
+                dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image
                 style={styles.colorCircle}
-                source={require('../../assets/images/colorSelect.png')}
+                source={require('../../../assets/images/colorSelect.png')}
               />
             </TouchableOpacity>
           </View>
@@ -345,24 +321,8 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             format: 'jpg',
             quality: 0.9,
           }}>
-          {/* <ImageBackground
-            source={require('../../assets/images/animalImage/deerTest1.png')}
-            style={{}}
-            resizeMode="center"> */}
-          {isToCaptureDrawing ? null : (
-            <Image
-              style={{
-                position: 'absolute',
-                width: windowWidth,
-                height: windowHeight * 0.8,
-                resizeMode: 'contain',
-              }}
-              source={require('../../assets/images/animalImage/deerTest1.png')}
-            />
-          )}
-
           <View
-            style={{justifyContent: 'flex-end'}}
+            style={styles.screenShotView}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}>
@@ -386,9 +346,19 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
                 strokeLinejoin={'round'}
                 strokeLinecap={'round'}
               />
+              {completeLine.map((item, index) => (
+                <Path
+                  key={`path-${index}`}
+                  d={item.path}
+                  stroke={isClearButtonClicked ? 'transparent' : item.color}
+                  fill={'transparent'}
+                  strokeWidth={item.strokeWidth}
+                  strokeLinejoin={'round'}
+                  strokeLinecap={'round'}
+                />
+              ))}
             </Svg>
           </View>
-          {/* </ImageBackground> */}
           {/* </View> */}
         </ViewShot>
         {/* 하단 */}
@@ -400,26 +370,22 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
               onPress={() => {
                 dispatch(handleisOriginCompareModalVisible(true));
               }}>
-              {captureImagePath ? (
+              {/* {captureImagePath ? (
                 <Image
                   style={styles.ideaLight}
-                  // source={require('../../assets/images/ideaLight.png')}
+                  // source={require('../../../assets/images/ideaLight.png')}
                   source={{uri: captureImagePath}}
                 />
-              ) : null}
-              {/* // <Image */}
-              {/* //   style={styles.ideaLight} */}
-              {/* //   source={require('../../assets/images/ideaLight.png')} */}
-              {/* // /> */}
+              ) : null} */}
+              <Image
+                style={styles.ideaLight}
+                source={require('../../../assets/images/ideaLight.png')}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.lineThicknessView}
               onPress={() => {
-                // dispatch(handleisDrawLineThicknessModalVisible(true));
-                ToastAndroid.show(
-                  '테두리 그리기에서는 선의 굵기를 바꿀 수 없어요.',
-                  ToastAndroid.SHORT,
-                );
+                dispatch(handleisDrawLineThicknessModalVisible(true));
               }}>
               <View
                 style={[
@@ -446,21 +412,11 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
-              style={[
-                styles.doneButton,
-                // eslint-disable-next-line react-native/no-inline-styles
-                {
-                  backgroundColor:
-                    captureImagePath === '' || paths.length === 0
-                      ? 'gray'
-                      : '#A8CEFF',
-                },
-              ]}
+              style={[styles.doneButton]}
               onPress={() => {
-                handleGoColoring();
-              }}
-              disabled={captureImagePath === '' || paths.length === 0}>
-              <Text style={styles.doneButtonText}>테두리완성</Text>
+                handleGoComplete();
+              }}>
+              <Text style={styles.doneButtonText}>완성하기</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -554,6 +510,9 @@ const styles = StyleSheet.create({
   middleContainer: {
     flex: 0.8,
     // borderWidth: 1,
+  },
+  screenShotView: {
+    justifyContent: 'flex-end',
   },
   bottomContainer: {
     borderTopWidth: 1,

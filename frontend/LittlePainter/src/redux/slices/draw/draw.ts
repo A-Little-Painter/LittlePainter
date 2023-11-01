@@ -10,6 +10,7 @@ interface CounterState {
   drawColorSelect: string;
   // 스크린샷 관련 모달
   isDrawScreenshotModalVisible: boolean;
+  isSaveDrawnToLoginModalVisible: boolean;
 }
 
 const initialState: CounterState = {
@@ -21,6 +22,7 @@ const initialState: CounterState = {
   isDrawColorPaletteModalVisible: false,
   drawColorSelect: 'black',
   isDrawScreenshotModalVisible: false,
+  isSaveDrawnToLoginModalVisible: false,
 };
 
 export const drawSlice = createSlice({
@@ -64,6 +66,13 @@ export const drawSlice = createSlice({
     ) => {
       state.isDrawScreenshotModalVisible = action.payload;
     },
+    // 그림 저장 시 로그인 모달
+    handleisSaveDrawnToLoginModalVisible: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.isSaveDrawnToLoginModalVisible = action.payload;
+    },
   },
 });
 
@@ -75,6 +84,7 @@ export const {
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
   handleIsDrawScreenshotModalVisible,
+  handleisSaveDrawnToLoginModalVisible,
 } = drawSlice.actions;
 export const LineThickness = (state: RootState) => state.draw.LineThickness;
 export const isDrawLineThicknessModalVisible = (state: RootState) =>
@@ -88,6 +98,9 @@ export const isDrawColorPaletteModalVisible = (state: RootState) => {
 };
 export const isDrawScreenshotModalVisible = (state: RootState) => {
   state.draw.isDrawScreenshotModalVisible;
+};
+export const isSaveDrawnToLoginModalVisible = (state: RootState) => {
+  state.draw.isSaveDrawnToLoginModalVisible;
 };
 export const drawColorSelect = (state: RootState) => state.draw.drawColorSelect;
 export default drawSlice.reducer;

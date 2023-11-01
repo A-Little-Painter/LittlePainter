@@ -85,8 +85,6 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 style={styles.circleBg2}
                 onPress={() => {
                   setIsmuted(!ismuted);
-                  // 지울것
-                  navigation.navigate('DrawTestScreen');
                 }}>
                 <Text>
                   {ismuted ? (
