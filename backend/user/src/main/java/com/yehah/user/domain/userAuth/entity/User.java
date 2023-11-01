@@ -31,7 +31,9 @@ public class User {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean tts;
 
-//    @JsonIgnore
+    @Column
+    private Long lastSelectedChildId;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Child> children = new ArrayList<>();
 
@@ -39,11 +41,12 @@ public class User {
     private Role role;
 
     @Builder
-    public User(String email, String password, boolean tts, Child child){
+    public User(String email, String password, boolean tts, Child child, Long lastSelectedChildId) {
         this.email = email;
         this.password = password;
         this.tts = tts;
         this.role = Role.ROLE_USER;
+        this.lastSelectedChildId = lastSelectedChildId;
         if(child != null) {
             addChild(child);
         }

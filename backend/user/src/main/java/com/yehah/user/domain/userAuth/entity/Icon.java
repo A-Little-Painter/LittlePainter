@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -15,7 +18,7 @@ public class Icon {
     @Column(nullable = false)
     private String urlIcon;
 
-    @OneToOne(mappedBy = "icon", cascade = CascadeType.ALL)
-    private Child child;
+    @OneToMany(mappedBy = "icon", cascade = CascadeType.ALL)
+    private List<Child> icons = new ArrayList<>();
 
 }

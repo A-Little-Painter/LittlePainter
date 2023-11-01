@@ -60,7 +60,6 @@ public class UserServiceImpl implements UserService{
         }
 
         return icons;
-
     }
 
 
@@ -139,7 +138,7 @@ public class UserServiceImpl implements UserService{
                     .iconUrl(icon.getUrlIcon())
                     .build();
         }catch (Exception e){
-            throw new DTOConversionException("Child에서 DTO 변환 시 오류");
+            throw new DTOConversionException("ICON에서 DTO 변환 시 오류");
         }
 
     }

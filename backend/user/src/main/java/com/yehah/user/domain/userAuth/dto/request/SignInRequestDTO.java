@@ -1,4 +1,4 @@
-package com.yehah.user.domain.userAuth.dto;
+package com.yehah.user.domain.userAuth.dto.request;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
