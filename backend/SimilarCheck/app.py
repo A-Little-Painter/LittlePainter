@@ -54,6 +54,6 @@ def SimilarityCheck():
 #     return 'Hello, World!'
 
 if __name__ == '__main__':
-    app.run('127.0.0.1', port=8600, debug=True)
+    app.run('0.0.0.0', port=8600, debug=True)
 
 
