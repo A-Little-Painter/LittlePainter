@@ -23,13 +23,13 @@ public class AnimalServiceImpl implements AnimalService {
     public List<AnimalResDto> getAnimalList(){
         List<AnimalResDto> animalList = new ArrayList<>();
         for(Animal animal : animalRepository.findAll()){
-            animalList.add(AnimalResDto.builder().id(animal.getId()).animalType(animal.getAnimalType())
+            animalList.add(AnimalResDto.builder().animalId(animal.getId()).animalType(animal.getAnimalType())
                     .urlOriginal(animal.getUrlOriginal()).build());
         }
         return animalList;
     }
 
-    public String getAnimalTraceUrl(long id){
-        return animalRepository.findById(id).getUrlTrace();
+    public String getAnimalTraceUrl(long animalId){
+        return animalRepository.findById(animalId).getUrlTrace();
     }
 }
