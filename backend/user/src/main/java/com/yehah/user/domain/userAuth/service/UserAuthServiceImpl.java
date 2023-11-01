@@ -13,6 +13,7 @@ import com.yehah.user.global.security.entity.RefreshToken;
 import com.yehah.user.global.security.entity.Token;
 import com.yehah.user.global.security.repository.RefreshTokenRedisRepository;
 import com.yehah.user.global.security.service.JwtProvider;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         }
     }
 
+    @Transactional
     public void signup(SignUpRequestDTO signUpRequestDTO){
         Icon icon = iconRepository.findById(1L).orElseThrow(() -> new NoDataFoundException("아이콘을 찾을 수 없음"));
 
@@ -61,6 +63,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         }
     }
 
+    @Transactional
     public ResponseEntity<?> signIn(String email, String password) {
         User user = userAuthRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("아이디 혹은 비밀번호를 확인해 주세요."));
 
