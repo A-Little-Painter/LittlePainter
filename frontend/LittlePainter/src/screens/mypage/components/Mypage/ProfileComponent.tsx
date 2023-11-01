@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -11,11 +11,9 @@ import {
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {useAppDispatch} from '../../../../redux/hooks';
 import {addKids, updateKids} from '../../../../redux/slices/user/user';
+import {callUserData} from '../../../../apis/mypage/mypageApi';
+
 type ProfileComponentsProps = {
-  setName: (name: string) => void;
-  setBirth: (birth: string) => void;
-  profileImage: number;
-  setProfileImage: (profileImage: string) => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
 };
@@ -23,37 +21,27 @@ type ProfileComponentsProps = {
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const childs = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    childName: '첫째',
-    birthday: '2015-02-12',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    childName: '둘째',
-    birthday: '2017-09-25',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    childName: '셋째',
-    birthday: '2019-05-03',
-  },
-];
-
 const ProfileComponents: React.FC<ProfileComponentsProps> = ({
-  setName,
-  setBirth,
-  profileImage,
-  setProfileImage,
   navigation,
   selectComponent,
 }) => {
+  const [childs, setChildData] = useState([]);
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
     selectComponent(newComponentName);
   };
   const dispatch = useAppDispatch();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await callUserData();
+        setChildData(response); // 여기서 데이터를 설정하거나 다른 처리를 수행합니다.
+      } catch (error) {
+        console.error('데이터 불러오기 실패:', error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <View style={styles.rightContainer}>
       <View style={styles.subrightContainer}>
@@ -94,16 +82,15 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
                     <TouchableOpacity
                       onPress={() => {
                         handleComponentChange('kids');
-                        dispatch(updateKids());
+                        dispatch(updateKids(item));
                       }}>
                       <Image
                         style={styles.childCardImage}
-                        resizeMode="contain"
-                        source={require('../../../../assets/logo/littlePainterRabbit.png')}
+                        source={{uri: item.iconUrl}}
                       />
                       <View style={styles.childTextView}>
                         <Text style={styles.childNameText}>
-                          {item.childName}
+                          {item.nickname}
                         </Text>
                         <Text style={styles.birthdayText}>{item.birthday}</Text>
                       </View>
@@ -193,7 +180,6 @@ const styles = StyleSheet.create({
   middleContainer: {
     flex: 0.7,
     justifyContent: 'center',
-    // alignSelf: 'center',
   },
   childInformationView: {
     marginVertical: windowHeight * 0.02,
@@ -221,6 +207,7 @@ const styles = StyleSheet.create({
   },
   childCardImage: {
     height: windowWidth * 0.137 * 1.24 * 0.5,
+    resizeMode: 'contain',
   },
   childPlusView: {
     width: windowWidth * 0.137,

@@ -6,6 +6,10 @@ interface CounterState {
   practiceValue: number;
   isLogin: boolean;
   isAddKids: boolean;
+  kidId: number;
+  kidName: string;
+  kidIcon: string;
+  kidBirthday: string;
 }
 
 const initialState: CounterState = {
@@ -13,6 +17,10 @@ const initialState: CounterState = {
   practiceValue: 100,
   isLogin: false,
   isAddKids: false,
+  kidId: 0,
+  kidName: '',
+  kidIcon: '',
+  kidBirthday: '',
 };
 
 export const userSlice = createSlice({
@@ -41,8 +49,20 @@ export const userSlice = createSlice({
     addKids: state => {
       state.isAddKids = true;
     },
-    updateKids: state => {
+    updateKids: (
+      state,
+      action: PayloadAction<{
+        nickname: string;
+        birthday: string;
+        id: number;
+        iconUrl: string;
+      }>,
+    ) => {
       state.isAddKids = false;
+      state.kidName = action.payload.nickname;
+      state.kidBirthday = action.payload.birthday;
+      state.kidId = action.payload.id;
+      state.kidIcon = action.payload.iconUrl;
     },
   },
 });

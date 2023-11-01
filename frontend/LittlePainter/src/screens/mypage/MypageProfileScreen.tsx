@@ -44,10 +44,6 @@ export default function MypageProfileScreen({
     if (selectedComponent === 'profile') {
       return (
         <ProfileComponents
-          setName={setName}
-          setBirth={setBirth}
-          profileImage={profileImage}
-          setProfileImage={setProfileImage}
           navigation={navigation}
           selectComponent={(componentName: string) =>
             setSelectedComponent(componentName)
@@ -79,6 +75,8 @@ export default function MypageProfileScreen({
     } else if (selectedComponent === 'kids') {
       return (
         <AddKidsComponents
+          name={name}
+          birth={birth}
           setName={setName}
           setBirth={setBirth}
           profileImage={profileImage}
