@@ -39,8 +39,8 @@ def SimilarityCheck():
 
 
     # 파일을 저장할 경로 지정
-    originalPath = "C:/Users/SSAFY/PycharmProjects/pythonProject2/images/"+sessionId+"_originalFile.jpg"
-    newPath = "C:/Users/SSAFY/PycharmProjects/pythonProject2/images/"+sessionId+"_newFile.jpg"
+    originalPath = "./images/"+sessionId+"_originalFile.jpg"
+    newPath = "./images/"+sessionId+"_newFile.jpg"
 
 
     # 이미지를 서버에 저장
