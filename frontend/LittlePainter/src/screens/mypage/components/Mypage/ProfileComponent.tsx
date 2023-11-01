@@ -12,6 +12,7 @@ import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {useAppDispatch} from '../../../../redux/hooks';
 import {addKids, updateKids} from '../../../../redux/slices/user/user';
 import {callUserData} from '../../../../apis/mypage/mypageApi';
+import Popover from 'react-native-popover-view';
 
 type ProfileComponentsProps = {
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
@@ -26,6 +27,8 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
   selectComponent,
 }) => {
   const [childs, setChildData] = useState([]);
+  const [isPopoverVisible, setPopoverVisible] = useState('');
+
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
     selectComponent(newComponentName);
@@ -79,22 +82,32 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
               renderItem={({item}) => {
                 return (
                   <View style={styles.childCardView}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        handleComponentChange('kids');
-                        dispatch(updateKids(item));
-                      }}>
-                      <Image
-                        style={styles.childCardImage}
-                        source={{uri: item.iconUrl}}
-                      />
-                      <View style={styles.childTextView}>
-                        <Text style={styles.childNameText}>
-                          {item.nickname}
-                        </Text>
-                        <Text style={styles.birthdayText}>{item.birthday}</Text>
-                      </View>
-                    </TouchableOpacity>
+                    <Popover
+                      isVisible={isPopoverVisible === item.id}
+                      from={
+                        <TouchableOpacity
+                          onPress={() => {
+                            handleComponentChange('kids');
+                            // setPopoverVisible(true);
+                            dispatch(updateKids(item));
+                          }}>
+                          <Image
+                            style={styles.childCardImage}
+                            source={{uri: item.iconUrl}}
+                          />
+                          <View style={styles.childTextView}>
+                            <Text style={styles.childNameText}>
+                              {item.nickname}
+                            </Text>
+                            <Text style={styles.birthdayText}>
+                              {item.birthday}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      }
+                      onRequestClose={() => setPopoverVisible(false)}>
+                      <Text>Popover Content</Text>
+                    </Popover>
                   </View>
                 );
               }}
@@ -199,7 +212,7 @@ const styles = StyleSheet.create({
     marginHorizontal: windowWidth * 0.01,
     borderRadius: windowWidth * 0.137 * 0.1,
     borderColor: 'black',
-    borderWidth: 1,
+    borderWidth: 0,
     width: windowWidth * 0.137,
     height: windowWidth * 0.137 * 1.24,
     justifyContent: 'center',

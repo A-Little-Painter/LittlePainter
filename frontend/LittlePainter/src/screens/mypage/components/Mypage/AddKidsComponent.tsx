@@ -16,7 +16,7 @@ import {useAppSelector} from '../../../../redux/hooks';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import {addUserChild} from '../../../../apis/mypage/mypageApi';
+import {addUserChild, callIconList} from '../../../../apis/mypage/mypageApi';
 
 LocaleConfig.locales['kr'] = {
   monthNames: [
@@ -184,6 +184,12 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
       handleComponentChange('profile');
     }
   };
+
+  const temp = () => {
+    setModalVisible(true);
+    callIconList();
+  };
+
   return (
     <View style={styles.rightContainer}>
       <View style={styles.subrightContainer}>
@@ -223,7 +229,7 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
                 />
               )}
               <View style={styles.searchIcon}>
-                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <TouchableOpacity onPress={() => temp()}>
                   <IconFontAwesome
                     name="search"
                     size={windowWidth * 0.03}
@@ -468,6 +474,7 @@ const styles = StyleSheet.create({
   },
   profilePicture: {
     height: windowHeight * 0.23,
+    width: windowHeight * 0.23,
     resizeMode: 'contain',
   },
   searchIcon: {

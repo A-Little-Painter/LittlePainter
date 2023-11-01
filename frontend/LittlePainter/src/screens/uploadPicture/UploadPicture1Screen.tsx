@@ -99,7 +99,11 @@ export default function UploadPicture1Screen({
             </View>
           </View>
           <View>
-            <TouchableOpacity style={styles.uploadButton}>
+            <TouchableOpacity
+              style={styles.uploadButton}
+              onPress={() => {
+                navigation.navigate('UploadPicture2Screen');
+              }}>
               <Text style={styles.uploadText}>올리기</Text>
             </TouchableOpacity>
           </View>

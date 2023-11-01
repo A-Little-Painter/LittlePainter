@@ -18,6 +18,7 @@ import PasswordChangeMyComponents from './components/Mypage/PasswordChangeMyComp
 import WithdrawalComponents from './components/Mypage/WithdrawalComponent';
 import MyPictureComponents from './components/Mypage/MyPictureComponent';
 import VolumeComponents from './components/Mypage/VolumeComponent';
+import * as Keychain from 'react-native-keychain';
 
 type MypageProfileScreenProps = StackScreenProps<
   RootStackParams,
@@ -102,8 +103,14 @@ export default function MypageProfileScreen({
   const dispatch = useAppDispatch();
 
   const logoutFonc = () => {
-    dispatch(logOut());
-    navigation.navigate('MainScreen');
+    try {
+      dispatch(logOut());
+      navigation.navigate('MainScreen');
+      Keychain.resetGenericPassword({service: 'accessTokens'});
+      Keychain.resetGenericPassword({service: 'refreshTokens'});
+    } catch {
+      console.error('로그아웃 실패');
+    }
   };
 
   return (
