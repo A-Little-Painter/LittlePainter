@@ -3,6 +3,8 @@ package com.yehah.draw.domain.animal.controller;
 import com.yehah.draw.domain.animal.dto.request.AnimalSimilarReqDto;
 import com.yehah.draw.domain.animal.dto.request.AnimalUploadReqDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalResDto;
+import com.yehah.draw.domain.animal.dto.response.AnimalSimilarResDto;
+import com.yehah.draw.domain.animal.entity.SimilarState;
 import com.yehah.draw.domain.animal.exception.SimilarityCheckException;
 import com.yehah.draw.domain.animal.service.AnimalService;
 import com.yehah.draw.domain.category.service.CategoryService;
@@ -55,18 +57,26 @@ public class AnimalController {
 
     @Operation(summary = "친구의 유사도를 확인한다.", description = "ALL")
     @PostMapping("/similarcheck")
-    public ResponseEntity<String> animalSimilarCheck(@ModelAttribute AnimalSimilarReqDto animalSimilarReqDto) throws IOException {
+    public ResponseEntity<AnimalSimilarResDto> animalSimilarCheck(@ModelAttribute AnimalSimilarReqDto animalSimilarReqDto) throws IOException {
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
         bodyData.add("sessionId", animalSimilarReqDto.getSessionId()); // 세션 아이디 전송
         bodyData.add("originalFile", animalSimilarReqDto.getOriginalFile().getResource());
         bodyData.add("newFile", animalSimilarReqDto.getNewFile().getResource());
+
+        log.info("sessionId : "+animalSimilarReqDto.getSessionId());
+
         try{
-            double result = Double.parseDouble(commMethod.postMultipartMethod(bodyData, similarityUrl));
-            if(result <= 0.09){
-                return ResponseEntity.ok("END"); // 계속 유사도를 진행한다.
+            double value = Double.parseDouble(commMethod.postMultipartMethod(bodyData, similarityUrl));
+            log.info("유사도 : "+value);
+            if(value <= 0.09){
+                return ResponseEntity.ok(AnimalSimilarResDto.builder()
+                        .similarValue(value)
+                        .similarState(SimilarState.END).build()); // 계속 유사도를 끝낸다.
             }else{
-                return ResponseEntity.ok("CONTINUE"); // 유사도 측정을 끝낸다.
+                return ResponseEntity.ok(AnimalSimilarResDto.builder()
+                        .similarValue(value)
+                        .similarState(SimilarState.CONTINUE).build()); // 계속 유사도를 멈춘다.
             }
         }catch(Exception e){
             e.printStackTrace();

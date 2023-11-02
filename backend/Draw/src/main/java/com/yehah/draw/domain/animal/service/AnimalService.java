@@ -9,5 +9,5 @@ import java.util.List;
 public interface AnimalService {
     public List<AnimalResDto> getAnimalList();
 
-    public String getAnimalTraceUrl(long id);
+    public String getAnimalTraceUrl(long animalId);
 }

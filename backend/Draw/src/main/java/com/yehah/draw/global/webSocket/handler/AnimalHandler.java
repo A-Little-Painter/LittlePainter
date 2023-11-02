@@ -3,7 +3,7 @@ package com.yehah.draw.global.webSocket.handler;
 import com.yehah.draw.global.webSocket.Utils;
 import com.yehah.draw.global.webSocket.entity.response.ErrorMessage;
 import com.yehah.draw.global.webSocket.entity.response.SuccessMessage;
-import com.yehah.draw.global.webSocket.entity.WebSocketState;
+import com.yehah.draw.global.webSocket.entity.response.WebSocketState;
 import com.yehah.draw.global.common.AnimalType;
 import com.yehah.draw.global.webSocket.WebSocketDB;
 import lombok.RequiredArgsConstructor;

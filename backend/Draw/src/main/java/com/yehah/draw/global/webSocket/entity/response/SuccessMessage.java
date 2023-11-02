@@ -1,6 +1,5 @@
 package com.yehah.draw.global.webSocket.entity.response;
 
-import com.yehah.draw.global.webSocket.entity.WebSocketState;
 import com.yehah.draw.global.common.AnimalType;
 import lombok.*;
 

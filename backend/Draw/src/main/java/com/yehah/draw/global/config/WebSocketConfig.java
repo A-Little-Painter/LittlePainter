@@ -1,10 +1,10 @@
 package com.yehah.draw.global.config;
 
-import com.yehah.draw.global.webSocket.handler.AnimalHandler;
-import com.yehah.draw.global.webSocket.handler.FriendHandler;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.config.annotation.*;
+        import com.yehah.draw.global.webSocket.handler.AnimalHandler;
+        import com.yehah.draw.global.webSocket.handler.FriendHandler;
+        import org.springframework.context.annotation.Bean;
+        import org.springframework.context.annotation.Configuration;
+        import org.springframework.web.socket.config.annotation.*;
 
 @Configuration
 @EnableWebSocket
@@ -28,3 +28,4 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Bean
     public FriendHandler signalFriendHandler(){ return new FriendHandler();}
 }
+

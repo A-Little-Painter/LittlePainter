@@ -30,6 +30,7 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     public String getAnimalTraceUrl(long animalId){
+
         return animalRepository.findById(animalId).getUrlTrace();
     }
 }
