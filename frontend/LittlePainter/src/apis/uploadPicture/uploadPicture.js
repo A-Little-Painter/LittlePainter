@@ -20,6 +20,24 @@ const loadATokenFromKeychain = async () => {
   }
 };
 
-export const uploadPictureApi = () => {
-  // hey!
+export const uploadPictureApi = async addFriendsAnimalReqDto => {
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(
+      `${BASE_URL}/draws/friends`,
+      addFriendsAnimalReqDto,
+      {headers},
+    );
+    const data = response.data;
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log('fall');
+    console.log(error);
+    const response = error.response;
+    return response;
+  }
 };

@@ -13,6 +13,7 @@ interface CounterState {
   selectId: number;
   selectName: string;
   selectImage: string;
+  userEmail: string;
 }
 
 const initialState: CounterState = {
@@ -27,6 +28,7 @@ const initialState: CounterState = {
   selectId: -1,
   selectName: '',
   selectImage: '',
+  userEmail: '',
 };
 
 export const userSlice = createSlice({
@@ -76,11 +78,13 @@ export const userSlice = createSlice({
         selectId: number;
         selectName: string;
         selectImage: string;
+        userEmail: string;
       }>,
     ) => {
       state.selectId = action.payload.selectId;
       state.selectName = action.payload.selectName;
       state.selectImage = action.payload.selectImage;
+      state.userEmail = action.payload.userEmail;
     },
   },
 });

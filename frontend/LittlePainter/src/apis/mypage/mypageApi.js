@@ -66,7 +66,6 @@ export const callIconList = async () => {
     };
     const response = await axios.get(`${BASE_URL}/user/icons`, {headers});
     const data = response.data;
-    console.log(data);
     return data;
   } catch (error) {
     console.log('fall');

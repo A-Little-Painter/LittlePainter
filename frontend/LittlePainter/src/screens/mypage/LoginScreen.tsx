@@ -55,20 +55,23 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
           signInResponse['refreshToken'],
           {service: 'refreshTokens'},
         );
+        const cleanEmail = email.replace(/\s/g, '');
         const selecedData: {
           selectId: number;
           selectName: string;
           selectImage: string;
+          userEmail: string;
         } = {
           selectId: signInResponse.childId,
           selectName: signInResponse.nickname,
           selectImage: signInResponse.iconUrl,
+          userEmail: cleanEmail,
         };
         dispatch(selected(selecedData));
         console.log(selecedData);
 
         dispatch(logIn());
-        navigation.navigate('MainScreen');
+        navigation.navigate('LoadScreen');
       } else {
         Alert.alert('이메일과 패스워드를 다시 한번 확인해 주세요');
       }

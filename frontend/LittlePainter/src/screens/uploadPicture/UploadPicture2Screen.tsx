@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
+import {useAppSelector} from '../../redux/hooks';
 
 type UploadPicture2ScreenProps = StackScreenProps<
   RootStackParams,
@@ -21,6 +22,33 @@ const windowWidth = Dimensions.get('window').width;
 export default function UploadPicture2Screen({
   navigation,
 }: UploadPicture2ScreenProps) {
+  const title = useAppSelector(state => state.uploadPicture.title);
+  const detail = useAppSelector(state => state.uploadPicture.detail);
+  const pictureaddr = useAppSelector(state => state.uploadPicture.pictureaddr);
+
+  const moving = () => {
+    const addFriendsAnimalReqDto = new FormData();
+
+    addFriendsAnimalReqDto.append('title', title);
+    addFriendsAnimalReqDto.append('detail', detail);
+    addFriendsAnimalReqDto.append('image', {
+      uri: pictureaddr,
+    });
+    addFriendsAnimalReqDto.append('movable', true);
+    console.log(addFriendsAnimalReqDto);
+    navigation.goBack();
+  };
+  const unMoving = () => {
+    const addFriendsAnimalReqDto = new FormData();
+    addFriendsAnimalReqDto.append('title', title);
+    addFriendsAnimalReqDto.append('detail', detail);
+    addFriendsAnimalReqDto.append('image', {
+      uri: pictureaddr,
+    });
+    addFriendsAnimalReqDto.append('movable', false);
+    console.log(addFriendsAnimalReqDto);
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -50,10 +78,16 @@ export default function UploadPicture2Screen({
             </View>
           </View>
           <View style={styles.uploadButton}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                moving();
+              }}>
               <Text style={styles.uploadText}>움직이는게 좋아요</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                unMoving();
+              }}>
               <Text style={styles.uploadText}>안 움직여도 돼요</Text>
             </TouchableOpacity>
           </View>

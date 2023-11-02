@@ -75,7 +75,14 @@ export default function MainScreen({navigation}: MainScreenProps) {
           <View style={styles.topContainer}>
             <View style={styles.topLeftView}>
               <View style={styles.circleBg1}>
-                <Image style={styles.tinyLogo} source={{uri: selectImage}} />
+                {isLogin ? (
+                  <Image style={styles.tinyLogo} source={{uri: selectImage}} />
+                ) : (
+                  <Image
+                    style={styles.tinyLogo}
+                    source={require('../../assets/logo/littlePainterRabbit.png')}
+                  />
+                )}
               </View>
               <TouchableOpacity
                 style={styles.circleBg2}
@@ -83,7 +90,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   setIsmuted(!ismuted);
                   // 지울것
                   console.log(selectName);
-                  navigation.navigate('DrawTestScreen');
+                  navigation.navigate('LoadScreen');
                 }}>
                 <Text>
                   {ismuted ? (
