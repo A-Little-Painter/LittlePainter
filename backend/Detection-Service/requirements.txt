@@ -50,3 +50,4 @@ setuptools>=65.5.1 # Snyk vulnerability fix
 
 Flask==3.0.0
 rembg==2.0.51
+boto3==1.28.76
