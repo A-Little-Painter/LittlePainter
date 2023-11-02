@@ -38,9 +38,9 @@ def SimilarityCheck():
     newFile = request.files['newFile']
 
 
-    # 파일을 저장할 경로 지정
-    originalPath = "./images/"+sessionId+"_originalFile.jpg"
-    newPath = "./images/"+sessionId+"_newFile.jpg"
+      # 파일을 저장할 경로 지정
+    originalPath = "./images/"+sessionId+"_"+originalFile.name+".jpg";
+    newPath = "./images/"+sessionId+"_"+newFile.name+".jpg";
 
 
     # 이미지를 서버에 저장
