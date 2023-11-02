@@ -26,17 +26,80 @@ export const animalBorder = async (animalId) => {
 };
 // 선택 동물 유사도 검사
 // { MultipartFile 원본테두리이미지, MultipartFile 사용자가그린테두리이미지 }
-export const animalCheckSimilarity = async (originBorderFile, compareBorderFile) => {
-  const data = {originBorderFile, compareBorderFile};
+
+// export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
+export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
+  console.log(originBorderFileUri)
+  console.log(compareBorderFileUri)
   try {
-    const response = await axios.post(`${BASE_URL}/draws/animals/similarcheck`, data);
+    const formData = new FormData();
+    formData.append('sessionId', sessionId);
+
+    formData.append('originalFile', {
+      uri: originBorderFileUri,
+      type: 'image/jpg',
+      name: 'originalFile.jpg',
+    });
+
+    formData.append('newFile', {
+      uri: compareBorderFileUri,
+      type: 'image/jpg',
+      name: 'newFile.jpg',
+    });
+    console.log(formData);
+    const response = await axios.post(`${BASE_URL}/draws/animals/similarcheck`, formData, {headers: {'Content-Type': 'multipart/form-data'}},
+    );
+    console.log('선택 동물 유사도 검사 성공', response);
     return response;
   } catch (error) {
-    console.log('선택 동물 유사도 검사 실패:', error);
-    const response = error.response;
-    return response;
+    console.error('선택 동물 유사도 검사 실패:', error);
+    return error.response;
   }
 };
+// export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri) => {
+//   try {
+//     const formData = new FormData();
+//     // const originFormData = new FormData();
+//     // const newFormData = new FormData();
+//     const originBorderFileUriReplace = originBorderFileUri.replace('file:///', 'file://')
+//     const compareBorderFileUriReplace = compareBorderFileUri.replace('file:///', 'file://')
+
+//     // originFormData.append('originBorderFile', {
+//     //   uri: originBorderFileUriReplace,
+//     //   type: 'image/jpeg', // 이미지 MIME 타입에 맞게 수정
+//     //   name: 'originalFile.jpg',
+//     // });
+
+//     // newFormData.append('compareBorderFile', {
+//     //   uri: compareBorderFileUriReplace,
+//     //   type: 'image/jpeg', // 이미지 MIME 타입에 맞게 수정
+//     //   name: 'newFile.jpg',
+//     // });
+//     formData.append('originBorderFile', {
+//       uri: originBorderFileUriReplace,
+//       type: 'image/jpeg', // 이미지 MIME 타입에 맞게 수정
+//       name: 'originalFile.jpg',
+//     });
+
+//     formData.append('compareBorderFile', {
+//       uri: compareBorderFileUriReplace,
+//       type: 'image/jpeg', // 이미지 MIME 타입에 맞게 수정
+//       name: 'newFile.jpg',
+//     });
+//     const response = await axios.post(
+//       `${BASE_URL}/draws/animals/similarcheck`,
+//       // {sessionId, originFormData, newFormData},
+//       {sessionId, formData},
+//       {headers: {'Content-Type': 'multipart/form-data'}}, // 수정된 헤더 설정
+//     );
+
+//     return response;
+//   } catch (error) {
+//     console.log('선택 동물 유사도 검사 실패:', error);
+//     return error.response;
+//   }
+// };
+
 // 완성된 동물 마이페이지에 저장
 export const animalSaveToMypage = async () => {
   try {

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Pressable,
-  ToastAndroid, // 토스트안드로이드 잠깐 사용
+  ToastAndroid,
   BackHandler,
   ImageBackground,
 } from 'react-native';
@@ -54,10 +54,6 @@ export default function DrawAnimalScreen({
   route,
   navigation,
 }: DrawAnimalScreenProps) {
-  // 캡쳐 변수
-  const drawCaptureRef = useRef(); //테두리 그리기 캡쳐
-  const originCaptureRef = useRef(); //원본이미지 캡쳐
-
   const [animalId] = useState<number>(route.params.animalId);
   const [animalBorderURI, setAnimalBorderURI] = useState<string>('');
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
@@ -71,7 +67,7 @@ export default function DrawAnimalScreen({
       if (response.status === 200) {
         console.log('선택 동물 테두리 가져오기 성공', response.data);
         setAnimalBorderURI(response.data);
-        originCaptureRef.current.capture().then((uri: string) => {
+        captureRef.current.capture().then((uri: string) => {
           setCaptureBorderImagePath(uri);
         });
       } else {
@@ -91,9 +87,6 @@ export default function DrawAnimalScreen({
       );
       if (response.status === 200) {
         console.log('동물 그리기 유사도 체크 성공', response.data);
-        if (response.data === 'END') {
-          handleGoColoring();
-        }
       } else {
         console.log('동물 그리기 유사도 체크 실패', response.status);
       }
@@ -108,6 +101,8 @@ export default function DrawAnimalScreen({
 
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
+  // 캡쳐 변수
+  const captureRef = useRef();
 
   // 그림 그리기 변수
   const [paths, setPaths] = useState<
@@ -169,9 +164,11 @@ export default function DrawAnimalScreen({
     setCurrentPath('');
     setClearButtonClicked(false);
     setIsToCaptureDrawing(true);
-    drawCaptureRef.current.capture().then((uri: string) => {
+    captureRef.current.capture().then((uri: string) => {
+      // console.log('do something with ', uri);
       setCaptureImagePath(uri);
       setIsToCaptureDrawing(false);
+      // console.log(captureBorderImagePath);
       handleAnimalCheckSimilarity(uri);
     });
   };
@@ -193,7 +190,7 @@ export default function DrawAnimalScreen({
       setTmpPaths([...tmpPaths, tmpPosition]);
     }
     setIsToCaptureDrawing(true);
-    drawCaptureRef.current.capture().then((uri: string) => {
+    captureRef.current.capture().then((uri: string) => {
       setCaptureImagePath(uri);
       setIsToCaptureDrawing(false);
     });
@@ -206,7 +203,7 @@ export default function DrawAnimalScreen({
       setPaths([...paths, tmpPosition]);
     }
     setIsToCaptureDrawing(true);
-    drawCaptureRef.current.capture().then((uri: string) => {
+    captureRef.current.capture().then((uri: string) => {
       setCaptureImagePath(uri);
       setIsToCaptureDrawing(false);
     });
@@ -358,58 +355,54 @@ export default function DrawAnimalScreen({
         {/* <View style={styles.middleContainer}> */}
         <ViewShot
           style={[styles.middleContainer, {backgroundColor: 'white'}]}
-          ref={originCaptureRef}
+          ref={captureRef}
           options={{
-            fileName: 'originImageCapture',
+            fileName: 'drawAnimalCapture',
             format: 'png',
-            quality: 1,
+            quality: 0.9,
           }}>
-          {animalBorderURI === '' ? null : (
+          {animalBorderURI === '' || isToCaptureDrawing ? null : (
             <ImageBackground
-              // source={{uri: animalBorderURI}}
-              // source={require('../../assets/images/animalImage/ovalTest.png')}
+              source={require('../../assets/images/animalImage/deerTest1.png')}
               style={{width: '100%', height: '100%'}}
               resizeMode="contain">
-              <ViewShot
-                ref={drawCaptureRef}
-                options={{
-                  fileName: 'drawCapture',
-                  format: 'png',
-                  quality: 1,
-                }}
-                style={{}}>
-                <View
-                  style={{justifyContent: 'flex-end'}}
-                  onTouchStart={onTouchStart}
-                  onTouchMove={onTouchMove}
-                  onTouchEnd={onTouchEnd}>
-                  <Svg>
-                    {paths.map((item, index) => (
-                      <Path
-                        key={`path-${index}`}
-                        d={item.path}
-                        stroke={
-                          isClearButtonClicked ? 'transparent' : item.color
-                        }
-                        fill={'transparent'}
-                        strokeWidth={item.strokeWidth}
-                        strokeLinejoin={'round'}
-                        strokeLinecap={'round'}
-                      />
-                    ))}
+              {/* {animalBorderURI === '' || isToCaptureDrawing ? null : (
+              <Image
+                style={styles.borderImage}
+                source={{uri: animalBorderURI}}
+                source={require('../../assets/images/animalImage/deerTest1.png')}
+              />
+            )} */}
+
+              <View
+                style={{justifyContent: 'flex-end'}}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}>
+                <Svg>
+                  {paths.map((item, index) => (
                     <Path
-                      d={currentPath}
-                      stroke={
-                        isClearButtonClicked ? 'transparent' : drawColorSelect
-                      }
+                      key={`path-${index}`}
+                      d={item.path}
+                      stroke={isClearButtonClicked ? 'transparent' : item.color}
                       fill={'transparent'}
-                      strokeWidth={LineThickness}
+                      strokeWidth={item.strokeWidth}
                       strokeLinejoin={'round'}
                       strokeLinecap={'round'}
                     />
-                  </Svg>
-                </View>
-              </ViewShot>
+                  ))}
+                  <Path
+                    d={currentPath}
+                    stroke={
+                      isClearButtonClicked ? 'transparent' : drawColorSelect
+                    }
+                    fill={'transparent'}
+                    strokeWidth={LineThickness}
+                    strokeLinejoin={'round'}
+                    strokeLinecap={'round'}
+                  />
+                </Svg>
+              </View>
             </ImageBackground>
           )}
           {/* </View> */}
@@ -423,17 +416,18 @@ export default function DrawAnimalScreen({
               onPress={() => {
                 dispatch(handleisOriginCompareModalVisible(true));
               }}>
-              {/* {captureImagePath ? (
+              {captureImagePath ? (
                 <Image
                   style={styles.ideaLight}
+                  // source={require('../../assets/images/ideaLight.png')}
                   source={{uri: captureImagePath}}
                   // source={{uri: captureBorderImagePath}}
                 />
-              ) : null} */}
-              <Image
+              ) : null}
+              {/* <Image
                 style={styles.ideaLight}
                 source={require('../../assets/images/ideaLight.png')}
-              />
+              /> */}
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.lineThicknessView}
@@ -490,9 +484,7 @@ export default function DrawAnimalScreen({
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginCompareModalVisible ? (
-        <OriginCompareModal animalBorderURI={animalBorderURI} />
-      ) : null}
+      {isOriginCompareModalVisible ? <OriginCompareModal /> : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
       {isDrawScreenshotModalVisible ? (
         <DrawScreenshotModal captureUri={captureImagePath} />

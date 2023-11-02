@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Dimensions,
   Modal,
@@ -10,18 +10,19 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {RootState} from '../../redux/store';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector, useStore} from 'react-redux';
 import {handleisOriginCompareModalVisible} from '../../redux/slices/draw/draw';
 
 export type OriginCompareModalProps = {
-  selectColor: string;
+  animalBorderURI: string;
 };
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const OriginCompareModal = () => {
+const OriginCompareModal = (props: OriginCompareModalProps) => {
   const dispatch = useDispatch();
+  const [animalBorderURI] = useState<string>(props.animalBorderURI);
   // 선 굵기 모달을 위한 라인
   const isOriginCompareModalVisible = useSelector(
     (state: RootState) => state.draw.isOriginCompareModalVisible,
@@ -65,7 +66,8 @@ const OriginCompareModal = () => {
             <View style={styles.modalMiddle}>
               <Image
                 style={styles.originImage}
-                source={require('../../assets/images/elephant.png')}
+                // source={require('../../assets/images/elephant.png')}
+                source={{uri: animalBorderURI}}
               />
             </View>
             {/* 하단 */}
