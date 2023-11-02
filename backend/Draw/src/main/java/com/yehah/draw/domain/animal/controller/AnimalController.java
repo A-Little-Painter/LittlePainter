@@ -2,6 +2,7 @@ package com.yehah.draw.domain.animal.controller;
 
 import com.yehah.draw.domain.animal.dto.request.AnimalSimilarReqDto;
 import com.yehah.draw.domain.animal.dto.request.AnimalUploadReqDto;
+import com.yehah.draw.domain.animal.dto.response.AnimalDetailResDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalResDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalSimilarResDto;
 import com.yehah.draw.domain.animal.entity.SimilarState;
@@ -51,7 +52,7 @@ public class AnimalController {
 
     @Operation(summary = "선택한 동물의 테두리 사진을 가져온다.", description = "ALL")
     @GetMapping("/{animalId}")
-    public ResponseEntity<String> getTraceUrl(@PathVariable(name = "animalId")Long animalId){
+    public ResponseEntity<AnimalDetailResDto> getTraceUrl(@PathVariable(name = "animalId")Long animalId){
         return ResponseEntity.ok(animalService.getAnimalTraceUrl(animalId));
     }
 
