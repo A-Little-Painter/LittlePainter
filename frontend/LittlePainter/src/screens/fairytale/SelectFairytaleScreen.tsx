@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+// import React, {useState} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -40,46 +41,6 @@ const fairytaleData = [
     title: '콩쥐팥쥐',
     image: '../../assets/images/dinosaur.png',
   },
-  //   {
-  //     id: 5,
-  //     title: '코끼리',
-  //     image: '../../assets/images/dinosaur.png',
-  //   },
-  //   {
-  //     id: 6,
-  //     title: '토끼',
-  //     image: '../../assets/images/dinosaur.png',
-  //   },
-  //   {
-  //     id: 7,
-  //     title: '소',
-  //     image: '../../assets/images/dinosaur.png',
-  //   },
-  //   {
-  //     id: 8,
-  //     title: '돼지',
-  //     image: '../../assets/images/dinosaur.png',
-  //   },
-  //   {
-  //     id: 9,
-  //     title: '다람쥐',
-  //     image: '../../assets/images/dinosaur.png',
-  //   },
-  //   {
-  //     id: 10,
-  //     title: '햄스터',
-  //     image: '../../assets/images/dinosaur.png',
-  //   },
-  //   {
-  //     id: 11,
-  //     title: '고양이',
-  //     image: '../../assets/images/dinosaur.png',
-  //   },
-  //   {
-  //     id: 12,
-  //     title: '호랑이',
-  //     image: '../../assets/images/dinosaur.png',
-  //   },
 ];
 
 const randomBackgroundColor: string[] = [
@@ -122,7 +83,11 @@ export default function SelectFairytaleScreen({
               return (
                 <View style={styles.animalCard1}>
                   <TouchableOpacity
-                    onPress={() => {}}
+                    onPress={() => {
+                      navigation.navigate('ReadFairytaleScreen', {
+                        title: item.title,
+                      });
+                    }}
                     style={[
                       styles.animalCard2,
                       {

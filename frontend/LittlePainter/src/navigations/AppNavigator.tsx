@@ -8,10 +8,16 @@ import MypageProfileScreen from '../screens/mypage/MypageProfileScreen';
 import SelectAnimalScreen from '../screens/drawAnimal/SelectAnimalScreen';
 import DrawAnimalScreen from '../screens/drawAnimal/DrawAnimalScreen';
 import ColoringAnimalScreen from '../screens/drawAnimal/ColoringAnimalScreen';
+import CompleteDrawAnimalScreen from '../screens/drawAnimal/CompleteDrawAnimalScreen';
 
 import DrawTestScreen from '../screens/drawAnimal/DrawTestScreen';
 import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
+import DrawPictureScreen from '../screens/drawPicture/DrawPictureScreen';
+import ColoringPictureScreen from '../screens/drawPicture/ColoringPictureScreen';
+
 import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
+import ReadFairytaleScreen from '../screens/fairytale/Fairtytale1Screen.tsx/ReadFairytaleScreen';
+
 import UploadPicture1Screen from '../screens/uploadPicture/UploadPicture1Screen';
 import UploadPicture2Screen from '../screens/uploadPicture/UploadPicture2Screen';
 
@@ -35,10 +41,24 @@ export type RootStackParams = {
   SelectAnimalScreen: undefined;
   DrawAnimalScreen: undefined;
   ColoringAnimalScreen: {
-    completeLineUri: string;
+    // completeLineUri: string;
+    completeLine: {path: string; color: string; strokeWidth: number}[];
+  };
+  CompleteDrawAnimalScreen: {
+    completeDrawUri: string;
   };
   SelectPictureScreen: undefined;
+  DrawPictureScreen: undefined;
+  ColoringPictureScreen: {
+    // completeLineUri: string;
+    completeLine: {path: string; color: string; strokeWidth: number}[];
+  };
+  CompleteDrawPictureScreen: {
+    completeDrawUri: string;
+  };
   SelectFairytaleScreen: undefined;
+  ReadFairytaleScreen: {title: string};
+
   UploadPicture1Screen: undefined;
   UploadPicture2Screen: undefined;
   SignupScreen: undefined;
@@ -83,12 +103,28 @@ export default function AppNavigator() {
         component={ColoringAnimalScreen}
       />
       <RootStack.Screen
+        name="CompleteDrawAnimalScreen"
+        component={CompleteDrawAnimalScreen}
+      />
+      <RootStack.Screen
         name="SelectPictureScreen"
         component={SelectPictureScreen}
       />
       <RootStack.Screen
+        name="DrawPictureScreen"
+        component={DrawPictureScreen}
+      />
+      <RootStack.Screen
+        name="ColoringPictureScreen"
+        component={ColoringPictureScreen}
+      />
+      <RootStack.Screen
         name="SelectFairytaleScreen"
         component={SelectFairytaleScreen}
+      />
+      <RootStack.Screen
+        name="ReadFairytaleScreen"
+        component={ReadFairytaleScreen}
       />
       <RootStack.Screen
         name="UploadPicture1Screen"
