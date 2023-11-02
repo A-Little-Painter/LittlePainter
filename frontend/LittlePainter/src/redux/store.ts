@@ -1,12 +1,14 @@
 import {configureStore} from '@reduxjs/toolkit';
 import userSlice from './slices/user/user';
 import drawSlice from './slices/draw/draw';
+import uploadPicture from './slices/uploadPicture/uploadPicture';
 import taleSlice from './slices/tale/tale';
 
 export const store = configureStore({
   reducer: {
     user: userSlice,
     draw: drawSlice,
+    uploadPicture: uploadPicture,
     tale: taleSlice,
   },
 });

@@ -19,9 +19,12 @@ import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
 import ReadFairytaleScreen from '../screens/fairytale/Fairtytale1Screen.tsx/ReadFairytaleScreen';
 
 import UploadPicture1Screen from '../screens/uploadPicture/UploadPicture1Screen';
+import UploadPicture2Screen from '../screens/uploadPicture/UploadPicture2Screen';
 
 import FindPasswordScreen from '../screens/mypage/FindPasswordScreen';
 import SignupScreen from '../screens/mypage/SignupScreen';
+
+import LoadScreen from '../screens/load/LoadScreen';
 
 import MainTmpScreen from '../screens/main/MainTmpScreen';
 import Detail1Screen from '../screens/detail/Detail1Screen';
@@ -57,8 +60,10 @@ export type RootStackParams = {
   ReadFairytaleScreen: {title: string};
 
   UploadPicture1Screen: undefined;
+  UploadPicture2Screen: undefined;
   SignupScreen: undefined;
   FindPasswordScreen: undefined;
+  LoadScreen: undefined;
 
   // 이하는 테스트용이었음
   MainTmpScreen: undefined;
@@ -125,11 +130,17 @@ export default function AppNavigator() {
         name="UploadPicture1Screen"
         component={UploadPicture1Screen}
       />
+      <RootStack.Screen
+        name="UploadPicture2Screen"
+        component={UploadPicture2Screen}
+      />
       <RootStack.Screen name="SignupScreen" component={SignupScreen} />
       <RootStack.Screen
         name="FindPasswordScreen"
         component={FindPasswordScreen}
       />
+
+      <RootStack.Screen name="LoadScreen" component={LoadScreen} />
 
       {/* 이하는 테스트용이었음 */}
       <RootStack.Screen name="MainTmpScreen" component={MainTmpScreen} />

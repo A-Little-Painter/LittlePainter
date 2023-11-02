@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -12,11 +12,12 @@ import {
   Pressable,
   FlatList,
 } from 'react-native';
-import {useAppSelector} from '../../../../redux/hooks';
+import {useAppSelector, useAppDispatch} from '../../../../redux/hooks';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import {addUserChild} from '../../../../apis/mypage/mypageApi';
+import {addUserChild, callIconList} from '../../../../apis/mypage/mypageApi';
+import {selected} from '../../../../redux/slices/user/user';
 
 LocaleConfig.locales['kr'] = {
   monthNames: [
@@ -66,7 +67,7 @@ type AddKidsComponentsProps = {
   birth: string;
   setName: (name: string) => void;
   setBirth: (birth: string) => void;
-  profileImage: number;
+  profileImage: string;
   setProfileImage: (profileImage: string) => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
@@ -74,61 +75,6 @@ type AddKidsComponentsProps = {
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
-const childs = [
-  {
-    id: 0,
-    source: require('../../../../assets/profile/bear.png'),
-  },
-  {
-    id: 1,
-    source: require('../../../../assets/profile/cat.png'),
-  },
-  {
-    id: 2,
-    source: require('../../../../assets/profile/deer.png'),
-  },
-  {
-    id: 3,
-    source: require('../../../../assets/profile/dinosaur.png'),
-  },
-  {
-    id: 4,
-    source: require('../../../../assets/profile/dog.png'),
-  },
-  {
-    id: 5,
-    source: require('../../../../assets/profile/frog.png'),
-  },
-  {
-    id: 6,
-    source: require('../../../../assets/profile/giraffe.png'),
-  },
-  {
-    id: 7,
-    source: require('../../../../assets/profile/monkey.png'),
-  },
-  {
-    id: 8,
-    source: require('../../../../assets/profile/panda.png'),
-  },
-  {
-    id: 9,
-    source: require('../../../../assets/profile/penguin.png'),
-  },
-  {
-    id: 10,
-    source: require('../../../../assets/profile/rabbit.png'),
-  },
-  {
-    id: 11,
-    source: require('../../../../assets/profile/tiger.png'),
-  },
-  {
-    id: 12,
-    source: require('../../../../assets/profile/whale.png'),
-  },
-];
 
 const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
   name,
@@ -140,9 +86,11 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
   selectComponent,
 }) => {
   const kidIconUpdate = useAppSelector(state => state.user.kidIcon);
-  // const kidIdUpdate = useAppSelector(state => state.user.kidId); api요청시 필요함
+  const kidIdUpdate = useAppSelector(state => state.user.kidId);
   const kidNameUpdate = useAppSelector(state => state.user.kidName);
   const kidBirthdayUpdate = useAppSelector(state => state.user.kidBirthday);
+  const userEmail = useAppSelector(state => state.user.userEmail);
+  const dispatch = useAppDispatch();
 
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
@@ -150,6 +98,21 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
   };
   const [isCalendarVisible, setCalendarVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [childs, setChilds] = useState(null);
+  const [imageId, setImageId] = useState(-1);
+
+  const fetchData = async () => {
+    try {
+      const data = await callIconList();
+      setChilds(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleDayPress = (day: any) => {
     setBirth(day.dateString); // 선택한 날짜를 상태 변수에 저장
@@ -166,7 +129,6 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
     addOrupdate = '등록';
   } else {
     addOrupdate = '변경';
-    console.log(kidIconUpdate);
   }
   const kidAddAndUpdate = async () => {
     if (add) {
@@ -175,7 +137,7 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
       const data = {
         nickname: name,
         birthday: birth,
-        iconId: 1,
+        iconId: imageId,
       };
       await addUserChild(data);
       handleComponentChange('profile');
@@ -184,6 +146,24 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
       handleComponentChange('profile');
     }
   };
+
+  const selectKid = () => {
+    const selecedData: {
+      selectId: number;
+      selectName: string;
+      selectImage: string;
+      userEmail: string;
+    } = {
+      selectId: kidIdUpdate,
+      selectName: kidNameUpdate,
+      selectImage: kidIconUpdate,
+      userEmail: userEmail,
+    };
+    dispatch(selected(selecedData));
+    console.log(selecedData);
+    handleComponentChange('profile');
+  };
+
   return (
     <View style={styles.rightContainer}>
       <View style={styles.subrightContainer}>
@@ -214,16 +194,24 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
           {/* 아이 정보 */}
           <View style={styles.contextArea}>
             <View style={styles.kidProfile}>
-              {add ? (
-                <Image source={profileImage} style={styles.profilePicture} />
+              {profileImage ? (
+                <Image
+                  source={{uri: profileImage}}
+                  style={styles.profilePicture}
+                />
               ) : (
                 <Image
-                  source={{uri: kidIconUpdate}}
+                  source={require('../../../../assets/logo/littlePainterRabbit.png')}
                   style={styles.profilePicture}
                 />
               )}
               <View style={styles.searchIcon}>
-                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setModalVisible(true),
+                      console.log('childs'),
+                      console.log(childs);
+                  }}>
                   <IconFontAwesome
                     name="search"
                     size={windowWidth * 0.03}
@@ -250,18 +238,19 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
                         return (
                           <TouchableOpacity
                             onPress={() => {
-                              itemNumber(item.source);
+                              itemNumber(item.iconUrl);
+                              setImageId(item.iconId);
                             }}
                             style={styles.modalContents}>
                             <Image
                               style={styles.childCardImage}
                               resizeMode="contain"
-                              source={item.source}
+                              source={{uri: item.iconUrl}}
                             />
                           </TouchableOpacity>
                         );
                       }}
-                      keyExtractor={item => item.id.toString()}
+                      keyExtractor={item => item.iconId}
                       numColumns={7}
                     />
                     <Pressable
@@ -336,6 +325,14 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
             </Modal>
           </View>
           <View style={styles.confirmButtons}>
+            <View style={styles.loginButtonBox1}>
+              <TouchableOpacity
+                onPress={() => {
+                  selectKid();
+                }}>
+                <Text style={styles.loginText1}>선택</Text>
+              </TouchableOpacity>
+            </View>
             <View style={styles.loginButtonBox2}>
               <TouchableOpacity
                 onPress={() => {
@@ -432,6 +429,17 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.017,
     color: '#000000',
   },
+  loginButtonBox1: {
+    borderWidth: 0,
+    backgroundColor: '#A3A3A3',
+    width: windowWidth * 0.15,
+    height: windowWidth * 0.45 * 0.12,
+    justifyContent: 'center',
+    marginVertical: windowWidth * 0.01,
+    borderRadius: 5,
+    alignSelf: 'flex-end',
+    marginLeft: windowWidth * 0.01,
+  },
   loginButtonBox2: {
     borderWidth: 0,
     borderColor: 'black',
@@ -442,6 +450,13 @@ const styles = StyleSheet.create({
     marginVertical: windowWidth * 0.01,
     borderRadius: 5,
     alignSelf: 'flex-end',
+    marginLeft: windowWidth * 0.01,
+  },
+  loginText1: {
+    textAlign: 'center',
+    fontSize: windowWidth * 0.025,
+    fontWeight: '300',
+    color: '#FFFFFF',
   },
   loginText2: {
     textAlign: 'center',
@@ -468,6 +483,7 @@ const styles = StyleSheet.create({
   },
   profilePicture: {
     height: windowHeight * 0.23,
+    width: windowHeight * 0.23,
     resizeMode: 'contain',
   },
   searchIcon: {

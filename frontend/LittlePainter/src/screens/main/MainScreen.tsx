@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  // Alert,
   Text,
   TouchableOpacity,
   Dimensions,
@@ -15,8 +14,6 @@ import {
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {useAppSelector} from '../../redux/hooks';
-// import {useAppSelector, useAppDispatch} from '../../redux/hooks';
-import IconOcticons from 'react-native-vector-icons/Octicons';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -29,12 +26,14 @@ export default function MainScreen({navigation}: MainScreenProps) {
   const [ismuted, setIsmuted] = useState<ismuted>(false);
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   const isLogin = useAppSelector(state => state.user.isLogin);
+  const selectName = useAppSelector(state => state.user.selectName);
+  const selectImage = useAppSelector(state => state.user.selectImage);
   let loginTF: string;
 
   if (!isLogin) {
     loginTF = '로그인';
   } else {
-    loginTF = '뽀송이';
+    loginTF = selectName;
   }
 
   useEffect(() => {
@@ -76,17 +75,22 @@ export default function MainScreen({navigation}: MainScreenProps) {
           <View style={styles.topContainer}>
             <View style={styles.topLeftView}>
               <View style={styles.circleBg1}>
-                <Image
-                  style={styles.tinyLogo}
-                  source={require('../../assets/logo/rabbit.png')}
-                />
+                {isLogin ? (
+                  <Image style={styles.tinyLogo} source={{uri: selectImage}} />
+                ) : (
+                  <Image
+                    style={styles.tinyLogo}
+                    source={require('../../assets/logo/littlePainterRabbit.png')}
+                  />
+                )}
               </View>
               <TouchableOpacity
                 style={styles.circleBg2}
                 onPress={() => {
                   setIsmuted(!ismuted);
                   // 지울것
-                  navigation.navigate('DrawTestScreen');
+                  console.log(selectName);
+                  navigation.navigate('LoadScreen');
                 }}>
                 <Text>
                   {ismuted ? (

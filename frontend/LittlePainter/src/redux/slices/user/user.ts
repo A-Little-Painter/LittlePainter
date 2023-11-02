@@ -10,6 +10,10 @@ interface CounterState {
   kidName: string;
   kidIcon: string;
   kidBirthday: string;
+  selectId: number;
+  selectName: string;
+  selectImage: string;
+  userEmail: string;
 }
 
 const initialState: CounterState = {
@@ -21,6 +25,10 @@ const initialState: CounterState = {
   kidName: '',
   kidIcon: '',
   kidBirthday: '',
+  selectId: -1,
+  selectName: '',
+  selectImage: '',
+  userEmail: '',
 };
 
 export const userSlice = createSlice({
@@ -64,6 +72,20 @@ export const userSlice = createSlice({
       state.kidId = action.payload.id;
       state.kidIcon = action.payload.iconUrl;
     },
+    selected: (
+      state,
+      action: PayloadAction<{
+        selectId: number;
+        selectName: string;
+        selectImage: string;
+        userEmail: string;
+      }>,
+    ) => {
+      state.selectId = action.payload.selectId;
+      state.selectName = action.payload.selectName;
+      state.selectImage = action.payload.selectImage;
+      state.userEmail = action.payload.userEmail;
+    },
   },
 });
 
@@ -76,10 +98,14 @@ export const {
   logOut,
   updateKids,
   addKids,
+  selected,
 } = userSlice.actions;
 export const selectCount = (state: RootState) => state.user.testValue;
 export const selectPracticeValue = (state: RootState) =>
   state.user.practiceValue;
 export const isLogin = (state: RootState) => state.user.isLogin;
 export const isAddKids = (state: RootState) => state.user.isAddKids;
+export const selectId = (state: RootState) => state.user.selectId;
+export const selectName = (state: RootState) => state.user.selectName;
+export const selectImage = (state: RootState) => state.user.selectImage;
 export default userSlice.reducer;
