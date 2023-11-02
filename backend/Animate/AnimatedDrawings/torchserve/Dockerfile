@@ -20,7 +20,8 @@ RUN apt-get update && \
 # install python dependencies
 RUN pip install openmim
 RUN pip install torch
-RUN mim install mmcv-full==1.7.0
+COPY my-mmcv/mmcv-full-1.7.0.tar.gz /tmp/mmcv-full-1.7.0.tar.gz
+RUN mim install /tmp/mmcv-full-1.7.0.tar.gz
 RUN pip install mmdet==2.27.0
 RUN pip install torchserve
 
