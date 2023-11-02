@@ -29,8 +29,8 @@ export const animalBorder = async (animalId) => {
 
 // export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
 export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
-  console.log(originBorderFileUri)
-  console.log(compareBorderFileUri)
+  console.log('메롱', originBorderFileUri);
+  console.log('메롱', compareBorderFileUri);
   try {
     const formData = new FormData();
     formData.append('sessionId', sessionId);

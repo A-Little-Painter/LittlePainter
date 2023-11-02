@@ -227,7 +227,7 @@ export default function ColoringAnimalScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
-                navigation.navigate('DrawCaptureScreen');
+                // navigation.navigate('');
               }}>
               <Image
                 style={styles.drawEquipImage}

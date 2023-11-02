@@ -36,7 +36,6 @@ import Detail1Screen from '../screens/detail/Detail1Screen';
 import DetailScreen from '../screens/detail/DetailScreen';
 import NodetailScreen from '../screens/detail/NodetailScreen';
 import Detail2Screen from '../screens/detail/Detail2Screen';
-import DrawCaptureScreen from '../screens/drawAnimal/DrawCaptureScreen';
 
 export type RootStackParams = {
   InitialScreen: undefined;
@@ -46,6 +45,7 @@ export type RootStackParams = {
   SelectAnimalScreen: undefined;
   DrawAnimalScreen: {
     animalId: number;
+    animalType: string;
   };
   ColoringAnimalScreen: {
     // completeLineUri: string;
@@ -81,7 +81,6 @@ export type RootStackParams = {
   MainTmpScreen: undefined;
   DetailScreen: undefined;
   NodetailScreen: undefined;
-  DrawCaptureScreen: undefined;
   Detail1Screen: {
     name: string;
   };
@@ -170,10 +169,6 @@ export default function AppNavigator() {
       <RootStack.Screen name="Detail1Screen" component={Detail1Screen} />
       <RootStack.Screen name="Detail2Screen" component={Detail2Screen} />
       <RootStack.Screen name="NodetailScreen" component={NodetailScreen} />
-      <RootStack.Screen
-        name="DrawCaptureScreen"
-        component={DrawCaptureScreen}
-      />
     </RootStack.Navigator>
   );
 }
