@@ -14,6 +14,8 @@ import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
 import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
 import UploadPicture1Screen from '../screens/uploadPicture/UploadPicture1Screen';
 import UploadPicture2Screen from '../screens/uploadPicture/UploadPicture2Screen';
+import UploadPicture3Screen from '../screens/uploadPicture/UploadPicture3Screen';
+import UploadPicture4Screen from '../screens/uploadPicture/UploadPicture4Screen';
 
 import FindPasswordScreen from '../screens/mypage/FindPasswordScreen';
 import SignupScreen from '../screens/mypage/SignupScreen';
@@ -41,6 +43,8 @@ export type RootStackParams = {
   SelectFairytaleScreen: undefined;
   UploadPicture1Screen: undefined;
   UploadPicture2Screen: undefined;
+  UploadPicture3Screen: undefined;
+  UploadPicture4Screen: undefined;
   SignupScreen: undefined;
   FindPasswordScreen: undefined;
   LoadScreen: undefined;
@@ -97,6 +101,14 @@ export default function AppNavigator() {
       <RootStack.Screen
         name="UploadPicture2Screen"
         component={UploadPicture2Screen}
+      />
+      <RootStack.Screen
+        name="UploadPicture3Screen"
+        component={UploadPicture3Screen}
+      />
+      <RootStack.Screen
+        name="UploadPicture4Screen"
+        component={UploadPicture4Screen}
       />
       <RootStack.Screen name="SignupScreen" component={SignupScreen} />
       <RootStack.Screen

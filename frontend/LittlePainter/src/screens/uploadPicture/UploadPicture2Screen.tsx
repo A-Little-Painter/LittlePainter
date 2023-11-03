@@ -9,7 +9,9 @@ import {
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
-import {useAppSelector} from '../../redux/hooks';
+import {useAppSelector, useAppDispatch} from '../../redux/hooks';
+import {uploadPictureApi} from '../../apis/uploadPicture/uploadPicture';
+import {update2} from '../../redux/slices/uploadPicture/uploadPicture';
 
 type UploadPicture2ScreenProps = StackScreenProps<
   RootStackParams,
@@ -22,31 +24,56 @@ const windowWidth = Dimensions.get('window').width;
 export default function UploadPicture2Screen({
   navigation,
 }: UploadPicture2ScreenProps) {
-  const title = useAppSelector(state => state.uploadPicture.title);
-  const detail = useAppSelector(state => state.uploadPicture.detail);
   const pictureaddr = useAppSelector(state => state.uploadPicture.pictureaddr);
+  const picturename = useAppSelector(state => state.uploadPicture.picturename);
+  const picturetype = useAppSelector(state => state.uploadPicture.picturetype);
+  const dispatch = useAppDispatch();
 
-  const moving = () => {
-    const addFriendsAnimalReqDto = new FormData();
-
-    addFriendsAnimalReqDto.append('title', title);
-    addFriendsAnimalReqDto.append('detail', detail);
-    addFriendsAnimalReqDto.append('image', {
+  const moving = async () => {
+    const imageData = new FormData();
+    imageData.append('file', {
       uri: pictureaddr,
+      name: picturename,
+      type: picturetype,
     });
-    addFriendsAnimalReqDto.append('movable', true);
-    console.log(addFriendsAnimalReqDto);
-    navigation.goBack();
+    const temp = await uploadPictureApi(imageData);
+    const checkImage = temp.data;
+    const data: {
+      animal_type: string;
+      border_image: string;
+      trace_image: string;
+      moving: boolean;
+    } = {
+      animal_type: checkImage.animal_type,
+      border_image: checkImage.border_image,
+      trace_image: checkImage.trace_image,
+      moving: true,
+    };
+    dispatch(update2(data));
+    navigation.navigate('UploadPicture3Screen');
   };
-  const unMoving = () => {
-    const addFriendsAnimalReqDto = new FormData();
-    addFriendsAnimalReqDto.append('title', title);
-    addFriendsAnimalReqDto.append('detail', detail);
-    addFriendsAnimalReqDto.append('image', {
+  const unMoving = async () => {
+    const imageData = new FormData();
+    imageData.append('file', {
       uri: pictureaddr,
+      name: picturename,
+      type: picturetype,
     });
-    addFriendsAnimalReqDto.append('movable', false);
-    console.log(addFriendsAnimalReqDto);
+    const temp = await uploadPictureApi(imageData);
+    const checkImage = temp.data;
+    const data: {
+      animal_type: string;
+      border_image: string;
+      trace_image: string;
+      moving: boolean;
+    } = {
+      animal_type: checkImage.animal_type,
+      border_image: checkImage.border_image,
+      trace_image: checkImage.trace_image,
+      moving: false,
+    };
+    dispatch(update2(data));
+    navigation.navigate('UploadPicture3Screen');
   };
 
   return (

@@ -33,14 +33,19 @@ export default function UploadPicture1Screen({
     uri: string;
     fileName: string;
     originalPath: string;
+    type: string;
   } | null>(null);
   const imagetemp = () => {
     openImagePicker(setImageSource);
     console.log(imageSource);
   };
   let srcText: string;
+  let nameText: string;
+  let typeText: string;
   if (imageSource) {
-    srcText = imageSource['uri'];
+    srcText = imageSource.uri;
+    nameText = imageSource.fileName;
+    typeText = imageSource.type;
   } else {
     srcText = '';
   }
@@ -51,10 +56,14 @@ export default function UploadPicture1Screen({
         title: string;
         detail: string;
         pictureaddr: string;
+        picturename: string;
+        picturetype: string;
       } = {
         title: title,
         detail: detail,
         pictureaddr: srcText,
+        picturename: nameText,
+        picturetype: typeText,
       };
       dispatch(update(data));
       console.log(data);

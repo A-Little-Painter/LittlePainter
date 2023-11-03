@@ -27,7 +27,6 @@ export const callUserData = async () => {
       Authorization: `Bearer ${token}`,
     };
     const response = await axios.get(`${BASE_URL}/user/child`, {headers});
-    console.log('log');
     return response.data;
   } catch (error) {
     console.log('fall');
@@ -66,6 +65,30 @@ export const callIconList = async () => {
     };
     const response = await axios.get(`${BASE_URL}/user/icons`, {headers});
     const data = response.data;
+    return data;
+  } catch (error) {
+    console.log('fall');
+    console.log(error);
+    const response = error.response;
+    return response;
+  }
+};
+
+export const selectKids = async param => {
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    console.log('param');
+    console.log(param);
+    const response = await axios.patch(
+      `${BASE_URL}/user/select-child/${param}`,
+      null,
+      {headers},
+    );
+    const data = response.data;
+    console.log(data);
     return data;
   } catch (error) {
     console.log('fall');

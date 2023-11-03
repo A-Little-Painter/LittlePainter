@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
 export const BASE_URL = 'https://k9d106.p.ssafy.io:9001/api/v1';
+export const DRAW_URL = 'http://k9d106.p.ssafy.io:8300/api/v1';
 
 const loadATokenFromKeychain = async () => {
   try {
@@ -42,6 +43,7 @@ const loadRTokenFromKeychain = async () => {
 
 export const refreshAccessToken = async () => {
   try {
+    console.log('log');
     const refreshToken = loadRTokenFromKeychain();
     const response = await axios(`${BASE_URL}/temp`, {
       method: 'POST',

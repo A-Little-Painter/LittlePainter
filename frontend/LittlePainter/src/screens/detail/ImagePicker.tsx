@@ -6,7 +6,12 @@ import {
 
 export const openImagePicker = (
   setImageSource: (
-    source: {uri: string; fileName: string; originalPath: string} | null,
+    source: {
+      uri: string;
+      fileName: string;
+      originalPath: string;
+      type: string;
+    } | null,
   ) => void,
 ) => {
   console.log('1');
@@ -30,6 +35,7 @@ export const openImagePicker = (
         uri: response.assets[0].uri,
         fileName: response.assets[0].fileName,
         originalPath: response.assets[0].originalPath,
+        type: response.assets[0].type,
       };
       setImageSource(source);
       console.log(response.assets[0]);

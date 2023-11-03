@@ -16,7 +16,11 @@ import {useAppSelector, useAppDispatch} from '../../../../redux/hooks';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import {addUserChild, callIconList} from '../../../../apis/mypage/mypageApi';
+import {
+  addUserChild,
+  callIconList,
+  selectKids,
+} from '../../../../apis/mypage/mypageApi';
 import {selected} from '../../../../redux/slices/user/user';
 
 LocaleConfig.locales['kr'] = {
@@ -162,6 +166,7 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
     dispatch(selected(selecedData));
     console.log(selecedData);
     handleComponentChange('profile');
+    selectKids(kidIdUpdate);
   };
 
   return (
@@ -325,14 +330,16 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
             </Modal>
           </View>
           <View style={styles.confirmButtons}>
-            <View style={styles.loginButtonBox1}>
-              <TouchableOpacity
-                onPress={() => {
-                  selectKid();
-                }}>
-                <Text style={styles.loginText1}>선택</Text>
-              </TouchableOpacity>
-            </View>
+            {add ? null : (
+              <View style={styles.loginButtonBox1}>
+                <TouchableOpacity
+                  onPress={() => {
+                    selectKid();
+                  }}>
+                  <Text style={styles.loginText1}>선택</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <View style={styles.loginButtonBox2}>
               <TouchableOpacity
                 onPress={() => {

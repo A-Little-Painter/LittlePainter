@@ -71,7 +71,7 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
         console.log(selecedData);
 
         dispatch(logIn());
-        navigation.navigate('LoadScreen');
+        navigation.navigate('MainScreen');
       } else {
         Alert.alert('이메일과 패스워드를 다시 한번 확인해 주세요');
       }

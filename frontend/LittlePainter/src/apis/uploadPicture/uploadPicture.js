@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {BASE_URL} from '../baseUrl';
+import {DRAW_URL} from '../baseUrl';
 import * as Keychain from 'react-native-keychain';
 
 const loadATokenFromKeychain = async () => {
@@ -20,24 +20,35 @@ const loadATokenFromKeychain = async () => {
   }
 };
 
-export const uploadPictureApi = async addFriendsAnimalReqDto => {
+export const uploadPictureApi = async image => {
   try {
     const token = await loadATokenFromKeychain();
     const headers = {
       Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
     };
-    const response = await axios.get(
-      `${BASE_URL}/draws/friends`,
-      addFriendsAnimalReqDto,
-      {headers},
-    );
+    const response = await axios.post(`${DRAW_URL}/draws/upload`, image, {
+      headers,
+    });
+    const data = response.data;
+    console.log(data);
+    return response;
+  } catch (error) {
+    console.log('fall');
+    console.error(error);
+    return error.response;
+  }
+};
+
+export const animalTypeListApi = async () => {
+  try {
+    const response = await axios.get(`${DRAW_URL}/draws/animal-types`);
     const data = response.data;
     console.log(data);
     return data;
   } catch (error) {
     console.log('fall');
-    console.log(error);
-    const response = error.response;
-    return response;
+    console.error(error);
+    return error.response;
   }
 };

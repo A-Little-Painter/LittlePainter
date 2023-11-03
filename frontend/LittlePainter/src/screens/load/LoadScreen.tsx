@@ -1,15 +1,14 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {
   Dimensions,
   StyleSheet,
   View,
   ImageBackground,
-  Image,
   Text,
+  Animated,
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
-import Swiper from 'react-native-swiper';
 
 type LoadScreenProp = StackScreenProps<RootStackParams, 'LoadScreen'>;
 
@@ -17,6 +16,9 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function LoadScreen({navigation}: LoadScreenProp) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const fadeInAnimation = useMemo(() => new Animated.Value(0), []);
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       navigation.reset({
@@ -33,10 +35,51 @@ export default function LoadScreen({navigation}: LoadScreenProp) {
     return () => clearTimeout(timeout);
   }, [navigation]);
 
+  const dataList = [
+    require('../../assets/profile/bear.png'),
+    require('../../assets/profile/cat.png'),
+    require('../../assets/profile/deer.png'),
+    require('../../assets/profile/dinosaur.png'),
+    require('../../assets/profile/dog.png'),
+    require('../../assets/profile/frog.png'),
+    require('../../assets/profile/giraffe.png'),
+    require('../../assets/profile/monkey.png'),
+    require('../../assets/profile/panda.png'),
+    require('../../assets/profile/penguin.png'),
+    require('../../assets/profile/rabbit.png'),
+    require('../../assets/profile/tiger.png'),
+    require('../../assets/profile/whale.png'),
+  ];
+
+  useEffect(() => {
+    const randomImageIndex = Math.floor(Math.random() * dataList.length); //랜덤 인덱스
+    const imageChangeInterval = setInterval(() => {
+      const nextImageIndex = randomImageIndex % dataList.length; // 이미지 선택
+
+      // 페이드 아웃 애니메이션 적용
+      Animated.timing(fadeInAnimation, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start(() => {
+        setCurrentImageIndex(nextImageIndex);
+
+        // 페이드 인 애니메이션 적용
+        Animated.timing(fadeInAnimation, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }).start();
+      });
+    }, 3000);
+
+    return () => clearInterval(imageChangeInterval);
+  }, [currentImageIndex, dataList.length, fadeInAnimation]);
+
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
-        source={require('../../assets/bgImage/initialBg.png')}
+        source={require('../../assets/bgImage/mainBg.png')}
         resizeMode="cover"
         style={styles.backgroundImage}>
         {/* 상단 */}
@@ -44,96 +87,15 @@ export default function LoadScreen({navigation}: LoadScreenProp) {
         {/* 중단 */}
         <View style={styles.middleContainer}>
           <View style={styles.load}>
-            {/* 속도를 느리게 할수는 없답니다. */}
-            {/* 참조 */}
-            {/* https://github.com/leecade/react-native-swiper/issues/364 */}
-            {/* https://github.com/leecade/react-native-swiper/issues/1230 */}
-            <Swiper
-              showsButtons={false}
-              autoplay={true}
-              autoplayTimeout={3}
-              showsPagination={false}
-              scrollEnabled={false}
-              style={styles.swiper}>
-              <View>
-                <Image
-                  source={require('../../assets/profile/bear.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/cat.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/deer.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/dinosaur.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/dog.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/frog.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/giraffe.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/monkey.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/panda.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/penguin.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/rabbit.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/tiger.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-              <View>
-                <Image
-                  source={require('../../assets/profile/whale.png')}
-                  style={styles.loadImage}
-                />
-              </View>
-            </Swiper>
+            <Animated.Image
+              source={dataList[currentImageIndex]}
+              style={[
+                styles.loadImage,
+                {
+                  opacity: fadeInAnimation,
+                },
+              ]}
+            />
             <Text style={styles.loadtext}>잠시만 기다려 주세요.</Text>
           </View>
         </View>
@@ -165,11 +127,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: '50%',
     marginBottom: '5%',
-  },
-  swiper: {
-    height: windowWidth * 0.1,
-    // 여기에 width를 주면 고장납니다.
-    alignSelf: 'center',
   },
   loadImage: {
     height: windowWidth * 0.1,
