@@ -55,7 +55,7 @@ const OriginCompareModal = (props: OriginCompareModalProps) => {
               <View style={styles.modalTopLeft} />
               <View style={styles.modalTopMiddle}>
                 <Text style={styles.modalTitleText}>
-                  이제, '{animalType}'를 그려볼까요?
+                  '{animalType}'를 그려볼까요?
                 </Text>
               </View>
               <TouchableOpacity

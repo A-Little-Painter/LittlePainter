@@ -70,6 +70,7 @@ export default function DrawAnimalScreen({
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
   const [captureBorderImagePath, setCaptureBorderImagePath] =
     useState<string>('');
+  const [canDrawCapture, setCanDrawCapture] = useState<boolean>(false);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
 
@@ -140,10 +141,13 @@ export default function DrawAnimalScreen({
 
   async function handleDrawCapture() {
     try {
+      setCanDrawCapture(true);
       const uri = await drawCaptureRef.current.capture();
       setCaptureImagePath(uri);
+      setCanDrawCapture(false);
       await handleAnimalCheckSimilarity(uri);
     } catch (error) {
+      setCanDrawCapture(false);
       console.error('캡쳐 에러 발생: ', error);
     }
   }
@@ -198,6 +202,7 @@ export default function DrawAnimalScreen({
       | undefined = paths.pop();
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
+      handleDrawCapture();
     }
   };
   const handleNextButtonClick = () => {
@@ -208,6 +213,8 @@ export default function DrawAnimalScreen({
       setPaths([...paths, tmpPosition]);
     }
   };
+
+  // 화면 캡쳐 동작 useEffect
   useEffect(() => {
     if (captureBorderImagePath !== '') {
       handleDrawCapture();
@@ -260,6 +267,9 @@ export default function DrawAnimalScreen({
     console.log(paths);
     navigation.navigate('ColoringAnimalScreen', {
       completeLine: paths,
+      animalType: animalType,
+      animalBorderURI: animalBorderURI,
+      animalExplanation: animalExplanation,
     });
   };
   return (
@@ -368,8 +378,8 @@ export default function DrawAnimalScreen({
           {animalBorderURI === '' ? null : (
             <ImageBackground
               // source={{uri: animalBorderURI}}
-              // source={require('../../assets/images/animalImage/ovalTest.png')}
-              source={require('../../assets/images/animalImage/test1.jpg')}
+              source={require('../../assets/images/animalImage/ovalTest.png')}
+              // source={require('../../assets/images/animalImage/test1.jpg')}
               style={styles.animalBorderImageBackground}
               resizeMode="contain">
               <ViewShot
@@ -379,7 +389,10 @@ export default function DrawAnimalScreen({
                   format: 'png',
                   quality: 1,
                 }}
-                style={styles.pathViewShot}>
+                style={[
+                  styles.pathViewShot,
+                  {backgroundColor: canDrawCapture ? 'white' : 'transparent'},
+                ]}>
                 <View
                   style={styles.pathView}
                   onTouchStart={onTouchStart}
@@ -495,6 +508,7 @@ export default function DrawAnimalScreen({
         />
       ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
+      {/* 유사도 검사 작동시 삭제할 예정 */}
       {isTestDrawCompareModalVisible ? (
         <TestDrawCompareModal
           originImageURI={captureBorderImagePath}
@@ -582,16 +596,16 @@ const styles = StyleSheet.create({
   middleContainer: {
     flex: 0.8,
     width: '100%',
+    backgroundColor: 'white',
   },
   animalBorderImageBackground: {
     width: '100%',
     height: '100%',
   },
   pathViewShot: {
-    // backgroundColor: 'green',
     width: '100%',
     height: '100%',
-    borderWidth: 1,
+    // borderWidth: 1,
   },
   pathView: {
     width: '100%',

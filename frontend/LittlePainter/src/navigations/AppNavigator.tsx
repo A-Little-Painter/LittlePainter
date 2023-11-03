@@ -50,6 +50,9 @@ export type RootStackParams = {
   ColoringAnimalScreen: {
     // completeLineUri: string;
     completeLine: {path: string; color: string; strokeWidth: number}[];
+    animalType: string;
+    animalBorderURI: string;
+    animalExplanation: string;
   };
   CompleteDrawAnimalScreen: {
     completeDrawUri: string;
