@@ -72,7 +72,7 @@ public class FriendsAnimalController {
 		MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
 		// NOTE : 이미지의 유사도를 확인한다.
-		bodyData.add("sessionId", animalSimilarReqDto.getSessionId()); // 세션 아이디 전송
+		bodyData.add("sessionId", animalSimilarReqDto.getRoomId()); // 세션 아이디 전송
 		bodyData.add("originalFile", animalSimilarReqDto.getOriginalFile().getResource());
 		bodyData.add("newFile", animalSimilarReqDto.getNewFile().getResource());
 		try{
