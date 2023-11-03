@@ -33,14 +33,14 @@ def similarityCheck(originalPath, newPath):
 def SimilarityCheck():
     # JSON 데이터를 파싱하여 세션 ID 추출
 
-    sessionId = request.form.get("sessionId")
+    roomId = request.form.get("roomId")
     originalFile = request.files['originalFile']
     newFile = request.files['newFile']
 
 
       # 파일을 저장할 경로 지정
-    originalPath = "./images/"+sessionId+"_"+originalFile.name+".jpg";
-    newPath = "./images/"+sessionId+"_"+newFile.name+".jpg";
+    originalPath = "./images/"+roomId+"_"+originalFile.name+".jpg";
+    newPath = "./images/"+roomId+"_"+newFile.name+".jpg";
 
 
     # 이미지를 서버에 저장

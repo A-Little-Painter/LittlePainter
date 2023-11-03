@@ -1,0 +1,231 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"6c78e1d7-0a2e-4cfd-a238-eeb09d4c814c\" name=\"Default Changelist\" comment=\"\" />\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$/../..\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;customColor&quot;: &quot;&quot;,\r\n  &quot;associatedIndex&quot;: 0\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2X0NXmDCSnbefiBitSsveR8EzCh\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"WebServerToolWindowFactoryState\": \"false\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\test\" />\r\n      <recent name=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\" />\r\n      <recent name=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\images\" />\r\n      <recent name=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\venv\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\test\" />\r\n      <recent name=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\images\" />\r\n      <recent name=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\" />\r\n      <recent name=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\test1_images\" />\r\n      <recent name=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\test1\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Python.app\">\r\n    <configuration name=\"app\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"SimilarityCheck\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\app.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"main_2\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"SimilarityCheck\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\test1\\main_2.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"similarCheck\" type=\"PythonConfigurationType\" factoryName=\"Python\" nameIsGenerated=\"true\">\r\n      <module name=\"SimilarityCheck\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\test1\\similarCheck.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"similarCheck_2\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"SimilarityCheck\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$/test\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/test/similarCheck_2.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"similarCheck_TEST\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"SimilarityCheck\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"C:\\Users\\SSAFY\\PycharmProjects\\pythonProject2\\test1\\similarCheck_TEST.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Python.app\" />\r\n        <item itemvalue=\"Python.similarCheck_2\" />\r\n        <item itemvalue=\"Python.similarCheck_TEST\" />\r\n        <item itemvalue=\"Python.main_2\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"6c78e1d7-0a2e-4cfd-a238-eeb09d4c814c\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1697762078918</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1697762078918</updated>\r\n      <workItem from=\"1698711663928\" duration=\"95000\" />\r\n      <workItem from=\"1698712197345\" duration=\"244000\" />\r\n      <workItem from=\"1698712467732\" duration=\"17000\" />\r\n      <workItem from=\"1698712501773\" duration=\"589000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 58a6cc1b369dafe93223f2056ca52225af5fa280)
++++ b/.idea/workspace.xml	(date 1698998879193)
+@@ -4,7 +4,26 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="6c78e1d7-0a2e-4cfd-a238-eeb09d4c814c" name="Default Changelist" comment="" />
++    <list default="true" id="6c78e1d7-0a2e-4cfd-a238-eeb09d4c814c" name="Default Changelist" comment="">
++      <change afterPath="$PROJECT_DIR$/images/gom1.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/gom10.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/gom2.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/gom3.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/gom4.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/gom5.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/gom6.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/gom7.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/gom8.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/gom9.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/image1.jpg" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/image3.jpg" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/images/image4.jpg" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/images/djie42545d_newFile.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/image2.jpg" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/images/djie42545d_originalFile.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/image0.jpg" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -17,6 +36,17 @@
+       </list>
+     </option>
+   </component>
++  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
++    <envs>
++      <env key="FLASK_APP" value="app" />
++    </envs>
++    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
++    <option name="myEnvs">
++      <map>
++        <entry key="FLASK_APP" value="app" />
++      </map>
++    </option>
++  </component>
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+   </component>
+@@ -32,19 +62,23 @@
+   <component name="PropertiesComponent"><![CDATA[{
+   "keyToString": {
+     "WebServerToolWindowFactoryState": "false",
++    "git-widget-placeholder": "deploy/SimilarCheck-Service",
++    "last_opened_file_path": "C:/Users/SSAFY/Desktop/similarCheck/S09P31D106/backend/SimilarCheck/images",
+     "node.js.detected.package.eslint": "true",
+     "node.js.detected.package.tslint": "true",
+     "node.js.selected.package.eslint": "(autodetect)",
+     "node.js.selected.package.tslint": "(autodetect)",
++    "settings.editor.selected.configurable": "reference.settings.ide.settings.new.ui",
+     "vue.rearranger.settings.migration": "true"
+   }
+ }]]></component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
++      <recent name="C:\Users\SSAFY\Desktop\similarCheck\S09P31D106\backend\SimilarCheck\images" />
++      <recent name="C:\Users\SSAFY\Desktop\similarCheck\S09P31D106\backend\SimilarCheck" />
+       <recent name="C:\Users\SSAFY\PycharmProjects\pythonProject2\test" />
+       <recent name="C:\Users\SSAFY\PycharmProjects\pythonProject2" />
+       <recent name="C:\Users\SSAFY\PycharmProjects\pythonProject2\images" />
+-      <recent name="C:\Users\SSAFY\PycharmProjects\pythonProject2\venv" />
+     </key>
+     <key name="MoveFile.RECENT_KEYS">
+       <recent name="C:\Users\SSAFY\PycharmProjects\pythonProject2\test" />
+@@ -54,7 +88,7 @@
+       <recent name="C:\Users\SSAFY\PycharmProjects\pythonProject2\test1" />
+     </key>
+   </component>
+-  <component name="RunManager" selected="Python.app">
++  <component name="RunManager" selected="Python.featureSimilarity">
+     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+       <module name="SimilarityCheck" />
+       <option name="INTERPRETER_OPTIONS" value="" />
+@@ -77,7 +111,29 @@
+       <option name="INPUT_FILE" value="" />
+       <method v="2" />
+     </configuration>
+-    <configuration name="main_2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++    <configuration name="dd" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++      <module name="SimilarityCheck" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
++      <option name="IS_MODULE_SDK" value="true" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dd.py" />
++      <option name="PARAMETERS" value="" />
++      <option name="SHOW_COMMAND_LINE" value="false" />
++      <option name="EMULATE_TERMINAL" value="false" />
++      <option name="MODULE_MODE" value="false" />
++      <option name="REDIRECT_INPUT" value="false" />
++      <option name="INPUT_FILE" value="" />
++      <method v="2" />
++    </configuration>
++    <configuration name="featureSimilarity" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+       <module name="SimilarityCheck" />
+       <option name="INTERPRETER_OPTIONS" value="" />
+       <option name="PARENT_ENVS" value="true" />
+@@ -90,7 +146,7 @@
+       <option name="ADD_CONTENT_ROOTS" value="true" />
+       <option name="ADD_SOURCE_ROOTS" value="true" />
+       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+-      <option name="SCRIPT_NAME" value="C:\Users\SSAFY\PycharmProjects\pythonProject2\test1\main_2.py" />
++      <option name="SCRIPT_NAME" value="C:\Users\SSAFY\Desktop\similarCheck\S09P31D106\backend\SimilarCheck\featureSimilarity.py" />
+       <option name="PARAMETERS" value="" />
+       <option name="SHOW_COMMAND_LINE" value="false" />
+       <option name="EMULATE_TERMINAL" value="false" />
+@@ -143,7 +199,7 @@
+       <option name="INPUT_FILE" value="" />
+       <method v="2" />
+     </configuration>
+-    <configuration name="similarCheck_TEST" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+       <module name="SimilarityCheck" />
+       <option name="INTERPRETER_OPTIONS" value="" />
+       <option name="PARENT_ENVS" value="true" />
+@@ -156,7 +212,7 @@
+       <option name="ADD_CONTENT_ROOTS" value="true" />
+       <option name="ADD_SOURCE_ROOTS" value="true" />
+       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+-      <option name="SCRIPT_NAME" value="C:\Users\SSAFY\PycharmProjects\pythonProject2\test1\similarCheck_TEST.py" />
++      <option name="SCRIPT_NAME" value="C:\Users\SSAFY\Desktop\similarCheck\S09P31D106\backend\SimilarCheck\test.py" />
+       <option name="PARAMETERS" value="" />
+       <option name="SHOW_COMMAND_LINE" value="false" />
+       <option name="EMULATE_TERMINAL" value="false" />
+@@ -167,10 +223,11 @@
+     </configuration>
+     <recent_temporary>
+       <list>
++        <item itemvalue="Python.featureSimilarity" />
++        <item itemvalue="Python.test" />
++        <item itemvalue="Python.dd" />
+         <item itemvalue="Python.app" />
+         <item itemvalue="Python.similarCheck_2" />
+-        <item itemvalue="Python.similarCheck_TEST" />
+-        <item itemvalue="Python.main_2" />
+       </list>
+     </recent_temporary>
+   </component>
+@@ -185,11 +242,19 @@
+       <workItem from="1698711663928" duration="95000" />
+       <workItem from="1698712197345" duration="244000" />
+       <workItem from="1698712467732" duration="17000" />
+-      <workItem from="1698712501773" duration="589000" />
++      <workItem from="1698712501773" duration="2931000" />
++      <workItem from="1698798068789" duration="5190000" />
++      <workItem from="1698901029750" duration="1717000" />
++      <workItem from="1698996273470" duration="2504000" />
+     </task>
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+     <option name="version" value="3" />
+   </component>
++  <component name="com.intellij.coverage.CoverageDataManagerImpl">
++    <SUITE FILE_PATH="coverage/SimilarityCheck$testtest.coverage" NAME="featureSimilarity Coverage Results" MODIFIED="1698998760862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/SimilarityCheck$tes6t.coverage" NAME="test Coverage Results" MODIFIED="1698997483851" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/SimilarityCheck$dd.coverage" NAME="dd Coverage Results" MODIFIED="1698996285289" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++  </component>
+ </project>
+\ No newline at end of file
+Index: app.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from flask import Flask, request\r\nimport cv2\r\n\r\napp = Flask(__name__)\r\n\r\n# 지정된 디렉토리에 이미지를 저장하기 위한 함수\r\ndef save_uploaded_image(file, save_path):\r\n    file.save(save_path)\r\n\r\n# 두 이미지의 유사도를 검사한다.\r\ndef similarityCheck(originalPath, newPath):\r\n    originalImg = cv2.imread(originalPath)\r\n    newImg = cv2.imread(newPath)\r\n\r\n    # 이미지가 성공적으로 읽혔는지 확인합니다.\r\n    if originalImg is not None and newImg is not None:\r\n        # 두 이미지가 같은 크기인지 확인합니다.\r\n        if originalImg.shape == newImg.shape:\r\n            # MSE 계산\r\n            mse = ((originalImg - newImg) ** 2).mean()\r\n\r\n            print(\"compareResult :\", mse)\r\n\r\n            return mse\r\n\r\n        else:\r\n            print('이미지 크기가 다릅니다.')\r\n\r\n    else:\r\n        print('이미지를 읽어올 수 없습니다.')\r\n\r\n@app.route('/similarcheck/comm/animals', methods=['POST'])\r\ndef SimilarityCheck():\r\n    # JSON 데이터를 파싱하여 세션 ID 추출\r\n\r\n    sessionId = request.form.get(\"sessionId\")\r\n    originalFile = request.files['originalFile']\r\n    newFile = request.files['newFile']\r\n\r\n\r\n    # 파일을 저장할 경로 지정\r\n    originalPath = \"C:/Users/SSAFY/PycharmProjects/pythonProject2/images/\"+sessionId+\"_originalFile.jpg\"\r\n    newPath = \"C:/Users/SSAFY/PycharmProjects/pythonProject2/images/\"+sessionId+\"_newFile.jpg\"\r\n\r\n\r\n    # 이미지를 서버에 저장\r\n    originalFile.save(originalPath)\r\n    newFile.save(newPath)\r\n\r\n    return str(similarityCheck(originalPath, newPath))\r\n\r\n# @app.route('/')\r\n# def hello_world():\r\n#     return 'Hello, World!'\r\n\r\nif __name__ == '__main__':\r\n    app.run('127.0.0.1', port=8600, debug=True)\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app.py b/app.py
+--- a/app.py	(revision 58a6cc1b369dafe93223f2056ca52225af5fa280)
++++ b/app.py	(date 1698998939205)
+@@ -38,9 +38,9 @@
+     newFile = request.files['newFile']
+ 
+ 
+-    # 파일을 저장할 경로 지정
+-    originalPath = "C:/Users/SSAFY/PycharmProjects/pythonProject2/images/"+sessionId+"_originalFile.jpg"
+-    newPath = "C:/Users/SSAFY/PycharmProjects/pythonProject2/images/"+sessionId+"_newFile.jpg"
++      # 파일을 저장할 경로 지정
++    originalPath = "./images/"+sessionId+"_"+originalFile.name+".jpg";
++    newPath = "./images/"+sessionId+"_"+newFile.name+".jpg";
+ 
+ 
+     # 이미지를 서버에 저장
+@@ -54,6 +54,5 @@
+ #     return 'Hello, World!'
+ 
+ if __name__ == '__main__':
+-    app.run('127.0.0.1', port=8600, debug=True)
+-
++    app.run('0.0.0.0', port=8600, debug=True)
+ 
+Index: requirements.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>Flask==2.1.0\r\nopencv-python==4.5.1.48
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/requirements.txt b/requirements.txt
+--- a/requirements.txt	(revision 58a6cc1b369dafe93223f2056ca52225af5fa280)
++++ b/requirements.txt	(date 1698998992090)
+@@ -1,2 +1,2 @@
+-Flask==2.1.0
+-opencv-python==4.5.1.48
+\ No newline at end of file
++Flask==2.3.3
++opencv-python==4.8.1.78
