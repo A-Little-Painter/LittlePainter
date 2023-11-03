@@ -23,4 +23,6 @@ public interface UserService {
     public User getUserInfo(String email);
 
     public GetChildInfoResponseDTO getChildInfo(String email);
+
+    public ResponseEntity<?> selectChild(Long childId);
 }

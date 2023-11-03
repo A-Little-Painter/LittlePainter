@@ -78,6 +78,13 @@ public class UserController {
         return userService.switchSound();
     }
 
+    //아이 선택
+    @PatchMapping("/select-child/{childId}")
+    public ResponseEntity<?> selectChild(@PathVariable Long childId){
+        return userService.selectChild(childId);
+    }
+
+
     //유저 정보 가져오기(타 마이크로서비스 유저 정보가져오기)
     @Operation(summary = "유저 정보 가져오기(타 마이크로서비스 유저 정보가져오기)", description = "USER")
     @ApiResponses(value = {

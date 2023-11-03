@@ -11,4 +11,12 @@ public class SignUpRequestDTO {
     private String password;
     private String childName;
     private LocalDate birthday;
+
+    @Builder
+    public SignUpRequestDTO(String email, String password, String childName, LocalDate birthday){
+        this.email = email;
+        this.password = password;
+        this.childName = childName;
+        this.birthday = birthday;
+    }
 }

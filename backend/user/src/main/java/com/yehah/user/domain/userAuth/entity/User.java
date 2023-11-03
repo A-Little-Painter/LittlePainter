@@ -59,6 +59,13 @@ public class User {
         }
     }
 
+    public User updateSelectChild(User user){
+        if(user.lastSelectedChildId!=null){
+            this.lastSelectedChildId = user.lastSelectedChildId;
+        }
+        return this;
+    }
+
     public void toggleTts() {
         this.tts = !this.tts;
     }
