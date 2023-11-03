@@ -10,6 +10,9 @@ interface CounterState {
   drawColorSelect: string;
   // 스크린샷 관련 모달
   isDrawScreenshotModalVisible: boolean;
+  isSaveDrawnToLoginModalVisible: boolean;
+  // 그림이미지 테스트 비교 모달
+  isTestDrawCompareModalVisible: boolean;
 }
 
 const initialState: CounterState = {
@@ -21,6 +24,9 @@ const initialState: CounterState = {
   isDrawColorPaletteModalVisible: false,
   drawColorSelect: 'black',
   isDrawScreenshotModalVisible: false,
+  isSaveDrawnToLoginModalVisible: false,
+  // 그림이미지 테스트 비교 모달
+  isTestDrawCompareModalVisible: false,
 };
 
 export const drawSlice = createSlice({
@@ -64,6 +70,20 @@ export const drawSlice = createSlice({
     ) => {
       state.isDrawScreenshotModalVisible = action.payload;
     },
+    // 그림 저장 시 로그인 모달
+    handleisSaveDrawnToLoginModalVisible: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.isSaveDrawnToLoginModalVisible = action.payload;
+    },
+    // 그림이미지 테스트 비교 모달
+    handleisTestDrawCompareModalVisible: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.isTestDrawCompareModalVisible = action.payload;
+    },
   },
 });
 
@@ -75,6 +95,8 @@ export const {
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
   handleIsDrawScreenshotModalVisible,
+  handleisSaveDrawnToLoginModalVisible,
+  handleisTestDrawCompareModalVisible, // 임시 그림 비교 모달
 } = drawSlice.actions;
 export const LineThickness = (state: RootState) => state.draw.LineThickness;
 export const isDrawLineThicknessModalVisible = (state: RootState) =>
@@ -89,5 +111,12 @@ export const isDrawColorPaletteModalVisible = (state: RootState) => {
 export const isDrawScreenshotModalVisible = (state: RootState) => {
   state.draw.isDrawScreenshotModalVisible;
 };
+export const isSaveDrawnToLoginModalVisible = (state: RootState) => {
+  state.draw.isSaveDrawnToLoginModalVisible;
+};
 export const drawColorSelect = (state: RootState) => state.draw.drawColorSelect;
+// 임시 그림 비교 모달
+export const isTestDrawCompareModalVisible = (state: RootState) => {
+  state.draw.isTestDrawCompareModalVisible;
+};
 export default drawSlice.reducer;

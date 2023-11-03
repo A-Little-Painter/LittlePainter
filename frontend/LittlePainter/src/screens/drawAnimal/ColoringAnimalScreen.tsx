@@ -30,6 +30,7 @@ import {
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
 } from '../../redux/slices/draw/draw';
+import {animalAnimations} from '../../apis/draw/draw';
 
 type ColoringAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -54,12 +55,15 @@ export default function ColoringAnimalScreen({
   route,
   navigation,
 }: ColoringAnimalScreenProps) {
-  // const [completeLineUri] = useState(route.params.completeLineUri);
+  const [animalType] = useState<string>(route.params.animalType);
+  const [animalBorderURI] = useState<string>(route.params.animalBorderURI);
+  const [animalExplanation] = useState<string>(route.params.animalExplanation);
+
   const [completeLine] = useState(route.params.completeLine);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
-  const captureRef = useRef();
+  const drawCaptureRef = useRef();
 
   // 그림 그리기 변수
   const [paths, setPaths] = useState<
@@ -69,8 +73,6 @@ export default function ColoringAnimalScreen({
     {path: string; color: string; strokeWidth: number}[]
   >([]);
   const [currentPath, setCurrentPath] = useState<string>('');
-  const [isClearButtonClicked, setClearButtonClicked] =
-    useState<boolean>(false);
 
   const dispatch = useDispatch();
   // 선 굵기 모달을 위한 라인
@@ -96,6 +98,39 @@ export default function ColoringAnimalScreen({
   );
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
 
+  // 동물 애니메이션
+  async function handleAnimalAnimations() {
+    try {
+      const response = await animalAnimations(animalType, captureImagePath);
+      if (response.status === 200) {
+        console.log('동물 애니메이션 성공', response.data);
+      } else {
+        console.log('동물 애니메이션 실패', response.status);
+        ToastAndroid.show(
+          '동물 친구가 움직일 수가 없어요ㅠㅠ',
+          ToastAndroid.LONG,
+        );
+      }
+    } catch (error) {
+      console.log('동물 애니메이션 실패', error);
+      ToastAndroid.show(
+        '동물 친구가 움직일 수가 없어요ㅠㅠ',
+        ToastAndroid.LONG,
+      );
+    }
+    handleGoComplete();
+  }
+
+  // 캡쳐 함수
+  async function handleDrawCapture() {
+    try {
+      const uri = await drawCaptureRef.current.capture();
+      setCaptureImagePath(uri);
+    } catch (error) {
+      console.error('캡쳐 에러 발생: ', error);
+    }
+  }
+
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
     const locationX = event.nativeEvent.locationX;
@@ -120,20 +155,15 @@ export default function ColoringAnimalScreen({
       ]);
     }
     setCurrentPath('');
-    setClearButtonClicked(false);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
+    handleDrawCapture();
   };
 
   const handleClearButtonClick = () => {
     setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
-    setClearButtonClicked(true);
-    setClearButtonClicked(false);
-    setCaptureImagePath('');
+    // setCaptureImagePath('');
+    handleDrawCapture();
   };
 
   const handlePrevButtonClick = () => {
@@ -143,10 +173,7 @@ export default function ColoringAnimalScreen({
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
     }
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
+    handleDrawCapture();
   };
   const handleNextButtonClick = () => {
     const tmpPosition:
@@ -155,10 +182,7 @@ export default function ColoringAnimalScreen({
     if (tmpPosition) {
       setPaths([...paths, tmpPosition]);
     }
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
+    handleDrawCapture();
   };
 
   const handleGoComplete = () => {
@@ -206,12 +230,10 @@ export default function ColoringAnimalScreen({
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
+  // 화면 캡쳐 동작 useEffect
   useEffect(() => {
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
-  }, []);
+    handleDrawCapture();
+  }, [paths]);
 
   return (
     <View style={styles.mainContainer}>
@@ -227,7 +249,7 @@ export default function ColoringAnimalScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
-                navigation.navigate('DrawCaptureScreen');
+                // navigation.navigate('');
               }}>
               <Image
                 style={styles.drawEquipImage}
@@ -303,17 +325,16 @@ export default function ColoringAnimalScreen({
           </View>
         </View>
         {/* 중단 */}
-        {/* <View style={styles.middleContainer}> */}
         <ViewShot
-          style={[styles.middleContainer, {backgroundColor: 'white'}]}
-          ref={captureRef}
+          style={[styles.middleContainer]}
+          ref={drawCaptureRef}
           options={{
             fileName: 'drawAnimalCapture',
             format: 'jpg',
             quality: 0.9,
           }}>
           <View
-            style={{justifyContent: 'flex-end'}}
+            style={styles.pathsView}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}>
@@ -322,7 +343,7 @@ export default function ColoringAnimalScreen({
                 <Path
                   key={`path-${index}`}
                   d={item.path}
-                  stroke={isClearButtonClicked ? 'transparent' : item.color}
+                  stroke={item.color}
                   fill={'transparent'}
                   strokeWidth={item.strokeWidth}
                   strokeLinejoin={'round'}
@@ -331,7 +352,7 @@ export default function ColoringAnimalScreen({
               ))}
               <Path
                 d={currentPath}
-                stroke={isClearButtonClicked ? 'transparent' : drawColorSelect}
+                stroke={drawColorSelect}
                 fill={'transparent'}
                 strokeWidth={LineThickness}
                 strokeLinejoin={'round'}
@@ -341,7 +362,7 @@ export default function ColoringAnimalScreen({
                 <Path
                   key={`path-${index}`}
                   d={item.path}
-                  stroke={isClearButtonClicked ? 'transparent' : item.color}
+                  stroke={item.color}
                   fill={'transparent'}
                   strokeWidth={item.strokeWidth}
                   strokeLinejoin={'round'}
@@ -350,7 +371,6 @@ export default function ColoringAnimalScreen({
               ))}
             </Svg>
           </View>
-          {/* </View> */}
         </ViewShot>
         {/* 하단 */}
         <View style={styles.bottomContainer}>
@@ -405,7 +425,8 @@ export default function ColoringAnimalScreen({
             <TouchableOpacity
               style={[styles.doneButton]}
               onPress={() => {
-                handleGoComplete();
+                handleAnimalAnimations();
+                // handleGoComplete();
               }}>
               <Text style={styles.doneButtonText}>완성하기</Text>
             </TouchableOpacity>
@@ -415,7 +436,13 @@ export default function ColoringAnimalScreen({
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginCompareModalVisible ? <OriginCompareModal /> : null}
+      {isOriginCompareModalVisible ? (
+        <OriginCompareModal
+          animalBorderURI={animalBorderURI}
+          animalExplanation={animalExplanation}
+          animalType={animalType}
+        />
+      ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
       {isDrawScreenshotModalVisible ? (
         <DrawScreenshotModal captureUri={captureImagePath} />
@@ -500,7 +527,13 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
-    // borderWidth: 1,
+    height: '100%',
+    backgroundColor: 'white',
+  },
+  pathsView: {
+    justifyContent: 'flex-end',
+    width: '100%',
+    height: '100%',
   },
   bottomContainer: {
     borderTopWidth: 1,

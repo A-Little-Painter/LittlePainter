@@ -309,7 +309,7 @@ export default function DrawPictureScreen({
           style={[styles.middleContainer, {backgroundColor: 'white'}]}
           ref={captureRef}
           options={{
-            fileName: 'drawAnimalCapture',
+            fileName: 'drawPictureCapture',
             format: 'jpg',
             quality: 0.9,
           }}>

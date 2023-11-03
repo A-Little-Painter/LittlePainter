@@ -26,17 +26,33 @@ export const animalBorder = async (animalId) => {
 };
 // 선택 동물 유사도 검사
 // { MultipartFile 원본테두리이미지, MultipartFile 사용자가그린테두리이미지 }
-export const animalCheckSimilarity = async (originBorderFile, compareBorderFile) => {
-  const data = {originBorderFile, compareBorderFile};
+
+// export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
+export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
   try {
-    const response = await axios.post(`${BASE_URL}/draws/animals/similarcheck`, data);
+    const formData = new FormData();
+    formData.append('sessionId', sessionId);
+
+    formData.append('originalFile', {
+      uri: originBorderFileUri,
+      type: 'image/png',
+      name: 'originalFile.png',
+    });
+
+    formData.append('newFile', {
+      uri: compareBorderFileUri,
+      type: 'image/png',
+      name: 'newFile.png',
+    });
+    const response = await axios.post(`${BASE_URL}/draws/animals/similarcheck`, formData, {headers: {'Content-Type': 'multipart/form-data'}},
+    );
     return response;
   } catch (error) {
-    console.log('선택 동물 유사도 검사 실패:', error);
-    const response = error.response;
-    return response;
+    console.error('선택 동물 유사도 검사 실패:', error);
+    return error.response;
   }
 };
+
 // 완성된 동물 마이페이지에 저장
 export const animalSaveToMypage = async () => {
   try {
@@ -213,9 +229,22 @@ export const taleSaveEveryDrawn = async () => {
 
 //animations
 // 동물 애니메이션
-export const animalAnimations = async () => {
+export const animalAnimations = async (animalType, drawCaptureImageURI) => {
   try {
-    const response = await axios.post(`${BASE_URL}/draws/animations/animals`, null);
+    const formData = new FormData();
+    formData.append('animalType ', animalType);
+
+    formData.append('originalFile', {
+      uri: drawCaptureImageURI,
+      type: 'image/jpg',
+      name: 'originalFile.jpg',
+    });
+
+    const response = await axios.post(
+      `${BASE_URL}/draws/animations/animals`,
+      formData,
+      {headers: {'Content-Type': 'multipart/form-data'}},
+    );
     return response;
   } catch (error) {
     console.log('동물 애니메이션 실패:', error);

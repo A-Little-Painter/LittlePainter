@@ -160,5 +160,6 @@ const styles = StyleSheet.create({
   animalCardText: {
     textAlign: 'center',
     fontSize: windowWidth * 0.018,
+    color: 'black',
   },
 });

@@ -13,9 +13,11 @@ import ViewShot from 'react-native-view-shot';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import {handleisSaveDrawnToLoginModalVisible} from '../../redux/slices/draw/draw';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import DrawScreenshotModal from '../modals/DrawScreenshotModal';
+import SaveDrawnToLoginModal from '../modals/SaveDrawnToLoginModal';
 
 type CompleteDrawPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -36,6 +38,9 @@ export default function CompleteDrawPictureScreen({
   const captureRef = useRef();
 
   const dispatch = useDispatch();
+  const isSaveDrawnToLoginModalVisible = useSelector(
+    (state: RootState) => state.draw.isSaveDrawnToLoginModalVisible,
+  );
   // 스크린샷 관련 모달
   const isDrawScreenshotModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawScreenshotModalVisible,
@@ -59,7 +64,7 @@ export default function CompleteDrawPictureScreen({
           }, 1000);
           return true; // 뒤로가기 이벤트 무시하지 않도록 설정
         } else if (backHandleNum === 1) {
-          navigation.navigate('SelectAnimalScreen');
+          navigation.navigate('SelectPictureScreen');
         }
         return true;
       }
@@ -135,15 +140,17 @@ export default function CompleteDrawPictureScreen({
           <View style={styles.bottomContainerMiddle} />
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
-            <TouchableOpacity style={[styles.doneButton]} onPress={() => {}}>
+            <TouchableOpacity
+              style={[styles.doneButton]}
+              onPress={() => {
+                dispatch(handleisSaveDrawnToLoginModalVisible(true));
+              }}>
               <Text style={styles.doneButtonText}>저장하기</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-      {isDrawScreenshotModalVisible ? (
-        <DrawScreenshotModal captureUri={captureImagePath} />
-      ) : null}
+      {isSaveDrawnToLoginModalVisible ? <SaveDrawnToLoginModal /> : null}
     </View>
   );
 }

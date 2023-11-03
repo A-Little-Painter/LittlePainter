@@ -9,6 +9,7 @@ import {
   Pressable,
   ToastAndroid, // 토스트안드로이드 잠깐 사용
   BackHandler,
+  ImageBackground,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
@@ -22,12 +23,14 @@ import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
 import OriginCompareModal from '../modals/OriginCompareModal';
 import DrawColorPaletteModal from '../modals/DrawColorPaletteModal';
-import DrawScreenshotModal from '../modals/DrawScreenshotModal';
 import {
   handleLineThickness,
   handleisOriginCompareModalVisible,
   handleDrawColorSelect,
+  handleisTestDrawCompareModalVisible, // 그림 임시 비교 모달
 } from '../../redux/slices/draw/draw';
+import {animalBorder, animalCheckSimilarity} from '../../apis/draw/draw';
+import TestDrawCompareModal from '../modals/TestDrawCompareModal';
 
 type DrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -48,11 +51,28 @@ const fastcolorData = [
   '#000000',
 ];
 
-export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
+export default function DrawAnimalScreen({
+  route,
+  navigation,
+}: DrawAnimalScreenProps) {
+  // 캡쳐 변수
+  const drawCaptureRef = useRef(); //테두리 그리기 캡쳐
+  const originCaptureRef = useRef(); //원본이미지 캡쳐
+  // 임시 이미지 비교 변수
+  const isTestDrawCompareModalVisible = useSelector(
+    (state: RootState) => state.draw.isTestDrawCompareModalVisible,
+  );
+
+  const [animalId] = useState<number>(route.params.animalId);
+  const [animalType] = useState<string>(route.params.animalType);
+  const [animalBorderURI, setAnimalBorderURI] = useState<string>('');
+  const [animalExplanation, setAnimalExplanation] = useState<string>('');
+  const [captureImagePath, setCaptureImagePath] = useState<string>('');
+  const [captureBorderImagePath, setCaptureBorderImagePath] =
+    useState<string>('');
+  const [canDrawCapture, setCanDrawCapture] = useState<boolean>(false);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
-  // 캡쳐 변수
-  const captureRef = useRef();
 
   // 그림 그리기 변수
   const [paths, setPaths] = useState<
@@ -62,8 +82,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     {path: string; color: string; strokeWidth: number}[]
   >([]);
   const [currentPath, setCurrentPath] = useState<string>('');
-  const [isClearButtonClicked, setClearButtonClicked] =
-    useState<boolean>(false);
 
   const dispatch = useDispatch();
   // 선 굵기 모달을 위한 라인
@@ -83,11 +101,69 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
   const drawColorSelect = useSelector(
     (state: RootState) => state.draw.drawColorSelect,
   );
-  // 스크린샷 관련 모달
-  const isDrawScreenshotModalVisible = useSelector(
-    (state: RootState) => state.draw.isDrawScreenshotModalVisible,
-  );
-  const [isToCaptureDrawing, setIsToCaptureDrawing] = useState<boolean>(false);
+
+  // 서버 통신
+  const handleAnimalBorder = async () => {
+    try {
+      const response = await animalBorder(animalId);
+      if (response.status === 200) {
+        console.log('선택 동물 테두리 가져오기 성공', response.data);
+        setAnimalBorderURI(response.data.urlTrace);
+        setAnimalExplanation(response.data.detail);
+        handleOriginCapture();
+      } else {
+        console.log('선택 동물 테두리 가져오기 실패', response.status);
+      }
+    } catch (error) {
+      console.log('선택 동물 테두리 가져오기 실패', error);
+    }
+  };
+  const handleAnimalCheckSimilarity = async (compareImagePath: string) => {
+    const randomInt = Math.floor(Math.random() * (100 - 1 + 1) + 1);
+    try {
+      const response = await animalCheckSimilarity(
+        `abc${randomInt}`,
+        captureBorderImagePath,
+        compareImagePath,
+      );
+      if (response.status === 200) {
+        console.log('동물 그리기 유사도 체크 성공', response.data);
+        if (response.data === 'END') {
+          handleGoColoring();
+        }
+      } else {
+        console.log('동물 그리기 유사도 체크 실패', response.status);
+      }
+    } catch (error) {
+      console.log('동물 그리기 유사도 체크 실패', error);
+    }
+  };
+
+  async function handleDrawCapture() {
+    try {
+      setCanDrawCapture(true);
+      const uri = await drawCaptureRef.current.capture();
+      setCaptureImagePath(uri);
+      setCanDrawCapture(false);
+      await handleAnimalCheckSimilarity(uri);
+    } catch (error) {
+      setCanDrawCapture(false);
+      console.error('캡쳐 에러 발생: ', error);
+    }
+  }
+  async function handleOriginCapture() {
+    try {
+      const uri = await originCaptureRef.current.capture();
+      setCaptureBorderImagePath(uri);
+    } catch (error) {
+      console.error('원본 이미지 캡쳐 에러 발생: ', error);
+    }
+  }
+
+  useEffect(() => {
+    handleAnimalBorder();
+  }, []);
+
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
     const locationX = event.nativeEvent.locationX;
@@ -103,7 +179,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
     setCurrentPath(prevPath => prevPath + newPoint);
   };
-  const [captureImagePath, setCaptureImagePath] = useState<string>('');
+
   const onTouchEnd = () => {
     if (currentPath) {
       setPaths([
@@ -112,22 +188,12 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
       ]);
     }
     setCurrentPath('');
-    setClearButtonClicked(false);
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-    });
   };
 
   const handleClearButtonClick = () => {
     setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
-    setClearButtonClicked(true);
-    setClearButtonClicked(false);
-    setCaptureImagePath('');
   };
 
   const handlePrevButtonClick = () => {
@@ -136,13 +202,8 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
       | undefined = paths.pop();
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
+      handleDrawCapture();
     }
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-    });
   };
   const handleNextButtonClick = () => {
     const tmpPosition:
@@ -151,13 +212,14 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
     if (tmpPosition) {
       setPaths([...paths, tmpPosition]);
     }
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-    });
   };
+
+  // 화면 캡쳐 동작 useEffect
+  useEffect(() => {
+    if (captureBorderImagePath !== '') {
+      handleDrawCapture();
+    }
+  }, [paths]);
 
   useEffect(() => {
     dispatch(handleDrawColorSelect('#000000'));
@@ -202,13 +264,16 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
 
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
+    console.log(paths);
     navigation.navigate('ColoringAnimalScreen', {
       completeLine: paths,
+      animalType: animalType,
+      animalBorderURI: animalBorderURI,
+      animalExplanation: animalExplanation,
     });
   };
   return (
     <View style={styles.mainContainer}>
-      {/* <View style={styles.subContainer}> */}
       <View style={styles.subContainer}>
         {/* 상단 */}
         <View style={styles.topContainer}>
@@ -220,7 +285,7 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
-                navigation.navigate('DrawCaptureScreen');
+                dispatch(handleisTestDrawCompareModalVisible(true));
               }}>
               <Image
                 style={styles.drawEquipImage}
@@ -302,59 +367,68 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
           </View>
         </View>
         {/* 중단 */}
-        {/* <View style={styles.middleContainer}> */}
         <ViewShot
-          style={[styles.middleContainer, {backgroundColor: 'white'}]}
-          ref={captureRef}
+          style={styles.middleContainer}
+          ref={originCaptureRef}
           options={{
-            fileName: 'drawAnimalCapture',
-            format: 'jpg',
-            quality: 0.9,
+            fileName: 'originImageCapture',
+            format: 'png',
+            quality: 1,
           }}>
-          {/* <ImageBackground
-            source={require('../../assets/images/animalImage/deerTest1.png')}
-            style={{}}
-            resizeMode="center"> */}
-          {isToCaptureDrawing ? null : (
-            <Image
-              style={{
-                position: 'absolute',
-                width: windowWidth,
-                height: windowHeight * 0.8,
-                resizeMode: 'contain',
-              }}
-              source={require('../../assets/images/animalImage/deerTest1.png')}
-            />
+          {animalBorderURI === '' ? null : (
+            <ImageBackground
+              // source={{uri: animalBorderURI}}
+              source={require('../../assets/images/animalImage/ovalTest.png')}
+              // source={require('../../assets/images/animalImage/test1.jpg')}
+              style={styles.animalBorderImageBackground}
+              resizeMode="contain">
+              <ViewShot
+                ref={drawCaptureRef}
+                options={{
+                  fileName: 'drawCapture',
+                  format: 'png',
+                  quality: 1,
+                }}
+                style={[
+                  styles.pathViewShot,
+                  {backgroundColor: canDrawCapture ? 'white' : 'transparent'},
+                ]}>
+                <View
+                  style={styles.pathView}
+                  onTouchStart={onTouchStart}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}>
+                  <Svg>
+                    {paths.map((item, index) => (
+                      <Path
+                        key={`path-${index}`}
+                        d={item.path}
+                        stroke={
+                          // isClearButtonClicked ? 'transparent' : item.color
+                          item.color
+                        }
+                        fill={'transparent'}
+                        strokeWidth={item.strokeWidth}
+                        strokeLinejoin={'round'}
+                        strokeLinecap={'round'}
+                      />
+                    ))}
+                    <Path
+                      d={currentPath}
+                      stroke={
+                        // isClearButtonClicked ? 'transparent' : drawColorSelect
+                        drawColorSelect
+                      }
+                      fill={'transparent'}
+                      strokeWidth={LineThickness}
+                      strokeLinejoin={'round'}
+                      strokeLinecap={'round'}
+                    />
+                  </Svg>
+                </View>
+              </ViewShot>
+            </ImageBackground>
           )}
-
-          <View
-            style={{justifyContent: 'flex-end'}}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}>
-            <Svg>
-              {paths.map((item, index) => (
-                <Path
-                  key={`path-${index}`}
-                  d={item.path}
-                  stroke={isClearButtonClicked ? 'transparent' : item.color}
-                  fill={'transparent'}
-                  strokeWidth={item.strokeWidth}
-                  strokeLinejoin={'round'}
-                  strokeLinecap={'round'}
-                />
-              ))}
-              <Path
-                d={currentPath}
-                stroke={isClearButtonClicked ? 'transparent' : drawColorSelect}
-                fill={'transparent'}
-                strokeWidth={LineThickness}
-                strokeLinejoin={'round'}
-                strokeLinecap={'round'}
-              />
-            </Svg>
-          </View>
-          {/* </ImageBackground> */}
           {/* </View> */}
         </ViewShot>
         {/* 하단 */}
@@ -366,13 +440,6 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
               onPress={() => {
                 dispatch(handleisOriginCompareModalVisible(true));
               }}>
-              {/* {captureImagePath ? (
-                <Image
-                  style={styles.ideaLight}
-                  // source={require('../../assets/images/ideaLight.png')}
-                  source={{uri: captureImagePath}}
-                />
-              ) : null} */}
               <Image
                 style={styles.ideaLight}
                 source={require('../../assets/images/ideaLight.png')}
@@ -433,10 +500,20 @@ export default function DrawAnimalScreen({navigation}: DrawAnimalScreenProps) {
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginCompareModalVisible ? <OriginCompareModal /> : null}
+      {isOriginCompareModalVisible ? (
+        <OriginCompareModal
+          animalBorderURI={animalBorderURI}
+          animalExplanation={animalExplanation}
+          animalType={animalType}
+        />
+      ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
-      {isDrawScreenshotModalVisible ? (
-        <DrawScreenshotModal captureUri={captureImagePath} />
+      {/* 유사도 검사 작동시 삭제할 예정 */}
+      {isTestDrawCompareModalVisible ? (
+        <TestDrawCompareModal
+          originImageURI={captureBorderImagePath}
+          compareImageURI={captureImagePath}
+        />
       ) : null}
     </View>
   );
@@ -518,11 +595,31 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
+    width: '100%',
+    backgroundColor: 'white',
+  },
+  animalBorderImageBackground: {
+    width: '100%',
+    height: '100%',
+  },
+  pathViewShot: {
+    width: '100%',
+    height: '100%',
     // borderWidth: 1,
+  },
+  pathView: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'flex-end',
+  },
+  borderImage: {
+    position: 'absolute',
+    width: windowWidth,
+    height: windowHeight * 0.8,
+    resizeMode: 'contain',
   },
   bottomContainer: {
     borderTopWidth: 1,
-    // marginHorizontal: windowWidth * 0.01,
     paddingHorizontal: windowWidth * 0.01,
     flex: 0.1,
     flexDirection: 'row',
