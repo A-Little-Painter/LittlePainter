@@ -18,6 +18,8 @@ import PasswordChangeMyComponents from './components/Mypage/PasswordChangeMyComp
 import WithdrawalComponents from './components/Mypage/WithdrawalComponent';
 import MyPictureComponents from './components/Mypage/MyPictureComponent';
 import VolumeComponents from './components/Mypage/VolumeComponent';
+import * as Keychain from 'react-native-keychain';
+import {useAppSelector} from '../../redux/hooks';
 
 type MypageProfileScreenProps = StackScreenProps<
   RootStackParams,
@@ -44,6 +46,7 @@ export default function MypageProfileScreen({
     if (selectedComponent === 'profile') {
       return (
         <ProfileComponents
+          setProfileImage={setProfileImage}
           navigation={navigation}
           selectComponent={(componentName: string) =>
             setSelectedComponent(componentName)
@@ -102,9 +105,17 @@ export default function MypageProfileScreen({
   const dispatch = useAppDispatch();
 
   const logoutFonc = () => {
-    dispatch(logOut());
-    navigation.navigate('MainScreen');
+    try {
+      dispatch(logOut());
+      navigation.navigate('MainScreen');
+      Keychain.resetGenericPassword({service: 'accessTokens'});
+      Keychain.resetGenericPassword({service: 'refreshTokens'});
+    } catch {
+      console.error('로그아웃 실패');
+    }
   };
+  const selectImage = useAppSelector(state => state.user.selectImage);
+  const userEmail = useAppSelector(state => state.user.userEmail);
 
   return (
     <View style={styles.mainContainer}>
@@ -120,13 +131,13 @@ export default function MypageProfileScreen({
               <Image
                 style={styles.logoRabbitImage}
                 resizeMode="contain"
-                source={require('../../assets/logo/littlePainterRabbit.png')}
+                source={{uri: selectImage}}
               />
             </View>
             <View>
               {/* 이메일 */}
               <View style={styles.profileEmailView}>
-                <Text style={styles.profileEmailText}>ttorkim@naver.com</Text>
+                <Text style={styles.profileEmailText}>{userEmail}</Text>
               </View>
               {/* 태그 */}
               <View style={styles.tagView}>
@@ -211,6 +222,7 @@ const styles = StyleSheet.create({
   },
   logoRabbitImage: {
     height: windowWidth * 0.15,
+    width: windowWidth * 0.15,
   },
   profileEmailView: {
     borderBottomWidth: 1,

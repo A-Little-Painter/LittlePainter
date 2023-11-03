@@ -7,13 +7,15 @@ import {
   Dimensions,
   TouchableOpacity,
   FlatList,
+  Alert,
 } from 'react-native';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import {useAppDispatch} from '../../../../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../../../redux/hooks';
 import {addKids, updateKids} from '../../../../redux/slices/user/user';
 import {callUserData} from '../../../../apis/mypage/mypageApi';
 
 type ProfileComponentsProps = {
+  setProfileImage: (profileImage: string) => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
 };
@@ -22,10 +24,12 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const ProfileComponents: React.FC<ProfileComponentsProps> = ({
+  setProfileImage,
   navigation,
   selectComponent,
 }) => {
   const [childs, setChildData] = useState([]);
+
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
     selectComponent(newComponentName);
@@ -42,6 +46,22 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
     };
     fetchData();
   }, []);
+  const selectId = useAppSelector(state => state.user.selectId);
+  const selectName = useAppSelector(state => state.user.selectName);
+  const handleLongPress = () => {
+    Alert.alert('프로필 제거', '이 프로필을 지울까요?', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {
+        text: '확인',
+        onPress: () => {
+          console.log('나중에');
+        },
+      },
+    ]);
+  };
   return (
     <View style={styles.rightContainer}>
       <View style={styles.subrightContainer}>
@@ -49,7 +69,7 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
         <View style={styles.topContainer}>
           <View>
             <Text style={styles.topProfileText}>
-              <Text style={styles.nicknameText}>뽀송 </Text>님의 프로필
+              <Text style={styles.nicknameText}>{selectName} </Text>님의 프로필
             </Text>
           </View>
           <TouchableOpacity
@@ -77,13 +97,19 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
               data={childs}
               horizontal={true}
               renderItem={({item}) => {
+                const isSelected = item.id === selectId;
+                const cardStyle = isSelected
+                  ? styles.childCardViewSelect
+                  : styles.childCardView;
                 return (
-                  <View style={styles.childCardView}>
+                  <View style={cardStyle}>
                     <TouchableOpacity
                       onPress={() => {
                         handleComponentChange('kids');
                         dispatch(updateKids(item));
-                      }}>
+                        setProfileImage(item.iconUrl);
+                      }}
+                      onLongPress={handleLongPress}>
                       <Image
                         style={styles.childCardImage}
                         source={{uri: item.iconUrl}}
@@ -98,13 +124,14 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
                   </View>
                 );
               }}
-              keyExtractor={item => item.id}
+              keyExtractor={item => item.id.toString()}
               ListFooterComponent={
                 <TouchableOpacity
                   style={styles.childPlusView}
                   onPress={() => {
                     handleComponentChange('kids');
                     dispatch(addKids());
+                    setProfileImage('');
                   }}>
                   <View>
                     <Text style={styles.childPlusText}>+</Text>
@@ -195,11 +222,22 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   childCardView: {
+    backgroundColor: '#FFF4E5',
+    marginHorizontal: windowWidth * 0.01,
+    borderRadius: windowWidth * 0.137 * 0.1,
+    borderColor: 'black',
+    borderWidth: 0,
+    width: windowWidth * 0.137,
+    height: windowWidth * 0.137 * 1.24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  childCardViewSelect: {
     backgroundColor: '#9AC5F4',
     marginHorizontal: windowWidth * 0.01,
     borderRadius: windowWidth * 0.137 * 0.1,
     borderColor: 'black',
-    borderWidth: 1,
+    borderWidth: 0,
     width: windowWidth * 0.137,
     height: windowWidth * 0.137 * 1.24,
     justifyContent: 'center',

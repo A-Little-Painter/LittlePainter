@@ -7,10 +7,13 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
+import {useAppDispatch} from '../../redux/hooks';
 import {openImagePicker} from '../detail/ImagePicker';
+import {update} from '../../redux/slices/uploadPicture/uploadPicture';
 
 type UploadPicture1ScreenProps = StackScreenProps<
   RootStackParams,
@@ -23,6 +26,9 @@ const windowWidth = Dimensions.get('window').width;
 export default function UploadPicture1Screen({
   navigation,
 }: UploadPicture1ScreenProps) {
+  const dispatch = useAppDispatch();
+  const [title, setTitle] = useState('');
+  const [detail, setDetail] = useState('');
   const [imageSource, setImageSource] = useState<{
     uri: string;
     fileName: string;
@@ -34,10 +40,31 @@ export default function UploadPicture1Screen({
   };
   let srcText: string;
   if (imageSource) {
-    srcText = imageSource['fileName'];
+    srcText = imageSource['uri'];
   } else {
-    srcText = ' ';
+    srcText = '';
   }
+
+  const uploadPicture1 = () => {
+    if (title && detail && srcText) {
+      const data: {
+        title: string;
+        detail: string;
+        pictureaddr: string;
+      } = {
+        title: title,
+        detail: detail,
+        pictureaddr: srcText,
+      };
+      dispatch(update(data));
+      console.log(data);
+      navigation.navigate('UploadPicture2Screen');
+    } else if (!srcText) {
+      Alert.alert('잠깐!', '동물의 사진을 올려주세요');
+    } else {
+      Alert.alert('잠깐!', '동물의 이름과 소개를 적어주세요');
+    }
+  };
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -67,6 +94,7 @@ export default function UploadPicture1Screen({
                   placeholder="이름"
                   maxLength={15}
                   // placeholderTextColor={'black'}
+                  onChangeText={text => setTitle(text)}
                 />
               </View>
               {/* 내용 */}
@@ -77,6 +105,7 @@ export default function UploadPicture1Screen({
                     placeholder="한줄 소개"
                     maxLength={30}
                     // placeholderTextColor={'black'}
+                    onChangeText={text => setDetail(text)}
                   />
                 </View>
               </View>
@@ -99,7 +128,11 @@ export default function UploadPicture1Screen({
             </View>
           </View>
           <View>
-            <TouchableOpacity style={styles.uploadButton}>
+            <TouchableOpacity
+              style={styles.uploadButton}
+              onPress={() => {
+                uploadPicture1();
+              }}>
               <Text style={styles.uploadText}>올리기</Text>
             </TouchableOpacity>
           </View>
