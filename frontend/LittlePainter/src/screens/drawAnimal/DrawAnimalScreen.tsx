@@ -70,6 +70,36 @@ export default function DrawAnimalScreen({
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
   const [captureBorderImagePath, setCaptureBorderImagePath] =
     useState<string>('');
+  // 뒤로가기 변수
+  const [backHandleNum, setBackHandleNum] = useState<number>(0);
+
+  // 그림 그리기 변수
+  const [paths, setPaths] = useState<
+    {path: string; color: string; strokeWidth: number}[]
+  >([]);
+  const [tmpPaths, setTmpPaths] = useState<
+    {path: string; color: string; strokeWidth: number}[]
+  >([]);
+  const [currentPath, setCurrentPath] = useState<string>('');
+
+  const dispatch = useDispatch();
+  // 선 굵기 모달을 위한 라인
+  const LineThickness = useSelector(
+    (state: RootState) => state.draw.LineThickness,
+  );
+  const isDrawLineThicknessModalVisible = useSelector(
+    (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
+  );
+  const isOriginCompareModalVisible = useSelector(
+    (state: RootState) => state.draw.isOriginCompareModalVisible,
+  );
+  // 선 색깔 및 모달
+  const isDrawColorPaletteModalVisible = useSelector(
+    (state: RootState) => state.draw.isDrawColorPaletteModalVisible,
+  );
+  const drawColorSelect = useSelector(
+    (state: RootState) => state.draw.drawColorSelect,
+  );
 
   // 서버 통신
   const handleAnimalBorder = async () => {
@@ -79,9 +109,7 @@ export default function DrawAnimalScreen({
         console.log('선택 동물 테두리 가져오기 성공', response.data);
         setAnimalBorderURI(response.data.urlTrace);
         setAnimalExplanation(response.data.detail);
-        originCaptureRef.current.capture().then((uri: string) => {
-          setCaptureBorderImagePath(uri);
-        });
+        handleOriginCapture();
       } else {
         console.log('선택 동물 테두리 가져오기 실패', response.status);
       }
@@ -110,42 +138,28 @@ export default function DrawAnimalScreen({
     }
   };
 
+  async function handleDrawCapture() {
+    try {
+      const uri = await drawCaptureRef.current.capture();
+      setCaptureImagePath(uri);
+      await handleAnimalCheckSimilarity(uri);
+    } catch (error) {
+      console.error('캡쳐 에러 발생: ', error);
+    }
+  }
+  async function handleOriginCapture() {
+    try {
+      const uri = await originCaptureRef.current.capture();
+      setCaptureBorderImagePath(uri);
+    } catch (error) {
+      console.error('원본 이미지 캡쳐 에러 발생: ', error);
+    }
+  }
+
   useEffect(() => {
     handleAnimalBorder();
   }, []);
 
-  // 뒤로가기 변수
-  const [backHandleNum, setBackHandleNum] = useState<number>(0);
-
-  // 그림 그리기 변수
-  const [paths, setPaths] = useState<
-    {path: string; color: string; strokeWidth: number}[]
-  >([]);
-  const [tmpPaths, setTmpPaths] = useState<
-    {path: string; color: string; strokeWidth: number}[]
-  >([]);
-  const [currentPath, setCurrentPath] = useState<string>('');
-  const [isClearButtonClicked, setClearButtonClicked] =
-    useState<boolean>(false);
-
-  const dispatch = useDispatch();
-  // 선 굵기 모달을 위한 라인
-  const LineThickness = useSelector(
-    (state: RootState) => state.draw.LineThickness,
-  );
-  const isDrawLineThicknessModalVisible = useSelector(
-    (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
-  );
-  const isOriginCompareModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginCompareModalVisible,
-  );
-  // 선 색깔 및 모달
-  const isDrawColorPaletteModalVisible = useSelector(
-    (state: RootState) => state.draw.isDrawColorPaletteModalVisible,
-  );
-  const drawColorSelect = useSelector(
-    (state: RootState) => state.draw.drawColorSelect,
-  );
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
     const locationX = event.nativeEvent.locationX;
@@ -170,24 +184,12 @@ export default function DrawAnimalScreen({
       ]);
     }
     setCurrentPath('');
-    // setClearButtonClicked(false);
-    drawCaptureRef.current.capture().then((uri: string) => {
-      setCaptureImagePath(uri);
-      handleAnimalCheckSimilarity(uri);
-    });
   };
 
   const handleClearButtonClick = () => {
     setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
-    // setClearButtonClicked(true);
-    // setClearButtonClicked(false);
-    // setCaptureImagePath('');
-    drawCaptureRef.current.capture().then((uri: string) => {
-      setCaptureImagePath(uri);
-      handleAnimalCheckSimilarity(uri);
-    });
   };
 
   const handlePrevButtonClick = () => {
@@ -197,10 +199,6 @@ export default function DrawAnimalScreen({
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
     }
-    drawCaptureRef.current.capture().then((uri: string) => {
-      setCaptureImagePath(uri);
-      handleAnimalCheckSimilarity(uri);
-    });
   };
   const handleNextButtonClick = () => {
     const tmpPosition:
@@ -209,11 +207,12 @@ export default function DrawAnimalScreen({
     if (tmpPosition) {
       setPaths([...paths, tmpPosition]);
     }
-    drawCaptureRef.current.capture().then((uri: string) => {
-      setCaptureImagePath(uri);
-      handleAnimalCheckSimilarity(uri);
-    });
   };
+  useEffect(() => {
+    if (captureBorderImagePath !== '') {
+      handleDrawCapture();
+    }
+  }, [paths]);
 
   useEffect(() => {
     dispatch(handleDrawColorSelect('#000000'));
@@ -258,6 +257,7 @@ export default function DrawAnimalScreen({
 
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
+    console.log(paths);
     navigation.navigate('ColoringAnimalScreen', {
       completeLine: paths,
     });
@@ -367,8 +367,9 @@ export default function DrawAnimalScreen({
           }}>
           {animalBorderURI === '' ? null : (
             <ImageBackground
-              source={{uri: animalBorderURI}}
+              // source={{uri: animalBorderURI}}
               // source={require('../../assets/images/animalImage/ovalTest.png')}
+              source={require('../../assets/images/animalImage/test1.jpg')}
               style={styles.animalBorderImageBackground}
               resizeMode="contain">
               <ViewShot
@@ -378,7 +379,7 @@ export default function DrawAnimalScreen({
                   format: 'png',
                   quality: 1,
                 }}
-                style={{}}>
+                style={styles.pathViewShot}>
                 <View
                   style={styles.pathView}
                   onTouchStart={onTouchStart}
@@ -580,14 +581,21 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
-    // borderWidth: 1,
-    backgroundColor: 'white',
+    width: '100%',
   },
   animalBorderImageBackground: {
     width: '100%',
     height: '100%',
   },
+  pathViewShot: {
+    // backgroundColor: 'green',
+    width: '100%',
+    height: '100%',
+    borderWidth: 1,
+  },
   pathView: {
+    width: '100%',
+    height: '100%',
     justifyContent: 'flex-end',
   },
   borderImage: {

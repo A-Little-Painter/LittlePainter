@@ -29,8 +29,6 @@ export const animalBorder = async (animalId) => {
 
 // export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
 export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
-  console.log('메롱', originBorderFileUri);
-  console.log('메롱', compareBorderFileUri);
   try {
     const formData = new FormData();
     formData.append('sessionId', sessionId);
@@ -46,10 +44,8 @@ export const animalCheckSimilarity = async (sessionId, originBorderFileUri, comp
       type: 'image/jpg',
       name: 'newFile.jpg',
     });
-    console.log(formData);
     const response = await axios.post(`${BASE_URL}/draws/animals/similarcheck`, formData, {headers: {'Content-Type': 'multipart/form-data'}},
     );
-    console.log('선택 동물 유사도 검사 성공', response);
     return response;
   } catch (error) {
     console.error('선택 동물 유사도 검사 실패:', error);
