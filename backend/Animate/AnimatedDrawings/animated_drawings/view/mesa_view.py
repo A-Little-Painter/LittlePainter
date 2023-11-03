@@ -3,6 +3,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import os
+os.environ['MUJOCO_GL'] = "osmesa"
 os.environ['PYOPENGL_PLATFORM'] = "osmesa"
 os.environ['MESA_GL_VERSION_OVERRIDE'] = "3.3"
 from OpenGL import GL, osmesa
