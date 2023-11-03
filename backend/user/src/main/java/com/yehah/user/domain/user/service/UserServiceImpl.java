@@ -106,6 +106,22 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 찾을 수 없습니다."));
     }
 
+    public ResponseEntity<?> selectChild(Long childId){
+        User user = getLoginUser();
+        log.info("user.getEmail() "+user.getEmail());
+        return userRepository.findById(user.getId())
+                .map(userFromDB -> {
+                    try{
+                        userRepository.save(user.updateSelectChild(User.builder()
+                                .lastSelectedChildId(childId).build()));
+                    }catch (Exception e){
+                        throw new DatabaseException("DB 변경 불가능.");
+                    }
+                    return ResponseEntity.ok().build();
+                })
+                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 찾을 수 없습니다."));
+    }
+
     @Transactional
     public User getUserInfo(String email){
         return userRepository.findByEmail(email)
