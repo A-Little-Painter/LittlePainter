@@ -8,35 +8,53 @@ import boto3
 from werkzeug.utils import secure_filename
 import io
 from PIL import Image
-
-def img_to_file(img, prefix=""):
-    file_name = os.path.join(UPLOAD_FOLDER, f"{prefix}{uuid.uuid4().hex}.jpg")
-    cv2.imwrite(file_name, img)
-    return file_name
+import shutil
 
 
-def save_image_to_disk(image_np, base_filename, folder, extension):
-    """넘파이 이미지 배열을 디스크에 저장하고 파일 경로를 반환합니다."""
-    filename = f"{base_filename}{extension}"
-    file_path = os.path.join(folder, filename)
-
-    image = Image.fromarray(image_np)
-
-    # RGBA 이미지를 RGB로 변환
-    if image.mode == 'RGBA':
-        # 알파 채널이 있으면 제거하고 RGB 모드로 변환
-        background = Image.new('RGB', image.size, (255, 255, 255))
-        background.paste(image, mask=image.split()[3])  # 3은 알파 채널
-        image = background
-
-    image.save(file_path, 'JPEG', quality=95)  # JPEG 형식으로 저장
-    return file_path
+# def save_image_to_disk(image_np, base_filename, folder, extension):
+#     """넘파이 이미지 배열을 디스크에 저장하고 파일 경로를 반환합니다."""
+#     filename = f"{base_filename}{extension}"
+#     file_path = os.path.join(folder, filename)
+#
+#     image = Image.fromarray(image_np)
+#
+#     # RGBA 이미지를 RGB로 변환
+#     if image.mode == 'RGBA':
+#         # 알파 채널이 있으면 제거하고 RGB 모드로 변환
+#         background = Image.new('RGB', image.size, (255, 255, 255))
+#         background.paste(image, mask=image.split()[3])  # 3은 알파 채널
+#         image = background
+#
+#     image.save(file_path, 'JPEG', quality=95)  # JPEG 형식으로 저장
+#     return file_path
 
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
+def clear_upload_folder():
+    for filename in os.listdir(UPLOAD_FOLDER):
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+def img_to_file(img_nparray, prefix=""):
+    # Generate a unique file name with a prefix and save the image
+    file_name = os.path.join(UPLOAD_FOLDER, f"{prefix}{uuid.uuid4().hex}.jpg")
+    cv2.imwrite(file_name, img_nparray)
+    return file_name
+
+def rembg_to_file(img, prefix=""):
+    rembg_file_name = os.path.join(UPLOAD_FOLDER,f"{prefix}{uuid.uuid4().hex}.jpg")
+    shutil.copyfile('filename.png', rembg_file_name)
+    return rembg_file_name
 
 @app.route('/api/v1/detection/comm/detect', methods=['POST'])
 def detect_objects():
@@ -71,7 +89,7 @@ def detect_objects():
         # Directly call the detect function from yolov5, assuming it's modified to return the processed image
         rembg_with_border, border_only, animal_type = detect.run(weights='yolov5s.pt', source=temp_local_file)
 
-        rembg_with_border = img_to_file(rembg_with_border, "border_")
+        rembg_with_border = rembg_to_file(rembg_with_border, "border_")
         border_only = img_to_file(border_only, "trace_")
 
         # 이미지 데이터를 S3에 업로드합니다.
@@ -81,16 +99,18 @@ def detect_objects():
 
         rembg_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{rembg_filename}"
 
-
         border_filename = f"{unique_filename_base}_trace{file_extension}"
-        # border_image_stream = io.BytesIO(border_only)
-        # border_image_stream.seek(0)  # 스트림 포인터를 시작 위치로 이동
+
         s3_client.upload_file(border_only, S3_BUCKET, border_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
 
         trace_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{border_filename}"
 
+        os.remove('filename.png')
+
         # 로컬 파일 삭제
         os.remove(temp_local_file)
+
+        clear_upload_folder()
 
         return jsonify({
             "border_image": rembg_url,

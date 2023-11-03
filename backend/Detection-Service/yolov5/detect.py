@@ -67,8 +67,8 @@ def run(
         source = check_file(source)  # download
 
     # Directories
-    save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
-    (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
+    # save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
+    # (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
 
     # Load model
     device = select_device(device)
@@ -98,7 +98,7 @@ def run(
 
         # Inference
         with dt[1]:
-            visualize = increment_path(save_dir / Path(path).stem, mkdir=True) if visualize else False
+            # visualize = increment_path(save_dir / Path(path).stem, mkdir=True) if visualize else False
             pred = model(im, augment=augment, visualize=visualize)
 
         # NMS
@@ -109,16 +109,16 @@ def run(
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
 
         # Define the path for the CSV file
-        csv_path = save_dir / 'predictions.csv'
+        # csv_path = save_dir / 'predictions.csv'
 
         # Create or append to the CSV file
-        def write_to_csv(image_name, prediction, confidence):
-            data = {'Image Name': image_name, 'Prediction': prediction, 'Confidence': confidence}
-            with open(csv_path, mode='a', newline='') as f:
-                writer = csv.DictWriter(f, fieldnames=data.keys())
-                if not csv_path.is_file():
-                    writer.writeheader()
-                writer.writerow(data)
+        # def write_to_csv(image_name, prediction, confidence):
+        #     data = {'Image Name': image_name, 'Prediction': prediction, 'Confidence': confidence}
+        #     with open(csv_path, mode='a', newline='') as f:
+        #         writer = csv.DictWriter(f, fieldnames=data.keys())
+        #         if not csv_path.is_file():
+        #             writer.writeheader()
+        #         writer.writerow(data)
 
         # Process predictions
         max_area = 0  # to keep track of the largest detection's area
@@ -131,8 +131,8 @@ def run(
             p, im0, frame = path, im0s.copy(), getattr(dataset, 'frame', 0)
 
             p = Path(p)  # to Path
-            save_path = str(save_dir / p.name)  # im.jpg
-            txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # im.txt
+            # save_path = str(save_dir / p.name)  # im.jpg
+            # txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # im.txt
             s += '%gx%g ' % im.shape[2:]  # print string
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             imc = im0.copy() if save_crop else im0  # for save_crop
@@ -153,21 +153,21 @@ def run(
                     confidence = float(conf)
                     confidence_str = f'{confidence:.2f}'
 
-                    if save_csv:
-                        write_to_csv(p.name, label, confidence_str)
+                    # if save_csv:
+                    #     write_to_csv(p.name, label, confidence_str)
 
-                    if save_txt:  # Write to file
-                        xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                        line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
-                        with open(f'{txt_path}.txt', 'a') as f:
-                            f.write(('%g ' * len(line)).rstrip() % line + '\n')
+                    # if save_txt:  # Write to file
+                    #     xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                    #     line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
+                    #     with open(f'{txt_path}.txt', 'a') as f:
+                    #         f.write(('%g ' * len(line)).rstrip() % line + '\n')
 
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
                         label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
                         annotator.box_label(xyxy, label, color=colors(c, True))
-                    if save_crop:
-                        save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
+                    # if save_crop:
+                    #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
                     # Check for the largest detection
                     area = (xyxy[2] - xyxy[0]) * (xyxy[3] - xyxy[1])  # compute area of the box
@@ -199,13 +199,14 @@ def run(
     # Print results
     t = tuple(x.t / seen * 1E3 for x in dt)  # speeds per image
     LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
-    if save_txt or save_img:
-        s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
-        LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
+    # if save_txt or save_img:
+    #     s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
+    #     LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
     if update:
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
-    rembg_with_border, border_only = process_image(cropped_img)
+
+    rembg_with_border, border_only = process_image(im0)
 
 
     rembg_with_border_np = np.array(rembg_with_border)
@@ -216,14 +217,18 @@ def run(
     # return result_images
 
 def process_image(img_nparray):
+    if img_nparray.shape[2] == 3:  # 3채널 이미지인 경우
+        img_nparray = cv2.cvtColor(img_nparray, cv2.COLOR_BGR2RGB)
     input = Image.fromarray(img_nparray)
+    # input = Image.open('./temp.png')
     output = remove(input)  # Remove background
 
     # Convert the output image to OpenCV format
     output_cv = np.array(output)
 
     # Convert the image to grayscale from the alpha channel
-    gray = output_cv[:, :, 3]
+    # gray = output_cv[:, :, 3]
+    gray = cv2.cvtColor(output_cv, cv2.COLOR_BGR2GRAY)
 
     # Threshold the image to create a binary mask
     _, thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
@@ -234,10 +239,15 @@ def process_image(img_nparray):
     # Find contours in the thresholded image
     contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # For background removed image with border
+    # Draw contours with a specific thickness and color
     for contour in contours:
         cv2.drawContours(output_cv, [contour], 0, (0, 0, 255), 2)  # Red border
+
+    # For background removed image with border
+
     rembg_with_border = Image.fromarray(output_cv)
+    # rembg_with_border = output_cv
+    rembg_with_border.save('filename.png')
 
     # For border only image
     border_img = np.ones_like(output_cv) * 255
@@ -245,6 +255,33 @@ def process_image(img_nparray):
     border_only = Image.fromarray(border_img)
 
     return rembg_with_border, border_only
+
+
+    # output_cv = np.array(output)
+    # # 이미지에 알파 채널이 있는지 확인
+    # if output_cv.shape[2] != 4:
+    #     raise ValueError("출력 이미지에 알파 채널이 없습니다.")
+    #
+    # # 알파 채널을 이용해 투명 마스크 생성
+    # mask = output_cv[:, :, 3] == 0  # 투명한 픽셀은 마스크에서 0
+    #
+    # # 투명한 픽셀을 완전히 투명하게 설정
+    # output_cv[mask] = (0, 0, 0, 0)  # 투명한 픽셀을 검정색으로 설정 (완전 투명)
+    #
+    # # 결과 이미지를 PIL 이미지로 변환
+    # rembg_with_border = Image.fromarray(output_cv)
+    #
+    # # 테두리만 있는 이미지 처리
+    # contours, _ = cv2.findContours(output_cv[:, :, 3], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # # 전체가 흰색인 RGBA 이미지 생성
+    # border_img = np.ones((*img_nparray.shape[:2], 4), dtype=np.uint8) * 255
+    # # 검정색 테두리를 그림
+    # cv2.drawContours(border_img, contours, -1, (0, 0, 0, 255), 25)
+    #
+    # # 테두리 이미지를 PIL 이미지로 변환
+    # border_only = Image.fromarray(border_img)
+    #
+    # return rembg_with_border, border_only
 
 def parse_opt():
     parser = argparse.ArgumentParser()
