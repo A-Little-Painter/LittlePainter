@@ -1,6 +1,5 @@
 package com.yehah.user.domain.user.service;
 
-import com.mysql.cj.exceptions.DataConversionException;
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetChildInfoResponseDTO;
@@ -21,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -132,10 +130,18 @@ public class UserServiceImpl implements UserService{
     public GetChildInfoResponseDTO getChildInfo(String email){
         log.info(email);
         return userRepository.findByEmail(email)
-                .map(user -> GetChildInfoResponseDTO.builder()
-                        .userId(user.getId())
-                        .childId(user.getLastSelectedChildId())
-                        .build())
+                .map(user -> {
+                    Child selectedChild = user.getChildren().stream()
+                            .filter(child -> child.getId().equals(user.getLastSelectedChildId()))
+                            .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이입니다."));
+
+                    return GetChildInfoResponseDTO.builder()
+                            .userId(user.getId())
+                            .childId(user.getLastSelectedChildId())
+                            .nickname(selectedChild.getNickname())
+                            .role(user.getRole().toString())
+                            .build();
+                })
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
     }
 
