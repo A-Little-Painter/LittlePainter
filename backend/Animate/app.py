@@ -37,7 +37,7 @@ class TodoSimple(Resource):
         # todo : cli실행
 
         # 임시값 반환
-        return send_file("examples/result/rabiit/video.gif", mimetype='image/gif')
+        return send_file("AnimatedDrawings/examples/result/rabiit/video.gif", mimetype='image/gif')
 
 
 @api.route('/draws/animations/tales')
@@ -56,7 +56,7 @@ class AnimateCharacter(Resource):
         # todo : cli실행
 
         # 임시애니메이션 반환
-        return send_file("examples/result/rabiit/video.gif", mimetype='image/gif')
+        return send_file("AnimatedDrawings/examples/result/rabiit/video.gif", mimetype='image/gif')
 
 
 if __name__ == "__main__":
