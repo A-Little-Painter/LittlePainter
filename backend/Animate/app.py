@@ -1,5 +1,6 @@
 # app.py
 import logging
+import subprocess
 
 from flask import Flask, request, send_file
 from flask_restx import Api, Resource
@@ -22,6 +23,8 @@ class Hello(Resource):
 @api.route('/draws/animations/animals')
 class TodoSimple(Resource):
     def post(self):
+        OUTPUT_FILE = "result/custom1/animation.gif"
+
         # 진입 확인
         logging.debug("Animate-Service : animateAnimal Called")
 
@@ -34,10 +37,22 @@ class TodoSimple(Resource):
         image.save(filename)
 
         # 저장한 이미지로 애니메이션 생성
-        # todo : cli실행
+        result = self.shell_create_animation(filename, OUTPUT_FILE)
+        logging.debug(result)
 
         # 임시값 반환
         return send_file("AnimatedDrawings/examples/result/rabbit/video.gif", mimetype='image/gif')
+
+    def shell_create_animation(self, input_filename, output_filename):
+        logging.debug("shell 명령어 호출")
+        cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_filename}"
+
+        # 셸 명령 실행
+        try:
+            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
+            return result.stdout
+        except subprocess.CalledProcessError as e:
+            return e.stderr
 
 
 @api.route('/draws/animations/tales')
