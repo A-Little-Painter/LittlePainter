@@ -52,6 +52,7 @@ class TodoSimple(Resource):
             result = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
             return result.stdout
         except subprocess.CalledProcessError as e:
+            logging.error("쉘 커맨드 수행 실패")
             return e.stderr
 
 
