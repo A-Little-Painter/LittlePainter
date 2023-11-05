@@ -1,6 +1,7 @@
 package com.yehah.user.domain.user.contoller;
 
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
+import com.yehah.user.domain.user.dto.request.ChangeIconRequestDTO;
 import com.yehah.user.domain.user.dto.request.GetChildInfoRequestDTO;
 import com.yehah.user.domain.user.dto.response.AddChildResponseDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
@@ -90,6 +91,11 @@ public class UserController {
         return userService.selectChild(childId);
     }
 
+    //아이 아이콘 변경
+    @PatchMapping("/icons")
+    public ResponseEntity<?> changeIcon(@RequestBody ChangeIconRequestDTO changeIconRequestDTO){
+        return userService.changeIcon(changeIconRequestDTO);
+    }
 
 
 

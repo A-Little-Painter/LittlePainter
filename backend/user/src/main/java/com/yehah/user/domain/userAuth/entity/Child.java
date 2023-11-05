@@ -43,6 +43,11 @@ public class Child {
         }
     }
 
+    public Child updateIcon(Icon icon){
+        this.icon = icon;
+        return this;
+    }
+
     @Builder
     public Child(String nickname, LocalDate birthday, Icon icon){
         this.nickname = nickname;
