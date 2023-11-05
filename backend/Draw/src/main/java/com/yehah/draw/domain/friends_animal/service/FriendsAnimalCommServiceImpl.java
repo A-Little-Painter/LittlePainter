@@ -50,11 +50,11 @@ public class FriendsAnimalCommServiceImpl implements FriendsAnimalCommService{
 				log.error("Failed to upload image: {}");
 			});
 
-		AddFriendsAnimalResDto response = result.block();
-		// image 서비스와 통신 마무리
-
 		AnimalType animalType = animalTypeRepository.findById(addFriendsAnimalReqDto.getAnimalTypeId())
 			.orElseThrow(() -> new IllegalArgumentException("해당 동물 종류가 없습니다."));
+
+		AddFriendsAnimalResDto response = result.block();
+		// image 서비스와 통신 마무리
 
 		FriendsAnimal friendsAnimal = FriendsAnimal.builder()
 			.animalType(animalType)
