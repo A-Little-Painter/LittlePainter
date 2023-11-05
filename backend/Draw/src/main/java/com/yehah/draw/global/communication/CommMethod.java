@@ -28,7 +28,6 @@ public class CommMethod {
 
     // NOTE : multipart/form-data로 유사도 비교하기
     public String postMultipartMethod(MultiValueMap<String, Object> bodyData, String url){
-        log.info(url);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 

@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @NoArgsConstructor
 public class AnimalSimilarReqDto {
-    private String sessionId;
+    private String roomId;
     private MultipartFile originalFile;
     private MultipartFile newFile;
 }

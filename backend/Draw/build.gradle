@@ -34,6 +34,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    implementation 'org.springframework:spring-test:5.3.15'
+
     // devTools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -42,6 +44,8 @@ dependencies {
 
     // WebSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:sockjs-client:1.1.2'
+    implementation 'org.webjars:stomp-websocket:2.3.3-1'
 
     // json parser
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
@@ -60,6 +64,21 @@ dependencies {
 
     // webclient
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
+
+    // https://mvnrepository.com/artifact/com.google.cloud/google-cloud-translate
+    implementation group: 'com.google.cloud', name: 'google-cloud-translate', version: '2.29.0'
+
+//    // JWT 의존성
+//    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+//    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+//    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+//
+//    implementation 'org.json:json:20230227'
+//
+//    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+//    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+
 }
 
 dependencyManagement {

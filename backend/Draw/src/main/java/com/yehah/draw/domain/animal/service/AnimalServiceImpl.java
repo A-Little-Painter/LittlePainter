@@ -1,5 +1,6 @@
 package com.yehah.draw.domain.animal.service;
 
+import com.yehah.draw.domain.animal.dto.response.AnimalDetailResDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalResDto;
 import com.yehah.draw.domain.animal.entity.Animal;
 import com.yehah.draw.domain.animal.respository.AnimalRepository;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,7 +31,14 @@ public class AnimalServiceImpl implements AnimalService {
         return animalList;
     }
 
-    public String getAnimalTraceUrl(long animalId){
-        return animalRepository.findById(animalId).getUrlTrace();
+    public AnimalDetailResDto getAnimalTraceUrl(long animalId){
+        Animal animal = animalRepository.findById(animalId).orElseThrow(
+                () -> new IllegalArgumentException("해당 동물이 존재하지 않습니다.")
+        );
+
+        return AnimalDetailResDto.builder()
+                .detail(animal.getDetail())
+                .urlTrace(animal.getUrlTrace())
+                .build();
     }
 }
