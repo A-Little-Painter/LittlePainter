@@ -48,6 +48,12 @@ public class Child {
         return this;
     }
 
+    public Child updateChild(String nickname, LocalDate birthday){
+        this.nickname = nickname;
+        this.birthday = birthday;
+        return this;
+    }
+
     @Builder
     public Child(String nickname, LocalDate birthday, Icon icon){
         this.nickname = nickname;
