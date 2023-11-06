@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface AnimalTypeRepository extends JpaRepository<AnimalType, Long> {
 	List<AnimalTypeListResDto> findAllBy();
 	Optional<AnimalType> findByName(String name);
+	boolean existsById(Long id);
 }

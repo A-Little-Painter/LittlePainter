@@ -41,4 +41,5 @@ public class AnimalServiceImpl implements AnimalService {
                 .urlTrace(animal.getUrlTrace())
                 .build();
     }
+
 }

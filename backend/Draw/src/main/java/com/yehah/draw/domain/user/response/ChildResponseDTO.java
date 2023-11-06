@@ -9,4 +9,5 @@ public class ChildResponseDTO {
     private Long userId;
     private Long childId;
     private String role;
+    private String nickname;
 }

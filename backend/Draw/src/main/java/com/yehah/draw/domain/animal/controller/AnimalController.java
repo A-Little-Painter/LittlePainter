@@ -6,11 +6,13 @@ import com.yehah.draw.domain.animal.dto.response.AnimalDetailResDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalResDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalSimilarResDto;
 import com.yehah.draw.domain.animal.entity.SimilarState;
+import com.yehah.draw.domain.animal.exception.SaveImageException;
 import com.yehah.draw.domain.animal.exception.SimilarityCheckException;
 import com.yehah.draw.domain.animal.service.AnimalService;
 import com.yehah.draw.domain.child_work.service.ChildWorkService;
 import com.yehah.draw.global.common.AnimalType;
 import com.yehah.draw.global.communication.CommMethod;
+import com.yehah.draw.global.stomp.StompService;
 import com.yehah.draw.global.stomp.dto.MessageResponse;
 import com.yehah.draw.global.stomp.ResponseState;
 import com.yehah.draw.global.stomp.dto.SimilarMessageResponse;
@@ -43,9 +45,9 @@ public class AnimalController {
 
     private final ChildWorkService childWorkService;
 
-    private final CommMethod commMethod;
+    private final StompService stompService;
 
-    private final SimpMessagingTemplate messagingTemplate;
+    private final CommMethod commMethod;
 
     @Operation(summary = "전체 동물의 아이디, 종류, 원본 사진을 가져온다." , description = "ALL")
     @GetMapping
@@ -64,14 +66,16 @@ public class AnimalController {
     public ResponseEntity<AnimalSimilarResDto> animalSimilarCheck(@ModelAttribute AnimalSimilarReqDto animalSimilarReqDto) throws IOException {
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
-        bodyData.add("sessionId", animalSimilarReqDto.getRoomId()); // 세션 아이디 전송
+        bodyData.add("roomId", animalSimilarReqDto.getRoomId());
         bodyData.add("originalFile", animalSimilarReqDto.getOriginalFile().getResource());
         bodyData.add("newFile", animalSimilarReqDto.getNewFile().getResource());
 
+        String stompUrl = "/sub/room/"+animalSimilarReqDto.getRoomId();
 
         try{
+
             double value = Double.parseDouble(commMethod.postMultipartMethod(bodyData, similarityUrl));
-            log.info("유사도 : "+value);
+            log.info("-----유사도-----> "+value);
 
             // NOTE : STOMP 연결하기
             SimilarMessageResponse similarMessageResponse = SimilarMessageResponse.builder()
@@ -82,39 +86,33 @@ public class AnimalController {
                     .message("유사도 연결에 성공하셨습니다.")
                     .build();
 
-            if(value <= 0.09){
+            if(value >= 0.4){
                 // NOTE : STOMP 응답 전송하기
-                similarMessageResponse.setSimilarState(SimilarState.END);
-                messagingTemplate.convertAndSend("/sub/room/"+animalSimilarReqDto.getRoomId(),
-                        similarMessageResponse);
-
+                stompService.AnimalSuccessRes(stompUrl, SimilarState.END, similarMessageResponse);
                 return ResponseEntity.ok(AnimalSimilarResDto.builder()
                         .similarValue(value)
                         .similarState(SimilarState.END).build()); // 계속 유사도를 끝낸다.
             }else{
                 // NOTE : STOMP 응답 전송하기
-                similarMessageResponse.setSimilarState(SimilarState.CONTINUE);
-                messagingTemplate.convertAndSend("/sub/room/"+animalSimilarReqDto.getRoomId(),
-                        similarMessageResponse);
-
+                stompService.AnimalSuccessRes(stompUrl, SimilarState.CONTINUE, similarMessageResponse);
                 return ResponseEntity.ok(AnimalSimilarResDto.builder()
                         .similarValue(value)
                         .similarState(SimilarState.CONTINUE).build()); // 계속 유사도를 멈춘다.
             }
         }catch(Exception e){
             e.printStackTrace();
-
             // NOTE : STOMP 응답 전송하기
-            messagingTemplate.convertAndSend("/sub/room/"+animalSimilarReqDto.getRoomId(), MessageResponse.builder()
+            stompService.AnimalFailRes(stompUrl, MessageResponse.builder()
                     .roomId(animalSimilarReqDto.getRoomId())
                     .animalType(AnimalType.animal)
                     .message("유사도 측정에 실패했습니다.").responseState(ResponseState.FAIL).build());
+
             throw new SimilarityCheckException("유사도 측정에 실패했습니다.");
         }
     }
 
 
-    // TODO : 내가 그린 이미지 S3에 저장하기
+    @Operation(summary = "이미지를 S3에 저장한다.", description = "USER")
     @PostMapping
     public ResponseEntity<Void> saveUserImage(@ModelAttribute AnimalUploadReqDto animalUploadReqDto) throws IOException {
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
@@ -130,7 +128,7 @@ public class AnimalController {
             childWorkService.saveChildWork(animalUploadReqDto.getAnimalId(), AnimalType.animal.name(), urlWork);
             return ResponseEntity.ok().build();
         }catch (Exception e){
-            return ResponseEntity.status(404).build();
+            throw new SaveImageException("이미지를 S3에 저장할 수 없습니다.");
         }
     }
 
