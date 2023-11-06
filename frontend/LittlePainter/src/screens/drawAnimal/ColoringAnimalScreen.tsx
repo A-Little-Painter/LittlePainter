@@ -55,6 +55,7 @@ export default function ColoringAnimalScreen({
   route,
   navigation,
 }: ColoringAnimalScreenProps) {
+  const [animalId] = useState<number>(route.params.animalId);
   const [animalType] = useState<string>(route.params.animalType);
   const [animalBorderURI] = useState<string>(route.params.animalBorderURI);
   const [animalExplanation] = useState<string>(route.params.animalExplanation);
@@ -187,6 +188,7 @@ export default function ColoringAnimalScreen({
 
   const handleGoComplete = () => {
     navigation.navigate('CompleteDrawAnimalScreen', {
+      animalId: animalId,
       completeDrawUri: captureImagePath,
     });
   };

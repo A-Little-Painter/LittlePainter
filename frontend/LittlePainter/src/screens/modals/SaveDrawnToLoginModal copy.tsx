@@ -17,6 +17,10 @@ export type SaveDrawnToLoginModalProps = {
   selectColor: string;
 };
 
+const isLogin = useSelector((state: RootState) => state.user.isLogin);
+const selectName = useSelector((state: RootState) => state.user.selectName);
+const selectImage = useSelector((state: RootState) => state.user.selectImage);
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 

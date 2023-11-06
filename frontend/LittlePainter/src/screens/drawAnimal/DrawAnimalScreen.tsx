@@ -264,8 +264,8 @@ export default function DrawAnimalScreen({
 
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
-    console.log(paths);
     navigation.navigate('ColoringAnimalScreen', {
+      animalId: animalId,
       completeLine: paths,
       animalType: animalType,
       animalBorderURI: animalBorderURI,

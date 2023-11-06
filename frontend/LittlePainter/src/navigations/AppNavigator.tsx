@@ -34,7 +34,6 @@ import SaveDrawnToLoginModal from '../screens/modals/SaveDrawnToLoginModal';
 // 이후 삭제
 import LoadScreen from '../screens/load/LoadScreen';
 
-
 import MainTmpScreen from '../screens/main/MainTmpScreen';
 import Detail1Screen from '../screens/detail/Detail1Screen';
 import DetailScreen from '../screens/detail/DetailScreen';
@@ -52,13 +51,14 @@ export type RootStackParams = {
     animalType: string;
   };
   ColoringAnimalScreen: {
-    // completeLineUri: string;
+    animalId: number;
     completeLine: {path: string; color: string; strokeWidth: number}[];
     animalType: string;
     animalBorderURI: string;
     animalExplanation: string;
   };
   CompleteDrawAnimalScreen: {
+    animalId: number;
     completeDrawUri: string;
   };
   SelectPictureScreen: undefined;

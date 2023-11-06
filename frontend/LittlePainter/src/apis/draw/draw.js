@@ -1,5 +1,27 @@
+/* eslint-disable prettier/prettier */
+
 import axios from 'axios';
+import * as Keychain from 'react-native-keychain';
 import {BASE_URL} from '../baseUrl';
+
+const loadATokenFromKeychain = async () => {
+  try {
+    const credentials = await Keychain.getGenericPassword({
+      service: 'accessTokens',
+    });
+    if (credentials) {
+      const token = credentials.password;
+      // console.log(token);
+      return token;
+    } else {
+      console.error('저장된 토큰이 없습니다.');
+      return null;
+    }
+  } catch (error) {
+    console.error('토큰 불러오기에 실패했습니다.', error);
+    return null;
+  }
+};
 
 // animals
 // 전체 동물 데이터
@@ -28,10 +50,10 @@ export const animalBorder = async (animalId) => {
 // { MultipartFile 원본테두리이미지, MultipartFile 사용자가그린테두리이미지 }
 
 // export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
-export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
+export const animalCheckSimilarity = async (roomId, originBorderFileUri, compareBorderFileUri,) => {
   try {
     const formData = new FormData();
-    formData.append('sessionId', sessionId);
+    formData.append('roomId', roomId);
 
     formData.append('originalFile', {
       uri: originBorderFileUri,
@@ -54,9 +76,23 @@ export const animalCheckSimilarity = async (sessionId, originBorderFileUri, comp
 };
 
 // 완성된 동물 마이페이지에 저장
-export const animalSaveToMypage = async () => {
+export const animalSaveToMypage = async (animalId, completeDrawUri) => {
   try {
-    const response = await axios.post(`${BASE_URL}/draws/animals`, null);
+    const accessToken = loadATokenFromKeychain();
+    const formData = new FormData();
+    formData.append('animalId', animalId);
+
+    formData.append('file', {
+      uri: completeDrawUri,
+      type: 'image/png',
+      name: 'originalFile.png',
+    });
+
+    const response = await axios.post(`${BASE_URL}/draws/animals`, formData, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     return response;
   } catch (error) {
     console.log('완성된 동물 마이페이지에 저장 실패:', error);
