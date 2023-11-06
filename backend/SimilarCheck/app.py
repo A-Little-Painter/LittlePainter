@@ -13,9 +13,9 @@ def similarityCheck(originalPath, newPath):
     src1 = cv2.imread(originalPath, cv2.IMREAD_GRAYSCALE)
     src2 = cv2.imread(newPath, cv2.IMREAD_GRAYSCALE)
 
-    # if src1 is None or src2 is None:
-    #     print('Image load failed!')
-    #     sys.exit()
+    if src1 is None or src2 is None:
+        print('Image load failed!')
+        sys.exit()
 
     # 특징점 알고리즘 객체 생성 (KAZE, AKAZE, ORB 등)
     # feature = cv2.KAZE_create()

@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6c78e1d7-0a2e-4cfd-a238-eeb09d4c814c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Dockerfile.test" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/bold0.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/bold1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/bold2.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/featureSimilarity.py" beforeDir="false" afterPath="$PROJECT_DIR$/featureSimilarity.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +72,7 @@
       <recent name="C:\Users\SSAFY\PycharmProjects\pythonProject2\test1" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.featureSimilarity (1)">
+  <component name="RunManager" selected="Python.app (1)">
     <configuration name="app (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="SimilarityCheck" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -212,8 +207,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.featureSimilarity (1)" />
         <item itemvalue="Python.app (1)" />
+        <item itemvalue="Python.featureSimilarity (1)" />
         <item itemvalue="Python.featureSimilarity" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.dd" />
@@ -235,7 +230,7 @@
       <workItem from="1698798068789" duration="5190000" />
       <workItem from="1698901029750" duration="1717000" />
       <workItem from="1698996273470" duration="4412000" />
-      <workItem from="1699230125424" duration="5597000" />
+      <workItem from="1699230125424" duration="8440000" />
     </task>
     <servers />
   </component>
@@ -259,6 +254,6 @@
     <SUITE FILE_PATH="coverage/SimilarityCheck$tes6t.coverage" NAME="test Coverage Results" MODIFIED="1698997483851" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/SimilarityCheck$featureSimilarity.coverage" NAME="featureSimilarity Coverage Results" MODIFIED="1699253058654" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/SimilarityCheck$dd.coverage" NAME="dd Coverage Results" MODIFIED="1698996285289" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/SimilarityCheck$app__1_.coverage" NAME="app (1) Coverage Results" MODIFIED="1699255438965" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SimilarityCheck$app__1_.coverage" NAME="app (1) Coverage Results" MODIFIED="1699260422447" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
