@@ -35,10 +35,10 @@ import java.util.List;
 public class AnimalController {
 
     @Value("${micro.path.similarityCheck}")
-    private String similarityUrl;
+    private String similarityPath;
 
     @Value("${micro.path.image}")
-    private String imageUrl;
+    private String imagePath;
 
     private final AnimalService animalService;
 
@@ -72,7 +72,7 @@ public class AnimalController {
         String stompUrl = "/sub/room/"+animalSimilarReqDto.getRoomId();
 
         try{
-            double value = Double.parseDouble(commMethod.postMultipartMethod(bodyData, similarityUrl));
+            double value = Double.parseDouble(String.valueOf(commMethod.postMultipartMethod(bodyData, similarityPath)));
             log.info("-----유사도-----> "+value);
 
             // NOTE : STOMP 연결하기
@@ -120,7 +120,7 @@ public class AnimalController {
         bodyData.set("category", AnimalType.animal.name());
         bodyData.set("image", animalUploadReqDto.getFile().getResource());
         try{
-            String urlWork = commMethod.postMultipartMethod(bodyData, imageUrl+"/comm/myWork");
+            String urlWork = String.valueOf(commMethod.postMultipartMethod(bodyData, imagePath+"/comm/myWork"));
 
             // NOTE : childWork에 정보 저장하기
             childWorkService.saveChildWork(animalUploadReqDto.getAnimalId(), AnimalType.animal.name(), urlWork);
