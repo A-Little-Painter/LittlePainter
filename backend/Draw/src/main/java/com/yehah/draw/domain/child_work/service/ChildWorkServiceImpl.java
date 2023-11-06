@@ -7,7 +7,7 @@ import com.yehah.draw.domain.child_work.repository.ChildWorkRepository;
 import com.yehah.draw.domain.user.response.ChildResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-//import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,19 +35,19 @@ public class ChildWorkServiceImpl implements ChildWorkService{
                 .createdDate(LocalDateTime.now()).build());
     }
 
-//    public List<ChildWork> animalList(){
-//        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        log.info(child.getChildId().toString());
-//        List<ChildWork> list = childWorkRepository.findByChildIdAndCategoryId(child.getChildId(),1L);
-//
-//        return list;
-//    }
-//
-//    public List<ChildWork> uploadList(){
-//        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        log.info(child.getChildId().toString());
-//        List<ChildWork> list = childWorkRepository.findByChildIdAndCategoryId(child.getChildId(),2L);
-//
-//        return list;
-//    }
+    public List<ChildWork> animalList(){
+        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info(child.getChildId().toString());
+        List<ChildWork> list = childWorkRepository.findByChildIdAndCategoryId(child.getChildId(),1L);
+
+        return list;
+    }
+
+    public List<ChildWork> uploadList(){
+        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info(child.getChildId().toString());
+        List<ChildWork> list = childWorkRepository.findByChildIdAndCategoryId(child.getChildId(),2L);
+
+        return list;
+    }
 }

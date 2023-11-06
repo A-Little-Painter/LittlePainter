@@ -26,17 +26,17 @@ public class ChildWorkController {
 //
 //    }
 
-//    //내 동물 조회
-//    @GetMapping("/my_animals")
-//    public ResponseEntity<?> getMyAnimals(){
-//        List<ChildWork> list = childWorkService.animalList();
-//        return ResponseEntity.ok(list);
-//    }
-//
-//    //내 업로드 조회
-//    @GetMapping("/my_uploads")
-//    public ResponseEntity<?> getMyUploads(){
-//        List<ChildWork> list = childWorkService.uploadList();
-//        return ResponseEntity.ok(list);
-//    }
+    //내 동물 조회
+    @GetMapping("/my_animals")
+    public ResponseEntity<?> getMyAnimals(){
+        List<ChildWork> list = childWorkService.animalList();
+        return ResponseEntity.ok(list);
+    }
+
+    //내 업로드 조회
+    @GetMapping("/my_uploads")
+    public ResponseEntity<?> getMyUploads(){
+        List<ChildWork> list = childWorkService.uploadList();
+        return ResponseEntity.ok(list);
+    }
 }
