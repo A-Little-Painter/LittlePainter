@@ -7,7 +7,7 @@ import java.util.List;
 public interface ChildWorkService {
     public void saveChildWork(Long workId, String name, String urlWork);
 
-    public List<ChildWork> animalList();
-
-    public List<ChildWork> uploadList();
+//    public List<ChildWork> animalList();
+//
+//    public List<ChildWork> uploadList();
 }
