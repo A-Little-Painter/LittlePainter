@@ -34,12 +34,6 @@ public class ChildWorkController {
 		return ResponseEntity.status(201).body(null);
 	}
 
-    //내 동화 조회
-//    @GetMapping("/my_tales")
-//    public ResponseEntity<?> getMyTales(){
-//
-//    }
-
     //내 동물 조회
     @GetMapping("/my_animals")
     public ResponseEntity<?> getMyAnimals(){
