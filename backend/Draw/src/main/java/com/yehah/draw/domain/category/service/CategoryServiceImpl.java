@@ -15,7 +15,7 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
 
     // 카테고리 목록 조회하기
-    public int getCategoryId(String name){
+    public Long getCategoryId(String name){
         return categoryRepository.findByName(name).getId();
     }
 
