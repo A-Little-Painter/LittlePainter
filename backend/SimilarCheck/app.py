@@ -1,5 +1,6 @@
 from flask import Flask, request
 import cv2
+import sys
 
 app = Flask(__name__)
 
@@ -9,25 +10,44 @@ def save_uploaded_image(file, save_path):
 
 # 두 이미지의 유사도를 검사한다.
 def similarityCheck(originalPath, newPath):
-    originalImg = cv2.imread(originalPath)
-    newImg = cv2.imread(newPath)
+    src1 = cv2.imread(originalPath, cv2.IMREAD_GRAYSCALE)
+    src2 = cv2.imread(newPath, cv2.IMREAD_GRAYSCALE)
 
-    # 이미지가 성공적으로 읽혔는지 확인합니다.
-    if originalImg is not None and newImg is not None:
-        # 두 이미지가 같은 크기인지 확인합니다.
-        if originalImg.shape == newImg.shape:
-            # MSE 계산
-            mse = ((originalImg - newImg) ** 2).mean()
+    # if src1 is None or src2 is None:
+    #     print('Image load failed!')
+    #     sys.exit()
 
-            print("compareResult :", mse)
+    # 특징점 알고리즘 객체 생성 (KAZE, AKAZE, ORB 등)
+    # feature = cv2.KAZE_create()
+    # feature = cv2.AKAZE_create()
+    feature = cv2.ORB_create()
 
-            return mse
+    # 특징점 검출 및 기술자 계산
+    kp1 = feature.detect(src1)
+    _, desc1 = feature.compute(src1, kp1)
 
-        else:
-            print('이미지 크기가 다릅니다.')
+    kp2, desc2 = feature.detectAndCompute(src2, None)
 
-    else:
-        print('이미지를 읽어올 수 없습니다.')
+    print('desc1.shape:', desc1.shape)
+    print('desc1.dtype:', desc1.dtype)
+    print('desc2.shape:', desc2.shape)
+    print('desc2.dtype:', desc2.dtype)
+
+    # 특징점 일치 검출
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(desc1, desc2)
+    matches = sorted(matches, key=lambda x: x.distance)
+
+    # 일치 특징점 그리기
+    match_img = cv2.drawMatches(src1, kp1, src2, kp2, matches[:10], outImg=None)
+
+    # 일치 정확도 측정
+    match_accuracy = len(matches) / len(kp1)
+
+    print('Match accuracy:', match_accuracy)
+
+    return match_accuracy
+
 
 @app.route('/similarcheck/comm/animals', methods=['POST'])
 def SimilarityCheck():

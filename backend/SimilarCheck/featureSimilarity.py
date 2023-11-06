@@ -1,13 +1,12 @@
 import sys
-import numpy as np
 import cv2
-
+print(sys.version)
 # 영상 불러오기
-# src1 = cv2.imread('./images/gom1.png', cv2.IMREAD_GRAYSCALE)
-# src2 = cv2.imread('./images/gom2.png', cv2.IMREAD_GRAYSCALE)
+src1 = cv2.imread('./images/gom1.png', cv2.IMREAD_GRAYSCALE)
+src2 = cv2.imread('./images/gom4.png', cv2.IMREAD_GRAYSCALE)
 
-src1 = cv2.imread('./images/image0.jpg', cv2.IMREAD_GRAYSCALE)
-src2 = cv2.imread('./images/image1.jpg', cv2.IMREAD_GRAYSCALE)
+# src1 = cv2.imread('./images/polar_bear.jpg', cv2.IMREAD_GRAYSCALE)
+# src2 = cv2.imread('./images/polar_bear_1.jpg', cv2.IMREAD_GRAYSCALE)
 
 if src1 is None or src2 is None:
     print('Image load failed!')
@@ -15,8 +14,10 @@ if src1 is None or src2 is None:
 
 # 특징점 알고리즘 객체 생성 (KAZE, AKAZE, ORB 등)
 #feature = cv2.KAZE_create()
-feature = cv2.AKAZE_create()
-#feature = cv2.ORB_create()
+#feature = cv2.AKAZE_create()
+feature = cv2.ORB_create()
+
+
 
 # 특징점 검출 및 기술자 계산
 kp1 = feature.detect(src1)
