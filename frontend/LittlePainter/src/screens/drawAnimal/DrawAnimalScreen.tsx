@@ -228,7 +228,8 @@ export default function DrawAnimalScreen({
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
-      dispatch(handleLineThickness(10));
+      // dispatch(handleLineThickness(10));
+      dispatch(handleLineThickness(5));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
@@ -377,8 +378,8 @@ export default function DrawAnimalScreen({
           }}>
           {animalBorderURI === '' ? null : (
             <ImageBackground
-              // source={{uri: animalBorderURI}}
-              source={require('../../assets/images/animalImage/ovalTest.png')}
+              source={{uri: animalBorderURI}}
+              // source={require('../../assets/images/animalImage/ovalTest.png')}
               // source={require('../../assets/images/animalImage/test1.jpg')}
               style={styles.animalBorderImageBackground}
               resizeMode="contain">

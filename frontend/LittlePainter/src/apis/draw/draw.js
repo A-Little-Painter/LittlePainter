@@ -115,13 +115,15 @@ export const animalWholeNameInquiry = async () => {
 };
 
 //friends
-// 다른 사람이 올린전체 사진 가져오기
-export const friendsWholePicture = async () => {
+// 다른 사람이 올린 사진 전체 가져오기
+export const friendsWholePicture = async (animalTypeId, page) => {
   try {
-    const response = await axios.get(`${BASE_URL}/draws/friends`);
+    // page-0 이면 30개
+    const response = await axios.get(`${BASE_URL}/draws/friends?animalTypeId=${animalTypeId}&page=${page}`);
+    // const response = await axios.get(`${BASE_URL}/draws/friends`);
     return response;
   } catch (error) {
-    console.log('다른 사람이 올린전체 사진 가져오기 실패:', error);
+    console.log('다른 사람이 올린 사진 전체 가져오기 실패:', error);
     const response = error.response;
     return response;
   }
@@ -138,9 +140,23 @@ export const friendsPictureBorder = async (friendsAnimalId) => {
   }
 };
 // 다른 사람이 올린 사진 그리기 유사도 검사
-export const friendsPictureSimilarity = async () => {
+export const friendsPictureSimilarity = async (roomId, originBorderFileUri, compareBorderFileUri) => {
   try {
-    const response = await axios.post(`${BASE_URL}/draws/friends/comm-similarity`, null);
+    const formData = new FormData();
+    formData.append('roomId', roomId);
+
+    formData.append('originalFile', {
+      uri: originBorderFileUri,
+      type: 'image/png',
+      name: 'originalFile.png',
+    });
+
+    formData.append('newFile', {
+      uri: compareBorderFileUri,
+      type: 'image/png',
+      name: 'newFile.png',
+    });
+    const response = await axios.post(`${BASE_URL}/draws/friends/comm-similarity`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
     return response;
   } catch (error) {
     console.log('다른 사람이 올린 사진 그리기 유사도 검사 실패:', error);
@@ -217,7 +233,7 @@ export const taleListInquiry = async () => {
   }
 };
 // 동화 페이지 조회하기
-export const talePageInquiry = async () => {
+export const talePageInquiry = async (talesId, pageNum) => {
   try {
     const response = await axios.get(`${BASE_URL}/draws/tales/${talesId}/${pageNum}`);
     return response;

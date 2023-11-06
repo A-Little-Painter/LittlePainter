@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -9,6 +10,7 @@ import {
   Pressable,
   ToastAndroid, // 토스트안드로이드 잠깐 사용
   BackHandler,
+  ImageBackground,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
@@ -22,12 +24,17 @@ import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
 import OriginPictureModal from '../modals/OriginPictureModal';
 import DrawColorPaletteModal from '../modals/DrawColorPaletteModal';
-import DrawScreenshotModal from '../modals/DrawScreenshotModal';
 import {
   handleLineThickness,
   handleisOriginPictureModalVisible,
   handleDrawColorSelect,
+  handleisTestDrawCompareModalVisible, // 그림 임시 비교 모달
 } from '../../redux/slices/draw/draw';
+import {
+  friendsPictureBorder,
+  friendsPictureSimilarity,
+} from '../../apis/draw/draw';
+import TestDrawCompareModal from '../modals/TestDrawCompareModal';
 
 type DrawPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -49,12 +56,31 @@ const fastcolorData = [
 ];
 
 export default function DrawPictureScreen({
+  route,
   navigation,
 }: DrawPictureScreenProps) {
+  // 캡쳐 변수
+  const drawCaptureRef = useRef(); //테두리 그리기 캡쳐
+  const originCaptureRef = useRef(); //원본이미지 캡쳐
+  // 임시 이미지 비교 변수
+  const isTestDrawCompareModalVisible = useSelector(
+    (state: RootState) => state.draw.isTestDrawCompareModalVisible,
+  );
+  const [pictureId] = useState<number>(
+    route.params.friendsAnimalInfo.friendsAnimalId,
+  );
+  const [pictureOriginImageUri] = useState<string>(
+    route.params.friendsAnimalInfo.originalImageUrl,
+  );
+  const [pictureTitle] = useState<string>(route.params.friendsAnimalInfo.title);
+  const [pictureBorderURI, setPictureBorderURI] = useState<string>('');
+  const [pictureExplanation, setPictureExplanation] = useState<string>('');
+  const [captureImagePath, setCaptureImagePath] = useState<string>('');
+  const [captureBorderImagePath, setCaptureBorderImagePath] =
+    useState<string>('');
+  const [canDrawCapture, setCanDrawCapture] = useState<boolean>(false);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
-  // 캡쳐 변수
-  const captureRef = useRef();
 
   // 그림 그리기 변수
   const [paths, setPaths] = useState<
@@ -64,8 +90,6 @@ export default function DrawPictureScreen({
     {path: string; color: string; strokeWidth: number}[]
   >([]);
   const [currentPath, setCurrentPath] = useState<string>('');
-  const [isClearButtonClicked, setClearButtonClicked] =
-    useState<boolean>(false);
 
   const dispatch = useDispatch();
   // 선 굵기 모달을 위한 라인
@@ -85,11 +109,75 @@ export default function DrawPictureScreen({
   const drawColorSelect = useSelector(
     (state: RootState) => state.draw.drawColorSelect,
   );
-  // 스크린샷 관련 모달
-  const isDrawScreenshotModalVisible = useSelector(
-    (state: RootState) => state.draw.isDrawScreenshotModalVisible,
-  );
-  const [isToCaptureDrawing, setIsToCaptureDrawing] = useState<boolean>(false);
+
+  // 서버 통신
+  const handleFriendsPictureBorder = async () => {
+    try {
+      const response = await friendsPictureBorder(pictureId);
+      if (response.status === 200) {
+        console.log(
+          '다른 사람이 올린 사진 테두리 가져오기 성공',
+          response.data,
+        );
+        setPictureBorderURI(response.data);
+        setPictureExplanation(response.data.detail);
+        handleOriginCapture();
+      } else {
+        console.log(
+          '다른 사람이 올린 사진 테두리 가져오기 실패',
+          response.status,
+        );
+      }
+    } catch (error) {
+      console.log('다른 사람이 올린 사진 테두리 가져오기 실패', error);
+    }
+  };
+  const handlefriendsPictureSimilarity = async (compareImagePath: string) => {
+    const randomInt = Math.floor(Math.random() * (100 - 1 + 1) + 1);
+    try {
+      const response = await friendsPictureSimilarity(
+        `abc${randomInt}`,
+        captureBorderImagePath,
+        compareImagePath,
+      );
+      if (response.status === 200) {
+        console.log('유사도 검사 성공', response.data);
+        if (response.data === 'END') {
+          handleGoColoring();
+        }
+      } else {
+        console.log('유사도 검사 실패', response.status);
+      }
+    } catch (error) {
+      console.log('유사도 검사 체크 실패', error);
+    }
+  };
+
+  async function handleDrawCapture() {
+    try {
+      setCanDrawCapture(true);
+      const uri = await drawCaptureRef.current.capture();
+      setCaptureImagePath(uri);
+      setCanDrawCapture(false);
+      await handlefriendsPictureSimilarity(uri);
+    } catch (error) {
+      setCanDrawCapture(false);
+      console.error('캡쳐 에러 발생: ', error);
+    }
+  }
+  async function handleOriginCapture() {
+    try {
+      const uri = await originCaptureRef.current.capture();
+      setCaptureBorderImagePath(uri);
+    } catch (error) {
+      console.error('원본 이미지 캡쳐 에러 발생: ', error);
+    }
+  }
+
+  useEffect(() => {
+    handleFriendsPictureBorder();
+  }, []);
+
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
     const locationX = event.nativeEvent.locationX;
@@ -105,7 +193,7 @@ export default function DrawPictureScreen({
     const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
     setCurrentPath(prevPath => prevPath + newPoint);
   };
-  const [captureImagePath, setCaptureImagePath] = useState<string>('');
+
   const onTouchEnd = () => {
     if (currentPath) {
       setPaths([
@@ -114,22 +202,12 @@ export default function DrawPictureScreen({
       ]);
     }
     setCurrentPath('');
-    setClearButtonClicked(false);
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-    });
   };
 
   const handleClearButtonClick = () => {
     setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
-    setClearButtonClicked(true);
-    setClearButtonClicked(false);
-    setCaptureImagePath('');
   };
 
   const handlePrevButtonClick = () => {
@@ -138,13 +216,8 @@ export default function DrawPictureScreen({
       | undefined = paths.pop();
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
+      handleDrawCapture();
     }
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-    });
   };
   const handleNextButtonClick = () => {
     const tmpPosition:
@@ -153,22 +226,24 @@ export default function DrawPictureScreen({
     if (tmpPosition) {
       setPaths([...paths, tmpPosition]);
     }
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-    });
   };
+
+  // 화면 캡쳐 동작 useEffect
+  useEffect(() => {
+    if (captureBorderImagePath !== '') {
+      handleDrawCapture();
+    }
+  }, [paths]);
 
   useEffect(() => {
     dispatch(handleDrawColorSelect('#000000'));
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
-      dispatch(handleLineThickness(10));
+      // dispatch(handleLineThickness(10));
+      dispatch(handleLineThickness(5));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
@@ -205,12 +280,16 @@ export default function DrawPictureScreen({
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
     navigation.navigate('ColoringPictureScreen', {
+      pictureId: pictureId,
+      pictureTitle: pictureTitle,
       completeLine: paths,
+      pictureBorderURI: pictureBorderURI,
+      pictureExplanation: pictureExplanation,
+      pictureOriginImageUri: pictureOriginImageUri,
     });
   };
   return (
     <View style={styles.mainContainer}>
-      {/* <View style={styles.subContainer}> */}
       <View style={styles.subContainer}>
         {/* 상단 */}
         <View style={styles.topContainer}>
@@ -222,7 +301,7 @@ export default function DrawPictureScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
-                navigation.navigate('DrawCaptureScreen');
+                dispatch(handleisTestDrawCompareModalVisible(true));
               }}>
               <Image
                 style={styles.drawEquipImage}
@@ -304,59 +383,68 @@ export default function DrawPictureScreen({
           </View>
         </View>
         {/* 중단 */}
-        {/* <View style={styles.middleContainer}> */}
         <ViewShot
-          style={[styles.middleContainer, {backgroundColor: 'white'}]}
-          ref={captureRef}
+          style={styles.middleContainer}
+          ref={originCaptureRef}
           options={{
-            fileName: 'drawPictureCapture',
-            format: 'jpg',
-            quality: 0.9,
+            fileName: 'originImageCapture',
+            format: 'png',
+            quality: 1,
           }}>
-          {/* <ImageBackground
-            source={require('../../assets/images/animalImage/deerTest1.png')}
-            style={{}}
-            resizeMode="center"> */}
-          {isToCaptureDrawing ? null : (
-            <Image
-              style={{
-                position: 'absolute',
-                width: windowWidth,
-                height: windowHeight * 0.8,
-                resizeMode: 'contain',
-              }}
-              source={require('../../assets/images/animalImage/deerTest1.png')}
-            />
+          {pictureBorderURI === '' ? null : (
+            <ImageBackground
+              source={{uri: pictureBorderURI}}
+              // source={require('../../assets/images/animalImage/ovalTest.png')}
+              style={styles.pictureBorderImageBackground}
+              resizeMode="contain">
+              <ViewShot
+                ref={drawCaptureRef}
+                options={{
+                  fileName: 'drawCapture',
+                  format: 'png',
+                  quality: 1,
+                }}
+                style={[
+                  styles.pathViewShot,
+                  // eslint-disable-next-line react-native/no-inline-styles
+                  {backgroundColor: canDrawCapture ? 'white' : 'transparent'},
+                ]}>
+                <View
+                  style={styles.pathView}
+                  onTouchStart={onTouchStart}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}>
+                  <Svg>
+                    {paths.map((item, index) => (
+                      <Path
+                        key={`path-${index}`}
+                        d={item.path}
+                        stroke={
+                          // isClearButtonClicked ? 'transparent' : item.color
+                          item.color
+                        }
+                        fill={'transparent'}
+                        strokeWidth={item.strokeWidth}
+                        strokeLinejoin={'round'}
+                        strokeLinecap={'round'}
+                      />
+                    ))}
+                    <Path
+                      d={currentPath}
+                      stroke={
+                        // isClearButtonClicked ? 'transparent' : drawColorSelect
+                        drawColorSelect
+                      }
+                      fill={'transparent'}
+                      strokeWidth={LineThickness}
+                      strokeLinejoin={'round'}
+                      strokeLinecap={'round'}
+                    />
+                  </Svg>
+                </View>
+              </ViewShot>
+            </ImageBackground>
           )}
-
-          <View
-            style={{justifyContent: 'flex-end'}}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}>
-            <Svg>
-              {paths.map((item, index) => (
-                <Path
-                  key={`path-${index}`}
-                  d={item.path}
-                  stroke={isClearButtonClicked ? 'transparent' : item.color}
-                  fill={'transparent'}
-                  strokeWidth={item.strokeWidth}
-                  strokeLinejoin={'round'}
-                  strokeLinecap={'round'}
-                />
-              ))}
-              <Path
-                d={currentPath}
-                stroke={isClearButtonClicked ? 'transparent' : drawColorSelect}
-                fill={'transparent'}
-                strokeWidth={LineThickness}
-                strokeLinejoin={'round'}
-                strokeLinecap={'round'}
-              />
-            </Svg>
-          </View>
-          {/* </ImageBackground> */}
           {/* </View> */}
         </ViewShot>
         {/* 하단 */}
@@ -368,13 +456,6 @@ export default function DrawPictureScreen({
               onPress={() => {
                 dispatch(handleisOriginPictureModalVisible(true));
               }}>
-              {/* {captureImagePath ? (
-                <Image
-                  style={styles.ideaLight}
-                  // source={require('../../assets/images/ideaLight.png')}
-                  source={{uri: captureImagePath}}
-                />
-              ) : null} */}
               <Image
                 style={styles.ideaLight}
                 source={require('../../assets/images/ideaLight.png')}
@@ -435,10 +516,21 @@ export default function DrawPictureScreen({
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginPictureModalVisible ? <OriginPictureModal /> : null}
+      {isOriginPictureModalVisible ? (
+        <OriginPictureModal
+          pictureTitle={pictureTitle}
+          pictureBorderURI={pictureBorderURI}
+          pictureOriginImageUri={pictureOriginImageUri}
+          pictureExplanation={pictureExplanation}
+        />
+      ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
-      {isDrawScreenshotModalVisible ? (
-        <DrawScreenshotModal captureUri={captureImagePath} />
+      {/* 유사도 검사 작동시 삭제할 예정 */}
+      {isTestDrawCompareModalVisible ? (
+        <TestDrawCompareModal
+          originImageURI={captureBorderImagePath}
+          compareImageURI={captureImagePath}
+        />
       ) : null}
     </View>
   );
@@ -520,11 +612,31 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
+    width: '100%',
+    backgroundColor: 'white',
+  },
+  pictureBorderImageBackground: {
+    width: '100%',
+    height: '100%',
+  },
+  pathViewShot: {
+    width: '100%',
+    height: '100%',
     // borderWidth: 1,
+  },
+  pathView: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'flex-end',
+  },
+  borderImage: {
+    position: 'absolute',
+    width: windowWidth,
+    height: windowHeight * 0.8,
+    resizeMode: 'contain',
   },
   bottomContainer: {
     borderTopWidth: 1,
-    // marginHorizontal: windowWidth * 0.01,
     paddingHorizontal: windowWidth * 0.01,
     flex: 0.1,
     flexDirection: 'row',

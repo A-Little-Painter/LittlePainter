@@ -62,10 +62,21 @@ export type RootStackParams = {
     completeDrawUri: string;
   };
   SelectPictureScreen: undefined;
-  DrawPictureScreen: undefined;
+  DrawPictureScreen: {
+    friendsAnimalInfo: {
+      friendsAnimalId: number;
+      userEmail: string;
+      title: string;
+      originalImageUrl: string;
+    };
+  };
   ColoringPictureScreen: {
-    // completeLineUri: string;
+    pictureId: number;
+    pictureTitle: string;
     completeLine: {path: string; color: string; strokeWidth: number}[];
+    pictureBorderURI: string;
+    pictureExplanation: string;
+    pictureOriginImageUri: string;
   };
   CompleteDrawPictureScreen: {
     completeDrawUri: string;
