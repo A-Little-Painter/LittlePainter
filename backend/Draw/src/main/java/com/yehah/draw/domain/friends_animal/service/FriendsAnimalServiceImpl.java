@@ -1,12 +1,12 @@
 package com.yehah.draw.domain.friends_animal.service;
 
+import com.yehah.draw.domain.animal.dto.response.AnimalChoiceResDto;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yehah.draw.domain.animal_type.entity.AnimalType;
 import com.yehah.draw.domain.animal_type.repository.AnimalTypeRepository;
 import com.yehah.draw.domain.friends_animal.dto.response.FriendsAnimalListResDto;
 import com.yehah.draw.domain.friends_animal.entity.FriendsAnimal;
@@ -51,10 +51,12 @@ public class FriendsAnimalServiceImpl implements FriendsAnimalService{
 		return friendsAnimalListResDto;
 	}
 
-	public String getFriendsAnimalTraceUrl(Long friendsAnimalId){
+	public AnimalChoiceResDto getAnimalChoiceData(Long friendsAnimalId){
 		FriendsAnimal friendsAnimal = friendsAnimalRepository.findById(friendsAnimalId).orElseThrow(
-				() -> new IllegalArgumentException("테두리 정보를 가지고 있지 않습니다."));
-		return friendsAnimal.getUrlTrace();
+				() -> new IllegalArgumentException("해당 사진의 정보를 가지고 있지 않습니다."));
+		return AnimalChoiceResDto.builder()
+				.detail(friendsAnimal.getDetail())
+				.urlTrace(friendsAnimal.getUrlTrace()).build();
 	}
 }
 
