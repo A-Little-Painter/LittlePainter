@@ -24,9 +24,10 @@ public class ChildWorkServiceImpl implements ChildWorkService{
 
     private final CategoryService categoryService;
 
-
+    //이거도 urlGif 추가해야함
     public void saveChildWork(Long workId, String name, String urlWork){
         // TODO : contextHolder에서 childId 가져와야함
+//        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         childWorkRepository.save(ChildWork.builder()
                 .childId(1L)
                 .categoryId(categoryService.getCategoryId(name)) // 카테고리의 ID를 가져온다.
