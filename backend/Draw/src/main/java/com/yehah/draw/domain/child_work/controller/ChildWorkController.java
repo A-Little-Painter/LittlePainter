@@ -20,11 +20,6 @@ import java.util.List;
 public class ChildWorkController {
     private final ChildWorkService childWorkService;
 
-    //내 동화 조회
-//    @GetMapping("/my_tales")
-//    public ResponseEntity<?> getMyTales(){
-//
-//    }
 
     //내 동물 조회
     @GetMapping("/my_animals")
