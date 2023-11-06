@@ -9,6 +9,10 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 RUN apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0
+RUN python3 -m pip install PyOpenGL_accelerate
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
+RUN apt-get install -y python3-opengl
+RUN apt-get install -y libosmesa6
 
 COPY . .
 
