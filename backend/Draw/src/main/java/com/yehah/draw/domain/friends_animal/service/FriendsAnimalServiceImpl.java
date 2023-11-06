@@ -22,16 +22,18 @@ public class FriendsAnimalServiceImpl implements FriendsAnimalService{
 	private final FriendsAnimalRepository friendsAnimalRepository;
 
 	@Transactional(readOnly = true)
-	public Slice<FriendsAnimalListResDto> getFriendsAnimalList(String animalTypeName, int pages){
-		PageRequest pageRequest = PageRequest.of(pages, 30, Sort.by(Sort.Direction.DESC, "id"));
+	public Slice<FriendsAnimalListResDto> getFriendsAnimalList(Long animalTypeId, int page){
+		PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id"));
 		Slice<FriendsAnimal> friendsAnimals;
 
-		if(animalTypeName == null || animalTypeName.isEmpty()){
+		if(animalTypeId == 0){
+			// 동물 종류 전체
 			friendsAnimals = friendsAnimalRepository.findSliceBy(pageRequest);
-		} else{
-			AnimalType animalType = animalTypeRepository.findByName(animalTypeName)
-				.orElseThrow(() -> new IllegalArgumentException("해당 동물 종류가 없습니다."));
-			friendsAnimals = friendsAnimalRepository.findByAnimalType_Id(animalType.getId(), pageRequest);
+		} else if(animalTypeId != 0 && animalTypeRepository.existsById(animalTypeId)) {
+			// 특정 종류 전체
+			friendsAnimals = friendsAnimalRepository.findByAnimalType_Id(animalTypeId, pageRequest);
+		} else {
+			throw new IllegalArgumentException("해당 동물 종류가 없습니다.");
 		}
 
 		return friendsAnimals.map(this::convertToDto);
