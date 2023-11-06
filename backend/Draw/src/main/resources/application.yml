@@ -3,7 +3,7 @@ spring:
     name: draw-service
   cloud:
     config:
-      name: deploy
+      name: local
       profile: draw
   config:
     import: "optional:configserver:http://k9d106.p.ssafy.io:9900/"
