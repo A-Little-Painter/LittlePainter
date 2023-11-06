@@ -82,7 +82,7 @@ public class AnimalController {
                     .message("유사도 연결에 성공하셨습니다.")
                     .build();
 
-            if(value <= 0.09){
+            if(value >= 0.4){
                 // NOTE : STOMP 응답 전송하기
                 similarMessageResponse.setSimilarState(SimilarState.END);
                 messagingTemplate.convertAndSend("/sub/room/"+animalSimilarReqDto.getRoomId(),
