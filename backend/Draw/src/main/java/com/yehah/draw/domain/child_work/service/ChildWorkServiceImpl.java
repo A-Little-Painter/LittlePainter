@@ -1,6 +1,5 @@
 package com.yehah.draw.domain.child_work.service;
 
-
 import com.yehah.draw.domain.category.service.CategoryService;
 import com.yehah.draw.domain.child_work.dto.response.UploadS3MypageResDto;
 import com.yehah.draw.domain.child_work.entity.ChildWork;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
 
@@ -25,8 +23,6 @@ public class ChildWorkServiceImpl implements ChildWorkService{
 
     private final CategoryService categoryService;
     private final ChildWorkCommService childWorkCommService;
-
-    private final WebClient imageWebClient;
 
     public void saveChildWork(Long workId, String name, String urlWork){
         // TODO : contextHolder에서 childId 가져와야함

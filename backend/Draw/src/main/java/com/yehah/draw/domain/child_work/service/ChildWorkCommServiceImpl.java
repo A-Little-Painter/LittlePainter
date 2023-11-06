@@ -9,7 +9,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.yehah.draw.domain.child_work.dto.response.UploadS3MypageResDto;
 
-import jakarta.servlet.http.Part;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
