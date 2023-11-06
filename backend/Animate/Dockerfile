@@ -13,6 +13,8 @@ RUN bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
 RUN rm -rf ~/miniconda3/miniconda.sh
 RUN ~/miniconda3/bin/conda init bash
 RUN ~/miniconda3/bin/conda init zsh
+RUN apt-get update
+RUN conda update
 
 # flask, 필수 라이브러리 및 animated_drawings가 요구하는 모듈 설치
 COPY requirements.txt requirements.txt
