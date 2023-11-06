@@ -3,6 +3,7 @@ FROM python:3.8-slim
 EXPOSE 8700
 
 WORKDIR /app
+COPY . .
 RUN apt-get update
 
 # install miniconda3
@@ -19,7 +20,6 @@ RUN echo $PATH
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 RUN apt-get install -y libgl1-mesa-glx libglib2.0-0 sudo
-COPY . .
 RUN pip install -e AnimatedDrawings/.
 
 # Nontype오류 해결용
