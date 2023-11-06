@@ -2,7 +2,7 @@ package com.yehah.draw.domain.animal.controller;
 
 import com.yehah.draw.domain.animal.dto.request.AnimalSimilarReqDto;
 import com.yehah.draw.domain.animal.dto.request.AnimalUploadReqDto;
-import com.yehah.draw.domain.animal.dto.response.AnimalDetailResDto;
+import com.yehah.draw.domain.animal.dto.response.AnimalChoiceResDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalResDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalSimilarResDto;
 import com.yehah.draw.domain.animal.entity.SimilarState;
@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -55,10 +54,10 @@ public class AnimalController {
         return ResponseEntity.ok(animalService.getAnimalList());
     }
 
-    @Operation(summary = "선택한 동물의 테두리 사진을 가져온다.", description = "ALL")
+    @Operation(summary = "선택한 동물의 테두리 사진과 설명을 가져온다.", description = "ALL")
     @GetMapping("/{animalId}")
-    public ResponseEntity<AnimalDetailResDto> getTraceUrl(@PathVariable(name = "animalId")Long animalId){
-        return ResponseEntity.ok(animalService.getAnimalTraceUrl(animalId));
+    public ResponseEntity<AnimalChoiceResDto> getTraceUrl(@PathVariable(name = "animalId")Long animalId){
+        return ResponseEntity.ok(animalService.getAnimalChoiceData(animalId));
     }
 
     @Operation(summary = "친구의 유사도를 확인한다.", description = "ALL")
@@ -73,7 +72,6 @@ public class AnimalController {
         String stompUrl = "/sub/room/"+animalSimilarReqDto.getRoomId();
 
         try{
-
             double value = Double.parseDouble(commMethod.postMultipartMethod(bodyData, similarityUrl));
             log.info("-----유사도-----> "+value);
 
