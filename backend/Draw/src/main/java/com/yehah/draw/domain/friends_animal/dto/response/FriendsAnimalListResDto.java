@@ -16,5 +16,5 @@ public class FriendsAnimalListResDto {
 	private Long friendsAnimalId;
 	private String userEmail;
 	private String title;
-	private String originalImageUrl;
+	private String originalImageUrl;	//동물 누끼 이미지
 }

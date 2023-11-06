@@ -46,9 +46,9 @@ public class FriendsAnimalController {
 
 	@Operation(summary = "친구의 동물 전체 목록을 조회", description = "친구의 동물 전체 목록을 페이징 처리하여 리턴한다.")
 	@GetMapping("")
-	public ResponseEntity<Slice<FriendsAnimalListResDto>> getFriendsAnimalList(@RequestParam(name = "animalType", required = false) String animalTypeName, @RequestParam(value = "page", defaultValue = "0") int page){
-		log.debug("getFriendsAnimals() : animalTypeName = {}, page = {}, ", animalTypeName, page);
-		return ResponseEntity.ok(friendsAnimalService.getFriendsAnimalList(animalTypeName, page));
+	public ResponseEntity<Slice<FriendsAnimalListResDto>> getFriendsAnimalList(@RequestParam(name = "animalTypeId", defaultValue = "0") Long animalTypeId, @RequestParam(value = "page", defaultValue = "0") int page){
+		log.debug("getFriendsAnimalList() : animalTypeId = {}, page = {}, ", animalTypeId, page);
+		return ResponseEntity.ok(friendsAnimalService.getFriendsAnimalList(animalTypeId, page));
 	}
 
 	@Operation(summary = "내 동물 사진 업로드", description = "(최종버전)나의 동물 사진을 업로드한다.")
