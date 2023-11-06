@@ -64,7 +64,7 @@ public class AnimalController {
     public ResponseEntity<AnimalSimilarResDto> animalSimilarCheck(@ModelAttribute AnimalSimilarReqDto animalSimilarReqDto) throws IOException {
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
-        bodyData.add("sessionId", animalSimilarReqDto.getRoomId()); // 세션 아이디 전송
+        bodyData.add("roomId", animalSimilarReqDto.getRoomId()); // 세션 아이디 전송
         bodyData.add("originalFile", animalSimilarReqDto.getOriginalFile().getResource());
         bodyData.add("newFile", animalSimilarReqDto.getNewFile().getResource());
 
