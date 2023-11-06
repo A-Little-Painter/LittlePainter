@@ -1,6 +1,7 @@
 package com.yehah.user.domain.user.contoller;
 
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
+import com.yehah.user.domain.user.dto.request.ChangeIconRequestDTO;
 import com.yehah.user.domain.user.dto.request.GetChildInfoRequestDTO;
 import com.yehah.user.domain.user.dto.response.AddChildResponseDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
@@ -79,10 +80,23 @@ public class UserController {
     }
 
     //아이 선택
+    @Operation(summary = "아이 선택", description = "USER")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "아이 선택 성공"),
+            @ApiResponse(responseCode = "511", description = "DB 접근 실패"),
+            @ApiResponse(responseCode = "512", description = "사용자 못 찾음")
+    })
     @PatchMapping("/select-child/{childId}")
     public ResponseEntity<?> selectChild(@PathVariable Long childId){
         return userService.selectChild(childId);
     }
+
+    //아이 아이콘 변경
+    @PatchMapping("/icons")
+    public ResponseEntity<?> changeIcon(@RequestBody ChangeIconRequestDTO changeIconRequestDTO){
+        return userService.changeIcon(changeIconRequestDTO);
+    }
+
 
 
     //유저 정보 가져오기(타 마이크로서비스 유저 정보가져오기)
@@ -97,6 +111,11 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @Operation(summary = "아이 정보 가져오기 (타 마이크로서비스 아이 정보 가져오기)", description = "USER")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "아이 정보 가져오기 성공"),
+            @ApiResponse(responseCode = "510", description = "존재하지 않음")
+    })
     @PostMapping("/child-info")
     public ResponseEntity<?> getChildInfo(@RequestBody GetChildInfoRequestDTO getChildInfoRequestDTO){
         GetChildInfoResponseDTO getChildInfoResponseDTO = userService.getChildInfo(getChildInfoRequestDTO.getEmail());
