@@ -22,7 +22,7 @@ COPY . .
 RUN pip install -e AnimatedDrawings/.
 
 # Nontype오류 해결용
-RUN sudo apt-get install libosmesa6-dev freeglut3-dev
+RUN sudo apt-get install -y libosmesa6-dev freeglut3-dev
 RUN sudo apt-get install -y libglfw3-dev libgles2-mesa-dev
 RUN sudo apt-get install libosmesa6
 RUN export PYOPENGL_PLATFORM=osmesa
