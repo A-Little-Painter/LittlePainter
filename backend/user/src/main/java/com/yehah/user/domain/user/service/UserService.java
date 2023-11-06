@@ -1,6 +1,7 @@
 package com.yehah.user.domain.user.service;
 
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
+import com.yehah.user.domain.user.dto.request.ChangeChildRequestDTO;
 import com.yehah.user.domain.user.dto.request.ChangeIconRequestDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetChildInfoResponseDTO;
@@ -28,4 +29,6 @@ public interface UserService {
     public ResponseEntity<?> selectChild(Long childId);
 
     public ResponseEntity<?> changeIcon(ChangeIconRequestDTO changeIconRequestDTO);
+
+    public ResponseEntity<?> updateChild(ChangeChildRequestDTO changeChildRequestDTO);
 }

@@ -1,6 +1,7 @@
 package com.yehah.user.domain.user.service;
 
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
+import com.yehah.user.domain.user.dto.request.ChangeChildRequestDTO;
 import com.yehah.user.domain.user.dto.request.ChangeIconRequestDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetChildInfoResponseDTO;
@@ -160,6 +161,24 @@ public class UserServiceImpl implements UserService{
                             .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이입니다."));
                     try{
                         childRepository.save(selectedChild.updateIcon(icon));
+                    }catch (Exception e){
+                        throw new DatabaseException("DB에 저장할 수 없습니다.");
+                    }
+                    return ResponseEntity.ok().build();
+                })
+                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 찾을 수 없습니다."));
+    }
+
+    public ResponseEntity<?> updateChild(ChangeChildRequestDTO changeChildRequestDTO){
+        User user = getLoginUser();
+        log.info("user.getEmail() "+user.getEmail());
+        return userRepository.findById(user.getId())
+                .map(userFromDB -> {
+                    Child selectedChild = userFromDB.getChildren().stream()
+                            .filter(child -> child.getId().equals(changeChildRequestDTO.getChildId()))
+                            .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이입니다."));
+                    try{
+                        childRepository.save(selectedChild.updateChild(changeChildRequestDTO.getNickname(), changeChildRequestDTO.getBirthday()));
                     }catch (Exception e){
                         throw new DatabaseException("DB에 저장할 수 없습니다.");
                     }

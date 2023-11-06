@@ -1,6 +1,7 @@
 package com.yehah.user.domain.user.contoller;
 
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
+import com.yehah.user.domain.user.dto.request.ChangeChildRequestDTO;
 import com.yehah.user.domain.user.dto.request.ChangeIconRequestDTO;
 import com.yehah.user.domain.user.dto.request.GetChildInfoRequestDTO;
 import com.yehah.user.domain.user.dto.response.AddChildResponseDTO;
@@ -97,6 +98,11 @@ public class UserController {
         return userService.changeIcon(changeIconRequestDTO);
     }
 
+    //아이 정보 수정
+    @PatchMapping("/child")
+    public ResponseEntity<?> updateChild(@RequestBody ChangeChildRequestDTO changeChildRequestDTO){
+        return userService.updateChild(changeChildRequestDTO);
+    }
 
 
     //유저 정보 가져오기(타 마이크로서비스 유저 정보가져오기)
