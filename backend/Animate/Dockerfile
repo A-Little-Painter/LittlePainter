@@ -23,15 +23,12 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt  \
  && apt-get install -y libgl1-mesa-glx libglib2.0-0 sudo \
  && pip install -e AnimatedDrawings/. \
- \
- # Nontype오류 해결용 \
  && python3 -m pip install PyOpenGL_accelerate \
  && sudo apt-get install ffmpeg libsm6 libxext6 -y \
  && sudo apt-get install -y python3-opengl \
  && sudo apt-get install -y libosmesa6 \
- \
  && sudo apt-get install -y libosmesa6-dev freeglut3-dev \
- && sudo apt-get install -y libglfw3-dev libgles2-mesa-dev \
+ && sudo apt-get install -y libglfw3-dev libgles2-mesa-dev
 
 ENV PYOPENGL_PLATFORM osmesa
 # RUN conda install -c conda-forge libstdcxx-ng
