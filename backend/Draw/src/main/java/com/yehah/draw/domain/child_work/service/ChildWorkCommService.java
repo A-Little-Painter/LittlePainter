@@ -9,5 +9,5 @@ import com.yehah.draw.domain.child_work.dto.response.UploadS3MypageResDto;
 import reactor.core.publisher.Mono;
 
 public interface ChildWorkCommService {
-	public Mono<UploadS3MypageResDto> postS3MyPage(String category, Long userId, MultipartFile imageFile, MultipartFile gifFile);
+	public Mono<UploadS3MypageResDto> postS3MyPage(String category, Long childId, MultipartFile imageFile, String gifUrl);
 }
