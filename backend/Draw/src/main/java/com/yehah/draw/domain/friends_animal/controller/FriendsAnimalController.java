@@ -82,7 +82,7 @@ public class FriendsAnimalController {
 		String stompUrl = "/sub/room/"+animalSimilarReqDto.getRoomId();
 
 		try{
-			double value = Double.parseDouble(commMethod.postMultipartMethod(bodyData, similarityUrl));
+			double value = Double.parseDouble(String.valueOf(commMethod.postMultipartMethod(bodyData, similarityUrl)));
 			log.info("-----유사도-----> "+value);
 
 			// NOTE : STOMP 연결하기
@@ -132,7 +132,7 @@ public class FriendsAnimalController {
 		bodyData.set("category", AnimalType.friendsAnimal.name());
 		bodyData.set("image", friendsAnimalUploadReqDto.getFile().getResource());
 		try{
-			String urlWork = commMethod.postMultipartMethod(bodyData, imageUrl+"/comm/myWork");
+			String urlWork = String.valueOf(commMethod.postMultipartMethod(bodyData, imageUrl+"/comm/myWork"));
 
 			// NOTE : childWork에 정보 저장하기
 			childWorkService.saveChildWork(friendsAnimalUploadReqDto.getFriendsAnimalId(), AnimalType.friendsAnimal.name(), urlWork);
