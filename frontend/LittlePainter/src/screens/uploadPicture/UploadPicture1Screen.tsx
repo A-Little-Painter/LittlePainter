@@ -40,7 +40,7 @@ export default function UploadPicture1Screen({
     console.log(imageSource);
   };
   let srcText: string;
-  let nameText: string;
+  let nameText: string = '';
   let typeText: string;
   if (imageSource) {
     srcText = imageSource.uri;
@@ -94,33 +94,36 @@ export default function UploadPicture1Screen({
         </View>
         {/* 중단 */}
         <View style={styles.middleContainer}>
-          <View style={styles.uploadContentContainer}>
-            <View style={styles.uploadsubContentContainer}>
-              {/* 이름 */}
-              <View style={styles.topcontentContainer}>
+          {/* 이름 */}
+          <View style={styles.imageArea}>
+            <View style={styles.searchImage}>
+              {!imageSource ? (
+                <Image
+                  source={require('../../assets/images/wwaitting_cat.png')}
+                  style={styles.image}
+                />
+              ) : (
+                <Image source={{uri: imageSource.uri}} style={styles.image} />
+              )}
+            </View>
+            <View style={styles.originPart}>
+              <View style={styles.textArea}>
                 <TextInput
-                  style={styles.animalName}
                   placeholder="이름"
+                  style={styles.text1}
                   maxLength={15}
-                  // placeholderTextColor={'black'}
                   onChangeText={text => setTitle(text)}
                 />
-              </View>
-              {/* 내용 */}
-              <View style={styles.middlecontentContainer}>
-                <View style={styles.middlecontentContainerView}>
-                  <TextInput
-                    style={styles.animalContent}
-                    placeholder="한줄 소개"
-                    maxLength={30}
-                    // placeholderTextColor={'black'}
-                    onChangeText={text => setDetail(text)}
-                  />
-                </View>
+                <TextInput
+                  placeholder="한줄 소개"
+                  style={styles.text2}
+                  maxLength={30}
+                  onChangeText={text => setDetail(text)}
+                />
               </View>
               {/* 파일선택 */}
               <View style={styles.bottomcontentContainer}>
-                <Text> {srcText} </Text>
+                <Text> {nameText} </Text>
                 <TouchableOpacity
                   style={styles.fileSelectView}
                   onPress={() => {
@@ -136,15 +139,15 @@ export default function UploadPicture1Screen({
               </View>
             </View>
           </View>
-          <View>
-            <TouchableOpacity
-              style={styles.uploadButton}
-              onPress={() => {
-                uploadPicture1();
-              }}>
-              <Text style={styles.uploadText}>올리기</Text>
-            </TouchableOpacity>
-          </View>
+        </View>
+        <View style={styles.btnArea}>
+          <TouchableOpacity
+            style={styles.uploadButton}
+            onPress={() => {
+              uploadPicture1();
+            }}>
+            <Text style={styles.uploadText}>올리기</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -180,18 +183,55 @@ const styles = StyleSheet.create({
     flex: 0.7,
     width: '90%',
     alignSelf: 'center',
+    alignItems: 'center',
+  },
+  imageArea: {
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderRadius: windowWidth * 0.01,
+    backgroundColor: '#FFFFFF',
+    width: '86%',
+  },
+  searchImage: {
+    height: '100%',
+    width: '40%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    height: '90%',
+    width: '100%',
+  },
+  textArea: {
+    height: '85%',
+    width: '100%',
+    alignItems: 'center',
   },
   uploadContentContainer: {
     alignSelf: 'center',
+    alignItems: 'center',
     justifyContent: 'center',
-    width: '90%',
-    height: '80%',
-    backgroundColor: 'white',
+    flexDirection: 'row',
   },
-  uploadsubContentContainer: {
-    width: '90%',
-    height: '90%',
-    alignSelf: 'center',
+  searchbar: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: windowWidth * 0.05,
+    borderBottomLeftRadius: windowWidth * 0.05,
+    paddingHorizontal: windowWidth * 0.02,
+    height: windowWidth * 0.05,
+    width: '80%',
+    fontSize: windowWidth * 0.02,
+    marginTop: windowWidth * 0.015,
+  },
+  searchMark: {
+    backgroundColor: '#FFFFFF',
+    height: windowWidth * 0.05,
+    justifyContent: 'center',
+    borderTopRightRadius: windowWidth * 0.05,
+    borderBottomRightRadius: windowWidth * 0.05,
+    paddingHorizontal: windowWidth * 0.015,
+    marginTop: windowWidth * 0.015,
   },
   logoImage: {
     alignSelf: 'center',
@@ -204,46 +244,44 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'black',
   },
-  pictureCard1: {
-    margin: windowWidth * 0.01,
-  },
-  pcitureCard2: {
-    borderRadius: 20,
-    borderColor: 'black',
-    borderWidth: 1,
-    width: windowWidth * 0.194,
-    height: windowWidth * 0.14,
-  },
-  pictureCardText: {
-    // textAlign: 'center',
-    fontSize: windowWidth * 0.018,
-    fontWeight: '600',
-  },
-  pictureCardPainterText: {
-    // textAlign: 'center',
-    fontSize: windowWidth * 0.013,
-  },
-  topcontentContainer: {
-    flex: 0.2,
-    justifyContent: 'center',
+  text1: {
+    borderBottomColor: '#000000',
     borderBottomWidth: 1,
-  },
-  animalName: {
+    width: '100%',
     fontSize: windowWidth * 0.028,
   },
-  middlecontentContainer: {flex: 0.6, borderBottomWidth: 1},
-  middlecontentContainerView: {
-    width: '95%',
-    alignSelf: 'center',
-  },
-  animalContent: {
+  text2: {
+    width: '100%',
     fontSize: windowWidth * 0.02,
   },
+  btnArea: {
+    justifyContent: 'center',
+    width: '90%',
+    marginBottom: windowWidth * 0.01,
+  },
+  uploadButton: {
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    backgroundColor: '#C68AEB',
+    marginRight: windowWidth * 0.045,
+    width: windowWidth * 0.15,
+    height: windowWidth * 0.04,
+    borderRadius: windowWidth * 0.01,
+  },
+  uploadText: {
+    textAlign: 'center',
+    fontSize: windowWidth * 0.018,
+  },
+  middlecontentContainer: {
+    flex: 4,
+    borderBottomWidth: 1,
+  },
   bottomcontentContainer: {
-    flex: 0.2,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderTopWidth: 1,
+    paddingTop: windowWidth * 0.01,
   },
   fileSelectView: {
     borderRadius: windowWidth * 0.06 * 0.1,
@@ -261,18 +299,8 @@ const styles = StyleSheet.create({
     paddingLeft: windowWidth * 0.003,
     color: 'black',
   },
-  uploadButton: {
-    justifyContent: 'center',
-    alignSelf: 'flex-end',
-    backgroundColor: '#C68AEB',
-    marginRight: windowWidth * 0.045,
-    marginTop: windowWidth * 0.02,
-    width: windowWidth * 0.15,
-    height: windowWidth * 0.04,
-    borderRadius: windowWidth * 0.01,
-  },
-  uploadText: {
-    textAlign: 'center',
-    fontSize: windowWidth * 0.018,
+  originPart: {
+    height: '100%',
+    width: '40%',
   },
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,68 +9,32 @@ import {
   Image,
 } from 'react-native';
 
+// Import myAnimal from your API file
+import {myAnimal} from '../../../../apis/mypage/mypageApi';
+
 type MyAnimalComponentsProps = {
   selectedSubComponent: (componentName: string) => void;
 };
 
 const windowWidth = Dimensions.get('window').width;
 
-const childs = [
-  {
-    id: 0,
-    source: require('../../../../assets/profile/bear.png'),
-  },
-  {
-    id: 1,
-    source: require('../../../../assets/profile/cat.png'),
-  },
-  {
-    id: 2,
-    source: require('../../../../assets/profile/deer.png'),
-  },
-  {
-    id: 3,
-    source: require('../../../../assets/profile/dinosaur.png'),
-  },
-  {
-    id: 4,
-    source: require('../../../../assets/profile/dog.png'),
-  },
-  {
-    id: 5,
-    source: require('../../../../assets/profile/frog.png'),
-  },
-  {
-    id: 6,
-    source: require('../../../../assets/profile/giraffe.png'),
-  },
-  {
-    id: 7,
-    source: require('../../../../assets/profile/monkey.png'),
-  },
-  {
-    id: 8,
-    source: require('../../../../assets/profile/panda.png'),
-  },
-  {
-    id: 9,
-    source: require('../../../../assets/profile/penguin.png'),
-  },
-  {
-    id: 10,
-    source: require('../../../../assets/profile/rabbit.png'),
-  },
-  {
-    id: 11,
-    source: require('../../../../assets/profile/tiger.png'),
-  },
-  {
-    id: 12,
-    source: require('../../../../assets/profile/whale.png'),
-  },
-];
-
 const MyAnimalComponents: React.FC<MyAnimalComponentsProps> = ({}) => {
+  const [childs, setChilds] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await myAnimal();
+        setChilds(data);
+        console.log(data);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <View style={styles.picList}>
       <FlatList
@@ -82,7 +46,7 @@ const MyAnimalComponents: React.FC<MyAnimalComponentsProps> = ({}) => {
                 <Image
                   style={styles.pic}
                   resizeMode="contain"
-                  source={item.source}
+                  source={{uri: item.urlGif}}
                 />
               </TouchableOpacity>
               <Text style={styles.picname}>{item.id}</Text>
@@ -100,6 +64,7 @@ const styles = StyleSheet.create({
   picList: {
     marginLeft: windowWidth * 0.03,
     marginTop: windowWidth * 0.02,
+    height: windowWidth * 0.3,
   },
   backPlate: {
     backgroundColor: '#8C80E2',
@@ -115,4 +80,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
 export default MyAnimalComponents;

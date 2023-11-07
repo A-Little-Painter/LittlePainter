@@ -41,7 +41,7 @@ export default function UploadPicture3Screen({
           <TouchableOpacity
             style={styles.button1}
             onPress={() => {
-              navigation.goBack();
+              navigation.navigate('UploadPicture5Screen');
             }}>
             <Text style={styles.buttontext}>네</Text>
           </TouchableOpacity>

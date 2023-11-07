@@ -97,3 +97,82 @@ export const selectKids = async param => {
     return response;
   }
 };
+
+export const myAnimal = async () => {
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(
+      `${BASE_URL}/draws/child_work/my_animals`,
+      {headers},
+    );
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.log('fall');
+    console.log(error);
+    const response = error.response;
+    return response;
+  }
+};
+
+export const myFairy = async () => {
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(`${BASE_URL}/draws/child_work/my_tales`, {
+      headers,
+    });
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.log('fall');
+    console.log(error);
+    const response = error.response;
+    return response;
+  }
+};
+
+export const myUpload = async () => {
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(
+      `${BASE_URL}/draws/child_work/my_uploads`,
+      {headers},
+    );
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.log('fall');
+    console.log(error);
+    const response = error.response;
+    return response;
+  }
+};
+
+export const ttsTogle = async () => {
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.patch(`${BASE_URL}/user/sound`, null, {
+      headers,
+    });
+    const data = response.data;
+    console.log('good');
+    return data;
+  } catch (error) {
+    console.log('fall');
+    console.log(error);
+    const response = error.response;
+    return response;
+  }
+};

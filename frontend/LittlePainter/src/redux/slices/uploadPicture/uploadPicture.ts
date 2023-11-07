@@ -8,9 +8,11 @@ interface CounterState {
   picturename: string;
   picturetype: string;
   animal_type: string;
+  animal_type_num: number;
   border_image: string;
   trace_image: string;
   moving: boolean;
+  destination: string;
 }
 
 const initialState: CounterState = {
@@ -20,9 +22,11 @@ const initialState: CounterState = {
   picturename: '',
   picturetype: '',
   animal_type: '',
+  animal_type_num: 11,
   border_image: '',
   trace_image: '',
   moving: false,
+  destination: '',
 };
 
 export const uploadPictureSlice = createSlice({
@@ -59,10 +63,17 @@ export const uploadPictureSlice = createSlice({
       state.trace_image = action.payload.trace_image;
       state.moving = action.payload.moving;
     },
+    update3: (state, action: PayloadAction<number>) => {
+      state.animal_type_num = action.payload;
+    },
+    destinationUpdate: (state, action: PayloadAction<string>) => {
+      state.destination = action.payload;
+    },
   },
 });
 
-export const {update, update2} = uploadPictureSlice.actions;
+export const {update, update2, update3, destinationUpdate} =
+  uploadPictureSlice.actions;
 export const title = (state: RootState) => state.uploadPicture.title;
 export const detail = (state: RootState) => state.uploadPicture.detail;
 export const pictureaddr = (state: RootState) =>
@@ -71,4 +82,6 @@ export const picturename = (state: RootState) =>
   state.uploadPicture.picturename;
 export const picturetpye = (state: RootState) =>
   state.uploadPicture.picturetype;
+export const animal_type_num = (state: RootState) =>
+  state.uploadPicture.animal_type_num;
 export default uploadPictureSlice.reducer;

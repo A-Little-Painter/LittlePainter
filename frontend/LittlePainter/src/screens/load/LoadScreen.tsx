@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
+import {useAppSelector} from '../../redux/hooks';
 
 type LoadScreenProp = StackScreenProps<RootStackParams, 'LoadScreen'>;
 
@@ -18,6 +19,8 @@ const windowHeight = Dimensions.get('window').height;
 export default function LoadScreen({navigation}: LoadScreenProp) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const fadeInAnimation = useMemo(() => new Animated.Value(0), []);
+  const isLogin = useAppSelector(state => state.user.isLogin);
+  const selectName = useAppSelector(state => state.user.selectName);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -63,6 +66,7 @@ export default function LoadScreen({navigation}: LoadScreenProp) {
         useNativeDriver: true,
       }).start(() => {
         setCurrentImageIndex(nextImageIndex);
+        console.log(nextImageIndex);
 
         // 페이드 인 애니메이션 적용
         Animated.timing(fadeInAnimation, {
@@ -71,7 +75,7 @@ export default function LoadScreen({navigation}: LoadScreenProp) {
           useNativeDriver: true,
         }).start();
       });
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(imageChangeInterval);
   }, [currentImageIndex, dataList.length, fadeInAnimation]);
@@ -96,7 +100,11 @@ export default function LoadScreen({navigation}: LoadScreenProp) {
                 },
               ]}
             />
-            <Text style={styles.loadtext}>잠시만 기다려 주세요.</Text>
+            {isLogin ? (
+              <Text style={styles.loadtext}>{selectName} 잠시만 기다려줘</Text>
+            ) : (
+              <Text style={styles.loadtext}>잠시만 기다려 주세요.</Text>
+            )}
           </View>
         </View>
         {/* 하단 */}
@@ -137,5 +145,7 @@ const styles = StyleSheet.create({
   loadtext: {
     color: '#000000A0',
     fontSize: windowHeight * 0.05,
+    fontFamily: 'BMHANNA_11yrs_ttf',
+    marginTop: windowHeight * 0.01,
   },
 });

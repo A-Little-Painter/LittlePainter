@@ -10,6 +10,8 @@ import {
   ImageBackground,
   BackHandler,
   ToastAndroid,
+  Pressable,
+  Modal,
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
@@ -20,10 +22,11 @@ import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 type MainScreenProps = StackScreenProps<RootStackParams, 'MainScreen'>;
 type ismuted = boolean;
 const windowWidth = Dimensions.get('window').width;
-// const windowHeight = Dimensions.get('window').height;
+const windowHeight = Dimensions.get('window').height;
 
 export default function MainScreen({navigation}: MainScreenProps) {
   const [ismuted, setIsmuted] = useState<ismuted>(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   const isLogin = useAppSelector(state => state.user.isLogin);
   const selectName = useAppSelector(state => state.user.selectName);
@@ -64,10 +67,20 @@ export default function MainScreen({navigation}: MainScreenProps) {
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
+  const goSearch = () => {
+    setModalVisible(!modalVisible);
+    navigation.navigate('UploadPicture0Screen');
+  };
+
+  const goUpload = () => {
+    setModalVisible(!modalVisible);
+    navigation.navigate('UploadPicture1Screen');
+  };
+
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
-        source={require('../../assets/bgImage/mainhomeBg.png')}
+        source={require('../../assets/bgImage/altBg.png')}
         resizeMode="cover"
         style={styles.backgroundImage}>
         <View style={styles.subContainer}>
@@ -124,7 +137,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   source={require('../../assets/images/user.png')}
                 />
               )}
-              <Text style={styles.loginText}> {loginTF} </Text>
+              <Text style={isLogin ? styles.mypageText : styles.loginText}>
+                {' '}
+                {loginTF}{' '}
+              </Text>
             </TouchableOpacity>
           </View>
           {/* 중단 */}
@@ -172,7 +188,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <View style={styles.cardFrame2}>
                   <Image
                     style={styles.cardImage}
-                    source={require('../../assets/images/littlePigs.png')}
+                    source={require('../../assets/images/piggy.png')}
                   />
                 </View>
                 <TouchableOpacity style={styles.cardFrame3}>
@@ -199,7 +215,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <View style={styles.cardFrame2}>
                   <Image
                     style={styles.cardImage}
-                    source={require('../../assets/images/rabbitPicture.png')}
+                    source={require('../../assets/images/bunny.png')}
                   />
                 </View>
                 <TouchableOpacity style={styles.cardFrame3}>
@@ -217,7 +233,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
               <TouchableOpacity
                 style={[styles.cardFrame, {backgroundColor: '#8C80E2'}]}
                 onPress={() => {
-                  navigation.navigate('UploadPicture1Screen');
+                  setModalVisible(true);
                 }}>
                 <View style={styles.cardFrame1}>
                   <Text style={styles.cardText1}>내 동물 사진</Text>
@@ -240,6 +256,40 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   </View>
                 </TouchableOpacity>
               </TouchableOpacity>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+                }}>
+                <Pressable
+                  style={styles.centeredView}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <View style={styles.modalView}>
+                    <View style={styles.Mtexts}>
+                      <Text style={styles.modaltext}>
+                        동물사진을 검색하거나
+                      </Text>
+                      <Text style={styles.modaltext}>
+                        내 사진을 선택할 수 있어요.
+                      </Text>
+                    </View>
+                    <View style={styles.modalbtns}>
+                      <Pressable
+                        style={[styles.Mbutton]}
+                        onPress={() => goSearch()}>
+                        <Text style={styles.Mbuttontext}>동물 검색</Text>
+                      </Pressable>
+                      <Pressable
+                        style={[styles.Mbutton]}
+                        onPress={() => goUpload()}>
+                        <Text style={styles.Mbuttontext}>내 사진 등록</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                </Pressable>
+              </Modal>
             </ScrollView>
           </View>
           {/* 하단 */}
@@ -283,6 +333,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   topRightView: {
+    marginTop: windowWidth * 0.01,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -313,7 +364,8 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: windowWidth * 0.3 * 0.7,
-    height: windowWidth * 0.3 * 0.7,
+    height: windowWidth * 0.3 * 0.6,
+    borderRadius: windowHeight * 0.02,
   },
   cardText: {
     fontSize: windowWidth * 0.035,
@@ -335,6 +387,15 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.015,
     color: '#7D7676',
     marginLeft: windowWidth * 0.005,
+    fontFamily: 'BMHANNA_11yrs_ttf',
+    marginTop: windowHeight * 0.01,
+  },
+  mypageText: {
+    fontSize: windowWidth * 0.015,
+    color: '#7D7676',
+    marginRight: windowWidth * 0.021,
+    fontFamily: 'BMHANNA_11yrs_ttf',
+    marginTop: windowHeight * 0.01,
   },
   cardFrame: {
     width: windowWidth * 0.28,
@@ -386,5 +447,45 @@ const styles = StyleSheet.create({
   },
   mainOptionButton: {
     textAlign: 'right',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: windowWidth * 0.137 * 0.1,
+    padding: windowHeight * 0.04,
+    paddingBottom: windowHeight * 0.01,
+    alignItems: 'center',
+    elevation: 5,
+    height: windowHeight * 0.4,
+  },
+  Mtexts: {
+    alignItems: 'center',
+    paddingTop: windowWidth * 0.02,
+  },
+  modaltext: {
+    fontSize: windowWidth * 0.02,
+  },
+  modalbtns: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '40%',
+    marginTop: windowHeight * 0.05,
+  },
+  Mbutton: {
+    backgroundColor: '#C68AEB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: windowWidth * 0.15,
+    height: windowWidth * 0.05,
+    borderRadius: windowWidth * 0.005,
+  },
+  Mbuttontext: {
+    fontSize: windowWidth * 0.02,
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
 });
