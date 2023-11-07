@@ -83,14 +83,16 @@ def detect_url():
     if response.status_code != 200:
         return jsonify({"error": "Failed to download image"}), 500
 
+    # image_data = BytesIO(response.content)
+
     file_extension = os.path.splitext(image_url)[1]
     unique_filename_base = uuid.uuid4().hex
     temp_filename = f"{unique_filename_base}{file_extension}"
     temp_local_file = os.path.join(UPLOAD_FOLDER, temp_filename)
-    response.save(temp_local_file)
-
-    # with open(temp_local_file, 'wb') as f:
-    #     f.write(response.content)
+    # file.save(temp_local_file)
+    print(temp_filename)
+    with open(temp_local_file, 'wb') as f:
+        f.write(response.content)
 
     try:
 

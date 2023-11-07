@@ -251,7 +251,9 @@ def process_image(img_nparray):
 
     # For border only image
     border_img = np.ones_like(output_cv) * 255
-    cv2.drawContours(border_img, contours, -1, (0, 0, 0), 10)  # Here the thickness is set to 25
+
+    thickness = int(max(output_cv.shape) * 0.01)
+    cv2.drawContours(border_img, contours, -1, (0, 0, 0), thickness)  # Here the thickness is set to 25
     border_only = Image.fromarray(border_img)
 
     return rembg_with_border, border_only
