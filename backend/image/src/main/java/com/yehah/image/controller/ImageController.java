@@ -34,7 +34,7 @@ public class ImageController {
 		return imageService.addChildWork(userId.toString(), category, imageFile, gifUrl);
 	}
 
-	@Operation(summary = "S3- gif 파일 임시 저장하기", description = "(ALL) aws s3에 gif파일을 임시로 저장한다.")
+	@Operation(summary = "S3- gif 파일 임시 저장하기", description = "(ALL) aws s3에 gif 파일을 임시로 저장한다.")
 	@PostMapping(value = "/temp")
 	public Mono<String> uploadTempGif(@RequestPart(value="gifFile") MultipartFile gifFile) throws IOException {
 		log.info("uploadMyPage() : gifFile = {}", gifFile.getOriginalFilename());
