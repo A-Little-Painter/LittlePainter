@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yehah.draw.domain.friends_animal.dto.response.FriendsAnimalListResDto;
 import com.yehah.draw.domain.tale.dto.response.TaleListResDto;
 import com.yehah.draw.domain.tale.service.TaleService;
 

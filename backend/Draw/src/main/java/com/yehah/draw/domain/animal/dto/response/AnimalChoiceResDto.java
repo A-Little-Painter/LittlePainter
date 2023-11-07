@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AnimalDetailResDto {
+public class AnimalChoiceResDto {
     private String detail;
     private String urlTrace;
 
     @Builder
-    public AnimalDetailResDto(String detail, String urlTrace) {
+    public AnimalChoiceResDto(String detail, String urlTrace) {
         this.detail = detail;
         this.urlTrace = urlTrace;
     }

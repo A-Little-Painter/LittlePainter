@@ -27,12 +27,13 @@ public class ChildWork {
     @Column(nullable = false)
     private Long workId; // 작업ID(동물, 내가 그린 동물, 동화 ID)
 
-    @Column(length = 200, nullable = false)
+    @Column(name = "url_work", length = 200, nullable = false)
     private String urlWork; // 작업물URL
 
-    @Column(nullable = false)
+    @Column(name = "url_gif", length = 200) //todo: false로 바꿔야햄
     private String urlGif; // 작업물GIF
 
-    @Column(nullable = false)
+    @Column(name = "created_date", nullable = false)
+
     private LocalDateTime createdDate; // 생성한 날짜
 }
