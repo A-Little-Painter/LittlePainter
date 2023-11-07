@@ -206,7 +206,7 @@ def run(
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
 
-    rembg_with_border, border_only = process_image(im0)
+    rembg_with_border, border_only = process_image(im0s)
 
 
     rembg_with_border_np = np.array(rembg_with_border)
@@ -251,7 +251,7 @@ def process_image(img_nparray):
 
     # For border only image
     border_img = np.ones_like(output_cv) * 255
-    cv2.drawContours(border_img, contours, -1, (0, 0, 0), 25)  # Here the thickness is set to 25
+    cv2.drawContours(border_img, contours, -1, (0, 0, 0), 20)  # Here the thickness is set to 25
     border_only = Image.fromarray(border_img)
 
     return rembg_with_border, border_only
