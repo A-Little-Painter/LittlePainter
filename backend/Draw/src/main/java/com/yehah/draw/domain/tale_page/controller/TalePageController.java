@@ -24,16 +24,7 @@ public class TalePageController {
 
 	private final TalePageService talePageService;
 
-
-	@Operation(summary = "동화 페이지별 애니메이션 얻기", description = "친구의 동물 전체 목록을 페이징 처리하여 리턴한다.")
-	@PostMapping("/{taleId}/{pageNum}")
-	public ResponseEntity<?> getTalePage(@PathVariable(name = "taleId") Long taleId, @PathVariable(name = "pageNum") Long pageNum){
-		log.debug("getFriendsAnimals() : taleId = {}, pageNum = {}", taleId, pageNum);
-
-		return ResponseEntity.ok(null);
-	}
-
-	@Operation(summary = "동화의 전체 페이지를 조회", description = "동화 그리기 시작 시, 페이지별 모든 정보를 반환한다.")
+	@Operation(summary = "동화의 전체 페이지를 조회", description = "(ALL) 동화 그리기 시작 시, 페이지별 모든 정보를 반환한다.")
 	@GetMapping("/{taleId}")
 	public ResponseEntity<List<TalePageResDto>> getTalePages(@PathVariable(name = "taleId") Long taleId){
 		log.debug("getTalePages() : taleId = {}, ", taleId);

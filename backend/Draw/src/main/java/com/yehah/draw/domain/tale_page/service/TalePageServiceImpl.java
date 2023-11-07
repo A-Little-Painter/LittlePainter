@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class TalePageServiceImpl implements TalePageService {
+
 	private final TalePageRepository talePageRepository;
 
 	public List<TalePageResDto> getTalePages(Long taleId){
