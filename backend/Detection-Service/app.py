@@ -87,10 +87,10 @@ def detect_url():
     unique_filename_base = uuid.uuid4().hex
     temp_filename = f"{unique_filename_base}{file_extension}"
     temp_local_file = os.path.join(UPLOAD_FOLDER, temp_filename)
+    response.save(temp_local_file)
 
-
-    with open(temp_local_file, 'wb') as f:
-        f.write(response.content)
+    # with open(temp_local_file, 'wb') as f:
+    #     f.write(response.content)
 
     try:
 
