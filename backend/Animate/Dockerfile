@@ -26,9 +26,8 @@ RUN pip install -e AnimatedDrawings/.
 # Nontype오류 해결용
 RUN sudo apt-get install -y libosmesa6-dev freeglut3-dev
 RUN sudo apt-get install -y libglfw3-dev libgles2-mesa-dev
-RUN sudo apt-get install libosmesa6
 ENV PYOPENGL_PLATFORM osmesa
-#RUN conda install -c conda-forge libstdcxx-ng
+RUN conda install -c conda-forge libstdcxx-ng
 
 RUN python3 -m pip install PyOpenGL_accelerate
 RUN sudo apt-get install ffmpeg libsm6 libxext6 -y
