@@ -8,6 +8,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
@@ -43,6 +45,25 @@ public class S3Util {
 		convertFile.delete();
 
 		return uploadImageUrl;
+	}
+
+	public String update(String oldPath, String newPath) {
+		try {
+			oldPath = URLDecoder.decode(oldPath, "UTF-8");
+			newPath = URLDecoder.decode(newPath, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		moveS3(oldPath, newPath);
+		delete(oldPath);
+
+		return amazonS3Client.getUrl(bucket, newPath).toString();
+	}
+
+	// S3 파일 이동
+	public void moveS3(String oldPath, String newPath) {
+		amazonS3Client.copyObject(bucket, oldPath, bucket, newPath);
 	}
 
 	// S3 파일 삭제

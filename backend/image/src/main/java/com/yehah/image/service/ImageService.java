@@ -3,12 +3,14 @@ package com.yehah.image.service;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.yehah.image.dto.response.SaveImageResDto;
 import com.yehah.image.dto.response.SaveMyAnimalResDto;
+import com.yehah.image.dto.response.UploadS3MypageResDto;
 import com.yehah.image.exception.CustomException;
 import com.yehah.image.exception.ExceptionEnum;
 import com.yehah.image.s3.S3Util;
@@ -65,6 +67,51 @@ public class ImageService {
 			.build();
 
 		return Mono.just(result);
+	}
+
+	public Mono<UploadS3MypageResDto> addChildWork(String userId, String category, MultipartFile imageFile, String tempGifUrl) throws IOException {
+		if(imageFile.isEmpty()){
+			throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
+		} else if(category.isBlank()){
+			throw new CustomException(ExceptionEnum.CATEGORY_EMPTY);
+		}
+
+		Date currentDate = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+		String formattedDate = userId + "-" + dateFormat.format(currentDate);
+
+		try {
+			WorkCategory workCategory = WorkCategory.valueOf(category);
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(ExceptionEnum.CATEGORY_NOT_FOUND);
+		}
+		String dirName = "child-work/" + category +"/" + formattedDate;
+
+		// 이미지 S3 저장
+		String imageUrl = s3Util.upload(imageFile, dirName + "img");
+		String gifUrl = (tempGifUrl == null) ? null : s3Util.update(tempGifUrl.substring(54), dirName + "gif.gif");
+
+		UploadS3MypageResDto result =  UploadS3MypageResDto.builder()
+			.imageFileUrl(imageUrl)
+			.gifFileUrl(gifUrl)
+			.build();
+
+		return Mono.just(result);
+	}
+
+	public Mono<String> uploadTempGif(MultipartFile gifFile) throws IOException {
+		if(gifFile.isEmpty()){
+			throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
+		}
+
+		// Date currentDate = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+		String formattedDate = dateFormat.format(new Date()) + "/" + UUID.randomUUID();
+
+		// gif S3 저장
+		String tempGifUrl = s3Util.upload(gifFile, "temp/" + formattedDate);
+
+		return Mono.just(tempGifUrl);
 	}
 
 }
