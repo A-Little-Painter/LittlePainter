@@ -110,6 +110,8 @@ public class AnimalController {
     }
 
 
+    // /child-work/{category}로 변경함
+    /*
     @Operation(summary = "이미지를 S3에 저장한다.", description = "USER")
     @PostMapping
     public ResponseEntity<Void> saveUserImage(@ModelAttribute AnimalUploadReqDto animalUploadReqDto) throws IOException {
@@ -129,6 +131,6 @@ public class AnimalController {
             throw new SaveImageException("이미지를 S3에 저장할 수 없습니다.");
         }
     }
-
+    */
 
 }

@@ -19,4 +19,6 @@ public class AddFriendsAnimalReqDto {
 	private String title;
 	private String detail;
 	private Boolean movable;
+	private String originalUrl;
+	private String traceUrl;
 }

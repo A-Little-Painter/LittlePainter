@@ -21,7 +21,7 @@ public class TaleServiceImpl implements TaleService{
 
 	@Transactional(readOnly = true)
 	public Slice<TaleListResDto> getTaleList(int page){
-		PageRequest pageRequest = PageRequest.of(page, 30, Sort.by(Sort.Direction.DESC, "id"));
+		PageRequest pageRequest = PageRequest.of(page, 24, Sort.by(Sort.Direction.DESC, "id"));
 		return taleRepository.findSliceBy(pageRequest);
 	}
 

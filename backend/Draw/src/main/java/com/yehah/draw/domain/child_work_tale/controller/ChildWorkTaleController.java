@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,10 @@ public class ChildWorkTaleController {
     //내 동화 조회
     @GetMapping("/my_tales")
     public ResponseEntity<?> getMyTales(){
+        return ResponseEntity.ok(childWorkTaleService.getMyTales());
+    }
+    @PostMapping("")
+    public ResponseEntity<?> saveChildWorkTale(){
         return ResponseEntity.ok(childWorkTaleService.getMyTales());
     }
 

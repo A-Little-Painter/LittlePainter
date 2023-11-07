@@ -26,7 +26,7 @@ import java.util.List;
 public class ChildWorkController {
     private final ChildWorkService childWorkService;
 
-	@Operation(summary = "그림, gif 저장하기", description = "내가 그린 그림을 마이페이지에 저장한다.")
+	@Operation(summary = "그림, gif 저장하기", description = "(USER) 내가 그린 그림을 마이페이지에 저장한다.")
 	@PostMapping("/{category}")
 	public ResponseEntity<?> saveChildWork(@PathVariable(name = "category") String category, @RequestPart(name = "imageFile")MultipartFile imageFile, @RequestPart(name = "gifFile")MultipartFile gifFile, @RequestPart(name = "workId") Long workId) {
 		log.info("saveChildWork() : category = {}, workId = {}", category, workId);

@@ -25,7 +25,7 @@ public class TalePage {
 	@Column(name = "tale_id", nullable = false)
 	private Long taleId;
 
-	@Column(name = "page_number")
+	@Column(name = "page_number", nullable = false)
 	private int pageNumber;
 
 	@Column(name = "url_background", length = 200, nullable = false)
@@ -34,9 +34,18 @@ public class TalePage {
 	@Column(name = "url_sound", length = 200, nullable = false)
 	private String urlSound;
 
-	@Column(columnDefinition = "TEXT", nullable = false)
-	private String narration;
+	@Column(name = "narration_before", columnDefinition = "TEXT", nullable = false)
+	private String narrationBefore;
 
-	@Column(name = "draw_needed", columnDefinition = "TINYINT(1)", nullable = false)
-	private Boolean drawNeeded;
+	@Column(name = "narration_after", columnDefinition = "TEXT")
+	private String narrationAfter;
+
+	@Column(name = "request_character", length = 20)
+	private String requestCharacter;
+
+	@Column(name = "url_original", length = 200)
+	private String urlOriginal;
+
+	@Column(name = "url_trace", length = 200)
+	private String urlTrace;
 }

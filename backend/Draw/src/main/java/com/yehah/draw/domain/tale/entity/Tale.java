@@ -31,6 +31,6 @@ public class Tale {
 	@Column(name = "max_page", nullable = false)
 	private int maxPage;
 
-	@Column(name = "url_cover", columnDefinition = "VARCHAR(200)", nullable = false)
+	@Column(name = "url_cover", length = 200, nullable = false)
 	private String urlCover;
 }

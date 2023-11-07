@@ -4,10 +4,8 @@ import com.yehah.draw.domain.animal.dto.request.AnimalSimilarReqDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalChoiceResDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalSimilarResDto;
 import com.yehah.draw.domain.animal.entity.SimilarState;
-import com.yehah.draw.domain.animal.exception.SaveImageException;
 import com.yehah.draw.domain.animal.exception.SimilarityCheckException;
 import com.yehah.draw.domain.child_work.service.ChildWorkService;
-import com.yehah.draw.domain.friends_animal.dto.request.FriendsAnimalUploadReqDto;
 import com.yehah.draw.global.common.AnimalType;
 import com.yehah.draw.global.communication.CommMethod;
 import com.yehah.draw.global.stomp.ResponseState;
@@ -16,12 +14,10 @@ import com.yehah.draw.global.stomp.dto.MessageResponse;
 import com.yehah.draw.global.stomp.dto.SimilarMessageResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.yehah.draw.domain.friends_animal.dto.request.AddFriendsAnimalReqDto;
 import com.yehah.draw.domain.friends_animal.dto.response.FriendsAnimalListResDto;
@@ -59,12 +55,11 @@ public class FriendsAnimalController {
 		return ResponseEntity.ok(friendsAnimalService.getFriendsAnimalList(animalTypeId, page));
 	}
 
-	@Operation(summary = "내 동물 사진 업로드", description = "(최종버전)나의 동물 사진을 업로드한다.")
-	@PostMapping(name = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Long> addMyAnimalImage(@RequestPart(value="originalImage") MultipartFile originalImage,
-		@RequestPart(value="traceImage") MultipartFile traceImage, @RequestPart(value = "addFriendsAnimalReqDto") AddFriendsAnimalReqDto addFriendsAnimalReqDto){
+	@Operation(summary = "내 동물 사진 업로드", description = "(USER) 나의 동물 사진을 업로드한다.")
+	@PostMapping("")
+	public ResponseEntity<Long> addMyAnimalImage(@RequestBody AddFriendsAnimalReqDto addFriendsAnimalReqDto){
 		log.debug("addMyAnimalImage() : ");
-		return ResponseEntity.ok(friendsAnimalCommService.addMyAnimalImage(originalImage, traceImage, addFriendsAnimalReqDto));
+		return ResponseEntity.ok(friendsAnimalCommService.addMyAnimalImage(addFriendsAnimalReqDto));
 	}
 
 
@@ -124,7 +119,9 @@ public class FriendsAnimalController {
 		}
 	}
 
+	// /child-work/{category}로 변경함
 	// TODO : 내가 그린 이미지 S3에 저장하기
+	/*
 	@Operation(summary = "이미지를 S3에 저장한다.", description = "USER")
 	@PostMapping
 	public ResponseEntity<Void> saveUserImage(@ModelAttribute FriendsAnimalUploadReqDto friendsAnimalUploadReqDto) throws IOException {
@@ -144,4 +141,6 @@ public class FriendsAnimalController {
 			throw new SaveImageException("이미지를 S3에 저장할 수 없습니다.");
 		}
 	}
+
+	 */
 }

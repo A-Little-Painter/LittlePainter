@@ -10,27 +10,22 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.yehah.draw.domain.animal_type.entity.AnimalType;
 import com.yehah.draw.domain.animal_type.repository.AnimalTypeRepository;
 import com.yehah.draw.domain.friends_animal.dto.request.AddFriendsAnimalReqDto;
-import com.yehah.draw.domain.friends_animal.dto.response.AddFriendsAnimalResDto;
 import com.yehah.draw.domain.friends_animal.entity.FriendsAnimal;
 import com.yehah.draw.domain.friends_animal.repository.FriendsAnimalRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FriendsAnimalCommServiceImpl implements FriendsAnimalCommService{
 
-	private final WebClient imageWebClient;
 	private final AnimalTypeRepository animalTypeRepository;
 	private final FriendsAnimalRepository friendsAnimalRepository;
 
-	public Long addMyAnimalImage(MultipartFile originalImage, MultipartFile traceImage, AddFriendsAnimalReqDto addFriendsAnimalReqDto){
-		log.info("uploadImage() : originalImage = {}, traceImage = {}, userId = {}", originalImage.getOriginalFilename(), traceImage.getOriginalFilename());
-		// TODO : 예외처리, userId, userEmail
-
+	public Long addMyAnimalImage(AddFriendsAnimalReqDto addFriendsAnimalReqDto){
+		/*
 		MultipartBodyBuilder builder = new MultipartBodyBuilder();
 		builder.part("originalImage", originalImage.getResource());
 		builder.part("traceImage", traceImage.getResource());
@@ -50,20 +45,22 @@ public class FriendsAnimalCommServiceImpl implements FriendsAnimalCommService{
 				log.error("Failed to upload image: {}");
 			});
 
+		AddFriendsAnimalResDto response = result.block();
+		// image 서비스와 통신 마무리
+		*/
+
 		AnimalType animalType = animalTypeRepository.findById(addFriendsAnimalReqDto.getAnimalTypeId())
 			.orElseThrow(() -> new IllegalArgumentException("해당 동물 종류가 없습니다."));
 
-		AddFriendsAnimalResDto response = result.block();
-		// image 서비스와 통신 마무리
-
+		//todo: userEmail 꺼내기
 		FriendsAnimal friendsAnimal = FriendsAnimal.builder()
 			.animalType(animalType)
 			.userEmail("tempEmail")
 			.title(addFriendsAnimalReqDto.getTitle())
 			.detail(addFriendsAnimalReqDto.getDetail())
-			.urlOriginal(response.getOriginalUrl())
-			.urlTrace(response.getTraceUrl())
 			.movable(addFriendsAnimalReqDto.getMovable())
+			.urlOriginal(addFriendsAnimalReqDto.getOriginalUrl())
+			.urlTrace(addFriendsAnimalReqDto.getTraceUrl())
 			.build();
 
 		return friendsAnimalRepository.save(friendsAnimal).getId();
