@@ -20,13 +20,15 @@ public class ChildWorkCommServiceImpl implements ChildWorkCommService{
 
 	private final WebClient imageWebClient;
 
-	public Mono<UploadS3MypageResDto> postS3MyPage(String category, Long workId, MultipartFile imageFile, MultipartFile gifFile) {
-
+	public Mono<UploadS3MypageResDto> postS3MyPage(String category, Long childId, MultipartFile imageFile, String gifUrl) {
 		MultipartBodyBuilder builder = new MultipartBodyBuilder();
-		builder.part("userId", 1L);
+		builder.part("userId", childId);
 		builder.part("category", category);
 		builder.part("imageFile", imageFile.getResource());
-		builder.part("gifFile", gifFile.getResource());
+
+		if (gifUrl != null) {
+			builder.part("gifUrl", gifUrl);
+		}
 
 		return imageWebClient
 			.post()

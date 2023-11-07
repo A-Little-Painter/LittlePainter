@@ -9,4 +9,5 @@ public interface ChildWorkTaleService {
     public void saveChildWorkTale(Long taleId, Long pageId, String urlWork, String urlGif);
 
     public List<GetMyTalesResponseDTO> getMyTales();
+
 }
