@@ -10,7 +10,7 @@ public class AnimationControllerAdvice {
 
     // NOTE : 이미지를 GIF를 변환할 수 없습니다.
     @ExceptionHandler
-    public ResponseEntity<?> HandleAnimalAnimationException(AnimationChangeException e){
+    public ResponseEntity<?> HandleAnimationChangeException(AnimationChangeException e){
         return ResponseEntity.status(404).body(e.getMessage());
     }
 }

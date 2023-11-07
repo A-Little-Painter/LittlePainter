@@ -9,10 +9,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @NoArgsConstructor
 public class AnimationAnimalResDto {
-    private byte[] gifImage;
+    private String gifImageUrl;
 
     @Builder
-    public AnimationAnimalResDto(byte[] gifImage){
-        this.gifImage = gifImage;
+    public AnimationAnimalResDto(String gifImageUrl){
+        this.gifImageUrl = gifImageUrl;
     }
 }
