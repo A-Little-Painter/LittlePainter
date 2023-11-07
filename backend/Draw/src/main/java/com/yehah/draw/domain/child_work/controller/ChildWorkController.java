@@ -28,10 +28,10 @@ public class ChildWorkController {
 
 	@Operation(summary = "그림, gif 저장하기", description = "(USER) 내가 그린 그림을 마이페이지에 저장한다.")
 	@PostMapping("/{category}")
-	public ResponseEntity<?> saveChildWork(@PathVariable(name = "category") String category, @RequestPart(name = "imageFile")MultipartFile imageFile, @RequestPart(name = "gifFile")MultipartFile gifFile, @RequestPart(name = "workId") Long workId) {
-		log.info("saveChildWork() : category = {}, workId = {}", category, workId);
-		childWorkService.saveChildWorksComm(category, workId, imageFile, gifFile);
-		return ResponseEntity.status(201).body(null);
+	public ResponseEntity<Long> saveChildWork(@PathVariable(name = "category") String category, @RequestPart(name = "imageFile") MultipartFile imageFile,
+		@RequestPart(name = "gifUrl", required = false) String gifUrl, @RequestPart(name = "workId") Long workId) {
+		log.info("saveChildWork() : category = {}, workId = {}, gifUrl = {}", category, workId, gifUrl);
+		return ResponseEntity.status(201).body(childWorkService.saveChildWorksComm(category, workId, imageFile, gifUrl));
 	}
 
     //내 동물 조회

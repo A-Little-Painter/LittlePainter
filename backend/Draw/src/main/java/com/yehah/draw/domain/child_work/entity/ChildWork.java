@@ -25,12 +25,12 @@ public class ChildWork {
     private Long categoryId;
 
     @Column(nullable = false)
-    private Long workId; // 작업ID(동물, 내가 그린 동물, 동화 ID)
+    private Long workId; // 작업ID(동물, 내가 그린 동물 ID)
 
     @Column(name = "url_work", length = 200, nullable = false)
     private String urlWork; // 작업물URL
 
-    @Column(name = "url_gif", length = 200) //todo: false로 바꿔야햄
+    @Column(name = "url_gif", length = 200)
     private String urlGif; // 작업물GIF
 
     @Column(name = "created_date", nullable = false)
