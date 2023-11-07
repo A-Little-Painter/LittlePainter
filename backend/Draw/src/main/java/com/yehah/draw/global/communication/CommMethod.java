@@ -38,17 +38,17 @@ public class CommMethod {
 
 
     // NOTE : multipart/form-data로 유사도 비교하기
-    public byte[] postMultipartAnimateMethod(MultiValueMap<String, Object> bodyData, String url) throws IOException {
+    public MultipartFile postMultipartAnimateMethod(MultiValueMap<String, Object> bodyData, String url) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         HttpEntity<?> httpEntity = new HttpEntity<>(bodyData, headers);
 
-        ResponseEntity<byte[]> response = restTemplate.exchange(
+        ResponseEntity<MultipartFile> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
                 httpEntity,
-                byte[].class
+                MultipartFile.class
         );
 
 //        log.info("DATA :"+ response.getBody());
@@ -56,6 +56,7 @@ public class CommMethod {
 //        Resource resource = new ByteArrayResource(response.getBody().getBytes());
 //
 //        return resource;
+
 
         return response.getBody();
     }
