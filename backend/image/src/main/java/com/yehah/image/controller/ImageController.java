@@ -26,18 +26,10 @@ public class ImageController {
 
 	private final ImageService imageService;
 
-	@Operation(summary = "S3- 마이페이지에 그림 저장하기", description = "(USER) aws s3에 마이페이지에 저장할 그림을 저장한다.")
-	@PostMapping(value = "/childWork", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public Mono<UploadS3MypageResDto> addChildWork(@RequestPart(value="imageFile") MultipartFile imageFile, @RequestPart(value="gifUrl", required = false) String gifUrl,
-		@RequestPart(value="userId") Long userId, @RequestPart(value="category") String category) throws IOException {
-		log.info("uploadMyPage() : imageFile = {}, gifUrl = {}, category = {}, userId = {}", imageFile.getOriginalFilename(), gifUrl, category, userId);
-		return imageService.addChildWork(userId.toString(), category, imageFile, gifUrl);
-	}
-
 	@Operation(summary = "S3- gif 파일 임시 저장하기", description = "(ALL) aws s3에 gif 파일을 임시로 저장한다.")
 	@PostMapping(value = "/temp")
 	public Mono<String> uploadTempGif(@RequestPart(value="gifFile") MultipartFile gifFile) throws IOException {
-		log.info("uploadMyPage() : gifFile = {}", gifFile.getOriginalFilename());
+		log.info("uploadTempGif() : gifFile = {}", gifFile.getOriginalFilename());
 		return imageService.uploadTempGif(gifFile);
 	}
 
@@ -47,6 +39,14 @@ public class ImageController {
 		log.info("uploadImage() : originalImage = {}, traceImage = {}, userId = {}", originalImage.getOriginalFilename(), traceImage.getOriginalFilename(), userId);
 		Mono<SaveMyAnimalResDto> result = imageService.uploadMyAnimalImage(originalImage, traceImage, userId);
 		return result;
+	}
+
+	@Operation(summary = "S3- 마이페이지에 그림 저장하기", description = "(USER) aws s3에 마이페이지에 저장할 그림을 저장한다.")
+	@PostMapping(value = "/childWork", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public Mono<UploadS3MypageResDto> addChildWork(@RequestPart(value="imageFile") MultipartFile imageFile, @RequestPart(value="gifUrl", required = false) String gifUrl,
+		@RequestPart(value="userId") Long userId, @RequestPart(value="category") String category) throws IOException {
+		log.info("addChildWork() : imageFile = {}, gifUrl = {}, category = {}, userId = {}", imageFile.getOriginalFilename(), gifUrl, category, userId);
+		return imageService.addChildWork(userId.toString(), category, imageFile, gifUrl);
 	}
 
 	/*
