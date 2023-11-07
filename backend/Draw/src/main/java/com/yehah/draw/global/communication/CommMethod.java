@@ -11,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 
 @Slf4j
 @Configuration
@@ -37,27 +39,21 @@ public class CommMethod {
 
 
 
-    // NOTE : multipart/form-data로 유사도 비교하기
-    public MultipartFile postMultipartAnimateMethod(MultiValueMap<String, Object> bodyData, String url) throws IOException {
+    // NOTE : Animate-Service에서 gif파일 받아오기
+    public byte[] postMultipartAnimateMethod(MultiValueMap<String, Object> bodyData, String url) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         HttpEntity<?> httpEntity = new HttpEntity<>(bodyData, headers);
 
-        ResponseEntity<MultipartFile> response = restTemplate.exchange(
+        ResponseEntity<byte[]> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
                 httpEntity,
-                MultipartFile.class
+                byte[].class
         );
-
-//        log.info("DATA :"+ response.getBody());
-//
-//        Resource resource = new ByteArrayResource(response.getBody().getBytes());
-//
-//        return resource;
-
 
         return response.getBody();
     }
+
 }

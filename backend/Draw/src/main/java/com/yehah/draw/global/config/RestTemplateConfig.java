@@ -1,6 +1,7 @@
 package com.yehah.draw.global.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -8,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
     @Bean
     RestTemplate restTemplate() {
-        return new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        return restTemplate;
     }
 }

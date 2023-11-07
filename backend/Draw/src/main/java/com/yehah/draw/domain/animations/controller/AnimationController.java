@@ -7,7 +7,9 @@ import com.yehah.draw.global.communication.CommMethod;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 
 @Slf4j
@@ -27,6 +32,9 @@ public class AnimationController {
     @Value("${micro.path.animate}")
     private String animatePath;
 
+    @Value("${micro.path.image}")
+    private String imagePath;
+
     private final CommMethod commMethod;
 
     // NOTE : animals와 friendsAnimal 모두 받아온다.
@@ -36,16 +44,26 @@ public class AnimationController {
         bodyData.add("image", animationAnimalReqDto.getImage().getResource());
         bodyData.add("animalType", animationAnimalReqDto.getAnimalType());
 
-//        try{
-//            return ResponseEntity.ok().body(AnimationAnimalResDto.builder()
-//                    .gifImage(commMethod.postMultipartAnimateMethod(bodyData, animatePath)).build());
-//        }catch(Exception e){
-//            throw new AnimationChangeException("이미지를 GIF를 변환할 수 없습니다.");
-//        }
 
-        commMethod.postMultipartAnimateMethod(bodyData, animatePath);
+        try{
+            byte[] gifImage = commMethod.postMultipartAnimateMethod(bodyData, animatePath);
 
-        return null;
+            bodyData.clear();
+            bodyData.add("gifFile", new ByteArrayResource(gifImage){
+                @Override
+                public String getFilename() throws IllegalStateException {
+                    return "gifFile.gif";
+                }
+            });
+
+            String gifImageUrl = String.valueOf(commMethod.postMultipartMethod(bodyData, imagePath+"/comm/temp"));
+
+            return ResponseEntity.ok().body(AnimationAnimalResDto.builder()
+                    .gifImageUrl(gifImageUrl).build());
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new AnimationChangeException("이미지를 GIF로 변환할 수 없습니다.");
+        }
 
     }
 
