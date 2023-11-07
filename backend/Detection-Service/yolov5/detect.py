@@ -186,12 +186,16 @@ def run(
                     cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
                 cv2.imshow(str(p), im0)
                 cv2.waitKey(1)  # 1 millisecond
+
+
         # After processing all predictions, crop the largest section and save
         if max_area_box:
             cropped_img = im0[int(max_area_box[1]):int(max_area_box[3]),
                           int(max_area_box[0]):int(max_area_box[2])]
             # cv2.imwrite(str(save_dir / f"largest_{names[int(max_area_cls)]}.jpg"), cropped_img)
             # print(f"Largest detected section is: {names[int(max_area_cls)]}")
+        else:
+            cropped_img = None
 
         # Print time (inference-only)
         LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
@@ -212,8 +216,20 @@ def run(
     rembg_with_border_np = np.array(rembg_with_border)
     border_only_np = np.array(border_only)
 
-    # print(f"Largest detected section is: {names[int(max_area_cls)]}")
-    return rembg_with_border_np, border_only_np, names[int(max_area_cls)]
+    # 탐지 후 처리 결과를 정리합니다.
+    if max_area_cls is not None:
+        # 탐지된 객체가 있을 경우 클래스 이름을 가져옵니다.
+        detected_class_name = names[int(max_area_cls)]
+    else:
+        # 탐지된 객체가 없을 경우 에러 메시지를 설정합니다.
+        detected_class_name = "인식 못함"
+
+    # 처리 결과를 반환합니다.
+    return rembg_with_border_np, border_only_np, detected_class_name
+
+    # detected_class_name = "인식 못함" if max_area_cls is None else names[int(max_area_cls)]
+
+    # return rembg_with_border_np, border_only_np, detected_class_name
     # return result_images
 
 def process_image(img_nparray):

@@ -6,7 +6,7 @@ from yolov5 import detect
 import base64
 import boto3
 from werkzeug.utils import secure_filename
-import io
+from io import BytesIO
 from PIL import Image
 import shutil
 import requests
@@ -83,16 +83,27 @@ def detect_url():
     if response.status_code != 200:
         return jsonify({"error": "Failed to download image"}), 500
 
-    # image_data = BytesIO(response.content)
+    image_data = BytesIO(response.content)
+    unique_filename_base = uuid.uuid4().hex
+    with Image.open(image_data) as webp_image:
+        # .webp 이미지를 .jpg로 변환하여 저장
+        rgb_image = webp_image.convert('RGB')
+        rgb_image.save(unique_filename_base, 'JPEG')
 
-    file_extension = os.path.splitext(image_url)[1]
+    file_extension = '.jpg'
     unique_filename_base = uuid.uuid4().hex
     temp_filename = f"{unique_filename_base}{file_extension}"
     temp_local_file = os.path.join(UPLOAD_FOLDER, temp_filename)
-    # file.save(temp_local_file)
-    print(temp_filename)
-    with open(temp_local_file, 'wb') as f:
-        f.write(response.content)
+    rgb_image.save(temp_local_file)
+
+    # file_extension = os.path.splitext(image_url)[1]
+    #
+    # temp_filename = f"{unique_filename_base}{file_extension}"
+    # temp_local_file = os.path.join(UPLOAD_FOLDER, temp_filename)
+    # # file.save(temp_local_file)
+    # print(temp_filename)
+    # with open(temp_local_file, 'wb') as f:
+    #     f.write(response.content)
 
     try:
 
