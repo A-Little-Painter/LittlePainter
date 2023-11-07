@@ -26,4 +26,11 @@ public class ChildWorkTaleController {
         return ResponseEntity.ok(childWorkTaleService.getMyTales());
     }
 
+//    //내 동화 상세 조회
+    //tale 아이디를 가져와야하나? 흠
+//    @GetMapping("/my_tales/{taleId}")
+//    public ResponseEntity<?> getMyTaleDetail(@PathVariable Long taleId){
+//        return ResponseEntity.ok(childWorkTaleService.getMyTaleDetail(taleId));
+//    }
+
 }

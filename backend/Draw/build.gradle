@@ -89,7 +89,11 @@ dependencies {
 //
 //    // Google Custom Search Dependency
 //    implementation 'com.google.apis:google-api-services-customsearch:v1-rev20210301-1.31.0'
-    compileOnly group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
+//    compileOnly group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
+
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.16.2'
+
     compileOnly group: 'org.json', name: 'json', version: '20160810'
 
 

@@ -84,7 +84,7 @@ public class AnimalController {
                     .message("유사도 연결에 성공하셨습니다.")
                     .build();
 
-            if(value >= 0.4){
+            if(value >= 0.19){
                 // NOTE : STOMP 응답 전송하기
                 stompService.AnimalSuccessRes(stompUrl, SimilarState.END, similarMessageResponse);
                 return ResponseEntity.ok(AnimalSimilarResDto.builder()
