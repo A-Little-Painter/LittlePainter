@@ -4,7 +4,8 @@ EXPOSE 8700
 
 WORKDIR /app
 COPY . .
-RUN apt-get update & apt-get install -y wget
+RUN apt-get update
+RUN apt-get install -y wget
 
 # install miniconda3
 RUN mkdir -p ~/miniconda3
