@@ -12,12 +12,17 @@ RUN apt-get update && apt-get install -y wget \
   && rm -rf ~/miniconda3/miniconda.sh \
 #  && ~/miniconda3/bin/conda init bash \
 #  && ~/miniconda3/bin/conda init zsh \
-  && ~/miniconda3/bin/conda clean -tip \
-  && ln -s ~/miniconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
-  && echo ". ~/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc \
-  && conda create --name animated_drawings python=3.8.13 \
-  && echo "conda activate animated_drawings" >> ~/.bashrc \
-  && /bin/bash -c "source activate animated_drawings  \
+RUN ~/miniconda3/bin/conda clean -tip \
+
+RUN ln -s ~/miniconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
+RUN touch test1.txt
+RUN echo ". ~/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc \
+RUN touch test2.txt
+RUN conda create --name animated_drawings python=3.8.13 \
+RUN touch test3.txt
+RUN echo "conda activate animated_drawings" >> ~/.bashrc \
+RUN touch test4.txt
+RUN /bin/bash -c "source activate animated_drawings  \
     && conda install -c conda-forge libstdcxx-ng  \
     && pip install -e AnimatedDrawings/. \
     && python3 -m pip install PyOpenGL_accelerate \
