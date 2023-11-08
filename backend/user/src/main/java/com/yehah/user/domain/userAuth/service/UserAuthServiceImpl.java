@@ -88,7 +88,7 @@ public class UserAuthServiceImpl implements UserAuthService {
                     .build());
 
         }catch (Exception e) {
-            throw new DatabaseException("DB에 저장할 수 없습니다.");
+            throw new DatabaseException("DB 접근 불가능");
         }
 
         Long lastSelectedChildId = user.getLastSelectedChildId();

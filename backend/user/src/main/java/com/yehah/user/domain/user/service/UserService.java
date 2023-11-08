@@ -31,4 +31,6 @@ public interface UserService {
     public ResponseEntity<?> changeIcon(ChangeIconRequestDTO changeIconRequestDTO);
 
     public ResponseEntity<?> updateChild(ChangeChildRequestDTO changeChildRequestDTO);
+
+    public ResponseEntity<?> deleteUser();
 }
