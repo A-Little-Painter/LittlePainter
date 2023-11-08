@@ -48,7 +48,7 @@ class TodoSimple(Resource):
         logging.debug("shell 명령어 호출")
         # cmd = (f"python AnimatedDrawings/examples/image_to_animation.py "
         #        f"AnimatedDrawings/examples/result/rabbit/image.png  {output_filename}")
-        cmd = "python --version"
+        cmd = "conda list"
 
         # 셸 명령 실행
         try:
