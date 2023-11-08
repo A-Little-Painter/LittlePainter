@@ -9,24 +9,25 @@ RUN apt-get update && apt-get install -y wget \
   && mkdir -p ~/miniconda3 \
   && wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh \
   && bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3 \
-  && rm -rf ~/miniconda3/miniconda.sh \
+  && rm -rf ~/miniconda3/miniconda.sh
 #  && ~/miniconda3/bin/conda init bash \
 #  && ~/miniconda3/bin/conda init zsh \
-RUN ~/miniconda3/bin/conda clean -i \
 
-RUN ln -s ~/miniconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
+RUN ~/miniconda3/bin/conda clean -tipsy
+
+RUN ln -s ~/miniconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh
 RUN touch test1.txt
-RUN echo ". ~/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc \
+RUN echo ". ~/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc
 RUN touch test2.txt
-RUN conda create --name animated_drawings python=3.8.13 \
+RUN conda create --name animated_drawings python=3.8.13
 RUN touch test3.txt
-RUN echo "conda activate animated_drawings" >> ~/.bashrc \
+RUN echo "conda activate animated_drawings" >> ~/.bashrc
 RUN touch test4.txt
 RUN /bin/bash -c "source activate animated_drawings  \
     && conda install -c conda-forge libstdcxx-ng  \
     && pip install -e AnimatedDrawings/. \
     && python3 -m pip install PyOpenGL_accelerate \
-    && pip install -r requirements.txt" \
+    && pip install -r requirements.txt"
 
 #ENV PATH $PATH:home/ubuntu/miniconda3/bin:home/ubuntu/miniconda3/condabin
 
@@ -41,7 +42,7 @@ RUN apt-get install -y libgl1-mesa-glx libglib2.0-0 sudo \
   && sudo apt-get install -y python3-opengl \
   && sudo apt-get install -y libosmesa6 \
   && sudo apt-get install -y libosmesa6-dev freeglut3-dev \
-  && sudo apt-get install -y libglfw3-dev libgles2-mesa-dev \
+  && sudo apt-get install -y libglfw3-dev libgles2-mesa-dev
 #  && pip install -r requirements.txt  \
 
 ENV PYOPENGL_PLATFORM osmesa
