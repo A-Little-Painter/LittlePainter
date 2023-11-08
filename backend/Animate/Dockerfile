@@ -6,8 +6,7 @@ WORKDIR /app
 COPY . .
 RUN apt-get update
 
-RUN conda create -y --name animated_drawings python=3.8.13 \
-  && conda activate animated_drawings  \
+RUN conda install -y python=3.8.13 \
   && conda install -c conda-forge libstdcxx-ng  \
   && pip install -e AnimatedDrawings/. \
   && python3 -m pip install PyOpenGL_accelerate \
