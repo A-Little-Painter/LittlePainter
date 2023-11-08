@@ -18,12 +18,12 @@ RUN sudo apt-get install -y libosmesa6-dev freeglut3-dev \
     && sudo apt-get install -y libosmesa6 \
     && export PYOPENGL_PLATFORM=osmesa \
     && conda install -c conda-forge libstdcxx-ng
-    && conda install cmake
+    #&& conda install cmake
 
 # 렌더링 에러 해결 2
 RUN python3 -m pip install PyOpenGL_accelerate \
     && sudo apt-get install ffmpeg libsm6 libxext6 -y \
-    && sudo apt-get install -y python3-openg
+    && sudo apt-get install -y python3-opengl
     #&& sudo apt-get install -y libosmesa6
 
 # 실행
