@@ -49,7 +49,7 @@ def similarityCheck(originalPath, newPath):
     return match_accuracy
 
 
-@app.route('/similarcheck/comm/animals', methods=['POST'])
+@app.route('/similarcheck/comm', methods=['POST'])
 def SimilarityCheck():
     # JSON 데이터를 파싱하여 세션 ID 추출
 
