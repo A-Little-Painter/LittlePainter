@@ -32,7 +32,11 @@ export default function CompleteDrawAnimalScreen({
   navigation,
 }: CompleteDrawAnimalScreenProps) {
   const [animalId] = useState<number>(route.params.animalId);
-  const [completeDrawUri] = useState(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
+  const [animalType] = useState<string>(route.params.animalType);
+  const [completeDrawUri] = useState<string>(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
+  console.log(completeDrawUri);
+  const [animatedGif] = useState<string>(route.params.animatedGif);
+  console.log(animatedGif);
 
   const isLogin = useSelector((state: RootState) => state.user.isLogin);
   // const selectName = useSelector((state: RootState) => state.user.selectName);
@@ -133,19 +137,13 @@ export default function CompleteDrawAnimalScreen({
             quality: 0.9,
           }}>
           <ImageBackground
-            // source={require('../../assets/images/animalImage/deerTest1.png')}
-            source={{uri: completeDrawUri}}
-            // style={{backgroundColor: 'white'}}
+            source={{
+              uri:
+                animatedGif !== ('' || null || undefined)
+                  ? animatedGif
+                  : completeDrawUri,
+            }}
             resizeMode="contain">
-            {/* <Image
-              style={{
-                position: 'absolute',
-                width: windowWidth,
-                height: windowHeight * 0.8,
-                resizeMode: 'contain',
-              }}
-              source={{uri: completeDrawUri}}
-            /> */}
             <View style={{width: '100%', height: '100%'}} />
           </ImageBackground>
           {/* </View> */}

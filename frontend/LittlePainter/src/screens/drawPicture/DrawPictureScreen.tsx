@@ -119,7 +119,7 @@ export default function DrawPictureScreen({
           '다른 사람이 올린 사진 테두리 가져오기 성공',
           response.data,
         );
-        setPictureBorderURI(response.data);
+        setPictureBorderURI(response.data.urlTrace);
         setPictureExplanation(response.data.detail);
         handleOriginCapture();
       } else {
@@ -419,10 +419,7 @@ export default function DrawPictureScreen({
                       <Path
                         key={`path-${index}`}
                         d={item.path}
-                        stroke={
-                          // isClearButtonClicked ? 'transparent' : item.color
-                          item.color
-                        }
+                        stroke={item.color}
                         fill={'transparent'}
                         strokeWidth={item.strokeWidth}
                         strokeLinejoin={'round'}
@@ -431,10 +428,7 @@ export default function DrawPictureScreen({
                     ))}
                     <Path
                       d={currentPath}
-                      stroke={
-                        // isClearButtonClicked ? 'transparent' : drawColorSelect
-                        drawColorSelect
-                      }
+                      stroke={drawColorSelect}
                       fill={'transparent'}
                       strokeWidth={LineThickness}
                       strokeLinejoin={'round'}

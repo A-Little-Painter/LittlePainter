@@ -9,6 +9,8 @@ import {
   Pressable,
   ToastAndroid, // 토스트안드로이드 잠깐 사용
   BackHandler,
+  Animated,
+  Easing,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
@@ -59,8 +61,12 @@ export default function ColoringAnimalScreen({
   const [animalType] = useState<string>(route.params.animalType);
   const [animalBorderURI] = useState<string>(route.params.animalBorderURI);
   const [animalExplanation] = useState<string>(route.params.animalExplanation);
-
   const [completeLine] = useState(route.params.completeLine);
+  // const [animatedGif, setAnimatedGif] = useState<string>('');
+
+  // 로딩함수
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
@@ -101,16 +107,21 @@ export default function ColoringAnimalScreen({
 
   // 동물 애니메이션
   async function handleAnimalAnimations() {
+    setIsLoading(true);
     try {
       const response = await animalAnimations(animalType, captureImagePath);
       if (response.status === 200) {
         console.log('동물 애니메이션 성공', response.data);
+        setIsLoading(false);
+        // setAnimatedGif(response.data.gifImageUrl);
+        handleGoComplete(response.data.gifImageUrl);
       } else {
         console.log('동물 애니메이션 실패', response.status);
         ToastAndroid.show(
           '동물 친구가 움직일 수가 없어요ㅠㅠ',
           ToastAndroid.LONG,
         );
+        handleGoComplete(response.data.gifImageUrl);
       }
     } catch (error) {
       console.log('동물 애니메이션 실패', error);
@@ -118,8 +129,9 @@ export default function ColoringAnimalScreen({
         '동물 친구가 움직일 수가 없어요ㅠㅠ',
         ToastAndroid.LONG,
       );
+      handleGoComplete('');
     }
-    handleGoComplete();
+    setIsLoading(false);
   }
 
   // 캡쳐 함수
@@ -134,22 +146,26 @@ export default function ColoringAnimalScreen({
 
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
-    const locationX = event.nativeEvent.locationX;
-    const locationY = event.nativeEvent.locationY;
-    const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    setCurrentPath(point);
-    setTmpPaths([]);
+    if (!isLoading) {
+      const locationX = event.nativeEvent.locationX;
+      const locationY = event.nativeEvent.locationY;
+      const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+      setCurrentPath(point);
+      setTmpPaths([]);
+    }
   };
 
   const onTouchMove = (event: GestureResponderEvent) => {
-    const locationX = event.nativeEvent.locationX;
-    const locationY = event.nativeEvent.locationY;
-    const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    setCurrentPath(prevPath => prevPath + newPoint);
+    if (!isLoading) {
+      const locationX = event.nativeEvent.locationX;
+      const locationY = event.nativeEvent.locationY;
+      const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+      setCurrentPath(prevPath => prevPath + newPoint);
+    }
   };
 
   const onTouchEnd = () => {
-    if (currentPath) {
+    if (currentPath && !isLoading) {
       setPaths([
         ...paths,
         {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
@@ -186,18 +202,21 @@ export default function ColoringAnimalScreen({
     handleDrawCapture();
   };
 
-  const handleGoComplete = () => {
+  const handleGoComplete = (receiveanimatedGif: string) => {
     navigation.navigate('CompleteDrawAnimalScreen', {
       animalId: animalId,
+      animalType: animalType,
       completeDrawUri: captureImagePath,
+      animatedGif: receiveanimatedGif,
     });
   };
 
   useEffect(() => {
+    const randomNum = Math.floor(Math.random() * fastcolorData.length);
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
       dispatch(handleLineThickness(25));
-      dispatch(handleDrawColorSelect('#05FF00'));
+      dispatch(handleDrawColorSelect(fastcolorData[randomNum]));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
@@ -237,9 +256,31 @@ export default function ColoringAnimalScreen({
     handleDrawCapture();
   }, [paths]);
 
+  ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+    rotateImage();
+  }, []);
+
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+  ////////////
+
   return (
     <View style={styles.mainContainer}>
-      {/* <View style={styles.subContainer}> */}
       <View style={styles.subContainer}>
         {/* 상단 */}
         <View style={styles.topContainer}>
@@ -332,7 +373,7 @@ export default function ColoringAnimalScreen({
           ref={drawCaptureRef}
           options={{
             fileName: 'drawAnimalCapture',
-            format: 'jpg',
+            format: 'png',
             quality: 0.9,
           }}>
           <View
@@ -383,13 +424,6 @@ export default function ColoringAnimalScreen({
               onPress={() => {
                 dispatch(handleisOriginCompareModalVisible(true));
               }}>
-              {/* {captureImagePath ? (
-                <Image
-                  style={styles.ideaLight}
-                  // source={require('../../assets/images/ideaLight.png')}
-                  source={{uri: captureImagePath}}
-                />
-              ) : null} */}
               <Image
                 style={styles.ideaLight}
                 source={require('../../assets/images/ideaLight.png')}
@@ -416,6 +450,7 @@ export default function ColoringAnimalScreen({
           <View style={styles.bottomContainerMiddle}>
             <TouchableOpacity
               style={styles.clearButton}
+              disabled={isLoading}
               onPress={() => {
                 handleClearButtonClick();
               }}>
@@ -426,9 +461,9 @@ export default function ColoringAnimalScreen({
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
               style={[styles.doneButton]}
+              disabled={isLoading}
               onPress={() => {
                 handleAnimalAnimations();
-                // handleGoComplete();
               }}>
               <Text style={styles.doneButtonText}>완성하기</Text>
             </TouchableOpacity>
@@ -448,6 +483,12 @@ export default function ColoringAnimalScreen({
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
       {isDrawScreenshotModalVisible ? (
         <DrawScreenshotModal captureUri={captureImagePath} />
+      ) : null}
+      {isLoading ? (
+        <Animated.Image
+          style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+          source={require('../../assets/images/loading2.png')}
+        />
       ) : null}
     </View>
   );
@@ -605,5 +646,12 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });

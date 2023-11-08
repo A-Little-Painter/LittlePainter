@@ -70,8 +70,10 @@ export const animalCheckSimilarity = async (roomId, originBorderFileUri, compare
     );
     return response;
   } catch (error) {
-    console.error('선택 동물 유사도 검사 실패:', error);
-    return error.response;
+    if (error.response.status !== 404){
+      console.error('선택 동물 유사도 검사 실패:', error);
+      return error.response;
+    }
   }
 };
 
@@ -156,10 +158,36 @@ export const friendsPictureSimilarity = async (roomId, originBorderFileUri, comp
       type: 'image/png',
       name: 'newFile.png',
     });
-    const response = await axios.post(`${BASE_URL}/draws/friends/comm-similarity`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+    const response = await axios.post(`${BASE_URL}/draws/animals/similarcheck`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+    console.log(response.data)
     return response;
   } catch (error) {
     console.log('다른 사람이 올린 사진 그리기 유사도 검사 실패:', error);
+    const response = error.response;
+    return response;
+  }
+};
+// 완성된 사진그리기 마이페이지에 저장
+export const friendsPictureSaveToMypage = async (friendsAnimalId, completeDrawUri) => {
+  try {
+    const accessToken = loadATokenFromKeychain();
+    const formData = new FormData();
+    formData.append('friendsAnimalId', friendsAnimalId);
+
+    formData.append('file', {
+      uri: completeDrawUri,
+      type: 'image/png',
+      name: 'originalFile.png',
+    });
+
+    const response = await axios.post(`${BASE_URL}/draws/animals`, formData, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log('완성된 동물 마이페이지에 저장 실패:', error);
     const response = error.response;
     return response;
   }
@@ -282,14 +310,15 @@ export const taleSaveEveryDrawn = async () => {
 //animations
 // 동물 애니메이션
 export const animalAnimations = async (animalType, drawCaptureImageURI) => {
+  console.log(animalType, drawCaptureImageURI);
   try {
     const formData = new FormData();
     formData.append('animalType ', animalType);
 
-    formData.append('originalFile', {
+    formData.append('image', {
       uri: drawCaptureImageURI,
-      type: 'image/jpg',
-      name: 'originalFile.jpg',
+      type: 'image/png',
+      name: 'originalFile.png',
     });
 
     const response = await axios.post(
@@ -305,9 +334,17 @@ export const animalAnimations = async (animalType, drawCaptureImageURI) => {
   }
 };
 // 동화 애니메이션
-export const taleAnimations = async () => {
+export const taleAnimations = async (taleTitle, pageNum, drawCaptureImageURI) => {
   try {
-    const response = await axios.post(`${BASE_URL}/draws/animations/tales`, null);
+    const formData = new FormData();
+    formData.append('taleTitle ', taleTitle);
+    formData.append('pageNum ', pageNum);
+    formData.append('originalFile', {
+      uri: drawCaptureImageURI,
+      type: 'image/png',
+      name: 'originalFile.png',
+    });
+    const response = await axios.post(`${BASE_URL}/draws/animations/tales`, formData, {headers: {'Content-Type': 'multipart/form-data'}},);
     return response;
   } catch (error) {
     console.log('동화 애니메이션 실패:', error);
@@ -315,39 +352,25 @@ export const taleAnimations = async () => {
     return response;
   }
 };
-// 친구 그림 애니메이션
-export const friendsAnimations = async () => {
-  try {
-    const response = await axios.post(`${BASE_URL}/draws/animations/friends`, null);
-    return response;
-  } catch (error) {
-    console.log('친구 그림 애니메이션 실패:', error);
-    const response = error.response;
-    return response;
-  }
-};
-// 동물 및 친구사진 애니메이션 생성
-export const animationsCreateAnimalFriends = async () => {
-  try {
-    const response = await axios.post(`${BASE_URL}/animations/comm/animals`, null);
-    return response;
-  } catch (error) {
-    console.log('동물 및 친구사진 애니메이션 생성 실패:', error);
-    const response = error.response;
-    return response;
-  }
-};
-// 동화 애니메이션 생성
-export const animationsCreateTale = async () => {
-  try {
-    const response = await axios.post(`${BASE_URL}/animations/comm/tales`, null);
-    return response;
-  } catch (error) {
-    console.log('동화 애니메이션 생성 실패:', error);
-    const response = error.response;
-    return response;
-  }
-};
+// // 친구 그림 애니메이션
+// export const friendsAnimations = async (animalType, drawCaptureImageURI) => {
+//   try {
+//     const formData = new FormData();
+//     formData.append('animalType ', animalType);
+
+//     formData.append('originalFile', {
+//       uri: drawCaptureImageURI,
+//       type: 'image/png',
+//       name: 'originalFile.png',
+//     });
+//     const response = await axios.post(`${BASE_URL}/draws/animations/friends`, formData, {headers: {'Content-Type': 'multipart/form-data'}},);
+//     return response;
+//   } catch (error) {
+//     console.log('친구 그림 애니메이션 실패:', error);
+//     const response = error.response;
+//     return response;
+//   }
+// };
 
 //images
 // 내 동물 사진 올리기

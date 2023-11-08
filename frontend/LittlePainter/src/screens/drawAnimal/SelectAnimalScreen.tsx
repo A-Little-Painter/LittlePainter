@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
@@ -7,6 +8,8 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  Animated,
+  Easing,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -18,70 +21,70 @@ type SelectAnimalScreenProps = StackScreenProps<
 >;
 
 const windowWidth = Dimensions.get('window').width;
-// const windowHeight = Dimensions.get('window').height;
+const windowHeight = Dimensions.get('window').height;
 
-const wholeAnimalTmp = [
-  {
-    animalId: 1,
-    animalType: '공룡',
-    urlOriginal: require('../../assets/images/dinosaur.png'),
-  },
-  {
-    animalId: 2,
-    animalType: '사자',
-    urlOriginal: require('../../assets/images/dinosaur.png'),
-  },
-  {
-    animalId: 3,
-    animalType: '쥐',
-    urlOriginal: require('../../assets/images/elephant.png'),
-  },
-  {
-    animalId: 4,
-    animalType: '닭',
-    urlOriginal: require('../../assets/images/dinosaur.png'),
-  },
-  {
-    animalId: 5,
-    animalType: '코끼리',
-    urlOriginal: require('../../assets/images/dinosaur.png'),
-  },
-  {
-    animalId: 6,
-    animalType: '토끼',
-    urlOriginal: require('../../assets/images/elephant.png'),
-  },
-  {
-    animalId: 7,
-    animalType: '소',
-    urlOriginal: require('../../assets/images/dinosaur.png'),
-  },
-  {
-    animalId: 8,
-    animalType: '돼지',
-    urlOriginal: require('../../assets/images/dinosaur.png'),
-  },
-  {
-    animalId: 9,
-    animalType: '다람쥐',
-    urlOriginal: require('../../assets/images/dinosaur.png'),
-  },
-  {
-    animalId: 10,
-    animalType: '햄스터',
-    urlOriginal: require('../../assets/images/dinosaur.png'),
-  },
-  {
-    animalId: 11,
-    animalType: '고양이',
-    urlOriginal: require('../../assets/images/dinosaur.png'),
-  },
-  {
-    animalId: 12,
-    animalType: '호랑이',
-    urlOriginal: require('../../assets/images/dinosaur.png'),
-  },
-];
+// const wholeAnimalTmp = [
+//   {
+//     animalId: 1,
+//     animalType: '공룡',
+//     urlOriginal: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     animalId: 2,
+//     animalType: '사자',
+//     urlOriginal: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     animalId: 3,
+//     animalType: '쥐',
+//     urlOriginal: require('../../assets/images/elephant.png'),
+//   },
+//   {
+//     animalId: 4,
+//     animalType: '닭',
+//     urlOriginal: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     animalId: 5,
+//     animalType: '코끼리',
+//     urlOriginal: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     animalId: 6,
+//     animalType: '토끼',
+//     urlOriginal: require('../../assets/images/elephant.png'),
+//   },
+//   {
+//     animalId: 7,
+//     animalType: '소',
+//     urlOriginal: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     animalId: 8,
+//     animalType: '돼지',
+//     urlOriginal: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     animalId: 9,
+//     animalType: '다람쥐',
+//     urlOriginal: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     animalId: 10,
+//     animalType: '햄스터',
+//     urlOriginal: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     animalId: 11,
+//     animalType: '고양이',
+//     urlOriginal: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     animalId: 12,
+//     animalType: '호랑이',
+//     urlOriginal: require('../../assets/images/dinosaur.png'),
+//   },
+// ];
 
 const randomBackgroundColor: string[] = [
   '#8C80E2',
@@ -110,8 +113,10 @@ export default function SelectAnimalScreen({
   // type NameType = string | undefined;
   // const name: NameType = '동물선택하기';
   const [wholeAnimal, setWholeAnimal] = useState<Animal[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleAnimalWholeData = async () => {
+    setIsLoading(true);
     try {
       const response = await animalWholeData();
       if (response.status === 200) {
@@ -122,11 +127,38 @@ export default function SelectAnimalScreen({
     } catch (error) {
       console.log('전체 동물 데이터 조회 실패', error);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     handleAnimalWholeData();
   }, []);
+
+  ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+
+    rotateImage();
+  }, []);
+
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+  ////////////
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -159,7 +191,7 @@ export default function SelectAnimalScreen({
                       {
                         backgroundColor:
                           randomBackgroundColor[
-                            index > randomBackgroundColor.length
+                            index >= randomBackgroundColor.length
                               ? index % randomBackgroundColor.length
                               : index
                           ],
@@ -180,6 +212,12 @@ export default function SelectAnimalScreen({
           />
         </View>
       </View>
+      {isLoading ? (
+        <Animated.Image
+          style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+          source={require('../../assets/images/loading2.png')}
+        />
+      ) : null}
     </View>
   );
 }
@@ -229,5 +267,12 @@ const styles = StyleSheet.create({
   animalCardText: {
     textAlign: 'center',
     fontSize: windowWidth * 0.018,
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });

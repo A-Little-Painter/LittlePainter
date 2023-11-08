@@ -30,7 +30,7 @@ import {
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
 } from '../../redux/slices/draw/draw';
-import {animalAnimations} from '../../apis/draw/draw';
+import {friendsAnimations} from '../../apis/draw/draw';
 
 type ColoringPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -55,7 +55,7 @@ export default function ColoringPictureScreen({
   route,
   navigation,
 }: ColoringPictureScreenProps) {
-  const [pictureTitle] = useState<string>(route.params.title);
+  const [pictureTitle] = useState<string>(route.params.pictureTitle);
   const [pictureId] = useState<number>(route.params.pictureId);
   const [pictureBorderURI] = useState<string>(route.params.pictureBorderURI);
   const [pictureExplanation] = useState<string>(
@@ -104,21 +104,21 @@ export default function ColoringPictureScreen({
   );
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
 
-  // 동물 애니메이션
-  async function handleAnimalAnimations() {
+  // 친구 사진 애니메이션
+  async function handlePictureAnimations() {
     try {
-      const response = await animalAnimations(animalType, captureImagePath);
+      const response = await friendsAnimations(animalType, captureImagePath);
       if (response.status === 200) {
-        console.log('동물 애니메이션 성공', response.data);
+        console.log('친구 사진 애니메이션 성공', response.data);
       } else {
-        console.log('동물 애니메이션 실패', response.status);
+        console.log('친구 사진 애니메이션 실패', response.status);
         ToastAndroid.show(
           '우리 친구가 움직일 수가 없어요ㅠㅠ',
           ToastAndroid.LONG,
         );
       }
     } catch (error) {
-      console.log('동물 애니메이션 실패', error);
+      console.log('친구 사진 애니메이션 실패', error);
       ToastAndroid.show(
         '우리 친구가 움직일 수가 없어요ㅠㅠ',
         ToastAndroid.LONG,
@@ -199,10 +199,13 @@ export default function ColoringPictureScreen({
   };
 
   useEffect(() => {
+    const randomNum = Math.floor(Math.random() * fastcolorData.length);
+    // console.log(fastcolorData[randomNum]);
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
       dispatch(handleLineThickness(25));
-      dispatch(handleDrawColorSelect('#05FF00'));
+      // dispatch(handleDrawColorSelect('#05FF00'));
+      dispatch(handleDrawColorSelect(fastcolorData[randomNum]));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
@@ -388,13 +391,6 @@ export default function ColoringPictureScreen({
               onPress={() => {
                 dispatch(handleisOriginPictureModalVisible(true));
               }}>
-              {/* {captureImagePath ? (
-                <Image
-                  style={styles.ideaLight}
-                  // source={require('../../assets/images/ideaLight.png')}
-                  source={{uri: captureImagePath}}
-                />
-              ) : null} */}
               <Image
                 style={styles.ideaLight}
                 source={require('../../assets/images/ideaLight.png')}
@@ -432,7 +428,7 @@ export default function ColoringPictureScreen({
             <TouchableOpacity
               style={[styles.doneButton]}
               onPress={() => {
-                handleAnimalAnimations();
+                handlePictureAnimations();
                 // handleGoComplete();
               }}>
               <Text style={styles.doneButtonText}>완성하기</Text>

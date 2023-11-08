@@ -59,7 +59,9 @@ export type RootStackParams = {
   };
   CompleteDrawAnimalScreen: {
     animalId: number;
+    animalType: string;
     completeDrawUri: string;
+    animatedGif: string;
   };
   SelectPictureScreen: undefined;
   DrawPictureScreen: {
@@ -79,6 +81,7 @@ export type RootStackParams = {
     pictureOriginImageUri: string;
   };
   CompleteDrawPictureScreen: {
+    pictureId: number;
     completeDrawUri: string;
   };
   SelectFairytaleScreen: undefined;
