@@ -1,16 +1,25 @@
-import React, {useState} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
   Image,
-  FlatList,
+  // FlatList,
   TouchableOpacity,
+  Animated,
+  Easing,
+  ScrollView,
+  ToastAndroid,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {
+  friendsWholePicture,
+  animalWholeNameInquiry,
+} from '../../apis/draw/draw';
 
 type SelectPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -18,67 +27,7 @@ type SelectPictureScreenProps = StackScreenProps<
 >;
 
 const windowWidth = Dimensions.get('window').width;
-// const windowHeight = Dimensions.get('window').height;
-
-const fairytaleData = [
-  {
-    id: 1,
-    title: '귀염둥이 뽀송이',
-    image: '../../assets/images/dinosaur.png',
-    isDone: false,
-    painter: '정예진',
-  },
-  {
-    id: 2,
-    title: '과거에 있던 공룡',
-    image: '../../assets/images/dinosaur.png',
-    isDone: false,
-    painter: '방진성',
-  },
-  {
-    id: 3,
-    title: '옆집에 있는 코끼리',
-    image: '../../assets/images/dinosaur.png',
-    isDone: false,
-    painter: '류성하',
-  },
-  {
-    id: 4,
-    title: '할머니집에 있는 소',
-    image: '../../assets/images/dinosaur.png',
-    isDone: false,
-    painter: '김범기',
-  },
-  {
-    id: 5,
-    title: '내 친구 사자',
-    image: '../../assets/images/dinosaur.png',
-    isDone: false,
-    painter: '김소이',
-  },
-  {
-    id: 6,
-    title: '4살 토끼',
-    image: '../../assets/images/dinosaur.png',
-    isDone: false,
-    painter: '이대근',
-  },
-  {
-    id: 7,
-    title: '구미에 사는 쥐',
-    image: '../../assets/images/dinosaur.png',
-    isDone: false,
-    painter: '시민주',
-  },
-  {
-    id: 8,
-    title: '서울에 사는 고양이',
-    image: '../../assets/images/dinosaur.png',
-    isDone: false,
-    painter: '서현덕',
-  },
-];
-
+const windowHeight = Dimensions.get('window').height;
 const randomBackgroundColor: string[] = [
   '#8C80E2',
   '#A6D934',
@@ -93,20 +42,174 @@ const randomBackgroundColor: string[] = [
   '#E1F1A0',
   '#C3FFC9',
 ];
+
+type handleGoDrawPictureScreenType = {
+  friendsAnimalId: number;
+  userEmail: string;
+  title: string;
+  originalImageUrl: string;
+};
+interface FriendPicture {
+  friendsAnimalId: number;
+  originalImageUrl: string;
+  title: string;
+  userEmail: string;
+}
+
 export default function SelectPictureScreen({
   navigation,
 }: SelectPictureScreenProps) {
-  // type NameType = string | undefined;
-  // const name: NameType = '동물선택하기';
+  const picturelistScrollViewRef = useRef(null);
   // 드랍다운
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    {label: '강아지', value: 'dog'},
-    {label: '고양이', value: 'cat'},
-    {label: '코끼리', value: 'elephant'},
-    {label: '토끼', value: 'rabbit'},
-  ]);
+  const [open, setOpen] = useState<boolean>(false);
+  const [value, setValue] = useState(0);
+  const [items, setItems] = useState([]);
+  // const [friendsPictures, setFriendsPictures] = useState<FriendPicture[]>([{"friendsAnimalId": 1, "originalImageUrl": "https://littlepainter.s3.ap-northeast-2.amazonaws.com/profile-icon/frog.png", "title": "ss 토끼", "userEmail": "email"}]);
+  const [friendsPictures, setFriendsPictures] = useState<FriendPicture[]>([]);
+  // const [selectAnimalTypeName, setSelectAnimalTypeName] = useState<string>('');
+  const [selectPage, setSelectPage] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  function handleGoDrawPictureScreen(
+    friendsAnimalInformation: handleGoDrawPictureScreenType,
+  ) {
+    navigation.navigate('DrawPictureScreen', {
+      friendsAnimalInfo: friendsAnimalInformation,
+    });
+  }
+
+  const handleAnimalWholeNameInquiry = async () => {
+    setIsLoading(true);
+    try {
+      const response = await animalWholeNameInquiry();
+      if (response.status === 200) {
+        const transformedData = response.data.map(item => ({
+          label: item.name,
+          value: item.id,
+        }));
+        transformedData.unshift({label: '전체', value: 0});
+        setItems(transformedData);
+      } else {
+        console.log('전체 동물 이름 조회하기 실패', response.status);
+        ToastAndroid.show('친구들의 이름을 불러오지 못했어요.', ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      console.log('전체 동물 이름 조회하기 실패', error);
+      ToastAndroid.show('친구들의 이름을 불러오지 못했어요.', ToastAndroid.SHORT);
+    }
+    setIsLoading(false);
+  };
+
+  const handleFriendsWholePicture = async () => {
+    setIsLoading(true);
+    try {
+      const response = await friendsWholePicture(value, 0);
+      if (response.status === 200) {
+        console.log('다른 사람이 올린 사진 전체 가져오기 성공');
+        const newData = response.data.content;
+        if (newData.length > 0) {
+          // setFriendsPictures(prevData => [...prevData, ...newData]);
+          setFriendsPictures(newData);
+          setSelectPage(1);
+          picturelistScrollViewRef.current?.scrollTo({
+            y: 0,
+            animated: false,
+          });
+        } else {
+          setFriendsPictures([]);
+          setSelectPage(0);
+        }
+        // console.log('다른 사람이 올린 사진 전체 가져오기 성공', response.data.content);
+      } else {
+        console.log(
+          '다른 사람이 올린 사진 전체 가져오기 실패',
+          response.status,
+        );
+        ToastAndroid.show('우리 친구들을 불러오지 못했어요.', ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      console.log('다른 사람이 올린 사진 전체 가져오기 실패', error);
+      ToastAndroid.show('우리 친구들을 불러오지 못했어요.', ToastAndroid.SHORT);
+    }
+    setIsLoading(false);
+  };
+
+  // 추가 사진 가져오기
+  const getFriendsPictureList = async () => {
+    setIsLoading(true);
+    try {
+      const response = await friendsWholePicture(value, selectPage);
+      if (response.status === 200) {
+        const newData = response.data.content;
+        if (newData.length > 0) {
+          // friendsPictures 상태 업데이트
+          setFriendsPictures(prevData => [...prevData, ...newData]);
+          setSelectPage(selectPage + 1);
+        } else {
+          ToastAndroid.show('오늘의 친구들은 여기까지만~', ToastAndroid.SHORT);
+        }
+      } else {
+        console.log(
+          '다른 사람이 올린 추가 사진 가져오기 실패',
+          response.status,
+        );
+        ToastAndroid.show('우리 친구들을 더 불러오지 못했어요.', ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      console.log('다른 사람이 올린 추가 사진 가져오기 실패', error);
+      ToastAndroid.show('우리 친구들을 더 불러오지 못했어요.', ToastAndroid.SHORT);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    handleAnimalWholeNameInquiry();
+    // handleFriendsWholePicture();
+  }, []);
+
+  useEffect(() => {
+    // setSelectPage(0);
+    handleFriendsWholePicture();
+    // getFriendsPictureList();
+  }, [value]);
+
+  ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+
+    rotateImage();
+  }, []);
+
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+  ////////////
+
+  // 스크롤이 맨 아래로 도달했을 때 호출되는 함수
+  const handleScrollEnd = (event) => {
+    const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
+    if (
+      // layoutMeasurement.height + contentOffset.y >= contentSize.height - 20 // 20은 여분의 여백입니다.
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height // 20은 여분의 여백입니다.
+    ) {
+      // 스크롤이 맨 아래로 도달했을 때 추가 데이터를 가져오는 작업을 수행합니다.
+      // getFriendsPictureList();
+      getFriendsPictureList();
+    }
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -119,7 +222,7 @@ export default function SelectPictureScreen({
               style={styles.logoImage}
               source={require('../../assets/images/rabbitFace.png')}
             />
-            <Text style={styles.titleText}>사진 그리기</Text>
+            <Text style={styles.titleText}>친구의 동물 그리기</Text>
           </View>
           {/* 상단 우측 */}
           <View style={styles.topRightContainer}>
@@ -140,44 +243,52 @@ export default function SelectPictureScreen({
             </View>
           </View>
         </View>
-        {/* 중단 */}
         <View style={styles.middleContainer}>
-          <FlatList
-            data={fairytaleData}
-            numColumns={4}
-            renderItem={({item, index}) => {
-              return (
-                <View style={styles.pictureCard1}>
+          <ScrollView
+            ref={picturelistScrollViewRef}
+            style={styles.middleContainerFlatList}
+            onScroll={handleScrollEnd}>
+            <View style={styles.wrappingView}>
+              {friendsPictures.map((item, index) => (
+                <View style={styles.pictureCard1} key={index}>
                   <TouchableOpacity
-                    onPress={() => {}}
+                    onPress={() => {
+                      handleGoDrawPictureScreen({
+                        friendsAnimalId: item.friendsAnimalId,
+                        userEmail: item.userEmail,
+                        title: item.title,
+                        originalImageUrl: item.originalImageUrl,
+                      });
+                    }}
                     style={[
                       styles.pcitureCard2,
                       {
                         backgroundColor:
                           randomBackgroundColor[
-                            index > randomBackgroundColor.length
+                            index >= randomBackgroundColor.length
                               ? index % randomBackgroundColor.length
                               : index
                           ],
                       },
                     ]}>
-                    {/* <Image
-                      style={styles.logoImage}
-                      source={{uri: item.image}}
-                    /> */}
+                    <Image
+                      style={styles.cardAnimalImage}
+                      source={{uri: item.originalImageUrl}}
+                    />
                   </TouchableOpacity>
                   <Text style={styles.pictureCardText}>{item.title}</Text>
-                  <Text style={styles.pictureCardPainterText}>
-                    {item.painter}
-                  </Text>
                 </View>
-              );
-            }}
-            // keyExtractor={(item, index) => index.toString()}
-            keyExtractor={item => item.id.toString()}
-          />
+              ))}
+            </View>
+          </ScrollView>
         </View>
       </View>
+      {isLoading ? (
+        <Animated.Image
+          style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+          source={require('../../assets/images/loading2.png')}
+        />
+      ) : null}
     </View>
   );
 }
@@ -210,7 +321,17 @@ const styles = StyleSheet.create({
   middleContainer: {
     flex: 0.7,
     width: '90%',
+    height: '100%',
     alignSelf: 'center',
+  },
+  middleContainerFlatList: {
+    width: '100%',
+    height: '100%',
+  },
+  wrappingView: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
   },
   logoImage: {
     alignSelf: 'center',
@@ -224,25 +345,52 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   pictureCard1: {
-    margin: windowWidth * 0.01,
+    marginVertical: windowWidth * 0.01,
+    marginHorizontal: ((windowWidth * 0.9 * 0.95) / 4) * 0.05,
   },
   pcitureCard2: {
+    justifyContent: 'center',
     borderRadius: 20,
     borderColor: 'black',
-    borderWidth: 1,
-    width: windowWidth * 0.194,
-    height: windowWidth * 0.14,
+    width:
+      (windowWidth * 0.9 * 0.95) / 4 - ((windowWidth * 0.9 * 0.95) / 4) * 0.1,
+    height:
+      ((windowWidth * 0.9 * 0.95) / 4 -
+        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
+      0.75,
+  },
+  cardAnimalImage: {
+    alignSelf: 'center',
+    resizeMode: 'contain',
+    width:
+      ((windowWidth * 0.9 * 0.95) / 4 -
+        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
+      0.55,
+    height:
+      ((windowWidth * 0.9 * 0.95) / 4 -
+        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
+      0.55,
   },
   pictureCardText: {
-    // textAlign: 'center',
     fontSize: windowWidth * 0.018,
     fontWeight: '600',
   },
+  friendsAnimalImage: {
+    alignSelf: 'center',
+    width: windowWidth * 0.11,
+    height: windowWidth * 0.11,
+  },
   pictureCardPainterText: {
-    // textAlign: 'center',
     fontSize: windowWidth * 0.013,
   },
   dropdownView: {
     width: '33%',
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });

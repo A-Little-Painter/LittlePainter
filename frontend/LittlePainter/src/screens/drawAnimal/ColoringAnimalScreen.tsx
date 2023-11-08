@@ -1,4 +1,4 @@
-// import React, {useCallback, useEffect, useRef, useState} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -10,7 +10,8 @@ import {
   Pressable,
   ToastAndroid, // 토스트안드로이드 잠깐 사용
   BackHandler,
-  ImageBackground,
+  Animated,
+  Easing,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
@@ -31,8 +32,8 @@ import {
   handleisDrawLineThicknessModalVisible,
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
-  handleIsDrawScreenshotModalVisible,
 } from '../../redux/slices/draw/draw';
+import {animalAnimations} from '../../apis/draw/draw';
 
 type ColoringAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -41,15 +42,37 @@ type ColoringAnimalScreenProps = StackScreenProps<
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
+const fastcolorData = [
+  '#FF0000',
+  '#FF7A00',
+  '#FAFF00',
+  '#05FF00',
+  '#0500FF',
+  '#0300AA',
+  '#9E00FF',
+  '#000000',
+];
+
 export default function ColoringAnimalScreen({
   route,
   navigation,
 }: ColoringAnimalScreenProps) {
-  const [completeLineUri] = useState(route.params.completeLineUri);
+  const [animalId] = useState<number>(route.params.animalId);
+  const [animalType] = useState<string>(route.params.animalType);
+  const [originImage] = useState<string>(route.params.originImage);
+  const [animalBorderURI] = useState<string>(route.params.animalBorderURI);
+  const [animalExplanation] = useState<string>(route.params.animalExplanation);
+  const [completeLine] = useState(route.params.completeLine);
+  // const [animatedGif, setAnimatedGif] = useState<string>('');
+
+  // 로딩함수
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
-  const captureRef = useRef();
+  const drawCaptureRef = useRef();
 
   // 그림 그리기 변수
   const [paths, setPaths] = useState<
@@ -59,8 +82,6 @@ export default function ColoringAnimalScreen({
     {path: string; color: string; strokeWidth: number}[]
   >([]);
   const [currentPath, setCurrentPath] = useState<string>('');
-  const [isClearButtonClicked, setClearButtonClicked] =
-    useState<boolean>(false);
 
   const dispatch = useDispatch();
   // 선 굵기 모달을 위한 라인
@@ -84,72 +105,84 @@ export default function ColoringAnimalScreen({
   const isDrawScreenshotModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawScreenshotModalVisible,
   );
-  const [isToCaptureDrawing, setIsToCaptureDrawing] = useState<boolean>(false);
+  const [captureImagePath, setCaptureImagePath] = useState<string>('');
+
+  // 동물 애니메이션
+  async function handleAnimalAnimations() {
+    setIsLoading(true);
+    try {
+      const response = await animalAnimations(animalType, captureImagePath);
+      if (response.status === 200) {
+        console.log('동물 애니메이션 성공', response.data);
+        setIsLoading(false);
+        // setAnimatedGif(response.data.gifImageUrl);
+        handleGoComplete(response.data.gifImageUrl);
+      } else {
+        console.log('동물 애니메이션 실패', response.status);
+        ToastAndroid.show(
+          '동물 친구가 움직일 수가 없어요ㅠㅠ',
+          ToastAndroid.LONG,
+        );
+        handleGoComplete(response.data.gifImageUrl);
+      }
+    } catch (error) {
+      console.log('동물 애니메이션 실패', error);
+      ToastAndroid.show(
+        '동물 친구가 움직일 수가 없어요ㅠㅠ',
+        ToastAndroid.LONG,
+      );
+      handleGoComplete('');
+    }
+    setIsLoading(false);
+  }
+
+  // 캡쳐 함수
+  async function handleDrawCapture() {
+    try {
+      const uri = await drawCaptureRef.current.capture();
+      setCaptureImagePath(uri);
+    } catch (error) {
+      console.error('캡쳐 에러 발생: ', error);
+    }
+  }
+
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
-    const locationX = event.nativeEvent.locationX;
-    const locationY = event.nativeEvent.locationY;
-    const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    // const point = `M${locationX.toFixed(0)},${locationY.toFixed(
-    //   0,
-    // )} L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    setCurrentPath(point);
-    setTmpPaths([]);
+    if (!isLoading) {
+      const locationX = event.nativeEvent.locationX;
+      const locationY = event.nativeEvent.locationY;
+      const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+      setCurrentPath(point);
+      setTmpPaths([]);
+    }
   };
 
   const onTouchMove = (event: GestureResponderEvent) => {
-    const locationX = event.nativeEvent.locationX;
-    const locationY = event.nativeEvent.locationY;
-    const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    setCurrentPath(prevPath => prevPath + newPoint);
+    if (!isLoading) {
+      const locationX = event.nativeEvent.locationX;
+      const locationY = event.nativeEvent.locationY;
+      const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+      setCurrentPath(prevPath => prevPath + newPoint);
+    }
   };
-  // const onTouchMove = (event: GestureResponderEvent) => {
-  //   if (currentPath === '') {
-  //     const locationX = event.nativeEvent.locationX;
-  //     const locationY = event.nativeEvent.locationY;
-  //     const newPoint = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-  //     setCurrentPath(newPoint);
-  //   } else {
-  //     const locationX = event.nativeEvent.locationX;
-  //     const locationY = event.nativeEvent.locationY;
-  //     const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-  //     setCurrentPath(prevPath => prevPath + newPoint);
-  //   }
-  // };
-  const [captureImagePath, setCaptureImagePath] = useState<string>('');
+
   const onTouchEnd = () => {
-    if (currentPath) {
-      // Only save the path if there are points in it
+    if (currentPath && !isLoading) {
       setPaths([
         ...paths,
         {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
       ]);
     }
     setCurrentPath('');
-    setClearButtonClicked(false);
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      // ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
-      setCaptureImagePath(uri);
-      // dispatch(handleIsDrawScreenshotModalVisible(true));
-      setIsToCaptureDrawing(false);
-    });
-    // dispatch(handleIsDrawScreenshotModalVisible(true));
+    handleDrawCapture();
   };
 
   const handleClearButtonClick = () => {
     setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
-    setClearButtonClicked(true);
-    setClearButtonClicked(false);
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-    });
+    // setCaptureImagePath('');
+    handleDrawCapture();
   };
 
   const handlePrevButtonClick = () => {
@@ -159,14 +192,7 @@ export default function ColoringAnimalScreen({
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
     }
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      // ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-      // dispatch(handleIsDrawScreenshotModalVisible(true));
-    });
+    handleDrawCapture();
   };
   const handleNextButtonClick = () => {
     const tmpPosition:
@@ -175,20 +201,24 @@ export default function ColoringAnimalScreen({
     if (tmpPosition) {
       setPaths([...paths, tmpPosition]);
     }
-    setIsToCaptureDrawing(true);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      // ToastAndroid.show(`캡쳐가 된당! ${uri}`, ToastAndroid.SHORT);
-      setCaptureImagePath(uri);
-      setIsToCaptureDrawing(false);
-      // dispatch(handleIsDrawScreenshotModalVisible(true));
+    handleDrawCapture();
+  };
+
+  const handleGoComplete = (receiveanimatedGif: string) => {
+    navigation.navigate('CompleteDrawAnimalScreen', {
+      animalId: animalId,
+      animalType: animalType,
+      completeDrawUri: captureImagePath,
+      animatedGif: receiveanimatedGif,
     });
   };
 
   useEffect(() => {
+    const randomNum = Math.floor(Math.random() * fastcolorData.length);
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
-      dispatch(handleLineThickness(10));
+      dispatch(handleLineThickness(25));
+      dispatch(handleDrawColorSelect(fastcolorData[randomNum]));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
@@ -210,8 +240,6 @@ export default function ColoringAnimalScreen({
           }, 1000);
           return true; // 뒤로가기 이벤트 무시하지 않도록 설정
         } else if (backHandleNum === 1) {
-          // BackHandler.exitApp();
-          // BackHandler.addEventListener('hardwareBackPress', backAction);
           navigation.navigate('SelectAnimalScreen');
         }
         return true;
@@ -225,9 +253,36 @@ export default function ColoringAnimalScreen({
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
+  // 화면 캡쳐 동작 useEffect
+  useEffect(() => {
+    handleDrawCapture();
+  }, [paths]);
+
+  ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+    rotateImage();
+  }, []);
+
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+  ////////////
+
   return (
     <View style={styles.mainContainer}>
-      {/* <View style={styles.subContainer}> */}
       <View style={styles.subContainer}>
         {/* 상단 */}
         <View style={styles.topContainer}>
@@ -239,7 +294,7 @@ export default function ColoringAnimalScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
-                navigation.navigate('DrawCaptureScreen');
+                // navigation.navigate('');
               }}>
               <Image
                 style={styles.drawEquipImage}
@@ -277,58 +332,18 @@ export default function ColoringAnimalScreen({
               </Text>
             </TouchableOpacity>
             {/* 색깔 */}
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#FF0000'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#FF0000'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#FF7A00'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#FF7A00'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#FAFF00'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#FAFF00'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#05FF00'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#05FF00'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#0500FF'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#0500FF'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#0300AA'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#0300AA'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#9E00FF'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#9E00FF'));
-              }}
-            />
-            <Pressable
-              style={[styles.colorCircle, {backgroundColor: '#000000'}]}
-              onPress={() => {
-                dispatch(handleDrawColorSelect('#000000'));
-              }}
-            />
+            {fastcolorData.map((color, index) => (
+              <Pressable
+                key={index}
+                style={[styles.colorCircle, {backgroundColor: color}]}
+                onPress={() => {
+                  dispatch(handleDrawColorSelect(color));
+                }}
+              />
+            ))}
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
-                // dispatch(handleDrawColorSelect('#FF0000'));
                 dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image
@@ -355,62 +370,52 @@ export default function ColoringAnimalScreen({
           </View>
         </View>
         {/* 중단 */}
-        {/* <View style={styles.middleContainer}> */}
         <ViewShot
-          // style={[styles.middleContainer, {backgroundColor: 'white'}]}
           style={[styles.middleContainer]}
-          ref={captureRef}
+          ref={drawCaptureRef}
           options={{
             fileName: 'drawAnimalCapture',
-            format: 'jpg',
+            format: 'png',
             quality: 0.9,
           }}>
-          <ImageBackground
-            // source={require('../../assets/images/animalImage/deerTest1.png')}
-            source={{uri: completeLineUri}}
-            style={{}}
-            resizeMode="center">
-            {/* <Image
-              style={{
-                position: 'absolute',
-                width: windowWidth,
-                height: windowHeight * 0.8,
-                resizeMode: 'contain',
-              }}
-              source={{uri: completeLineUri}}
-            /> */}
-
-            <View
-              style={{justifyContent: 'flex-end'}}
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEnd}>
-              <Svg>
-                {paths.map((item, index) => (
-                  <Path
-                    key={`path-${index}`}
-                    d={item.path}
-                    stroke={isClearButtonClicked ? 'transparent' : item.color}
-                    fill={'transparent'}
-                    strokeWidth={item.strokeWidth}
-                    strokeLinejoin={'round'}
-                    strokeLinecap={'round'}
-                  />
-                ))}
+          <View
+            style={styles.pathsView}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}>
+            <Svg>
+              {paths.map((item, index) => (
                 <Path
-                  d={currentPath}
-                  stroke={
-                    isClearButtonClicked ? 'transparent' : drawColorSelect
-                  }
+                  key={`path-${index}`}
+                  d={item.path}
+                  stroke={item.color}
                   fill={'transparent'}
-                  strokeWidth={LineThickness}
+                  strokeWidth={item.strokeWidth}
                   strokeLinejoin={'round'}
                   strokeLinecap={'round'}
                 />
-              </Svg>
-            </View>
-          </ImageBackground>
-          {/* </View> */}
+              ))}
+              <Path
+                d={currentPath}
+                stroke={drawColorSelect}
+                fill={'transparent'}
+                strokeWidth={LineThickness}
+                strokeLinejoin={'round'}
+                strokeLinecap={'round'}
+              />
+              {completeLine.map((item, index) => (
+                <Path
+                  key={`path-${index}`}
+                  d={item.path}
+                  stroke={item.color}
+                  fill={'transparent'}
+                  strokeWidth={item.strokeWidth}
+                  strokeLinejoin={'round'}
+                  strokeLinecap={'round'}
+                />
+              ))}
+            </Svg>
+          </View>
         </ViewShot>
         {/* 하단 */}
         <View style={styles.bottomContainer}>
@@ -421,17 +426,10 @@ export default function ColoringAnimalScreen({
               onPress={() => {
                 dispatch(handleisOriginCompareModalVisible(true));
               }}>
-              {captureImagePath ? (
-                <Image
-                  style={styles.ideaLight}
-                  // source={require('../../assets/images/ideaLight.png')}
-                  source={{uri: captureImagePath}}
-                />
-              ) : null}
-              {/* // <Image */}
-              {/* //   style={styles.ideaLight} */}
-              {/* //   source={require('../../assets/images/ideaLight.png')} */}
-              {/* // /> */}
+              <Image
+                style={styles.ideaLight}
+                source={require('../../assets/images/ideaLight.png')}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.lineThicknessView}
@@ -454,6 +452,7 @@ export default function ColoringAnimalScreen({
           <View style={styles.bottomContainerMiddle}>
             <TouchableOpacity
               style={styles.clearButton}
+              disabled={isLoading}
               onPress={() => {
                 handleClearButtonClick();
               }}>
@@ -462,7 +461,12 @@ export default function ColoringAnimalScreen({
           </View>
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
-            <TouchableOpacity style={styles.doneButton} onPress={() => {}}>
+            <TouchableOpacity
+              style={[styles.doneButton]}
+              disabled={isLoading}
+              onPress={() => {
+                handleAnimalAnimations();
+              }}>
               <Text style={styles.doneButtonText}>완성하기</Text>
             </TouchableOpacity>
           </View>
@@ -471,10 +475,23 @@ export default function ColoringAnimalScreen({
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginCompareModalVisible ? <OriginCompareModal /> : null}
+      {isOriginCompareModalVisible ? (
+        <OriginCompareModal
+          animalBorderURI={animalBorderURI}
+          animalExplanation={animalExplanation}
+          originImage={originImage}
+          animalType={animalType}
+        />
+      ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
       {isDrawScreenshotModalVisible ? (
         <DrawScreenshotModal captureUri={captureImagePath} />
+      ) : null}
+      {isLoading ? (
+        <Animated.Image
+          style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+          source={require('../../assets/images/loading2.png')}
+        />
       ) : null}
     </View>
   );
@@ -532,9 +549,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   colorCircle: {
-    width: windowWidth * 0.04,
-    height: windowWidth * 0.04,
-    borderRadius: windowWidth * 0.04 * 0.5,
+    width: windowHeight * 0.07,
+    height: windowHeight * 0.07,
+    borderRadius: windowHeight * 0.07 * 0.5,
     overflow: 'hidden',
   },
   topRight: {
@@ -556,7 +573,13 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
-    // borderWidth: 1,
+    height: '100%',
+    backgroundColor: 'white',
+  },
+  pathsView: {
+    justifyContent: 'flex-end',
+    width: '100%',
+    height: '100%',
   },
   bottomContainer: {
     borderTopWidth: 1,
@@ -626,5 +649,12 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });

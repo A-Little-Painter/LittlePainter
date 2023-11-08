@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   Dimensions,
   Modal,
@@ -11,74 +11,60 @@ import {
 } from 'react-native';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {handleisOriginCompareModalVisible} from '../../redux/slices/draw/draw';
+import {handleisSaveDrawnToLoginModalVisible} from '../../redux/slices/draw/draw';
 
-export type OriginCompareModalProps = {
-  animalBorderURI: string;
-  animalExplanation: string;
-  animalType: string;
-  originImage: string;
+export type SaveDrawnToLoginModalProps = {
+  selectColor: string;
 };
+
+const isLogin = useSelector((state: RootState) => state.user.isLogin);
+const selectName = useSelector((state: RootState) => state.user.selectName);
+const selectImage = useSelector((state: RootState) => state.user.selectImage);
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const OriginCompareModal = (props: OriginCompareModalProps) => {
+const SaveDrawnToLoginModal = () => {
   const dispatch = useDispatch();
-  // const [animalBorderURI] = useState<string>(props.animalBorderURI);
-  const [animalExplanation] = useState<string>(props.animalExplanation);
-  const [animalType] = useState<string>(props.animalType);
-  const [originImage] = useState<string>(props.originImage);
   // 선 굵기 모달을 위한 라인
-  const isOriginCompareModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginCompareModalVisible,
+  const isSaveDrawnToLoginModalVisible = useSelector(
+    (state: RootState) => state.draw.isSaveDrawnToLoginModalVisible,
   );
   return (
     <View>
       <Modal
         animationType="none"
         transparent={true}
-        visible={isOriginCompareModalVisible}
+        visible={isSaveDrawnToLoginModalVisible}
         onRequestClose={() => {
-          dispatch(handleisOriginCompareModalVisible(false));
+          dispatch(handleisSaveDrawnToLoginModalVisible(false));
         }}>
         <Pressable
           style={styles.centeredView}
           onPress={() => {
-            dispatch(handleisOriginCompareModalVisible(false));
+            dispatch(handleisSaveDrawnToLoginModalVisible(false));
           }}>
           <Pressable
             style={styles.modalView}
             onPress={() => {
-              dispatch(handleisOriginCompareModalVisible(true));
+              dispatch(handleisSaveDrawnToLoginModalVisible(true));
             }}>
             {/* 최상단 */}
-            <View style={styles.modalTop}>
-              <View style={styles.modalTopLeft} />
-              <View style={styles.modalTopMiddle}>
-                <Text style={styles.modalTitleText}>
-                  '{animalType}'를 그려볼까요?
-                </Text>
-              </View>
-              <TouchableOpacity
-                style={styles.modalTopRight}
-                onPress={() =>
-                  dispatch(handleisOriginCompareModalVisible(false))
-                }>
-                <Text style={styles.modalCloseX}>X</Text>
-              </TouchableOpacity>
-            </View>
+            <View style={styles.modalTop} />
             {/* 중단 */}
             <View style={styles.modalMiddle}>
-              <Image
-                style={styles.originImage}
-                // source={require('../../assets/images/elephant.png')}
-                source={{uri: originImage}}
-              />
+              <Text style={styles.middleText}>
+                그림을 저장하려면 {'\n'}로그인을 해야해요.
+              </Text>
             </View>
             {/* 하단 */}
             <View style={styles.modalBottom}>
-              <Text style={styles.contentText}>{animalExplanation}</Text>
+              <TouchableOpacity style={styles.Button1}>
+                <Text style={styles.buttonText}>취소</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.Button2}>
+                <Text style={styles.buttonText}>로그인하러가기</Text>
+              </TouchableOpacity>
             </View>
           </Pressable>
         </Pressable>
@@ -96,11 +82,9 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: 'white',
     borderRadius: 20,
-    width: windowWidth * 0.7,
-    height: windowHeight * 0.7,
+    width: windowWidth * 0.6,
+    height: windowHeight * 0.6,
     justifyContent: 'center',
-    // padding: 35,
-    // alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -146,21 +130,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  originImage: {
-    resizeMode: 'contain',
-    height: windowHeight * 0.7 * 0.6,
-    width: windowWidth * 0.7 * 0.8,
+  middleText: {
+    fontSize: windowHeight * 0.06,
+    color: 'black',
   },
   modalBottom: {
     flex: 0.2,
+    justifyContent: 'space-evenly',
     alignItems: 'center',
+    flexDirection: 'row',
   },
-  contentText: {
-    flexWrap: 'wrap',
-    fontSize: windowWidth * 0.02,
-    textAlign: 'center',
+  Button1: {
+    backgroundColor: '#A3A3A3',
+    width: windowWidth * 0.1,
+    height: windowHeight * 0.1,
+    borderRadius: windowHeight * 0.03,
+    justifyContent: 'center',
+  },
+  Button2: {
+    backgroundColor: '#DBE7B5',
+    width: windowWidth * 0.15,
+    height: windowHeight * 0.1,
+    borderRadius: windowHeight * 0.03,
+    justifyContent: 'center',
+  },
+  buttonText: {
     color: 'black',
+    textAlign: 'center',
+    fontSize: windowHeight * 0.03,
   },
 });
 
-export default OriginCompareModal;
+export default SaveDrawnToLoginModal;

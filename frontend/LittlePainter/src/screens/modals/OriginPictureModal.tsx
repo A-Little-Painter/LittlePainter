@@ -11,59 +11,58 @@ import {
 } from 'react-native';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {handleisOriginCompareModalVisible} from '../../redux/slices/draw/draw';
+import {handleisOriginPictureModalVisible} from '../../redux/slices/draw/draw';
 
-export type OriginCompareModalProps = {
-  animalBorderURI: string;
-  animalExplanation: string;
-  animalType: string;
-  originImage: string;
+export type OriginPictureModalProps = {
+  pictureTitle: string;
+  pictureBorderURI: string;
+  pictureOriginImageUri: string;
+  pictureExplanation: string;
 };
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const OriginCompareModal = (props: OriginCompareModalProps) => {
+const OriginPictureModal = (props: OriginPictureModalProps) => {
   const dispatch = useDispatch();
-  // const [animalBorderURI] = useState<string>(props.animalBorderURI);
-  const [animalExplanation] = useState<string>(props.animalExplanation);
-  const [animalType] = useState<string>(props.animalType);
-  const [originImage] = useState<string>(props.originImage);
-  // 선 굵기 모달을 위한 라인
-  const isOriginCompareModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginCompareModalVisible,
+  const [pictureTitle] = useState<string>(props.pictureTitle);
+  // const [pictureBorderURI] = useState<string>(props.pictureBorderURI);
+  const [pictureOriginImageUri] = useState<string>(props.pictureOriginImageUri);
+  const [pictureExplanation] = useState<string>(props.pictureExplanation);
+  const isOriginPictureModalVisible = useSelector(
+    (state: RootState) => state.draw.isOriginPictureModalVisible,
   );
   return (
     <View>
       <Modal
         animationType="none"
         transparent={true}
-        visible={isOriginCompareModalVisible}
+        visible={isOriginPictureModalVisible}
         onRequestClose={() => {
-          dispatch(handleisOriginCompareModalVisible(false));
+          dispatch(handleisOriginPictureModalVisible(false));
         }}>
         <Pressable
           style={styles.centeredView}
           onPress={() => {
-            dispatch(handleisOriginCompareModalVisible(false));
+            dispatch(handleisOriginPictureModalVisible(false));
           }}>
           <Pressable
             style={styles.modalView}
             onPress={() => {
-              dispatch(handleisOriginCompareModalVisible(true));
+              dispatch(handleisOriginPictureModalVisible(true));
             }}>
             {/* 최상단 */}
             <View style={styles.modalTop}>
               <View style={styles.modalTopLeft} />
               <View style={styles.modalTopMiddle}>
                 <Text style={styles.modalTitleText}>
-                  '{animalType}'를 그려볼까요?
+                  우리의 {pictureTitle} 친구에요!
                 </Text>
               </View>
               <TouchableOpacity
                 style={styles.modalTopRight}
                 onPress={() =>
-                  dispatch(handleisOriginCompareModalVisible(false))
+                  dispatch(handleisOriginPictureModalVisible(false))
                 }>
                 <Text style={styles.modalCloseX}>X</Text>
               </TouchableOpacity>
@@ -73,12 +72,12 @@ const OriginCompareModal = (props: OriginCompareModalProps) => {
               <Image
                 style={styles.originImage}
                 // source={require('../../assets/images/elephant.png')}
-                source={{uri: originImage}}
+                source={{uri: pictureOriginImageUri}}
               />
             </View>
             {/* 하단 */}
             <View style={styles.modalBottom}>
-              <Text style={styles.contentText}>{animalExplanation}</Text>
+              <Text style={styles.contentText}>{pictureExplanation}</Text>
             </View>
           </Pressable>
         </Pressable>
@@ -163,4 +162,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OriginCompareModal;
+export default OriginPictureModal;

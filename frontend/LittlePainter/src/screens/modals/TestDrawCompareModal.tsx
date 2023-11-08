@@ -11,59 +11,52 @@ import {
 } from 'react-native';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {handleisOriginCompareModalVisible} from '../../redux/slices/draw/draw';
+import {handleisTestDrawCompareModalVisible} from '../../redux/slices/draw/draw';
 
-export type OriginCompareModalProps = {
-  animalBorderURI: string;
-  animalExplanation: string;
-  animalType: string;
-  originImage: string;
+export type TestDrawCompareModalProps = {
+  originImageURI: string;
+  compareImageURI: string;
 };
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const OriginCompareModal = (props: OriginCompareModalProps) => {
+const TestDrawCompareModal = (props: TestDrawCompareModalProps) => {
   const dispatch = useDispatch();
-  // const [animalBorderURI] = useState<string>(props.animalBorderURI);
-  const [animalExplanation] = useState<string>(props.animalExplanation);
-  const [animalType] = useState<string>(props.animalType);
-  const [originImage] = useState<string>(props.originImage);
-  // 선 굵기 모달을 위한 라인
-  const isOriginCompareModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginCompareModalVisible,
+  const [originImageURI] = useState(props.originImageURI);
+  const [compareImageURI] = useState(props.compareImageURI);
+  const isTestDrawCompareModalVisible = useSelector(
+    (state: RootState) => state.draw.isTestDrawCompareModalVisible,
   );
   return (
     <View>
       <Modal
         animationType="none"
         transparent={true}
-        visible={isOriginCompareModalVisible}
+        visible={isTestDrawCompareModalVisible}
         onRequestClose={() => {
-          dispatch(handleisOriginCompareModalVisible(false));
+          dispatch(handleisTestDrawCompareModalVisible(false));
         }}>
         <Pressable
           style={styles.centeredView}
           onPress={() => {
-            dispatch(handleisOriginCompareModalVisible(false));
+            dispatch(handleisTestDrawCompareModalVisible(false));
           }}>
           <Pressable
             style={styles.modalView}
             onPress={() => {
-              dispatch(handleisOriginCompareModalVisible(true));
+              dispatch(handleisTestDrawCompareModalVisible(true));
             }}>
             {/* 최상단 */}
             <View style={styles.modalTop}>
               <View style={styles.modalTopLeft} />
               <View style={styles.modalTopMiddle}>
-                <Text style={styles.modalTitleText}>
-                  '{animalType}'를 그려볼까요?
-                </Text>
+                <Text style={styles.modalTitleText}>메롱</Text>
               </View>
               <TouchableOpacity
                 style={styles.modalTopRight}
                 onPress={() =>
-                  dispatch(handleisOriginCompareModalVisible(false))
+                  dispatch(handleisTestDrawCompareModalVisible(false))
                 }>
                 <Text style={styles.modalCloseX}>X</Text>
               </TouchableOpacity>
@@ -73,12 +66,17 @@ const OriginCompareModal = (props: OriginCompareModalProps) => {
               <Image
                 style={styles.originImage}
                 // source={require('../../assets/images/elephant.png')}
-                source={{uri: originImage}}
+                source={{uri: originImageURI}}
+              />
+              <Image
+                style={styles.originImage}
+                // source={require('../../assets/images/elephant.png')}
+                source={{uri: compareImageURI}}
               />
             </View>
             {/* 하단 */}
             <View style={styles.modalBottom}>
-              <Text style={styles.contentText}>{animalExplanation}</Text>
+              <Text style={styles.contentText}></Text>
             </View>
           </Pressable>
         </Pressable>
@@ -96,8 +94,8 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: 'white',
     borderRadius: 20,
-    width: windowWidth * 0.7,
-    height: windowHeight * 0.7,
+    width: windowWidth * 0.8,
+    height: windowHeight * 0.8,
     justifyContent: 'center',
     // padding: 35,
     // alignItems: 'center',
@@ -145,11 +143,14 @@ const styles = StyleSheet.create({
     flex: 0.7,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   originImage: {
     resizeMode: 'contain',
-    height: windowHeight * 0.7 * 0.6,
-    width: windowWidth * 0.7 * 0.8,
+    height: '100%',
+    width: '50%',
+    // height: windowHeight * 0.7 * 0.6,
+    // width: windowWidth * 0.7 * 0.8,
   },
   modalBottom: {
     flex: 0.2,
@@ -163,4 +164,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OriginCompareModal;
+export default TestDrawCompareModal;

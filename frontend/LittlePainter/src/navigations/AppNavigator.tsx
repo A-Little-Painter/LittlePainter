@@ -5,13 +5,23 @@ import InitialScreen from '../screens/main/InitialScreen';
 import LoginScreen from '../screens/mypage/LoginScreen';
 import MypageProfileScreen from '../screens/mypage/MypageProfileScreen';
 
+//동물 그리기
 import SelectAnimalScreen from '../screens/drawAnimal/SelectAnimalScreen';
 import DrawAnimalScreen from '../screens/drawAnimal/DrawAnimalScreen';
 import ColoringAnimalScreen from '../screens/drawAnimal/ColoringAnimalScreen';
+import CompleteDrawAnimalScreen from '../screens/drawAnimal/CompleteDrawAnimalScreen';
 
-import DrawTestScreen from '../screens/drawAnimal/DrawTestScreen';
+// 사진그리기
 import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
+import DrawPictureScreen from '../screens/drawPicture/DrawPictureScreen';
+import ColoringPictureScreen from '../screens/drawPicture/ColoringPictureScreen';
+import CompleteDrawPictureScreen from '../screens/drawPicture/CompleteDrawPictureScreen';
+// 동화그리기
 import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
+import ReadFairytaleScreen from '../screens/fairytale/Fairtytale1Screen.tsx/ReadFairytaleScreen';
+import FairytaleDrawScreen from '../screens/fairytale/Fairtytale1Screen.tsx/FairytaleDrawScreen';
+import FairytaleColoringScreen from '../screens/fairytale/Fairtytale1Screen.tsx/FairytaleColoringScreen';
+//이미지 업로드
 import UploadPicture0Screen from '../screens/uploadPicture/UploadPicture0Screen';
 import UploadPicture1Screen from '../screens/uploadPicture/UploadPicture1Screen';
 import UploadPicture2Screen from '../screens/uploadPicture/UploadPicture2Screen';
@@ -22,6 +32,10 @@ import UploadPicture5Screen from '../screens/uploadPicture/UploadPicture5Screen'
 import FindPasswordScreen from '../screens/mypage/FindPasswordScreen';
 import SignupScreen from '../screens/mypage/SignupScreen';
 
+// 모달
+import SaveDrawnToLoginModal from '../screens/modals/SaveDrawnToLoginModal';
+
+// 이후 삭제
 import LoadScreen from '../screens/load/LoadScreen';
 
 import MainTmpScreen from '../screens/main/MainTmpScreen';
@@ -29,7 +43,6 @@ import Detail1Screen from '../screens/detail/Detail1Screen';
 import DetailScreen from '../screens/detail/DetailScreen';
 import NodetailScreen from '../screens/detail/NodetailScreen';
 import Detail2Screen from '../screens/detail/Detail2Screen';
-import DrawCaptureScreen from '../screens/drawAnimal/DrawCaptureScreen';
 
 export type RootStackParams = {
   InitialScreen: undefined;
@@ -37,12 +50,54 @@ export type RootStackParams = {
   LoginScreen: undefined;
   MypageProfileScreen: undefined;
   SelectAnimalScreen: undefined;
-  DrawAnimalScreen: undefined;
+  DrawAnimalScreen: {
+    animalId: number;
+    animalType: string;
+    originImage: string;
+  };
   ColoringAnimalScreen: {
-    completeLineUri: string;
+    animalId: number;
+    completeLine: {path: string; color: string; strokeWidth: number}[];
+    animalType: string;
+    originImage: string;
+    animalBorderURI: string;
+    animalExplanation: string;
+  };
+  CompleteDrawAnimalScreen: {
+    animalId: number;
+    animalType: string;
+    completeDrawUri: string;
+    animatedGif: string;
   };
   SelectPictureScreen: undefined;
+  DrawPictureScreen: {
+    friendsAnimalInfo: {
+      friendsAnimalId: number;
+      userEmail: string;
+      title: string;
+      originalImageUrl: string;
+    };
+  };
+  ColoringPictureScreen: {
+    pictureId: number;
+    pictureTitle: string;
+    completeLine: {path: string; color: string; strokeWidth: number}[];
+    pictureBorderURI: string;
+    pictureExplanation: string;
+    pictureOriginImageUri: string;
+  };
+  CompleteDrawPictureScreen: {
+    pictureId: number;
+    completeDrawUri: string;
+  };
   SelectFairytaleScreen: undefined;
+  FairytaleDrawScreen: undefined;
+  ReadFairytaleScreen: {title: string};
+  FairytaleColoringScreen: {
+    // completeLineUri: string;
+    completeLine: {path: string; color: string; strokeWidth: number}[];
+  };
+
   UploadPicture0Screen: undefined;
   UploadPicture1Screen: undefined;
   UploadPicture2Screen: undefined;
@@ -53,12 +108,12 @@ export type RootStackParams = {
   FindPasswordScreen: undefined;
   LoadScreen: undefined;
 
+  // 모달
+  SaveDrawnToLoginModal: undefined;
   // 이하는 테스트용이었음
   MainTmpScreen: undefined;
   DetailScreen: undefined;
   NodetailScreen: undefined;
-  DrawTestScreen: undefined;
-  DrawCaptureScreen: undefined;
   Detail1Screen: {
     name: string;
   };
@@ -91,12 +146,40 @@ export default function AppNavigator() {
         component={ColoringAnimalScreen}
       />
       <RootStack.Screen
+        name="CompleteDrawAnimalScreen"
+        component={CompleteDrawAnimalScreen}
+      />
+      <RootStack.Screen
         name="SelectPictureScreen"
         component={SelectPictureScreen}
       />
       <RootStack.Screen
+        name="DrawPictureScreen"
+        component={DrawPictureScreen}
+      />
+      <RootStack.Screen
+        name="ColoringPictureScreen"
+        component={ColoringPictureScreen}
+      />
+      <RootStack.Screen
+        name="CompleteDrawPictureScreen"
+        component={CompleteDrawPictureScreen}
+      />
+      <RootStack.Screen
         name="SelectFairytaleScreen"
         component={SelectFairytaleScreen}
+      />
+      <RootStack.Screen  
+        name="ReadFairytaleScreen"
+        component={ReadFairytaleScreen}
+      />
+      <RootStack.Screen
+        name="FairytaleDrawScreen"
+        component={FairytaleDrawScreen}
+      />
+      <RootStack.Screen
+        name="FairytaleColoringScreen"
+        component={FairytaleColoringScreen}
       />
       <RootStack.Screen
         name="UploadPicture0Screen"
@@ -127,6 +210,11 @@ export default function AppNavigator() {
         name="FindPasswordScreen"
         component={FindPasswordScreen}
       />
+      {/* 모달 */}
+      <RootStack.Screen
+        name="SaveDrawnToLoginModal"
+        component={SaveDrawnToLoginModal}
+      />
 
       <RootStack.Screen name="LoadScreen" component={LoadScreen} />
 
@@ -136,11 +224,6 @@ export default function AppNavigator() {
       <RootStack.Screen name="Detail1Screen" component={Detail1Screen} />
       <RootStack.Screen name="Detail2Screen" component={Detail2Screen} />
       <RootStack.Screen name="NodetailScreen" component={NodetailScreen} />
-      <RootStack.Screen name="DrawTestScreen" component={DrawTestScreen} />
-      <RootStack.Screen
-        name="DrawCaptureScreen"
-        component={DrawCaptureScreen}
-      />
     </RootStack.Navigator>
   );
 }

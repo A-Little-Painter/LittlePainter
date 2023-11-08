@@ -6,79 +6,77 @@ import {
   Text,
   Pressable,
   View,
-  Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {handleisOriginCompareModalVisible} from '../../redux/slices/draw/draw';
+import {handleisTalePageScriptModalVisible} from '../../redux/slices/tale/tale';
 
-export type OriginCompareModalProps = {
-  animalBorderURI: string;
-  animalExplanation: string;
-  animalType: string;
-  originImage: string;
+export type TalePageScriptModalProps = {
+  pageContent: string[];
 };
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const OriginCompareModal = (props: OriginCompareModalProps) => {
+const TalePageScriptModal = (props: TalePageScriptModalProps) => {
   const dispatch = useDispatch();
-  // const [animalBorderURI] = useState<string>(props.animalBorderURI);
-  const [animalExplanation] = useState<string>(props.animalExplanation);
-  const [animalType] = useState<string>(props.animalType);
-  const [originImage] = useState<string>(props.originImage);
+  const [pageContent] = useState<string[]>(props.pageContent);
   // 선 굵기 모달을 위한 라인
-  const isOriginCompareModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginCompareModalVisible,
+  const isTalePageScriptModalVisible = useSelector(
+    (state: RootState) => state.tale.isTalePageScriptModalVisible,
   );
   return (
     <View>
       <Modal
         animationType="none"
         transparent={true}
-        visible={isOriginCompareModalVisible}
+        visible={isTalePageScriptModalVisible}
         onRequestClose={() => {
-          dispatch(handleisOriginCompareModalVisible(false));
+          dispatch(handleisTalePageScriptModalVisible(false));
         }}>
         <Pressable
           style={styles.centeredView}
           onPress={() => {
-            dispatch(handleisOriginCompareModalVisible(false));
+            dispatch(handleisTalePageScriptModalVisible(false));
           }}>
           <Pressable
             style={styles.modalView}
             onPress={() => {
-              dispatch(handleisOriginCompareModalVisible(true));
+              dispatch(handleisTalePageScriptModalVisible(true));
             }}>
             {/* 최상단 */}
             <View style={styles.modalTop}>
               <View style={styles.modalTopLeft} />
               <View style={styles.modalTopMiddle}>
-                <Text style={styles.modalTitleText}>
-                  '{animalType}'를 그려볼까요?
-                </Text>
+                {/* <Text style={styles.modalTitleText}>
+                  이제, '쥐'를 그려볼까요?
+                </Text> */}
               </View>
               <TouchableOpacity
                 style={styles.modalTopRight}
                 onPress={() =>
-                  dispatch(handleisOriginCompareModalVisible(false))
+                  dispatch(handleisTalePageScriptModalVisible(false))
                 }>
                 <Text style={styles.modalCloseX}>X</Text>
               </TouchableOpacity>
             </View>
             {/* 중단 */}
-            <View style={styles.modalMiddle}>
-              <Image
-                style={styles.originImage}
-                // source={require('../../assets/images/elephant.png')}
-                source={{uri: originImage}}
-              />
-            </View>
+            <ScrollView style={styles.modalMiddle}>
+              {/* <ScrollView style={{}}> */}
+              {pageContent.map((line, index) => (
+                <Text key={index} style={styles.scriptText}>
+                  {line}
+                </Text>
+              ))}
+              {/* </ScrollView> */}
+            </ScrollView>
             {/* 하단 */}
             <View style={styles.modalBottom}>
-              <Text style={styles.contentText}>{animalExplanation}</Text>
+              {/* <Text style={styles.contentText}>
+                쥐는 구미에 사는 동물입니다.{'\n'}아주 더러워요.
+              </Text> */}
             </View>
           </Pressable>
         </Pressable>
@@ -96,8 +94,8 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: 'white',
     borderRadius: 20,
-    width: windowWidth * 0.7,
-    height: windowHeight * 0.7,
+    width: windowWidth * 0.8,
+    height: windowHeight * 0.8,
     justifyContent: 'center',
     // padding: 35,
     // alignItems: 'center',
@@ -142,9 +140,16 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.03,
   },
   modalMiddle: {
-    flex: 0.7,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 0.8,
+    width: '95%',
+    // justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  scriptText: {
+    fontSize: windowHeight * 0.04,
+    textAlign: 'center',
+    color: 'black',
+    paddingBottom: windowHeight * 0.025,
   },
   originImage: {
     resizeMode: 'contain',
@@ -152,7 +157,7 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.7 * 0.8,
   },
   modalBottom: {
-    flex: 0.2,
+    flex: 0.1,
     alignItems: 'center',
   },
   contentText: {
@@ -163,4 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OriginCompareModal;
+export default TalePageScriptModal;
