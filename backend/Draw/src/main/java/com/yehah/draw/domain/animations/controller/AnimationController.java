@@ -2,7 +2,7 @@ package com.yehah.draw.domain.animations.controller;
 
 import com.yehah.draw.domain.animations.dto.request.AnimationAnimalReqDto;
 import com.yehah.draw.domain.animations.dto.request.AnimationTaleReqDto;
-import com.yehah.draw.domain.animations.dto.response.AnimationAnimalResDto;
+import com.yehah.draw.domain.animations.dto.response.AnimationResDto;
 import com.yehah.draw.domain.animations.exception.AnimationChangeException;
 import com.yehah.draw.global.communication.CommMethod;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,9 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 
 
 @Slf4j
@@ -41,7 +37,7 @@ public class AnimationController {
 
     // NOTE : animals와 friendsAnimal 모두 받아온다.
     @PostMapping("/animals")
-    public ResponseEntity<AnimationAnimalResDto> sendAnimatedAnimal(@ModelAttribute AnimationAnimalReqDto animationAnimalReqDto) throws IOException {
+    public ResponseEntity<AnimationResDto> sendAnimatedAnimal(@ModelAttribute AnimationAnimalReqDto animationAnimalReqDto) throws IOException {
         bodyData = new LinkedMultiValueMap<>();
         bodyData.add("animalType", animationAnimalReqDto.getAnimalType());
         bodyData.add("image", animationAnimalReqDto.getImage().getResource());
@@ -59,7 +55,7 @@ public class AnimationController {
 
             String gifImageUrl = String.valueOf(commMethod.postMultipartMethod(bodyData, imagePath+"/comm/temp"));
 
-            return ResponseEntity.ok().body(AnimationAnimalResDto.builder()
+            return ResponseEntity.ok().body(AnimationResDto.builder()
                     .gifImageUrl(gifImageUrl).build());
         }catch(Exception e){
             e.printStackTrace();
@@ -69,7 +65,7 @@ public class AnimationController {
     }
 
     @PostMapping("/tales")
-    public ResponseEntity<AnimationAnimalResDto> sendAnimatedTale(@ModelAttribute AnimationTaleReqDto animationTaleReqDto){
+    public ResponseEntity<AnimationResDto> sendAnimatedTale(@ModelAttribute AnimationTaleReqDto animationTaleReqDto){
         bodyData = new LinkedMultiValueMap<>();
         bodyData.add("pageNo", animationTaleReqDto.getPageNumber());
         bodyData.add("taleTitle", animationTaleReqDto.getTitle());
@@ -90,7 +86,7 @@ public class AnimationController {
 
             String gifImageUrl = String.valueOf(commMethod.postMultipartMethod(bodyData, imagePath+"/comm/temp"));
 
-            return ResponseEntity.ok().body(AnimationAnimalResDto.builder()
+            return ResponseEntity.ok().body(AnimationResDto.builder()
                     .gifImageUrl(gifImageUrl).build());
 
         } catch (Exception e) {
