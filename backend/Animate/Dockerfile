@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y wget \
   && rm -rf ~/miniconda3/miniconda.sh \
 #  && ~/miniconda3/bin/conda init bash \
 #  && ~/miniconda3/bin/conda init zsh \
-  && ~/miniconda3/bin/conda clean -tipsy \
+  && ~/miniconda3/bin/conda clean -tip \
   && ln -s ~/miniconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
   && echo ". ~/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc \
   && conda create --name animated_drawings python=3.8.13 \
