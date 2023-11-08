@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class SearchController {
     private final GoogleSearchService googleSearchService;
 
-    @GetMapping("/images")
+    @PostMapping("/images")
     public ResponseEntity<String> searchImages(@RequestBody GoogleSearchRequestDTO googleSearchRequestDTO){
         log.info("query: {}", googleSearchRequestDTO.getName());
 
