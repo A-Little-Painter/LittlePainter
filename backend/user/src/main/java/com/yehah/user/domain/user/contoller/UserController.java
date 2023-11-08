@@ -113,6 +113,12 @@ public class UserController {
         return userService.updatePassword(updatePasswordRequestDTO);
     }
 
+    //아이 삭제
+    @DeleteMapping("/child/{childId}")
+    public ResponseEntity<?> deleteChild(@PathVariable Long childId){
+        return userService.deleteChild(childId);
+    }
+
 
     //유저 정보 가져오기(타 마이크로서비스 유저 정보가져오기)
     @Operation(summary = "유저 정보 가져오기(타 마이크로서비스 유저 정보가져오기)", description = "USER")
