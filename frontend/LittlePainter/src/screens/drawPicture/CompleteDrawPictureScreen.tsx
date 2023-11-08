@@ -16,7 +16,7 @@ import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {handleisSaveDrawnToLoginModalVisible} from '../../redux/slices/draw/draw';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import DrawScreenshotModal from '../modals/DrawScreenshotModal';
+import {friendsPictureSaveToMypage} from '../../apis/draw/draw';
 import SaveDrawnToLoginModal from '../modals/SaveDrawnToLoginModal';
 
 type CompleteDrawPictureScreenProps = StackScreenProps<
@@ -31,23 +31,49 @@ export default function CompleteDrawPictureScreen({
   route,
   navigation,
 }: CompleteDrawPictureScreenProps) {
-  const [completeDrawUri] = useState(route.params.completeDrawUri);
+  const [pictureId] = useState<number>(route.params.pictureId);
+  const [completeDrawUri] = useState(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
+
+  const isLogin = useSelector((state: RootState) => state.user.isLogin);
+  // const selectName = useSelector((state: RootState) => state.user.selectName);
+  // const selectImage = useSelector((state: RootState) => state.user.selectImage);
+  const dispatch = useDispatch();
+  const isSaveDrawnToLoginModalVisible = useSelector(
+    (state: RootState) => state.draw.isSaveDrawnToLoginModalVisible,
+  );
+
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
   const captureRef = useRef();
 
-  const dispatch = useDispatch();
-  const isSaveDrawnToLoginModalVisible = useSelector(
-    (state: RootState) => state.draw.isSaveDrawnToLoginModalVisible,
-  );
-  // 스크린샷 관련 모달
-  const isDrawScreenshotModalVisible = useSelector(
-    (state: RootState) => state.draw.isDrawScreenshotModalVisible,
-  );
-  const [captureImagePath, setCaptureImagePath] =
-    useState<string>(completeDrawUri);
+  // function handlePressSaving(params:type) {
+  function handlePressSaving() {
+    if (isLogin) {
+      handlefriendsPictureSaveToMypage();
+    } else {
+      dispatch(handleisSaveDrawnToLoginModalVisible(true));
+    }
+  }
 
+  const handlefriendsPictureSaveToMypage = async () => {
+    try {
+      const response = await friendsPictureSaveToMypage(
+        pictureId,
+        completeDrawUri,
+      );
+      if (response.status === 200) {
+        console.log('완성된 사진그리기 마이페이지에 저장 성공', response.data);
+      } else {
+        console.log(
+          '완성된 사진그리기 마이페이지에 저장 실패',
+          response.status,
+        );
+      }
+    } catch (error) {
+      console.log('완성된 사진그리기 마이페이지에 저장 실패', error);
+    }
+  };
   //뒤로가기 2번시 뒤로가기
   useEffect(() => {
     const backAction = () => {
@@ -108,9 +134,9 @@ export default function CompleteDrawPictureScreen({
           style={[styles.middleContainer]}
           ref={captureRef}
           options={{
-            fileName: 'drawAnimalCapture',
-            format: 'jpg',
-            quality: 0.9,
+            fileName: 'drawPictureCapture',
+            format: 'png',
+            quality: 1,
           }}>
           <ImageBackground
             // source={require('../../assets/images/animalImage/deerTest1.png')}
@@ -143,7 +169,7 @@ export default function CompleteDrawPictureScreen({
             <TouchableOpacity
               style={[styles.doneButton]}
               onPress={() => {
-                dispatch(handleisSaveDrawnToLoginModalVisible(true));
+                handlePressSaving();
               }}>
               <Text style={styles.doneButtonText}>저장하기</Text>
             </TouchableOpacity>

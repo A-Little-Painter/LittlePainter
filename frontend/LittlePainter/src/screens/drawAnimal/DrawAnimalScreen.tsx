@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -10,6 +11,8 @@ import {
   ToastAndroid, // 토스트안드로이드 잠깐 사용
   BackHandler,
   ImageBackground,
+  Animated,
+  Easing,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
@@ -65,12 +68,15 @@ export default function DrawAnimalScreen({
 
   const [animalId] = useState<number>(route.params.animalId);
   const [animalType] = useState<string>(route.params.animalType);
+  const [originImage] = useState<string>(route.params.originImage);
   const [animalBorderURI, setAnimalBorderURI] = useState<string>('');
   const [animalExplanation, setAnimalExplanation] = useState<string>('');
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
   const [captureBorderImagePath, setCaptureBorderImagePath] =
     useState<string>('');
   const [canDrawCapture, setCanDrawCapture] = useState<boolean>(false);
+  // 로딩 변수
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
 
@@ -104,13 +110,15 @@ export default function DrawAnimalScreen({
 
   // 서버 통신
   const handleAnimalBorder = async () => {
+    setIsLoading(true);
     try {
       const response = await animalBorder(animalId);
       if (response.status === 200) {
         console.log('선택 동물 테두리 가져오기 성공', response.data);
+        setIsLoading(false);
         setAnimalBorderURI(response.data.urlTrace);
         setAnimalExplanation(response.data.detail);
-        handleOriginCapture();
+        // await handleOriginCapture();
       } else {
         console.log('선택 동물 테두리 가져오기 실패', response.status);
       }
@@ -118,6 +126,7 @@ export default function DrawAnimalScreen({
       console.log('선택 동물 테두리 가져오기 실패', error);
     }
   };
+
   const handleAnimalCheckSimilarity = async (compareImagePath: string) => {
     const randomInt = Math.floor(Math.random() * (100 - 1 + 1) + 1);
     try {
@@ -126,9 +135,9 @@ export default function DrawAnimalScreen({
         captureBorderImagePath,
         compareImagePath,
       );
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 404) {
         console.log('동물 그리기 유사도 체크 성공', response.data);
-        if (response.data === 'END') {
+        if (response.data.similarState === 'END') {
           handleGoColoring();
         }
       } else {
@@ -155,11 +164,19 @@ export default function DrawAnimalScreen({
     try {
       const uri = await originCaptureRef.current.capture();
       setCaptureBorderImagePath(uri);
+      console.log('oo 캡쳐함', uri);
     } catch (error) {
       console.error('원본 이미지 캡쳐 에러 발생: ', error);
     }
   }
-
+  // 초기 테두리 원본 캡쳐
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('캡쳐되나?', animalBorderURI);
+      handleOriginCapture();
+    }, 10);
+  }, [animalBorderURI]);
+  // 초기 테두리 원본 가져오기
   useEffect(() => {
     handleAnimalBorder();
   }, []);
@@ -228,6 +245,7 @@ export default function DrawAnimalScreen({
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
+      // dispatch(handleLineThickness(10));
       dispatch(handleLineThickness(10));
     });
 
@@ -264,14 +282,39 @@ export default function DrawAnimalScreen({
 
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
-    console.log(paths);
     navigation.navigate('ColoringAnimalScreen', {
+      animalId: animalId,
       completeLine: paths,
       animalType: animalType,
+      originImage: originImage,
       animalBorderURI: animalBorderURI,
       animalExplanation: animalExplanation,
     });
   };
+
+  ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+
+    rotateImage();
+  }, []);
+
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+  ////////////
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -377,56 +420,64 @@ export default function DrawAnimalScreen({
           }}>
           {animalBorderURI === '' ? null : (
             <ImageBackground
-              // source={{uri: animalBorderURI}}
-              source={require('../../assets/images/animalImage/ovalTest.png')}
+              source={{uri: animalBorderURI}}
+              // source={require('../../assets/images/animalImage/ovalTest.png')}
               // source={require('../../assets/images/animalImage/test1.jpg')}
               style={styles.animalBorderImageBackground}
+              imageStyle={{opacity: 0.5}}
               resizeMode="contain">
-              <ViewShot
-                ref={drawCaptureRef}
-                options={{
-                  fileName: 'drawCapture',
-                  format: 'png',
-                  quality: 1,
-                }}
-                style={[
-                  styles.pathViewShot,
-                  {backgroundColor: canDrawCapture ? 'white' : 'transparent'},
-                ]}>
-                <View
-                  style={styles.pathView}
-                  onTouchStart={onTouchStart}
-                  onTouchMove={onTouchMove}
-                  onTouchEnd={onTouchEnd}>
-                  <Svg>
-                    {paths.map((item, index) => (
+              {captureBorderImagePath !== '' ? (
+                <ViewShot
+                  ref={drawCaptureRef}
+                  options={{
+                    fileName: 'drawCapture',
+                    format: 'png',
+                    quality: 1,
+                  }}
+                  style={[
+                    styles.pathViewShot,
+                    // eslint-disable-next-line react-native/no-inline-styles
+                    {
+                      backgroundColor: canDrawCapture
+                        ? '#FFFFFF'
+                        : 'transparent',
+                    },
+                  ]}>
+                  <View
+                    style={styles.pathView}
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}>
+                    <Svg>
+                      {paths.map((item, index) => (
+                        <Path
+                          key={`path-${index}`}
+                          d={item.path}
+                          stroke={
+                            // isClearButtonClicked ? 'transparent' : item.color
+                            item.color
+                          }
+                          fill={'transparent'}
+                          strokeWidth={item.strokeWidth}
+                          strokeLinejoin={'round'}
+                          strokeLinecap={'round'}
+                        />
+                      ))}
                       <Path
-                        key={`path-${index}`}
-                        d={item.path}
+                        d={currentPath}
                         stroke={
-                          // isClearButtonClicked ? 'transparent' : item.color
-                          item.color
+                          // isClearButtonClicked ? 'transparent' : drawColorSelect
+                          drawColorSelect
                         }
                         fill={'transparent'}
-                        strokeWidth={item.strokeWidth}
+                        strokeWidth={LineThickness}
                         strokeLinejoin={'round'}
                         strokeLinecap={'round'}
                       />
-                    ))}
-                    <Path
-                      d={currentPath}
-                      stroke={
-                        // isClearButtonClicked ? 'transparent' : drawColorSelect
-                        drawColorSelect
-                      }
-                      fill={'transparent'}
-                      strokeWidth={LineThickness}
-                      strokeLinejoin={'round'}
-                      strokeLinecap={'round'}
-                    />
-                  </Svg>
-                </View>
-              </ViewShot>
+                    </Svg>
+                  </View>
+                </ViewShot>
+              ) : null}
             </ImageBackground>
           )}
           {/* </View> */}
@@ -505,6 +556,7 @@ export default function DrawAnimalScreen({
           animalBorderURI={animalBorderURI}
           animalExplanation={animalExplanation}
           animalType={animalType}
+          originImage={originImage}
         />
       ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
@@ -515,6 +567,12 @@ export default function DrawAnimalScreen({
           compareImageURI={captureImagePath}
         />
       ) : null}
+      {isLoading ? (
+        <Animated.Image
+          style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+          source={require('../../assets/images/loading2.png')}
+        />
+      ) : null}
     </View>
   );
 }
@@ -522,7 +580,7 @@ export default function DrawAnimalScreen({
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
   },
   subContainer: {
     alignSelf: 'center',
@@ -584,7 +642,7 @@ const styles = StyleSheet.create({
   xCircle: {
     justifyContent: 'center',
     borderRadius: windowWidth * 0.05 * 0.5,
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
     borderColor: '#5E9FF9',
@@ -596,7 +654,7 @@ const styles = StyleSheet.create({
   middleContainer: {
     flex: 0.8,
     width: '100%',
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
   },
   animalBorderImageBackground: {
     width: '100%',
@@ -685,5 +743,12 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });

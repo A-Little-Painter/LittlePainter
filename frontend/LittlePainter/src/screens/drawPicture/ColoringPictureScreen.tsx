@@ -30,6 +30,7 @@ import {
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
 } from '../../redux/slices/draw/draw';
+import {friendsAnimations} from '../../apis/draw/draw';
 
 type ColoringPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -54,12 +55,21 @@ export default function ColoringPictureScreen({
   route,
   navigation,
 }: ColoringPictureScreenProps) {
-  // const [completeLineUri] = useState(route.params.completeLineUri);
+  const [pictureTitle] = useState<string>(route.params.pictureTitle);
+  const [pictureId] = useState<number>(route.params.pictureId);
+  const [pictureBorderURI] = useState<string>(route.params.pictureBorderURI);
+  const [pictureExplanation] = useState<string>(
+    route.params.pictureExplanation,
+  );
+  const [pictureOriginImageUri] = useState<string>(
+    route.params.pictureOriginImageUri,
+  );
+
   const [completeLine] = useState(route.params.completeLine);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
-  const captureRef = useRef();
+  const drawCaptureRef = useRef();
 
   // 그림 그리기 변수
   const [paths, setPaths] = useState<
@@ -69,8 +79,6 @@ export default function ColoringPictureScreen({
     {path: string; color: string; strokeWidth: number}[]
   >([]);
   const [currentPath, setCurrentPath] = useState<string>('');
-  const [isClearButtonClicked, setClearButtonClicked] =
-    useState<boolean>(false);
 
   const dispatch = useDispatch();
   // 선 굵기 모달을 위한 라인
@@ -96,6 +104,39 @@ export default function ColoringPictureScreen({
   );
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
 
+  // 친구 사진 애니메이션
+  async function handlePictureAnimations() {
+    try {
+      const response = await friendsAnimations(animalType, captureImagePath);
+      if (response.status === 200) {
+        console.log('친구 사진 애니메이션 성공', response.data);
+      } else {
+        console.log('친구 사진 애니메이션 실패', response.status);
+        ToastAndroid.show(
+          '우리 친구가 움직일 수가 없어요ㅠㅠ',
+          ToastAndroid.LONG,
+        );
+      }
+    } catch (error) {
+      console.log('친구 사진 애니메이션 실패', error);
+      ToastAndroid.show(
+        '우리 친구가 움직일 수가 없어요ㅠㅠ',
+        ToastAndroid.LONG,
+      );
+    }
+    handleGoComplete();
+  }
+
+  // 캡쳐 함수
+  async function handleDrawCapture() {
+    try {
+      const uri = await drawCaptureRef.current.capture();
+      setCaptureImagePath(uri);
+    } catch (error) {
+      console.error('캡쳐 에러 발생: ', error);
+    }
+  }
+
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
     const locationX = event.nativeEvent.locationX;
@@ -120,20 +161,15 @@ export default function ColoringPictureScreen({
       ]);
     }
     setCurrentPath('');
-    setClearButtonClicked(false);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
+    handleDrawCapture();
   };
 
   const handleClearButtonClick = () => {
     setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
-    setClearButtonClicked(true);
-    setClearButtonClicked(false);
-    setCaptureImagePath('');
+    // setCaptureImagePath('');
+    handleDrawCapture();
   };
 
   const handlePrevButtonClick = () => {
@@ -143,10 +179,7 @@ export default function ColoringPictureScreen({
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
     }
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
+    handleDrawCapture();
   };
   const handleNextButtonClick = () => {
     const tmpPosition:
@@ -155,23 +188,24 @@ export default function ColoringPictureScreen({
     if (tmpPosition) {
       setPaths([...paths, tmpPosition]);
     }
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
+    handleDrawCapture();
   };
 
   const handleGoComplete = () => {
     navigation.navigate('CompleteDrawPictureScreen', {
+      pictureId: pictureId,
       completeDrawUri: captureImagePath,
     });
   };
 
   useEffect(() => {
+    const randomNum = Math.floor(Math.random() * fastcolorData.length);
+    // console.log(fastcolorData[randomNum]);
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
       dispatch(handleLineThickness(25));
-      dispatch(handleDrawColorSelect('#05FF00'));
+      // dispatch(handleDrawColorSelect('#05FF00'));
+      dispatch(handleDrawColorSelect(fastcolorData[randomNum]));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
@@ -206,12 +240,10 @@ export default function ColoringPictureScreen({
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
+  // 화면 캡쳐 동작 useEffect
   useEffect(() => {
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
-  }, []);
+    handleDrawCapture();
+  }, [paths]);
 
   return (
     <View style={styles.mainContainer}>
@@ -227,7 +259,7 @@ export default function ColoringPictureScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
-                navigation.navigate('DrawCaptureScreen');
+                // navigation.navigate('');
               }}>
               <Image
                 style={styles.drawEquipImage}
@@ -303,17 +335,16 @@ export default function ColoringPictureScreen({
           </View>
         </View>
         {/* 중단 */}
-        {/* <View style={styles.middleContainer}> */}
         <ViewShot
-          style={[styles.middleContainer, {backgroundColor: 'white'}]}
-          ref={captureRef}
+          style={[styles.middleContainer]}
+          ref={drawCaptureRef}
           options={{
-            fileName: 'drawPictureCapture',
+            fileName: 'drawAnimalCapture',
             format: 'jpg',
             quality: 0.9,
           }}>
           <View
-            style={{justifyContent: 'flex-end'}}
+            style={styles.pathsView}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}>
@@ -322,7 +353,7 @@ export default function ColoringPictureScreen({
                 <Path
                   key={`path-${index}`}
                   d={item.path}
-                  stroke={isClearButtonClicked ? 'transparent' : item.color}
+                  stroke={item.color}
                   fill={'transparent'}
                   strokeWidth={item.strokeWidth}
                   strokeLinejoin={'round'}
@@ -331,7 +362,7 @@ export default function ColoringPictureScreen({
               ))}
               <Path
                 d={currentPath}
-                stroke={isClearButtonClicked ? 'transparent' : drawColorSelect}
+                stroke={drawColorSelect}
                 fill={'transparent'}
                 strokeWidth={LineThickness}
                 strokeLinejoin={'round'}
@@ -341,7 +372,7 @@ export default function ColoringPictureScreen({
                 <Path
                   key={`path-${index}`}
                   d={item.path}
-                  stroke={isClearButtonClicked ? 'transparent' : item.color}
+                  stroke={item.color}
                   fill={'transparent'}
                   strokeWidth={item.strokeWidth}
                   strokeLinejoin={'round'}
@@ -350,7 +381,6 @@ export default function ColoringPictureScreen({
               ))}
             </Svg>
           </View>
-          {/* </View> */}
         </ViewShot>
         {/* 하단 */}
         <View style={styles.bottomContainer}>
@@ -361,13 +391,6 @@ export default function ColoringPictureScreen({
               onPress={() => {
                 dispatch(handleisOriginPictureModalVisible(true));
               }}>
-              {/* {captureImagePath ? (
-                <Image
-                  style={styles.ideaLight}
-                  // source={require('../../assets/images/ideaLight.png')}
-                  source={{uri: captureImagePath}}
-                />
-              ) : null} */}
               <Image
                 style={styles.ideaLight}
                 source={require('../../assets/images/ideaLight.png')}
@@ -405,7 +428,8 @@ export default function ColoringPictureScreen({
             <TouchableOpacity
               style={[styles.doneButton]}
               onPress={() => {
-                handleGoComplete();
+                handlePictureAnimations();
+                // handleGoComplete();
               }}>
               <Text style={styles.doneButtonText}>완성하기</Text>
             </TouchableOpacity>
@@ -415,7 +439,14 @@ export default function ColoringPictureScreen({
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginPictureModalVisible ? <OriginPictureModal /> : null}
+      {isOriginPictureModalVisible ? (
+        <OriginPictureModal
+          pictureTitle={pictureTitle}
+          pictureBorderURI={pictureBorderURI}
+          pictureOriginImageUri={pictureOriginImageUri}
+          pictureExplanation={pictureExplanation}
+        />
+      ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
       {isDrawScreenshotModalVisible ? (
         <DrawScreenshotModal captureUri={captureImagePath} />
@@ -500,7 +531,13 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
-    // borderWidth: 1,
+    height: '100%',
+    backgroundColor: 'white',
+  },
+  pathsView: {
+    justifyContent: 'flex-end',
+    width: '100%',
+    height: '100%',
   },
   bottomContainer: {
     borderTopWidth: 1,

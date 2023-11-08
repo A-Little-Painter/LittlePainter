@@ -17,6 +17,7 @@ export type OriginCompareModalProps = {
   animalBorderURI: string;
   animalExplanation: string;
   animalType: string;
+  originImage: string;
 };
 
 const windowWidth = Dimensions.get('window').width;
@@ -24,9 +25,10 @@ const windowHeight = Dimensions.get('window').height;
 
 const OriginCompareModal = (props: OriginCompareModalProps) => {
   const dispatch = useDispatch();
-  const [animalBorderURI] = useState<string>(props.animalBorderURI);
+  // const [animalBorderURI] = useState<string>(props.animalBorderURI);
   const [animalExplanation] = useState<string>(props.animalExplanation);
   const [animalType] = useState<string>(props.animalType);
+  const [originImage] = useState<string>(props.originImage);
   // 선 굵기 모달을 위한 라인
   const isOriginCompareModalVisible = useSelector(
     (state: RootState) => state.draw.isOriginCompareModalVisible,
@@ -71,7 +73,7 @@ const OriginCompareModal = (props: OriginCompareModalProps) => {
               <Image
                 style={styles.originImage}
                 // source={require('../../assets/images/elephant.png')}
-                source={{uri: animalBorderURI}}
+                source={{uri: originImage}}
               />
             </View>
             {/* 하단 */}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Dimensions,
   Modal,
@@ -14,15 +14,21 @@ import {useDispatch, useSelector} from 'react-redux';
 import {handleisOriginPictureModalVisible} from '../../redux/slices/draw/draw';
 
 export type OriginPictureModalProps = {
-  selectColor: string;
+  pictureTitle: string;
+  pictureBorderURI: string;
+  pictureOriginImageUri: string;
+  pictureExplanation: string;
 };
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const OriginPictureModal = () => {
+const OriginPictureModal = (props: OriginPictureModalProps) => {
   const dispatch = useDispatch();
-  // 선 굵기 모달을 위한 라인
+  const [pictureTitle] = useState<string>(props.pictureTitle);
+  // const [pictureBorderURI] = useState<string>(props.pictureBorderURI);
+  const [pictureOriginImageUri] = useState<string>(props.pictureOriginImageUri);
+  const [pictureExplanation] = useState<string>(props.pictureExplanation);
   const isOriginPictureModalVisible = useSelector(
     (state: RootState) => state.draw.isOriginPictureModalVisible,
   );
@@ -50,7 +56,7 @@ const OriginPictureModal = () => {
               <View style={styles.modalTopLeft} />
               <View style={styles.modalTopMiddle}>
                 <Text style={styles.modalTitleText}>
-                  뽀송이는 아래처럼 생겼어요!
+                  우리의 {pictureTitle} 친구에요!
                 </Text>
               </View>
               <TouchableOpacity
@@ -65,14 +71,13 @@ const OriginPictureModal = () => {
             <View style={styles.modalMiddle}>
               <Image
                 style={styles.originImage}
-                source={require('../../assets/images/elephant.png')}
+                // source={require('../../assets/images/elephant.png')}
+                source={{uri: pictureOriginImageUri}}
               />
             </View>
             {/* 하단 */}
             <View style={styles.modalBottom}>
-              <Text style={styles.contentText}>
-                진평동 미용실에 사는 강아지입니다.
-              </Text>
+              <Text style={styles.contentText}>{pictureExplanation}</Text>
             </View>
           </Pressable>
         </Pressable>

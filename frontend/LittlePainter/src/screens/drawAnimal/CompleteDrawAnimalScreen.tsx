@@ -16,6 +16,7 @@ import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {handleisSaveDrawnToLoginModalVisible} from '../../redux/slices/draw/draw';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
+import {animalSaveToMypage} from '../../apis/draw/draw';
 import SaveDrawnToLoginModal from '../modals/SaveDrawnToLoginModal';
 
 type CompleteDrawAnimalScreenProps = StackScreenProps<
@@ -30,19 +31,45 @@ export default function CompleteDrawAnimalScreen({
   route,
   navigation,
 }: CompleteDrawAnimalScreenProps) {
+  const [animalId] = useState<number>(route.params.animalId);
+  const [animalType] = useState<string>(route.params.animalType);
+  const [completeDrawUri] = useState<string>(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
+  const [animatedGif] = useState<string>(route.params.animatedGif);
+
+  const isLogin = useSelector((state: RootState) => state.user.isLogin);
+  // const selectName = useSelector((state: RootState) => state.user.selectName);
+  // const selectImage = useSelector((state: RootState) => state.user.selectImage);
   const dispatch = useDispatch();
   const isSaveDrawnToLoginModalVisible = useSelector(
     (state: RootState) => state.draw.isSaveDrawnToLoginModalVisible,
   );
-  const [completeDrawUri] = useState(route.params.completeDrawUri);
+
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
   const captureRef = useRef();
 
-  // const [captureImagePath, setCaptureImagePath] =
-  //   useState<string>(completeDrawUri);
+  // function handlePressSaving(params:type) {
+  function handlePressSaving() {
+    if (isLogin) {
+      handleAnimalSaveToMypage();
+    } else {
+      dispatch(handleisSaveDrawnToLoginModalVisible(true));
+    }
+  }
 
+  const handleAnimalSaveToMypage = async () => {
+    try {
+      const response = await animalSaveToMypage(animalId, completeDrawUri);
+      if (response.status === 200) {
+        console.log('완성된 동물 마이페이지에 저장 성공', response.data);
+      } else {
+        console.log('완성된 동물 마이페이지에 저장 실패', response.status);
+      }
+    } catch (error) {
+      console.log('완성된 동물 마이페이지에 저장 실패', error);
+    }
+  };
   //뒤로가기 2번시 뒤로가기
   useEffect(() => {
     const backAction = () => {
@@ -108,20 +135,15 @@ export default function CompleteDrawAnimalScreen({
             quality: 0.9,
           }}>
           <ImageBackground
-            // source={require('../../assets/images/animalImage/deerTest1.png')}
-            source={{uri: completeDrawUri}}
-            // style={{backgroundColor: 'white'}}
+            style={{width: '100%', height: '100%'}}
+            source={{
+              uri:
+                animatedGif !== ('' || null || undefined)
+                  ? animatedGif
+                  : completeDrawUri,
+            }}
             resizeMode="contain">
-            {/* <Image
-              style={{
-                position: 'absolute',
-                width: windowWidth,
-                height: windowHeight * 0.8,
-                resizeMode: 'contain',
-              }}
-              source={{uri: completeDrawUri}}
-            /> */}
-            <View style={{width: '100%', height: '100%'}} />
+            {/* <View style={{width: '100%', height: '100%'}} /> */}
           </ImageBackground>
           {/* </View> */}
         </ViewShot>
@@ -138,7 +160,7 @@ export default function CompleteDrawAnimalScreen({
             <TouchableOpacity
               style={[styles.doneButton]}
               onPress={() => {
-                dispatch(handleisSaveDrawnToLoginModalVisible(true));
+                handlePressSaving();
               }}>
               <Text style={styles.doneButtonText}>저장하기</Text>
             </TouchableOpacity>
