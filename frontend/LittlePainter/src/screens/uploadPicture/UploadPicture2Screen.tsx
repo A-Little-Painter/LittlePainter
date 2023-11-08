@@ -27,6 +27,7 @@ export default function UploadPicture2Screen({
   const pictureaddr = useAppSelector(state => state.uploadPicture.pictureaddr);
   const picturename = useAppSelector(state => state.uploadPicture.picturename);
   const picturetype = useAppSelector(state => state.uploadPicture.picturetype);
+  const destination = useAppSelector(state => state.uploadPicture.destination);
   const dispatch = useAppDispatch();
 
   const moving = async () => {
@@ -49,8 +50,17 @@ export default function UploadPicture2Screen({
       trace_image: checkImage.trace_image,
       moving: true,
     };
+    console.log('data');
+    console.log(data);
+
     dispatch(update2(data));
-    navigation.navigate('UploadPicture3Screen');
+    if (destination === 'UploadPicture3Screen') {
+      console.log(destination);
+      navigation.navigate('UploadPicture3Screen');
+    } else {
+      console.log(destination);
+      navigation.navigate('UploadPicture5Screen');
+    }
   };
   const unMoving = async () => {
     const imageData = new FormData();
@@ -73,7 +83,13 @@ export default function UploadPicture2Screen({
       moving: false,
     };
     dispatch(update2(data));
-    navigation.navigate('UploadPicture3Screen');
+    if (destination === 'UploadPicture3Screen') {
+      console.log(destination);
+      navigation.navigate('UploadPicture3Screen');
+    } else {
+      console.log(destination);
+      navigation.navigate('UploadPicture5Screen');
+    }
   };
 
   return (

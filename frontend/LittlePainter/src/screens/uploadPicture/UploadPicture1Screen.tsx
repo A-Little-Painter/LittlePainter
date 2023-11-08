@@ -13,7 +13,11 @@ import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import {useAppDispatch} from '../../redux/hooks';
 import {openImagePicker} from '../detail/ImagePicker';
-import {update} from '../../redux/slices/uploadPicture/uploadPicture';
+import {
+  update,
+  destinationUpdate,
+} from '../../redux/slices/uploadPicture/uploadPicture';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
 
 type UploadPicture1ScreenProps = StackScreenProps<
   RootStackParams,
@@ -32,12 +36,38 @@ export default function UploadPicture1Screen({
   const [imageSource, setImageSource] = useState<{
     uri: string;
     fileName: string;
-    originalPath: string;
     type: string;
   } | null>(null);
-  const imagetemp = () => {
-    openImagePicker(setImageSource);
-    console.log(imageSource);
+  const imagetemp = async () => {
+    try {
+      const selectedImage = await openImagePicker();
+      console.log(selectedImage);
+
+      if (selectedImage) {
+        const resizerImage = await ImageResizer.createResizedImage(
+          selectedImage.uri,
+          400,
+          400,
+          'JPEG',
+          70,
+          0,
+          undefined,
+          false,
+          {mode: 'stretch'},
+        );
+        console.log('resizerImage');
+        console.log(resizerImage);
+        setImageSource({
+          uri: resizerImage.uri,
+          fileName: selectedImage.fileName,
+          type: selectedImage.type,
+        });
+      } else {
+        console.log('이미지 선택되지 않음');
+      }
+    } catch (error) {
+      console.log('실패:', error);
+    }
   };
   let srcText: string;
   let nameText: string = '';
@@ -66,6 +96,7 @@ export default function UploadPicture1Screen({
         picturetype: typeText,
       };
       dispatch(update(data));
+      dispatch(destinationUpdate('UploadPicture3Screen'));
       console.log(data);
       navigation.navigate('UploadPicture2Screen');
     } else if (!srcText) {
@@ -74,6 +105,7 @@ export default function UploadPicture1Screen({
       Alert.alert('잠깐!', '동물의 이름과 소개를 적어주세요');
     }
   };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -202,6 +234,7 @@ const styles = StyleSheet.create({
   image: {
     height: '90%',
     width: '100%',
+    resizeMode: 'stretch',
   },
   textArea: {
     height: '85%',

@@ -22,6 +22,7 @@ const loadATokenFromKeychain = async () => {
 
 export const uploadPictureApi = async image => {
   try {
+    console.log(image._parts);
     const token = await loadATokenFromKeychain();
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -59,8 +60,8 @@ export const uploadFriendImageApi = async addFriendsAnimalReqDto => {
     const token = await loadATokenFromKeychain();
     const headers = {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'multipart/form-data',
     };
+    console.log(addFriendsAnimalReqDto);
     const response = await axios.post(
       `${BASE_URL}/draws/friends`,
       addFriendsAnimalReqDto,
@@ -68,9 +69,23 @@ export const uploadFriendImageApi = async addFriendsAnimalReqDto => {
         headers,
       },
     );
+    console.log(addFriendsAnimalReqDto);
     const data = response.data;
     console.log(data);
     return response;
+  } catch (error) {
+    console.log('fall');
+    console.error(error);
+    return error.response;
+  }
+};
+
+export const googleSearchApi = async value => {
+  try {
+    const body = {name: value};
+    const response = await axios.post(`${BASE_URL}/draws/search/images`, body);
+    const data = response.data;
+    return data;
   } catch (error) {
     console.log('fall');
     console.error(error);

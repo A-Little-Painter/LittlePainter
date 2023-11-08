@@ -12,8 +12,13 @@ import {
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import {useAppDispatch} from '../../redux/hooks';
-import {update} from '../../redux/slices/uploadPicture/uploadPicture';
+import {
+  update,
+  destinationUpdate,
+} from '../../redux/slices/uploadPicture/uploadPicture';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
+import {googleSearchApi} from '../../apis/uploadPicture/uploadPicture';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
 
 type UploadPicture0ScreenProps = StackScreenProps<
   RootStackParams,
@@ -29,19 +34,16 @@ export default function UploadPicture0Screen({
   const dispatch = useAppDispatch();
   const [title, setTitle] = useState('');
   const [detail, setDetail] = useState('');
-  const [imageSource, setImageSource] = useState<{
-    uri: string;
-    fileName: string;
-    type: string;
-  } | null>(null);
+  const [inputValue, setInputValue] = useState('');
+  const [imageSource, setImageSource] = useState('');
 
   let srcText: string;
   let nameText: string;
   let typeText: string;
   if (imageSource) {
-    srcText = imageSource.uri;
-    nameText = imageSource.fileName;
-    typeText = imageSource.type;
+    srcText = imageSource;
+    nameText = 'searchAnimal.JPEG';
+    typeText = 'image/jpeg';
   } else {
     srcText = '';
   }
@@ -62,6 +64,7 @@ export default function UploadPicture0Screen({
         picturetype: typeText,
       };
       dispatch(update(data));
+      dispatch(destinationUpdate('UploadPicture5Screen'));
       console.log(data);
       navigation.navigate('UploadPicture2Screen');
     } else if (!srcText) {
@@ -70,6 +73,27 @@ export default function UploadPicture0Screen({
       Alert.alert('잠깐!', '동물의 이름과 소개를 적어주세요');
     }
   };
+
+  const goSearch = async (value: string) => {
+    if (value) {
+      const temp = await googleSearchApi(value);
+      const resizerImage = await ImageResizer.createResizedImage(
+        temp,
+        400,
+        400,
+        'JPEG',
+        70,
+        0,
+        undefined,
+        false,
+        {mode: 'stretch'},
+      );
+      setImageSource(resizerImage.uri);
+    } else {
+      console.log('검색어 없음');
+    }
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -100,7 +124,7 @@ export default function UploadPicture0Screen({
                 />
               ) : (
                 <Image
-                  source={require('../../assets/images/wwaitting_cat.png')}
+                  source={{uri: imageSource}}
                   style={styles.image}
                   resizeMode="contain"
                 />
@@ -125,11 +149,18 @@ export default function UploadPicture0Screen({
             <TextInput
               style={styles.searchbar}
               placeholder="동물 이름을 입력해 주세요."
+              value={inputValue}
+              onChangeText={text => setInputValue(text)}
               onSubmitEditing={() => {
-                console.log('power');
+                goSearch(inputValue);
               }}
             />
-            <TouchableOpacity activeOpacity={1} style={styles.searchMark}>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={styles.searchMark}
+              onPress={() => {
+                goSearch(inputValue);
+              }}>
               <IconFontAwesome name="search" size={windowWidth * 0.03} />
             </TouchableOpacity>
           </View>

@@ -40,19 +40,18 @@ export default function UploadPicture5Screen({
   const addFriendsAnimalReqDto: {
     title: string;
     detail: string;
-    animal_type_num: number;
-    moving: boolean;
+    animalTypeId: number;
+    movable: boolean;
     originalUrl: string;
     traceUrl: string;
   } = {
     title: title,
     detail: detail,
-    animal_type_num: animal_type_num,
-    moving: moving,
+    animalTypeId: animal_type_num,
+    movable: moving,
     originalUrl: border_image,
     traceUrl: trace_image,
   };
-  console.log(addFriendsAnimalReqDto);
 
   const goUpload = () => {
     uploadFriendImageApi(addFriendsAnimalReqDto);
