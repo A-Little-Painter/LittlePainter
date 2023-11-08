@@ -46,8 +46,8 @@ class TodoSimple(Resource):
 
     def shell_create_animation(self, input_filename, output_filename):
         logging.debug("shell 명령어 호출")
-        # cmd = (f"python AnimatedDrawings/examples/image_to_animation.py "
-        #        f"AnimatedDrawings/examples/result/rabbit/image.png  {output_filename}")
+        cmd = (f"python AnimatedDrawings/examples/image_to_animation.py "
+               f"AnimatedDrawings/examples/result/rabbit/image.png  {output_filename}")
         cmd = "conda list"
 
         # 셸 명령 실행
