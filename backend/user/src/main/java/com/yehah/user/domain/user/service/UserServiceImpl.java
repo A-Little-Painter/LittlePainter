@@ -222,6 +222,24 @@ public class UserServiceImpl implements UserService{
         return ResponseEntity.ok().build();
     }
 
+//    public ResponseEntity<?> deleteChild(){
+//        User user = getLoginUser();
+//        log.info("user.getEmail() "+user.getEmail());
+//        return userRepository.findById(user.getId())
+//                .map(userFromDB -> {
+//                    Child selectedChild = userFromDB.getChildren().stream()
+//                            .filter(child -> child.getId().equals(userFromDB.getLastSelectedChildId()))
+//                            .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이입니다."));
+//                    try{
+//                        childRepository.save(selectedChild.deleteChild());
+//                    }catch (Exception e){
+//                        throw new DatabaseException("DB에 저장할 수 없습니다.");
+//                    }
+//                    return ResponseEntity.ok().build();
+//                })
+//                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 찾을 수 없습니다."));
+//    }
+
 
     private User getLoginUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
