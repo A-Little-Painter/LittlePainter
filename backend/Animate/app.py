@@ -63,9 +63,11 @@ class TodoSimple(Resource):
 class AnimateCharacter(Resource):
     def post(self):
         # requestbody 수신
-        animal_type = request.form['animalType']
-        pageNo = request.form['pageNo']
+        tale_title = request.form['taleTitle']
+        character = request.form['character']
+        page_no = request.form['pageNo']
         image = request.files['image']
+
 
         # 이미지 저장
         filename = secure_filename(image.filename)
