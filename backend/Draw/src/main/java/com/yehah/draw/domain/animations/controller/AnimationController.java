@@ -1,6 +1,7 @@
 package com.yehah.draw.domain.animations.controller;
 
 import com.yehah.draw.domain.animations.dto.request.AnimationAnimalReqDto;
+import com.yehah.draw.domain.animations.dto.request.AnimationTaleReqDto;
 import com.yehah.draw.domain.animations.dto.response.AnimationAnimalResDto;
 import com.yehah.draw.domain.animations.exception.AnimationChangeException;
 import com.yehah.draw.global.communication.CommMethod;
@@ -36,17 +37,17 @@ public class AnimationController {
     private String imagePath;
 
     private final CommMethod commMethod;
+    private MultiValueMap<String, Object> bodyData;
 
     // NOTE : animals와 friendsAnimal 모두 받아온다.
     @PostMapping("/animals")
     public ResponseEntity<AnimationAnimalResDto> sendAnimatedAnimal(@ModelAttribute AnimationAnimalReqDto animationAnimalReqDto) throws IOException {
-        MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
-        bodyData.add("image", animationAnimalReqDto.getImage().getResource());
+        bodyData = new LinkedMultiValueMap<>();
         bodyData.add("animalType", animationAnimalReqDto.getAnimalType());
-
+        bodyData.add("image", animationAnimalReqDto.getImage().getResource());
 
         try{
-            byte[] gifImage = commMethod.postMultipartAnimateMethod(bodyData, animatePath);
+            byte[] gifImage = commMethod.postMultipartAnimateMethod(bodyData, animatePath+"/animals");
 
             bodyData.clear();
             bodyData.add("gifFile", new ByteArrayResource(gifImage){
@@ -65,6 +66,37 @@ public class AnimationController {
             throw new AnimationChangeException("이미지를 GIF로 변환할 수 없습니다.");
         }
 
+    }
+
+    @PostMapping("/tales")
+    public ResponseEntity<AnimationAnimalResDto> sendAnimatedTale(@ModelAttribute AnimationTaleReqDto animationTaleReqDto){
+        bodyData = new LinkedMultiValueMap<>();
+        bodyData.add("pageNo", animationTaleReqDto.getPageNumber());
+        bodyData.add("taleTitle", animationTaleReqDto.getTitle());
+        bodyData.add("character", animationTaleReqDto.getRequestCharacter());
+        bodyData.add("image", animationTaleReqDto.getImage().getResource());
+
+        try{
+            log.info(animatePath+"/tales");
+            byte[] gifImage = commMethod.postMultipartAnimateMethod(bodyData, animatePath+"/tales");
+
+            bodyData.clear();
+            bodyData.add("gifFile", new ByteArrayResource(gifImage){
+                @Override
+                public String getFilename() throws IllegalStateException {
+                    return "gifFile.gif";
+                }
+            });
+
+            String gifImageUrl = String.valueOf(commMethod.postMultipartMethod(bodyData, imagePath+"/comm/temp"));
+
+            return ResponseEntity.ok().body(AnimationAnimalResDto.builder()
+                    .gifImageUrl(gifImageUrl).build());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AnimationChangeException("이미지를 GIF로 변환할 수 없습니다.");
+        }
     }
 
 }
