@@ -4,16 +4,18 @@ EXPOSE 8700
 
 WORKDIR /app
 COPY . .
-RUN apt-get update && apt-get install -y wget
-
-# install miniconda3
-#RUN mkdir -p ~/miniconda3 \
-# && wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh \
-# && bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3 \
-# && touch test.txt \
-# && rm -rf ~/miniconda3/miniconda.sh \
-# && ~/miniconda3/bin/conda init bash \
-# && ~/miniconda3/bin/conda init zsh
+RUN apt-get update && apt-get install -y wget \
+ #install miniconda3
+ && mkdir -p ~/miniconda3 \
+ && wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh \
+ && bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3 \
+ && touch test.txt \
+ && rm -rf ~/miniconda3/miniconda.sh \
+ && ~/miniconda3/bin/conda init bash \
+ && ~/miniconda3/bin/conda init zsh \
+ && conda create --name animated_drawings python=3.8.13 \
+ && conda actiavte animated_drawings \
+ && conda install -c conda-forge libstdcxx-ng
 
 #ENV PATH $PATH:home/ubuntu/miniconda3/bin:home/ubuntu/miniconda3/condabin
 
