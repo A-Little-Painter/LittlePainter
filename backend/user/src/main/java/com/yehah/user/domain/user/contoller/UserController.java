@@ -102,7 +102,7 @@ public class UserController {
     }
 
     //유저 탈퇴
-    @PostMapping
+    @DeleteMapping
     public ResponseEntity<?> deleteUser(){
         return userService.deleteUser();
     }

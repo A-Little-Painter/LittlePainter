@@ -36,4 +36,7 @@ public interface UserService {
     public ResponseEntity<?> deleteUser();
 
     public ResponseEntity<?> updatePassword(UpdatePasswordRequestDTO updatePasswordRequestDTO);
+
+//    public ResponseEntity<?> deleteChild();
+
 }

@@ -54,6 +54,11 @@ public class Child {
         return this;
     }
 
+    public Child deleteChild(){
+        this.deletedDate = LocalDateTime.now();
+        return this;
+    }
+
     @Builder
     public Child(String nickname, LocalDate birthday, Icon icon){
         this.nickname = nickname;
