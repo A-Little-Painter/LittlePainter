@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -164,7 +165,7 @@ public class UserServiceImpl implements UserService{
                     }catch (Exception e){
                         throw new DatabaseException("DB에 저장할 수 없습니다.");
                     }
-                    return ResponseEntity.ok().build();
+                    return ResponseEntity.ok().body("아이콘 변경 성공");
                 })
                 .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 찾을 수 없습니다."));
     }
@@ -181,6 +182,21 @@ public class UserServiceImpl implements UserService{
                         childRepository.save(selectedChild.updateChild(changeChildRequestDTO.getNickname(), changeChildRequestDTO.getBirthday()));
                     }catch (Exception e){
                         throw new DatabaseException("DB에 저장할 수 없습니다.");
+                    }
+                    return ResponseEntity.ok().build();
+                })
+                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 찾을 수 없습니다."));
+    }
+
+    public ResponseEntity<?> deleteUser(){
+        User user = getLoginUser();
+        log.info("user.getEmail() "+user.getEmail());
+        return userRepository.findById(user.getId())
+                .map(userFromDB -> {
+                    try{
+                        userRepository.save(userFromDB.deleteUser());
+                    }catch (Exception e){
+                        throw new DatabaseException("DB 접근 오류");
                     }
                     return ResponseEntity.ok().build();
                 })

@@ -41,12 +41,13 @@ public class User {
     private Role role;
 
     @Builder
-    public User(String email, String password, boolean tts, Child child, Long lastSelectedChildId) {
+    public User(String email, String password, boolean tts, Child child, Long lastSelectedChildId, LocalDateTime deletedDate) {
         this.email = email;
         this.password = password;
         this.tts = tts;
         this.role = Role.ROLE_USER;
         this.lastSelectedChildId = lastSelectedChildId;
+        this.deletedDate = deletedDate;
         if(child != null) {
             addChild(child);
         }
@@ -68,5 +69,12 @@ public class User {
 
     public void toggleTts() {
         this.tts = !this.tts;
+    }
+
+    public User deleteUser(){
+        this.deletedDate = LocalDateTime.now();
+        this.role = Role.ROLE_DELETED;
+
+        return this;
     }
 }
