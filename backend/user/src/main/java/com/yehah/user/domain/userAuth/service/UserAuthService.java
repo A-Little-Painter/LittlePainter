@@ -11,4 +11,6 @@ public interface UserAuthService {
     public ResponseEntity<?> signIn(String email, String password);
 
     public ResponseEntity<?> refresh(String refreshToken);
+
+    public ResponseEntity<?> updatePassword(String email, String password);
 }
