@@ -19,10 +19,9 @@ RUN ln -s ~/miniconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh
 RUN touch test1.txt
 RUN echo ". ~/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc
 RUN touch test2.txt
-RUN conda create --name animated_drawings python=3.8.13
-RUN touch test3.txt
+#RUN conda create --name animated_drawings python=3.8.13
 RUN echo "conda activate animated_drawings" >> ~/.bashrc
-RUN touch test4.txt
+RUN touch test3.txt
 RUN /bin/bash -c "source activate animated_drawings  \
     && conda install -c conda-forge libstdcxx-ng  \
     && pip install -e AnimatedDrawings/. \
