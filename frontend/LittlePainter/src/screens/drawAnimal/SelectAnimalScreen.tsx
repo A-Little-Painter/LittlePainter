@@ -6,10 +6,10 @@ import {
   View,
   Dimensions,
   Image,
-  FlatList,
   TouchableOpacity,
   Animated,
   Easing,
+  ScrollView,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -22,69 +22,6 @@ type SelectAnimalScreenProps = StackScreenProps<
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
-// const wholeAnimalTmp = [
-//   {
-//     animalId: 1,
-//     animalType: '공룡',
-//     urlOriginal: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     animalId: 2,
-//     animalType: '사자',
-//     urlOriginal: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     animalId: 3,
-//     animalType: '쥐',
-//     urlOriginal: require('../../assets/images/elephant.png'),
-//   },
-//   {
-//     animalId: 4,
-//     animalType: '닭',
-//     urlOriginal: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     animalId: 5,
-//     animalType: '코끼리',
-//     urlOriginal: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     animalId: 6,
-//     animalType: '토끼',
-//     urlOriginal: require('../../assets/images/elephant.png'),
-//   },
-//   {
-//     animalId: 7,
-//     animalType: '소',
-//     urlOriginal: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     animalId: 8,
-//     animalType: '돼지',
-//     urlOriginal: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     animalId: 9,
-//     animalType: '다람쥐',
-//     urlOriginal: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     animalId: 10,
-//     animalType: '햄스터',
-//     urlOriginal: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     animalId: 11,
-//     animalType: '고양이',
-//     urlOriginal: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     animalId: 12,
-//     animalType: '호랑이',
-//     urlOriginal: require('../../assets/images/dinosaur.png'),
-//   },
-// ];
 
 const randomBackgroundColor: string[] = [
   '#8C80E2',
@@ -172,7 +109,40 @@ export default function SelectAnimalScreen({
         </View>
         {/* 중단 */}
         <View style={styles.middleContainer}>
-          <FlatList
+          <ScrollView style={styles.middleContainerFlatList}>
+            <View style={styles.wrappingView}>
+              {wholeAnimal.map((item, index) => (
+                <View style={styles.animalCard1} key={index}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('DrawAnimalScreen', {
+                        animalId: item.animalId,
+                        animalType: item.animalType,
+                      });
+                    }}
+                    style={[
+                      styles.animalCard2,
+                      {
+                        backgroundColor:
+                          randomBackgroundColor[
+                            index >= randomBackgroundColor.length
+                              ? index % randomBackgroundColor.length
+                              : index
+                          ],
+                      },
+                    ]}>
+                    <Image
+                      style={styles.cardAnimalImage}
+                      source={{uri: item.urlOriginal}}
+                      // source={item.urlOriginal}
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.animalCardText}>{item.animalType}</Text>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+          {/* <FlatList
             data={wholeAnimal}
             numColumns={4}
             renderItem={({item, index}) => {
@@ -209,7 +179,7 @@ export default function SelectAnimalScreen({
             }}
             // keyExtractor={(item, index) => index.toString()}
             keyExtractor={item => item.animalId.toString()}
-          />
+          /> */}
         </View>
       </View>
       {isLoading ? (
@@ -242,10 +212,31 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
+  middleContainerFlatList: {
+    width: '100%',
+    height: '100%',
+  },
+  wrappingView: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+  },
   logoImage: {
     alignSelf: 'center',
     width: windowWidth * 0.11,
     height: windowWidth * 0.11,
+  },
+  cardAnimalImage: {
+    alignSelf: 'center',
+    resizeMode: 'contain',
+    width:
+      ((windowWidth * 0.8 * 0.95) / 4 -
+        ((windowWidth * 0.8 * 0.95) / 4) * 0.1) *
+      0.9,
+    height:
+      ((windowWidth * 0.8 * 0.95) / 4 -
+        ((windowWidth * 0.8 * 0.95) / 4) * 0.1) *
+      0.9,
   },
   titleText: {
     alignSelf: 'center',
@@ -254,14 +245,17 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   animalCard1: {
-    margin: windowWidth * 0.01,
+    marginVertical: windowWidth * 0.01,
+    marginHorizontal: ((windowWidth * 0.95 * 0.8) / 4) * 0.04999,
   },
   animalCard2: {
     borderRadius: 20,
     borderColor: 'black',
-    borderWidth: 1,
-    width: windowWidth * 0.16,
-    height: windowWidth * 0.16,
+    // borderWidth: 1,
+    width:
+      (windowWidth * 0.95 * 0.8) / 4 - ((windowWidth * 0.95 * 0.8) / 4) * 0.1,
+    height:
+      (windowWidth * 0.95 * 0.8) / 4 - ((windowWidth * 0.95 * 0.8) / 4) * 0.1,
     justifyContent: 'center',
   },
   animalCardText: {
