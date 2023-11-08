@@ -11,6 +11,7 @@ import com.yehah.user.domain.userAuth.entity.Icon;
 import com.yehah.user.domain.userAuth.entity.User;
 import com.yehah.user.domain.userAuth.enums.Role;
 import com.yehah.user.domain.userAuth.exception.AlreadyUsedEmailException;
+import com.yehah.user.domain.userAuth.exception.PasswordNotMatchException;
 import com.yehah.user.domain.userAuth.exception.UserDeletedException;
 import com.yehah.user.domain.userAuth.repository.UserAuthRepository;
 import com.yehah.user.global.security.entity.RefreshToken;
@@ -24,8 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Ref;
-
 
 @Slf4j
 @Service
@@ -36,7 +35,6 @@ public class UserAuthServiceImpl implements UserAuthService {
     private final ChildRepository childRepository;
 
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
-
 
     private final PasswordEncoder passwordEncoder;
 
@@ -81,7 +79,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         }
 
         if(!passwordEncoder.matches(password, user.getPassword())){
-            throw new IllegalArgumentException("아이디 혹은 비밀번호를 확인해 주세요.");
+            throw new PasswordNotMatchException("아이디 혹은 비밀번호를 확인해 주세요.");
         }
 
         Token token = jwtProvider.generateToken(user.getEmail(), user.getRole());

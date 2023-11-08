@@ -1,6 +1,7 @@
 package com.yehah.user.domain.userAuth.controller;
 
 import com.yehah.user.domain.userAuth.exception.AlreadyUsedEmailException;
+import com.yehah.user.domain.userAuth.exception.PasswordNotMatchException;
 import com.yehah.user.domain.userAuth.exception.UserDeletedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,5 +22,10 @@ public class UserAuthControllerAdvice {
     @ExceptionHandler
     public ResponseEntity<String> handleUserDeletedException(UserDeletedException e){
         return ResponseEntity.status(511).body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handlePasswordNotMatchException(PasswordNotMatchException e){
+        return ResponseEntity.status(512).body(e.getMessage());
     }
 }
