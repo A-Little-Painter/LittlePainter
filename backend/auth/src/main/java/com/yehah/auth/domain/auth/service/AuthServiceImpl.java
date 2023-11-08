@@ -1,9 +1,6 @@
 package com.yehah.auth.domain.auth.service;
 
-import com.yehah.auth.domain.auth.dto.request.CheckAuthCodeRequestDTO;
-import com.yehah.auth.domain.auth.dto.request.RefreshTokenRequestDTO;
-import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
-import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
+import com.yehah.auth.domain.auth.dto.request.*;
 import com.yehah.auth.domain.auth.dto.response.SignInResponseDTO;
 import com.yehah.auth.domain.auth.dto.response.TokenResponseDTO;
 import com.yehah.auth.global.email.EmailService;
@@ -117,25 +114,6 @@ public class AuthServiceImpl implements AuthService{
     }
 
 
-
-//    public Mono<ResponseEntity<?>> signIn(SignInRequestDTO signInRequestDTO){
-//        String path = user_service_url + "/comm/signin";
-//
-//        WebClient webClient = webClientBuilder.build();
-//
-//        return webClient.post()
-//                .uri(path)
-//                .bodyValue(signInRequestDTO)
-//                .retrieve()
-//                .toEntity(TokenResponseDTO.class)
-//                .onErrorResume(WebClientResponseException.class, e -> {
-//                    if(e.getStatusCode().is5xxServerError()){
-//                        return Mono.just(ResponseEntity.badRequest().body(e.getResponseBodyAsString()));
-//                    }
-//                    return Mono.error(e);
-//                });
-//    }
-
     //토큰 재발급
     public ResponseEntity<?> refresh(RefreshTokenRequestDTO refreshTokenRequestDTO) {
         String path = user_service_url + "/comm/refresh";
@@ -148,6 +126,25 @@ public class AuthServiceImpl implements AuthService{
                     .bodyValue(refreshTokenRequestDTO)
                     .retrieve()
                     .toEntity(TokenResponseDTO.class).block();
+        }catch(WebClientResponseException e){
+            if(e.getStatusCode().is5xxServerError()){
+                return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
+            }
+            throw e;
+        }
+    }
+
+    public ResponseEntity<?> updatePassword(UpdatePasswordRequestDTO updatePasswordRequestDTO){
+        String path = user_service_url + "/comm/password";
+
+        WebClient webClient = webClientBuilder.build();
+
+        try{
+            return webClient.patch()
+                    .uri(path)
+                    .bodyValue(updatePasswordRequestDTO)
+                    .retrieve()
+                    .toEntity(String.class).block();
         }catch(WebClientResponseException e){
             if(e.getStatusCode().is5xxServerError()){
                 return ResponseEntity.badRequest().body(e.getResponseBodyAsString());

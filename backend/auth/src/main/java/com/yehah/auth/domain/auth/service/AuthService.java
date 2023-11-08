@@ -1,9 +1,6 @@
 package com.yehah.auth.domain.auth.service;
 
-import com.yehah.auth.domain.auth.dto.request.CheckAuthCodeRequestDTO;
-import com.yehah.auth.domain.auth.dto.request.RefreshTokenRequestDTO;
-import com.yehah.auth.domain.auth.dto.request.SignInRequestDTO;
-import com.yehah.auth.domain.auth.dto.request.SignUpRequestDTO;
+import com.yehah.auth.domain.auth.dto.request.*;
 import com.yehah.auth.domain.auth.dto.response.TokenResponseDTO;
 import com.yehah.auth.global.redis.entity.EmailAuth;
 import org.springframework.http.ResponseEntity;
@@ -26,4 +23,6 @@ public interface AuthService {
     public ResponseEntity<?> signIn(SignInRequestDTO signInRequestDTO);
 
     public ResponseEntity<?> refresh(RefreshTokenRequestDTO refreshTokenRequestDTO);
+
+    public ResponseEntity<?> updatePassword(UpdatePasswordRequestDTO updatePasswordRequestDTO);
 }

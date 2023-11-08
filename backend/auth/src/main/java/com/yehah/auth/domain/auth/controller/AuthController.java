@@ -105,4 +105,9 @@ public class AuthController {
         return authService.refresh(refreshTokenRequestDTO);
     }
 
+    @PatchMapping("/password")
+    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordRequestDTO updatePasswordRequestDTO){
+        return authService.updatePassword(updatePasswordRequestDTO);
+    }
+
 }
