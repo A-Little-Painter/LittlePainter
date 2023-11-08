@@ -1,9 +1,6 @@
 package com.yehah.user.domain.user.contoller;
 
-import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
-import com.yehah.user.domain.user.dto.request.ChangeChildRequestDTO;
-import com.yehah.user.domain.user.dto.request.ChangeIconRequestDTO;
-import com.yehah.user.domain.user.dto.request.GetChildInfoRequestDTO;
+import com.yehah.user.domain.user.dto.request.*;
 import com.yehah.user.domain.user.dto.response.AddChildResponseDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetChildInfoResponseDTO;
@@ -110,11 +107,11 @@ public class UserController {
         return userService.deleteUser();
     }
 
-//    //유저 비밀번호 변경
-//    @PatchMapping("/password")
-//    public ResponseEntity<?> changePassword(@RequestBody String password){
-//        return userService.changePassword(password);
-//    }
+    //유저 비밀번호 변경
+    @PatchMapping("/password")
+    public ResponseEntity<?> changePassword(@RequestBody UpdatePasswordRequestDTO updatePasswordRequestDTO){
+        return userService.updatePassword(updatePasswordRequestDTO);
+    }
 
 
     //유저 정보 가져오기(타 마이크로서비스 유저 정보가져오기)

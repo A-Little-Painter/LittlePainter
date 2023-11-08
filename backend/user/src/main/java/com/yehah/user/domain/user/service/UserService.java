@@ -3,6 +3,7 @@ package com.yehah.user.domain.user.service;
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
 import com.yehah.user.domain.user.dto.request.ChangeChildRequestDTO;
 import com.yehah.user.domain.user.dto.request.ChangeIconRequestDTO;
+import com.yehah.user.domain.user.dto.request.UpdatePasswordRequestDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetChildInfoResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
@@ -33,4 +34,6 @@ public interface UserService {
     public ResponseEntity<?> updateChild(ChangeChildRequestDTO changeChildRequestDTO);
 
     public ResponseEntity<?> deleteUser();
+
+    public ResponseEntity<?> updatePassword(UpdatePasswordRequestDTO updatePasswordRequestDTO);
 }

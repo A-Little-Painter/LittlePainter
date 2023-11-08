@@ -3,6 +3,7 @@ package com.yehah.user.domain.user.service;
 import com.yehah.user.domain.user.dto.request.AddChildRequestDTO;
 import com.yehah.user.domain.user.dto.request.ChangeChildRequestDTO;
 import com.yehah.user.domain.user.dto.request.ChangeIconRequestDTO;
+import com.yehah.user.domain.user.dto.request.UpdatePasswordRequestDTO;
 import com.yehah.user.domain.user.dto.response.ChildrenResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetChildInfoResponseDTO;
 import com.yehah.user.domain.user.dto.response.GetIconsResponseDTO;
@@ -16,11 +17,13 @@ import com.yehah.user.domain.user.repository.UserRepository;
 import com.yehah.user.domain.userAuth.entity.Child;
 import com.yehah.user.domain.userAuth.entity.Icon;
 import com.yehah.user.domain.userAuth.entity.User;
+import com.yehah.user.domain.userAuth.exception.PasswordNotMatchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,6 +39,7 @@ public class UserServiceImpl implements UserService{
     private final IconRepository iconRepository;
     private final ChildRepository childRepository;
 
+    private final PasswordEncoder passwordEncoder;
 
     //User클래스에 있는 child를 가져오는 메소드
     public List<ChildrenResponseDTO> getChildren() {
@@ -201,6 +205,21 @@ public class UserServiceImpl implements UserService{
                     return ResponseEntity.ok().build();
                 })
                 .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 찾을 수 없습니다."));
+    }
+
+    public ResponseEntity<?> updatePassword(UpdatePasswordRequestDTO updatePasswordRequestDTO){
+        User user = getLoginUser();
+        if(!passwordEncoder.matches(updatePasswordRequestDTO.getPassword(), user.getPassword())) {
+            throw new PasswordNotMatchException("기존 비밀번호가 일치하지 않습니다.");
+        }
+
+        if(updatePasswordRequestDTO.getPassword().equals(updatePasswordRequestDTO.getNewPassword())) {
+            throw new PasswordNotMatchException("기존 비밀번호와 동일합니다.");
+        }
+
+        userRepository.save(user.updatePassword(passwordEncoder.encode(updatePasswordRequestDTO.getNewPassword())));
+
+        return ResponseEntity.ok().build();
     }
 
 
