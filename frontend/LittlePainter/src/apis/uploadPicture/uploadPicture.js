@@ -20,24 +20,75 @@ const loadATokenFromKeychain = async () => {
   }
 };
 
-export const uploadPictureApi = async addFriendsAnimalReqDto => {
+export const uploadPictureApi = async image => {
+  try {
+    console.log(image._parts);
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    };
+    const response = await axios.post(`${BASE_URL}/draws/upload`, image, {
+      headers,
+    });
+    const data = response.data;
+    console.log(data);
+    return response;
+  } catch (error) {
+    console.log('fall');
+    console.error(error);
+    return error.response;
+  }
+};
+
+export const animalTypeListApi = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/draws/animal-types`);
+    const data = response.data;
+    console.log('data');
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log('fall');
+    console.error(error);
+    return error.response;
+  }
+};
+
+export const uploadFriendImageApi = async addFriendsAnimalReqDto => {
   try {
     const token = await loadATokenFromKeychain();
     const headers = {
       Authorization: `Bearer ${token}`,
     };
-    const response = await axios.get(
+    console.log(addFriendsAnimalReqDto);
+    const response = await axios.post(
       `${BASE_URL}/draws/friends`,
       addFriendsAnimalReqDto,
-      {headers},
+      {
+        headers,
+      },
     );
+    console.log(addFriendsAnimalReqDto);
     const data = response.data;
     console.log(data);
+    return response;
+  } catch (error) {
+    console.log('fall');
+    console.error(error);
+    return error.response;
+  }
+};
+
+export const googleSearchApi = async value => {
+  try {
+    const body = {name: value};
+    const response = await axios.post(`${BASE_URL}/draws/search/images`, body);
+    const data = response.data;
     return data;
   } catch (error) {
     console.log('fall');
-    console.log(error);
-    const response = error.response;
-    return response;
+    console.error(error);
+    return error.response;
   }
 };

@@ -8,6 +8,7 @@ import {
   Switch,
 } from 'react-native';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import {ttsTogle} from '../../../../apis/mypage/mypageApi';
 
 type VolumeComponentsProps = {
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
@@ -17,8 +18,11 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const VolumeComponents: React.FC<VolumeComponentsProps> = ({navigation}) => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(!isEnabled);
+  const [isEnabled, setIsEnabled] = useState(true);
+  const toggleSwitch = () => {
+    setIsEnabled(!isEnabled);
+    ttsTogle();
+  };
   return (
     <View style={styles.rightContainer}>
       <View style={styles.subrightContainer}>

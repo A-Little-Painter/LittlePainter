@@ -1,0 +1,29 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/BMHANNA_11yrs_ttf.ttf",
+      "sha1": "7c3d83db4fe7adc763cdd254b464ba896afc5e45"
+    },
+    {
+      "path": "src/assets/fonts/J해바라기-Bold.otf",
+      "sha1": "30ec0f1d50e10ba67b99c6488aa2287c1ec82ba3"
+    },
+    {
+      "path": "src/assets/fonts/J해바라기-Light.otf",
+      "sha1": "0acfacaabdd1b09938b201f02267509872a867c2"
+    },
+    {
+      "path": "src/assets/fonts/J해바라기-Medium.otf",
+      "sha1": "5f13d8737baefeaab0ffb25d804c2d3a76f96937"
+    },
+    {
+      "path": "src/assets/fonts/TmoneyRoundWindExtraBold.ttf",
+      "sha1": "239f22590abed8a518ba99d9093e4c26fdbfe677"
+    },
+    {
+      "path": "src/assets/fonts/TmoneyRoundWindRegular.ttf",
+      "sha1": "ad5e22eef228daed167e1f6ee87617c7ad8de554"
+    }
+  ]
+}

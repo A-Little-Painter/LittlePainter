@@ -14,6 +14,12 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-LittlePainter-LittlePainterTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-LittlePainter-LittlePainterTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		36C5C898E12A4CBBB01E7C4A /* BMHANNA_11yrs_ttf.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA9475432BC74E0BB978A9C2 /* BMHANNA_11yrs_ttf.ttf */; };
+		41E96984B84E409F8E228EB0 /* TmoneyRoundWindExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FBFBB284F29441EAB0B6FC0 /* TmoneyRoundWindExtraBold.ttf */; };
+		9EEDFF41F0054996A9140998 /* TmoneyRoundWindRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 176D1AE031374FE581C5DA0D /* TmoneyRoundWindRegular.ttf */; };
+		6AE680BB7F3942459156511D /* J해바라기-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 85BFBF0D28914B1998D41F66 /* J해바라기-Bold.otf */; };
+		F7F2A5DB0D534EE1BC19CBB1 /* J해바라기-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = D4B98C5807F240DB8903F91E /* J해바라기-Light.otf */; };
+		78BBCA7A32D24D4F906E7F64 /* J해바라기-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0BF92CA9DFE84CE487B9D08F /* J해바라기-Medium.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +50,12 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = LittlePainter/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-LittlePainter-LittlePainterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LittlePainter-LittlePainterTests.release.xcconfig"; path = "Target Support Files/Pods-LittlePainter-LittlePainterTests/Pods-LittlePainter-LittlePainterTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		FA9475432BC74E0BB978A9C2 /* BMHANNA_11yrs_ttf.ttf */ = {isa = PBXFileReference; name = "BMHANNA_11yrs_ttf.ttf"; path = "../src/assets/fonts/BMHANNA_11yrs_ttf.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		7FBFBB284F29441EAB0B6FC0 /* TmoneyRoundWindExtraBold.ttf */ = {isa = PBXFileReference; name = "TmoneyRoundWindExtraBold.ttf"; path = "../src/assets/fonts/TmoneyRoundWindExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		176D1AE031374FE581C5DA0D /* TmoneyRoundWindRegular.ttf */ = {isa = PBXFileReference; name = "TmoneyRoundWindRegular.ttf"; path = "../src/assets/fonts/TmoneyRoundWindRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		85BFBF0D28914B1998D41F66 /* J해바라기-Bold.otf */ = {isa = PBXFileReference; name = "J해바라기-Bold.otf"; path = "../src/assets/fonts/J해바라기-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D4B98C5807F240DB8903F91E /* J해바라기-Light.otf */ = {isa = PBXFileReference; name = "J해바라기-Light.otf"; path = "../src/assets/fonts/J해바라기-Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0BF92CA9DFE84CE487B9D08F /* J해바라기-Medium.otf */ = {isa = PBXFileReference; name = "J해바라기-Medium.otf"; path = "../src/assets/fonts/J해바라기-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +134,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				4895FBB950664A5DB8F6333A /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -147,6 +160,20 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		4895FBB950664A5DB8F6333A /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				FA9475432BC74E0BB978A9C2 /* BMHANNA_11yrs_ttf.ttf */,
+				7FBFBB284F29441EAB0B6FC0 /* TmoneyRoundWindExtraBold.ttf */,
+				176D1AE031374FE581C5DA0D /* TmoneyRoundWindRegular.ttf */,
+				85BFBF0D28914B1998D41F66 /* J해바라기-Bold.otf */,
+				D4B98C5807F240DB8903F91E /* J해바라기-Light.otf */,
+				0BF92CA9DFE84CE487B9D08F /* J해바라기-Medium.otf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -244,6 +271,12 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				36C5C898E12A4CBBB01E7C4A /* BMHANNA_11yrs_ttf.ttf in Resources */,
+				41E96984B84E409F8E228EB0 /* TmoneyRoundWindExtraBold.ttf in Resources */,
+				9EEDFF41F0054996A9140998 /* TmoneyRoundWindRegular.ttf in Resources */,
+				6AE680BB7F3942459156511D /* J해바라기-Bold.otf in Resources */,
+				F7F2A5DB0D534EE1BC19CBB1 /* J해바라기-Light.otf in Resources */,
+				78BBCA7A32D24D4F906E7F64 /* J해바라기-Medium.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -66,6 +66,7 @@ export const signIn = async data => {
   try {
     const response = await axios.post(`${BASE_URL}/auth/signin`, data);
     console.log('success');
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log('fail');
