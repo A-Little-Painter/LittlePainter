@@ -31,7 +31,7 @@ RUN apt-get install -y libgl1-mesa-glx libglib2.0-0 sudo \
  && sudo apt-get install -y libglfw3-dev libgles2-mesa-dev \
  && pip install -r requirements.txt  \
  && pip list \
- && pwd
+ && python --version
 
 ENV PYOPENGL_PLATFORM osmesa
 # RUN conda install -c conda-forge libstdcxx-ng
