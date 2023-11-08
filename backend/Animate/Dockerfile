@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y wget \
 #  && ~/miniconda3/bin/conda init bash \
 #  && ~/miniconda3/bin/conda init zsh \
 
-RUN ~/miniconda3/bin/conda clean -tipsy
+RUN ~/miniconda3/bin/conda clean -tipy
 
 RUN ln -s ~/miniconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh
 RUN touch test1.txt
