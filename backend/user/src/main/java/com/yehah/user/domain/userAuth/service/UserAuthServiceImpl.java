@@ -131,4 +131,22 @@ public class UserAuthServiceImpl implements UserAuthService {
         return ResponseEntity.badRequest().build();
 
     }
+
+    public ResponseEntity<?> updatePassword(String email, String password){
+        User user = userAuthRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("해당 이메일의 아이디가 존재하지 않습니다."));
+
+        if(user.getDeletedDate() != null){
+            throw new UserDeletedException("탈퇴한 회원입니다.");
+        }
+
+        userAuthRepository.save(user.updatePassword(passwordEncoder.encode(password)));
+
+        try{
+            userAuthRepository.save(user);
+        }catch (Exception e){
+            throw new DatabaseException("DB에 저장할 수 없습니다.");
+        }
+
+        return ResponseEntity.ok().body("비밀번호 변경 성공");
+    }
 }

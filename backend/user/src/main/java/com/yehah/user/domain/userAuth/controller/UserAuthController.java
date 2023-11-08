@@ -3,6 +3,7 @@ package com.yehah.user.domain.userAuth.controller;
 import com.yehah.user.domain.userAuth.dto.request.RefreshTokenRequestDTO;
 import com.yehah.user.domain.userAuth.dto.request.SignInRequestDTO;
 import com.yehah.user.domain.userAuth.dto.request.SignUpRequestDTO;
+import com.yehah.user.domain.userAuth.dto.request.UpdatePasswordRequestDTO;
 import com.yehah.user.domain.userAuth.service.UserAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,12 @@ public class UserAuthController {
     @PostMapping("/comm/refresh")
     public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
         return userAuthService.refresh(refreshTokenRequestDTO.getRefreshToken());
+    }
+
+    //비밀번호 재설정
+    @PatchMapping("/comm/password")
+    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordRequestDTO updatePasswordRequestDTO){
+        return userAuthService.updatePassword(updatePasswordRequestDTO.getEmail(), updatePasswordRequestDTO.getPassword());
     }
 
 }
