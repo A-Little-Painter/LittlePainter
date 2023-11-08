@@ -38,15 +38,13 @@ public class FriendsAnimalController {
 
 	@Value("${micro.path.similarityCheck}")
 	private String similarityUrl;
-
-	@Value("${micro.path.image}")
-	private String imageUrl;
+	private MultiValueMap<String, Object> bodyData;
 
 	private final FriendsAnimalService friendsAnimalService;
 	private final FriendsAnimalCommService friendsAnimalCommService;
-	private final ChildWorkService childWorkService;
 	private final StompService stompService;
 	private final CommMethod commMethod;
+
 
 	@Operation(summary = "친구의 동물 전체 목록을 조회", description = "친구의 동물 전체 목록을 페이징 처리하여 리턴한다.")
 	@GetMapping("")
@@ -72,10 +70,10 @@ public class FriendsAnimalController {
 	@Operation(summary = "친구 동물의 유사도를 확인한다.", description = "ALL")
 	@PostMapping("/similarcheck")
 	public ResponseEntity<AnimalSimilarResDto> friendsAnimalSimilarCheck(@ModelAttribute AnimalSimilarReqDto animalSimilarReqDto) throws IOException {
-		MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
+		bodyData = new LinkedMultiValueMap<>();
 
 		// NOTE : 이미지의 유사도를 확인한다.
-		bodyData.add("sessionId", animalSimilarReqDto.getRoomId()); // 세션 아이디 전송
+		bodyData.add("roomId", animalSimilarReqDto.getRoomId()); // 세션 아이디 전송
 		bodyData.add("originalFile", animalSimilarReqDto.getOriginalFile().getResource());
 		bodyData.add("newFile", animalSimilarReqDto.getNewFile().getResource());
 

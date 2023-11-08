@@ -37,12 +37,7 @@ public class AnimalController {
     @Value("${micro.path.similarityCheck}")
     private String similarityPath;
 
-    @Value("${micro.path.image}")
-    private String imagePath;
-
     private final AnimalService animalService;
-
-    private final ChildWorkService childWorkService;
 
     private final StompService stompService;
 
