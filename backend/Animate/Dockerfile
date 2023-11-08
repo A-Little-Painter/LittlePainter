@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . .
 RUN apt-get update
 
-RUN conda create --name animated_drawings python=3.8.13 \
+RUN conda create -y --name animated_drawings python=3.8.13 \
   && conda activate animated_drawings  \
   && conda install -c conda-forge libstdcxx-ng  \
   && pip install -e AnimatedDrawings/. \
