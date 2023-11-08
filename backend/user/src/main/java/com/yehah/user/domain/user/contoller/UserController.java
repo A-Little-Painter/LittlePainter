@@ -110,6 +110,12 @@ public class UserController {
         return userService.deleteUser();
     }
 
+//    //유저 비밀번호 변경
+//    @PatchMapping("/password")
+//    public ResponseEntity<?> changePassword(@RequestBody String password){
+//        return userService.changePassword(password);
+//    }
+
 
     //유저 정보 가져오기(타 마이크로서비스 유저 정보가져오기)
     @Operation(summary = "유저 정보 가져오기(타 마이크로서비스 유저 정보가져오기)", description = "USER")

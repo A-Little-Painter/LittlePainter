@@ -11,6 +11,7 @@ import com.yehah.user.domain.userAuth.entity.Icon;
 import com.yehah.user.domain.userAuth.entity.User;
 import com.yehah.user.domain.userAuth.enums.Role;
 import com.yehah.user.domain.userAuth.exception.AlreadyUsedEmailException;
+import com.yehah.user.domain.userAuth.exception.UserDeletedException;
 import com.yehah.user.domain.userAuth.repository.UserAuthRepository;
 import com.yehah.user.global.security.entity.RefreshToken;
 import com.yehah.user.global.security.entity.Token;
@@ -74,6 +75,10 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Transactional
     public ResponseEntity<?> signIn(String email, String password) {
         User user = userAuthRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("아이디 혹은 비밀번호를 확인해 주세요."));
+
+        if(user.getDeletedDate() != null){
+            throw new UserDeletedException("탈퇴한 회원입니다.");
+        }
 
         if(!passwordEncoder.matches(password, user.getPassword())){
             throw new IllegalArgumentException("아이디 혹은 비밀번호를 확인해 주세요.");
