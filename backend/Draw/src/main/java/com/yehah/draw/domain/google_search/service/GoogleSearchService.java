@@ -5,4 +5,6 @@ import com.google.api.services.customsearch.v1.model.Search;
 public interface GoogleSearchService {
 //    public Search searchImages(String query) throws Exception;
     public String getImgUrl(String name);
+
+    public String getNaverImage(String keyword);
 }
