@@ -39,25 +39,6 @@ public class GoogleSearchServiceImpl implements GoogleSearchService{
     @Value("${google.cse.id}")
     private String cseId;
 
-//    public Search searchImages(String query) throws Exception {
-//
-//        Customsearch customsearch1 = new Customsearch.Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance(), null)
-//                .setApplicationName("Google Images Search")
-//                .setGoogleClientRequestInitializer(new CustomsearchRequestInitializer(apiKey))
-//                .build();
-//
-////        Customsearch customsearch = new Customsearch.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), null)
-////                .setApplicationName("Google Images Search")
-////                .setGoogleClientRequestInitializer(new CustomsearchRequestInitializer(apiKey))
-////                .build();
-//
-//        Customsearch.Cse.List list = customsearch1.cse().list();
-//        list.setCx(cseId);
-//        list.setSearchType("image");
-//
-//        return list.execute();
-//    }
-
     public String getImgUrl(String name) {
         String imageUrl = "";
         int maxRetries = 3; // 최대 재시도 횟수
@@ -76,26 +57,18 @@ public class GoogleSearchServiceImpl implements GoogleSearchService{
                         .data("q", name)
                         .data("searchType", "image")
                         .execute();
-//                System.out.println(res.body());
                 JSONObject json = new JSONObject(res.body());
                 imageUrl = json.getJSONArray("items")
                         .getJSONObject(0)
-//                        .getJSONObject("pagemap")
-//                        .getJSONArray("cse_image")
-//                        .getJSONObject(0)
-//                        .getString("src");
                         .getString("link");
                 break; // 이미지 URL을 성공적으로 받았으므로 반복 중지
 
             } catch (JSONException e) {
                 throw new JSONParseException("JSON 파싱 에러");
-//                imageUrl="";
             } catch (IOException e) {
-                log.info("ioexception"+e.getMessage());
                 imageUrl = "";
             } catch (Exception e) {
                 throw new NetworkException("네트워크 에러");
-//                imageUrl= "";
             }
 
             retryCount++;
@@ -115,31 +88,5 @@ public class GoogleSearchServiceImpl implements GoogleSearchService{
         return imageUrl;
     }
 
-    public String getNaverImage(String keyword) {
-        String imageUrl = "";
-        String searchUrl = "https://terms.naver.com/search.naver?query=" +
-                URLEncoder.encode(keyword, StandardCharsets.UTF_8) + "&searchType=image";
-
-        try {
-            Document doc = Jsoup.connect(searchUrl)
-                    .ignoreContentType(true)
-                    .userAgent("Mozilla/5.0 ... Safari/537.36")
-                    .get();
-
-            // 네이버 검색 결과 페이지의 이미지 선택자를 찾아서 사용해야 합니다.
-            // 여기서는 가정한 예시로 .photo_grid _box img를 사용합니다.
-            // 실제 적용하기 전에 해당 웹페이지의 구조를 확인해야 합니다.
-            Element imageElement = doc.select(".photo_grid .box img").first();
-
-            if (imageElement != null) {
-                imageUrl = imageElement.absUrl("src"); // 절대 URL을 얻습니다.
-            }
-        } catch (IOException e) {
-            // 예외 처리: 연결 실패 등
-            e.printStackTrace();
-        }
-
-        return imageUrl;
-    }
 
 }

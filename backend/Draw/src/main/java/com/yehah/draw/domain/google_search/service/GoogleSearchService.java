@@ -6,5 +6,4 @@ public interface GoogleSearchService {
 //    public Search searchImages(String query) throws Exception;
     public String getImgUrl(String name);
 
-    public String getNaverImage(String keyword);
 }

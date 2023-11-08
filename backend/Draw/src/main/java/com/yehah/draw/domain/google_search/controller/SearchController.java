@@ -20,7 +20,6 @@ public class SearchController {
         log.info("query: {}", googleSearchRequestDTO.getName());
 
             String results = googleSearchService.getImgUrl(googleSearchRequestDTO.getName());
-//            String results = googleSearchService.getNaverImage(query);
             return ResponseEntity.ok(results);
 
     }
