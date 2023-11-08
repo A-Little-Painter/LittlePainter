@@ -76,7 +76,7 @@ public class GoogleSearchServiceImpl implements GoogleSearchService{
                         .data("q", name)
                         .data("searchType", "image")
                         .execute();
-                System.out.println(res.body());
+//                System.out.println(res.body());
                 JSONObject json = new JSONObject(res.body());
                 imageUrl = json.getJSONArray("items")
                         .getJSONObject(0)
