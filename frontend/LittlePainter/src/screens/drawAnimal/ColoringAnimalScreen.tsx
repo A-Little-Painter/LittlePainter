@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -59,6 +60,7 @@ export default function ColoringAnimalScreen({
 }: ColoringAnimalScreenProps) {
   const [animalId] = useState<number>(route.params.animalId);
   const [animalType] = useState<string>(route.params.animalType);
+  const [originImage] = useState<string>(route.params.originImage);
   const [animalBorderURI] = useState<string>(route.params.animalBorderURI);
   const [animalExplanation] = useState<string>(route.params.animalExplanation);
   const [completeLine] = useState(route.params.completeLine);
@@ -477,6 +479,7 @@ export default function ColoringAnimalScreen({
         <OriginCompareModal
           animalBorderURI={animalBorderURI}
           animalExplanation={animalExplanation}
+          originImage={originImage}
           animalType={animalType}
         />
       ) : null}

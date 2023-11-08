@@ -118,6 +118,7 @@ export default function SelectAnimalScreen({
                       navigation.navigate('DrawAnimalScreen', {
                         animalId: item.animalId,
                         animalType: item.animalType,
+                        originImage: item.urlOriginal,
                       });
                     }}
                     style={[

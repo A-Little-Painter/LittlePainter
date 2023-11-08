@@ -34,9 +34,7 @@ export default function CompleteDrawAnimalScreen({
   const [animalId] = useState<number>(route.params.animalId);
   const [animalType] = useState<string>(route.params.animalType);
   const [completeDrawUri] = useState<string>(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
-  console.log(completeDrawUri);
   const [animatedGif] = useState<string>(route.params.animatedGif);
-  console.log(animatedGif);
 
   const isLogin = useSelector((state: RootState) => state.user.isLogin);
   // const selectName = useSelector((state: RootState) => state.user.selectName);
@@ -137,6 +135,7 @@ export default function CompleteDrawAnimalScreen({
             quality: 0.9,
           }}>
           <ImageBackground
+            style={{width: '100%', height: '100%'}}
             source={{
               uri:
                 animatedGif !== ('' || null || undefined)
@@ -144,7 +143,7 @@ export default function CompleteDrawAnimalScreen({
                   : completeDrawUri,
             }}
             resizeMode="contain">
-            <View style={{width: '100%', height: '100%'}} />
+            {/* <View style={{width: '100%', height: '100%'}} /> */}
           </ImageBackground>
           {/* </View> */}
         </ViewShot>

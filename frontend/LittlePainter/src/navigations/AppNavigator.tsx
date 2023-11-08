@@ -49,11 +49,13 @@ export type RootStackParams = {
   DrawAnimalScreen: {
     animalId: number;
     animalType: string;
+    originImage: string;
   };
   ColoringAnimalScreen: {
     animalId: number;
     completeLine: {path: string; color: string; strokeWidth: number}[];
     animalType: string;
+    originImage: string;
     animalBorderURI: string;
     animalExplanation: string;
   };

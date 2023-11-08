@@ -68,6 +68,7 @@ export default function DrawAnimalScreen({
 
   const [animalId] = useState<number>(route.params.animalId);
   const [animalType] = useState<string>(route.params.animalType);
+  const [originImage] = useState<string>(route.params.originImage);
   const [animalBorderURI, setAnimalBorderURI] = useState<string>('');
   const [animalExplanation, setAnimalExplanation] = useState<string>('');
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
@@ -125,9 +126,6 @@ export default function DrawAnimalScreen({
       console.log('선택 동물 테두리 가져오기 실패', error);
     }
   };
-  useEffect(() => {
-    handleOriginCapture();
-  }, [animalBorderURI]);
 
   const handleAnimalCheckSimilarity = async (compareImagePath: string) => {
     const randomInt = Math.floor(Math.random() * (100 - 1 + 1) + 1);
@@ -166,11 +164,19 @@ export default function DrawAnimalScreen({
     try {
       const uri = await originCaptureRef.current.capture();
       setCaptureBorderImagePath(uri);
+      console.log('oo 캡쳐함', uri);
     } catch (error) {
       console.error('원본 이미지 캡쳐 에러 발생: ', error);
     }
   }
-
+  // 초기 테두리 원본 캡쳐
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('캡쳐되나?', animalBorderURI);
+      handleOriginCapture();
+    }, 10);
+  }, [animalBorderURI]);
+  // 초기 테두리 원본 가져오기
   useEffect(() => {
     handleAnimalBorder();
   }, []);
@@ -280,6 +286,7 @@ export default function DrawAnimalScreen({
       animalId: animalId,
       completeLine: paths,
       animalType: animalType,
+      originImage: originImage,
       animalBorderURI: animalBorderURI,
       animalExplanation: animalExplanation,
     });
@@ -549,6 +556,7 @@ export default function DrawAnimalScreen({
           animalBorderURI={animalBorderURI}
           animalExplanation={animalExplanation}
           animalType={animalType}
+          originImage={originImage}
         />
       ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
