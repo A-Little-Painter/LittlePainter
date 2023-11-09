@@ -7,7 +7,7 @@ COPY . .
 RUN apt-get update \
     && apt-get install -y vim \
     && conda update conda \
-    && conda install -y python=3.8.13
+    && conda install -y python=3.8.13 \
 # flask, 필수 라이브러리 및 animated_drawings가 요구하는 모듈 설치
     && apt-get install -y libgl1-mesa-glx libglib2.0-0 sudo \
     && pip install -r requirements.txt \
