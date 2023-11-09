@@ -77,7 +77,7 @@ class Animals(Resource):
         logging.debug(result)
 
         # 임시값 반환
-        return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif'), 201
+        return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
 
     def shell_create_animation(self, input_filename, output_file_path):
         logging.debug("shell 명령어 호출")
