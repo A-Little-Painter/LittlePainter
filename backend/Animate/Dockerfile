@@ -5,7 +5,7 @@ EXPOSE 8700
 WORKDIR /app
 COPY . .
 RUN apt-get update \
-    && sudo apt-get install vim \
+    && apt-get install -y vim \
     && conda update conda \
     && conda install -y python=3.8.13 \
 
