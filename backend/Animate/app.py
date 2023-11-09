@@ -64,7 +64,7 @@ class Animals(Resource):
 @api.route('/animations/comm/tales')
 class Tales(Resource):
     def post(self):
-        OUTPUT_FILE_PATH = "AnimatedDrawings/result/animals"
+        OUTPUT_FILE_PATH = "AnimatedDrawings/result/tales"
 
         # requestbody 수신
         tale_title = request.form['taleTitle']
@@ -81,7 +81,7 @@ class Tales(Resource):
         logging.debug(result)
 
         # 임시애니메이션 반환
-        return send_file("AnimatedDrawings/examples/result/rabbit/video.gif", mimetype='image/gif')
+        return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
 
 
 @api.route('/animations/comm/test-dance')

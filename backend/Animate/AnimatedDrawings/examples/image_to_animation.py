@@ -34,6 +34,9 @@ if __name__ == '__main__':
     animation_type = sys.argv[4]
     logging.debug('기본인자 : '+img_fn + ' / ' + char_anno_dir + ' / ' + character + ' / ' + animation_type)
     if animation_type == 'animals':
+        animal_dictionary = {
+            "강아지"
+        }
         None
     elif animation_type == 'tales':
         title = sys.argv[5]
