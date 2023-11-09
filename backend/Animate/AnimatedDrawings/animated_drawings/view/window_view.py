@@ -26,7 +26,8 @@ class WindowView(View):
     def __init__(self, cfg: ViewConfig) -> None:
         super().__init__(cfg)
 
-        glfw.init()
+        if not glfw.init():
+            raise Exception("glfw can not be initialized!")
 
         self.camera: Camera = Camera(cfg.camera_pos, cfg.camera_fwd)
 
@@ -122,10 +123,6 @@ class WindowView(View):
         GL.glEnable(GL.GL_CULL_FACE)
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glClearColor(*self.cfg.clear_color)
-
-        logging.info(f'OpenGL Version: {GL.glGetString(GL.GL_VERSION).decode()}')  # pyright: ignore[reportGeneralTypeIssues]
-        logging.info(f'GLSL: { GL.glGetString(GL.GL_SHADING_LANGUAGE_VERSION).decode()}')  # pyright: ignore[reportGeneralTypeIssues]
-        logging.info(f'Renderer: {GL.glGetString(GL.GL_RENDERER).decode()}')  # pyright: ignore[reportGeneralTypeIssues]
 
     def set_scene(self, scene: Scene) -> None:
         self.scene = scene
