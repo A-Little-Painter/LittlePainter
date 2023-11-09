@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState, useRef} from 'react';
+import React, {createContext, useContext, useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -37,7 +37,7 @@ import {animalBorder, animalCheckSimilarity} from '../../apis/draw/draw';
 import TestDrawCompareModal from '../modals/TestDrawCompareModal';
 // 웹소켓 연결하기
 import SockJS from 'sockjs-client';
-import {CompatClient, Stomp} from '@stomp/stompjs';
+import {CompatClient, Client, Stomp} from '@stomp/stompjs';
 
 type DrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -57,7 +57,10 @@ const fastcolorData = [
   '#9E00FF',
   '#000000',
 ];
+//////////////////// 웹소켓
+const WebSocketContext = createContext<CompatClient | null>(null);
 
+//////////////////
 export default function DrawAnimalScreen({
   route,
   navigation,
@@ -67,12 +70,15 @@ export default function DrawAnimalScreen({
   // WebSocket 및 STOMP 클라이언트 설정
   const MAX_RECONNECT_ATTEMPTS = 5; // 최대 재연결 시도 횟수
   const RECONNECT_INTERVAL = 5000; // 재연결 간격 (밀리초)
-  const reconnectAttemptsRef = useRef(0);
   const [client, setClient] = useState<CompatClient | null>(null);
-  const [socketLinked, setSocketLinked] = useState<boolean>(false);
-  const [similarityMessage, setSimilarityMessage] = useState<string>('');
-  const [similarityState, setSimilarityState] = useState<string>('');
-  const [similarityValue, setSimilarityValue] = useState<string>('');
+  // const reconnectTimeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+  const reconnectAttemptsRef = useRef(0);
+  // const useWebSocket = () => useContext(WebSocketContext);
+  // const drawClient = useWebSocket();
+  // drawClient?.subscribe('/sub/room/a', (message) => {
+  //   console.log('되나');
+  //   // console.log(message);
+  // });
   useEffect(() => {
     let newClient: CompatClient;
 
@@ -83,24 +89,21 @@ export default function DrawAnimalScreen({
         console.log('연결됨');
         console.log('Connected: ' + frame);
         setClient(newClient); // 연결 후 client 상태 업데이트
-        setSocketLinked(true);
       };
 
       newClient.onWebSocketClose = () => {
-        console.log('웹소켓 연결 끊김.');
+        console.log('WebSocket closed.');
         if (reconnectAttemptsRef.current < MAX_RECONNECT_ATTEMPTS) {
           // 최대 재연결 시도 횟수를 초과하지 않았다면 재연결 시도
           reconnectAttemptsRef.current += 1;
           setTimeout(() => {
-            console.log('재연결 중...');
+            console.log('Reconnecting...');
             connectAndSetupListeners();
           }, RECONNECT_INTERVAL);
-        } else if ((reconnectAttemptsRef.current = 100)) {
-          console.log('유저가 나감');
+        } else if (reconnectAttemptsRef.current = 100){
+          console.log('유저가 나간거임');
         } else {
-          console.log(
-            '최대 재연결 시도 횟수에 도달했습니다. 재연결 시도를 중단합니다.',
-          );
+          console.log('Max reconnect attempts reached. Stopping reconnection attempts.');
         }
       };
 
@@ -114,39 +117,41 @@ export default function DrawAnimalScreen({
         clearTimeout(reconnectAttemptsRef.current); // 이미 예약된 재연결 타임아웃을 취소합니다.
         reconnectAttemptsRef.current = 100; // 재연결 타임아웃 ID를 리셋합니다.
         newClient.deactivate(); // 웹소켓 연결 종료
-        setSocketLinked(false);
       }
     };
   }, []);
   useEffect(() => {
     if (client) {
       client.subscribe('/sub/room/a', (message) => {
-        // console.log('나와라 메시지', message);
-        // console.log('나와라 메시지2', message.body);
-        const messageContent = JSON.parse(message.body);
-        // console.log('나와라 메시지3', messageContent.message);
-        // console.log('나와라 메시지4', messageContent.similarState);
-        setSimilarityMessage(messageContent.message);
-        setSimilarityState(messageContent.similarState);
-        setSimilarityValue(messageContent.similarValue);
+        console.log('되나');
+        console.log('나와라 메시지', message);
+        console.log('나와라 메시지', message.body);
       });
     }
   }, [client]);
-  useEffect(() => {
-    if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
-      if (similarityState === 'END') {
-        console.log('유사도: ', similarityValue);
-        handleGoColoring();
-      }
-    } else if (similarityMessage === '유사도 측정에 실패했습니다.') {
-      console.log('유사도: 0');
-    }
-  }, [similarityMessage, similarityState]);
 
-  //////////////////////////////////////////////////////////////////////////////
+  // useEffect(() => {
+  //   let stompClient = new Client();
+
+  //   stompClient.webSocketFactory = () => {
+  //     return new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity');
+  //   };
+  //   stompClient.onConnect = function(frame) {
+  //     console.log('Connected: ' + frame);
+  //     stompClient.subscribe('/sub/room/a', function(greeting){
+  //       console.log(JSON.parse(greeting.body).content);
+  //     });
+  //   };
+  //   stompClient.activate();
+  //   return () => {
+  //     console.log('Component will unmount. Disconnecting from STOMP server.');
+  //     stompClient.disconnect();
+  //   };
+  // },[]);
+  ///////////////////////////
   // 캡쳐 변수
-  const drawCaptureRef = useRef(null); //테두리 그리기 캡쳐
-  const originCaptureRef = useRef(null); //원본이미지 캡쳐
+  const drawCaptureRef = useRef(); //테두리 그리기 캡쳐
+  const originCaptureRef = useRef(); //원본이미지 캡쳐
   // 임시 이미지 비교 변수
   const isTestDrawCompareModalVisible = useSelector(
     (state: RootState) => state.draw.isTestDrawCompareModalVisible,
@@ -224,9 +229,9 @@ export default function DrawAnimalScreen({
       );
       if (response.status === 200 || response.status === 404) {
         console.log('동물 그리기 유사도 체크 성공', response.data);
-        // if (response.data.similarState === 'END') {
-        //   handleGoColoring();
-        // }
+        if (response.data.similarState === 'END') {
+          handleGoColoring();
+        }
       } else {
         console.log('동물 그리기 유사도 체크 실패', response.status);
       }
@@ -509,9 +514,9 @@ export default function DrawAnimalScreen({
               // source={require('../../assets/images/animalImage/ovalTest.png')}
               // source={require('../../assets/images/animalImage/test1.jpg')}
               style={styles.animalBorderImageBackground}
-              imageStyle={styles.backgroundImageOpacity}
+              imageStyle={{opacity: 0.5}}
               resizeMode="contain">
-              {captureBorderImagePath !== '' && socketLinked ? (
+              {captureBorderImagePath !== '' ? (
                 <ViewShot
                   ref={drawCaptureRef}
                   options={{
@@ -746,9 +751,6 @@ const styles = StyleSheet.create({
   animalBorderImageBackground: {
     width: '100%',
     height: '100%',
-  },
-  backgroundImageOpacity: {
-    opacity: 0.3,
   },
   pathViewShot: {
     width: '100%',

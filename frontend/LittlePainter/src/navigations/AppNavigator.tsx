@@ -169,7 +169,7 @@ export default function AppNavigator() {
         name="SelectFairytaleScreen"
         component={SelectFairytaleScreen}
       />
-      <RootStack.Screen  
+      <RootStack.Screen
         name="ReadFairytaleScreen"
         component={ReadFairytaleScreen}
       />

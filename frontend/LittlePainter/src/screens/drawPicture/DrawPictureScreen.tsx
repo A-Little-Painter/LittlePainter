@@ -396,6 +396,7 @@ export default function DrawPictureScreen({
               source={{uri: pictureBorderURI}}
               // source={require('../../assets/images/animalImage/ovalTest.png')}
               style={styles.pictureBorderImageBackground}
+              imageStyle={{opacity: 0.5}}
               resizeMode="contain">
               <ViewShot
                 ref={drawCaptureRef}

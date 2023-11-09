@@ -135,7 +135,7 @@ export default function CompleteDrawAnimalScreen({
             quality: 0.9,
           }}>
           <ImageBackground
-            style={{width: '100%', height: '100%'}}
+            style={styles.imageBackgroundSize}
             source={{
               uri:
                 animatedGif !== ('' || null || undefined)
@@ -247,10 +247,12 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
-    // borderWidth: 1,
+  },
+  imageBackgroundSize: {
+    width: '100%',
+    height: '100%',
   },
   bottomContainer: {
-    // marginHorizontal: windowWidth * 0.01,
     paddingHorizontal: windowWidth * 0.01,
     flex: 0.1,
     flexDirection: 'row',
