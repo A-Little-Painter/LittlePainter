@@ -5,7 +5,10 @@ EXPOSE 8700
 WORKDIR /app
 COPY . .
 RUN apt-get update \
-    && conda install -y python=3.8.13
+    && sudo apt-get install vim \
+    && conda update conda \
+    && conda install -y python=3.8.13 \
+
 
 # flask, 필수 라이브러리 및 animated_drawings가 요구하는 모듈 설치
 RUN apt-get install -y libgl1-mesa-glx libglib2.0-0 sudo \
