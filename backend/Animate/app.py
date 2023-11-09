@@ -21,7 +21,7 @@ class Hello(Resource):
 
 
 @api.route('/animations/comm/animals')
-class TodoSimple(Resource):
+class Animals(Resource):
     def post(self):
         OUTPUT_FILE = "AnimatedDrawings/examples/result/custom1"
 
@@ -59,7 +59,7 @@ class TodoSimple(Resource):
 
 
 @api.route('/animations/comm/tales')
-class AnimateCharacter(Resource):
+class Tales(Resource):
     def post(self):
         # requestbody 수신
         tale_title = request.form['taleTitle']
