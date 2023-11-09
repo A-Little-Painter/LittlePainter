@@ -79,19 +79,20 @@ export const animalCheckSimilarity = async (roomId, originBorderFileUri, compare
 };
 
 // 완성된 동물 마이페이지에 저장
-export const animalSaveToMypage = async (animalId, completeDrawUri) => {
+export const animalSaveToMypage = async (workId, completeDrawUri, gifUrl) => {
   try {
     const accessToken = loadATokenFromKeychain();
     const formData = new FormData();
-    formData.append('animalId', animalId);
-
-    formData.append('file', {
+    formData.append('imageFile', {
       uri: completeDrawUri,
       type: 'image/png',
       name: 'originalFile.png',
     });
+    formData.append('gifUrl', gifUrl);
+    formData.append('workId', workId);
+    formData.append('category', 'animal');
 
-    const response = await axios.post(`${BASE_URL}/draws/animals`, formData, {
+    const response = await axios.post(`${BASE_URL}/draws/child_work/animal`, formData, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -169,19 +170,20 @@ export const friendsPictureSimilarity = async (roomId, originBorderFileUri, comp
   }
 };
 // 완성된 사진그리기 마이페이지에 저장
-export const friendsPictureSaveToMypage = async (friendsAnimalId, completeDrawUri) => {
+export const friendsPictureSaveToMypage = async (workId, completeDrawUri, gifUrl) => {
   try {
     const accessToken = loadATokenFromKeychain();
     const formData = new FormData();
-    formData.append('friendsAnimalId', friendsAnimalId);
-
-    formData.append('file', {
+    formData.append('imageFile', {
       uri: completeDrawUri,
       type: 'image/png',
       name: 'originalFile.png',
     });
+    formData.append('gifUrl', gifUrl);
+    formData.append('workId', workId);
+    formData.append('category', 'friendsAnimal');
 
-    const response = await axios.post(`${BASE_URL}/draws/animals`, formData, {
+    const response = await axios.post(`${BASE_URL}/draws/child_work/friendsAnimal`, formData, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

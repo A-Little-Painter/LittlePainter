@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -13,12 +14,14 @@ import ViewShot from 'react-native-view-shot';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import {handleisSaveDrawnToLoginModalVisible} from '../../redux/slices/draw/draw';
+import {
+  handleisSaveDrawnToLoginModalVisible,
+  handleHavingGifUrl,
+} from '../../redux/slices/draw/draw';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {animalSaveToMypage} from '../../apis/draw/draw';
 import SaveDrawnToLoginModal from '../modals/SaveDrawnToLoginModal';
-
 type CompleteDrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
   'CompleteDrawAnimalScreen'
@@ -43,11 +46,10 @@ export default function CompleteDrawAnimalScreen({
   const isSaveDrawnToLoginModalVisible = useSelector(
     (state: RootState) => state.draw.isSaveDrawnToLoginModalVisible,
   );
-
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
-  const captureRef = useRef();
+  const captureRef = useRef(null);
 
   // function handlePressSaving(params:type) {
   function handlePressSaving() {
@@ -60,9 +62,11 @@ export default function CompleteDrawAnimalScreen({
 
   const handleAnimalSaveToMypage = async () => {
     try {
-      const response = await animalSaveToMypage(animalId, completeDrawUri);
+      // const response = await animalSaveToMypage(animalId, completeDrawUri);
+      const response = await animalSaveToMypage(workId, completeDrawUri, animatedGif);
       if (response.status === 200) {
         console.log('완성된 동물 마이페이지에 저장 성공', response.data);
+        dispatch(handleHavingGifUrl(false));
       } else {
         console.log('완성된 동물 마이페이지에 저장 실패', response.status);
       }
@@ -70,6 +74,12 @@ export default function CompleteDrawAnimalScreen({
       console.log('완성된 동물 마이페이지에 저장 실패', error);
     }
   };
+  useEffect(() => {
+    return () => {
+      dispatch(handleHavingGifUrl(false));
+    };
+  }, []);
+
   //뒤로가기 2번시 뒤로가기
   useEffect(() => {
     const backAction = () => {

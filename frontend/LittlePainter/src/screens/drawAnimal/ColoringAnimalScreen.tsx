@@ -32,6 +32,7 @@ import {
   handleisDrawLineThicknessModalVisible,
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
+  handleHavingGifUrl,
 } from '../../redux/slices/draw/draw';
 import {animalAnimations} from '../../apis/draw/draw';
 
@@ -58,6 +59,7 @@ export default function ColoringAnimalScreen({
   route,
   navigation,
 }: ColoringAnimalScreenProps) {
+  const dispatch = useDispatch();
   const [animalId] = useState<number>(route.params.animalId);
   const [animalType] = useState<string>(route.params.animalType);
   const [originImage] = useState<string>(route.params.originImage);
@@ -72,7 +74,7 @@ export default function ColoringAnimalScreen({
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
-  const drawCaptureRef = useRef();
+  const drawCaptureRef = useRef(null);
 
   // 그림 그리기 변수
   const [paths, setPaths] = useState<
@@ -83,7 +85,6 @@ export default function ColoringAnimalScreen({
   >([]);
   const [currentPath, setCurrentPath] = useState<string>('');
 
-  const dispatch = useDispatch();
   // 선 굵기 모달을 위한 라인
   const LineThickness = useSelector(
     (state: RootState) => state.draw.LineThickness,
@@ -111,11 +112,13 @@ export default function ColoringAnimalScreen({
   async function handleAnimalAnimations() {
     setIsLoading(true);
     try {
+      dispatch(handleHavingGifUrl(true));
       const response = await animalAnimations(animalType, captureImagePath);
       if (response.status === 200) {
         console.log('동물 애니메이션 성공', response.data);
         setIsLoading(false);
         // setAnimatedGif(response.data.gifImageUrl);
+        console.log(response.data.gifImageUrl);
         handleGoComplete(response.data.gifImageUrl);
       } else {
         console.log('동물 애니메이션 실패', response.status);

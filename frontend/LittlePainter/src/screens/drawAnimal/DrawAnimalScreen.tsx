@@ -121,11 +121,7 @@ export default function DrawAnimalScreen({
   useEffect(() => {
     if (client) {
       client.subscribe('/sub/room/a', (message) => {
-        // console.log('나와라 메시지', message);
-        // console.log('나와라 메시지2', message.body);
         const messageContent = JSON.parse(message.body);
-        // console.log('나와라 메시지3', messageContent.message);
-        // console.log('나와라 메시지4', messageContent.similarState);
         setSimilarityMessage(messageContent.message);
         setSimilarityState(messageContent.similarState);
         setSimilarityValue(messageContent.similarValue);

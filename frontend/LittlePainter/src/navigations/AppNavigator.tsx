@@ -89,6 +89,7 @@ export type RootStackParams = {
   CompleteDrawPictureScreen: {
     pictureId: number;
     completeDrawUri: string;
+    animatedGif: string;
   };
   SelectFairytaleScreen: undefined;
   FairytaleDrawScreen: undefined;
