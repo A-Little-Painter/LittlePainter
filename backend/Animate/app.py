@@ -23,7 +23,7 @@ class Hello(Resource):
 @api.route('/animations/comm/animals')
 class Animals(Resource):
     def post(self):
-        OUTPUT_FILE = "AnimatedDrawings/examples/result/custom1"
+        OUTPUT_FILE_PATH = "AnimatedDrawings/examples/result/custom1"
 
         # 진입 확인
         logging.debug("Animate-Service : animateAnimal Called")
@@ -37,17 +37,15 @@ class Animals(Resource):
         image.save(filename)
 
         # 저장한 이미지로 애니메이션 생성
-        result = self.shell_create_animation(filename, OUTPUT_FILE)
+        result = self.shell_create_animation(filename, OUTPUT_FILE_PATH)
         logging.debug(result)
 
         # 임시값 반환
-        return send_file("AnimatedDrawings/examples/result/rabbit/video.gif", mimetype='image/gif')
-        # return send_file(f"{OUTPUT_FILE}/video.gif", mimetype='image/gif')
+        return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
 
-    def shell_create_animation(self, input_filename, output_filename):
+    def shell_create_animation(self, input_filename, output_file_path):
         logging.debug("shell 명령어 호출")
-        cmd = (f"python AnimatedDrawings/examples/image_to_animation.py "
-               f"AnimatedDrawings/examples/result/rabbit/image.png  {output_filename}")
+        cmd = (f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path}")
 
         # 셸 명령 실행
         try:
