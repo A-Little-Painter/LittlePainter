@@ -27,15 +27,20 @@ if __name__ == '__main__':
     log_dir.mkdir(exist_ok=True, parents=True)
     logging.basicConfig(filename=f'{log_dir}/log.txt', level=logging.DEBUG)
 
+    # 인자 수신
     img_fn = sys.argv[1]
     char_anno_dir = sys.argv[2]
-    if len(sys.argv) > 3:
-        motion_cfg_fn = sys.argv[3]
-    else:
-        motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
-    if len(sys.argv) > 4:
-        retarget_cfg_fn = sys.argv[4]
-    else:
-        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
+    character = sys.argv[3]
+    animation_type = sys.argv[4]
+    logging.debug('기본인자 : '+img_fn + ' / ' + char_anno_dir + ' / ' + character + ' / ' + animation_type)
+    if animation_type == 'animals':
+        None
+    elif animation_type == 'tales':
+        title = sys.argv[5]
+        page_no = sys.argv[6]
+        logging.debug('동화 추가 인자 : '+title+' / '+page_no)
+
+    motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
+    retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
 
     image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
