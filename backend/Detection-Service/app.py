@@ -1,33 +1,10 @@
 import cv2
-from flask import Flask, jsonify, request, send_from_directory, Response, send_file
+from flask import Flask, jsonify, request
 import os
 import uuid
 from yolov5 import detect
-import base64
 import boto3
-from werkzeug.utils import secure_filename
-from io import BytesIO
-from PIL import Image
 import shutil
-import requests
-
-
-# def save_image_to_disk(image_np, base_filename, folder, extension):
-#     """넘파이 이미지 배열을 디스크에 저장하고 파일 경로를 반환합니다."""
-#     filename = f"{base_filename}{extension}"
-#     file_path = os.path.join(folder, filename)
-#
-#     image = Image.fromarray(image_np)
-#
-#     # RGBA 이미지를 RGB로 변환
-#     if image.mode == 'RGBA':
-#         # 알파 채널이 있으면 제거하고 RGB 모드로 변환
-#         background = Image.new('RGB', image.size, (255, 255, 255))
-#         background.paste(image, mask=image.split()[3])  # 3은 알파 채널
-#         image = background
-#
-#     image.save(file_path, 'JPEG', quality=95)  # JPEG 형식으로 저장
-#     return file_path
 
 app = Flask(__name__)
 
@@ -56,84 +33,6 @@ def rembg_to_file(img, prefix=""):
     rembg_file_name = os.path.join(UPLOAD_FOLDER,f"{prefix}{uuid.uuid4().hex}.jpg")
     shutil.copyfile('filename.png', rembg_file_name)
     return rembg_file_name
-
-@app.route('/api/v1/detection/comm/url', methods=['POST'])
-def detect_url():
-    image_url = request.json.get('image_url')
-
-    if not image_url:
-        return jsonify({"error": "No image URL provided"}), 400
-
-    S3_BUCKET = request.json.get('S3_BUCKET')
-    S3_KEY = request.json.get('S3_KEY')
-    S3_SECRET = request.json.get('S3_SECRET')
-    S3_REGION = request.json.get('S3_REGION')
-
-    if not all([S3_BUCKET, S3_KEY, S3_SECRET, S3_REGION]):
-        return jsonify({"error": "S3 configuration is incomplete"}), 400
-
-    s3_client = boto3.client(
-        's3',
-        region_name=S3_REGION,
-        aws_access_key_id=S3_KEY,
-        aws_secret_access_key=S3_SECRET
-    )
-
-    response = requests.get(image_url)
-    if response.status_code != 200:
-        return jsonify({"error": "Failed to download image"}), 500
-
-    image_data = BytesIO(response.content)
-    unique_filename_base = uuid.uuid4().hex
-    with Image.open(image_data) as webp_image:
-        # .webp 이미지를 .jpg로 변환하여 저장
-        rgb_image = webp_image.convert('RGB')
-        rgb_image.save(unique_filename_base, 'JPEG')
-
-    file_extension = '.jpg'
-    unique_filename_base = uuid.uuid4().hex
-    temp_filename = f"{unique_filename_base}{file_extension}"
-    temp_local_file = os.path.join(UPLOAD_FOLDER, temp_filename)
-    rgb_image.save(temp_local_file)
-
-    # file_extension = os.path.splitext(image_url)[1]
-    #
-    # temp_filename = f"{unique_filename_base}{file_extension}"
-    # temp_local_file = os.path.join(UPLOAD_FOLDER, temp_filename)
-    # # file.save(temp_local_file)
-    # print(temp_filename)
-    # with open(temp_local_file, 'wb') as f:
-    #     f.write(response.content)
-
-    try:
-
-        # 이미지 처리 로직 (YOLOv5 `detect` 함수 등을 여기에 포함)
-        rembg_with_border, border_only, animal_type = detect.run(weights='yolov5s.pt', source=temp_local_file)
-
-        # 이미지 데이터를 S3에 업로드합니다. (예시는 주석 처리되어 있음)
-        rembg_filename = f"{unique_filename_base}_rembg{file_extension}"
-        s3_client.upload_file(rembg_with_border, S3_BUCKET, rembg_filename, ExtraArgs={'ContentType': 'image/jpeg'})
-        rembg_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{rembg_filename}"
-
-        border_filename = f"{unique_filename_base}_trace{file_extension}"
-        s3_client.upload_file(border_only, S3_BUCKET, border_filename, ExtraArgs={'ContentType': 'image/jpeg'})
-        trace_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{border_filename}"
-
-        # 로컬 파일 삭제
-        os.remove(temp_local_file)
-
-        # 반환될 JSON 구성
-        return jsonify({
-            "border_image": rembg_url,
-            "trace_image": trace_url,
-            "animal_type": animal_type
-        })
-
-    except Exception as e:
-        if os.path.exists(temp_local_file):
-            os.remove(temp_local_file)
-        return jsonify({"error": str(e)}), 500
-
 
 
 @app.route('/api/v1/detection/comm/detect', methods=['POST'])
@@ -175,22 +74,19 @@ def detect_objects():
         # 이미지 데이터를 S3에 업로드합니다.
         rembg_filename = f"{unique_filename_base}_rembg{file_extension}"
 
-        s3_client.upload_file(rembg_with_border, S3_BUCKET, rembg_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
+        # s3_client.upload_file(rembg_with_border, S3_BUCKET, rembg_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
 
         rembg_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{rembg_filename}"
 
         border_filename = f"{unique_filename_base}_trace{file_extension}"
 
-        s3_client.upload_file(border_only, S3_BUCKET, border_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
+        # s3_client.upload_file(border_only, S3_BUCKET, border_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
 
         trace_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{border_filename}"
 
         os.remove('filename.png')
-        #
-        # # 로컬 파일 삭제
-        # os.remove(temp_local_file)
 
-        clear_upload_folder()
+        # clear_upload_folder()
 
         return jsonify({
             "border_image": rembg_url,
