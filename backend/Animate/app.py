@@ -23,11 +23,9 @@ class Hello(Resource):
 def shell_create_animation(input_filename, output_file_path, character, animation_type, title=None, no=None):
     logging.debug("shell 명령어 호출")
     if animation_type=='animals':
-        cmd = (f"python AnimatedDrawings/examples/image_to_animation.py"
-               f"{input_filename} {output_file_path} {character} {animation_type}")
+        cmd = (f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path} {character} {animation_type}")
     elif animation_type=='tales':
-        cmd = (f"python AnimatedDrawings/examples/image_to_animation.py"
-               f"{input_filename} {output_file_path} {character} {animation_type} {title} {no}")
+        cmd = (f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path} {character} {animation_type} {title} {no}")
     # 셸 명령 실행
     try:
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
