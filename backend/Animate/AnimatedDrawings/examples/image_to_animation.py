@@ -30,14 +30,13 @@ if __name__ == '__main__':
     # 인자 수신
     img_fn = sys.argv[1]
     char_anno_dir = sys.argv[2]
-    if len(sys.argv) > 3:
+    if len(sys.argv) > 3: # animal, tale 완료하면 조건 제거
         character = sys.argv[3]
         animation_type = sys.argv[4]
+        logging.debug('기본인자 : ' + img_fn + ' / ' + char_anno_dir + ' / ' + character + ' / ' + animation_type)
     else: # animal, tale 완료하면 제거
         motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
-
-    logging.debug('기본인자 : ' + img_fn + ' / ' + char_anno_dir + ' / ' + character + ' / ' + animation_type)
 
     if animation_type == 'animals':
         animal_dictionary = {
