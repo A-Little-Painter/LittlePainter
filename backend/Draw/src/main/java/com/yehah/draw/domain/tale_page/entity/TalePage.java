@@ -1,10 +1,15 @@
 package com.yehah.draw.domain.tale_page.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,18 +39,12 @@ public class TalePage {
 	@Column(name = "url_sound", length = 200, nullable = false)
 	private String urlSound;
 
-	@Column(name = "narration_before", columnDefinition = "TEXT", nullable = false)
-	private String narrationBefore;
+	@Column(name = "narration", columnDefinition = "TEXT", nullable = false)
+	private String narration;
 
-	@Column(name = "narration_after", columnDefinition = "TEXT")
-	private String narrationAfter;
+	@Column(name = "drawing", columnDefinition = "TINYINT(1)", nullable = false)
+	private Boolean drawing;
 
-	@Column(name = "request_character", length = 20)
-	private String requestCharacter;
-
-	@Column(name = "url_original", length = 200)
-	private String urlOriginal;
-
-	@Column(name = "url_trace", length = 200)
-	private String urlTrace;
+	@OneToMany(mappedBy = "talePage", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<TaleCharacter> taleCharacters = new ArrayList<>();
 }
