@@ -21,8 +21,8 @@ class Hello(Resource):
 
 
 def shell_create_animation(input_filename, output_file_path, character, animation_type, title=None, no=None):
-    logging.debug("shell 명령어 호출")
-    global cmd
+    logging.debug(f"shell 명령어 호출_common {input_filename} {output_file_path} {character}")
+    cmd = None
     if animation_type == 'animals':
         cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path} {character} {animation_type}"
     elif animation_type == 'tales':
@@ -107,7 +107,7 @@ class TestDance(Resource):
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
 
     def shell_create_animation_test(self, input_filename, output_file_path):
-        logging.debug("shell 명령어 호출")
+        logging.debug("shell 명령어 호출_test")
         cmd_test = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path}"
 
         # 셸 명령 실행
