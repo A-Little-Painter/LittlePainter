@@ -47,4 +47,11 @@ public class ChildWorkController {
         List<ChildWork> list = childWorkService.uploadList();
         return ResponseEntity.ok(list);
     }
+
+    @GetMapping("/urlGif")
+    public ResponseEntity<List<String>> getGifTotalList(){
+        return ResponseEntity.ok(childWorkService.getGifTotalList());
+    }
+
+
 }

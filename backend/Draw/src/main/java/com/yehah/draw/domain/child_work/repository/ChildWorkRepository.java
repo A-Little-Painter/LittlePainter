@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ChildWorkRepository extends JpaRepository<ChildWork, Long> {
     List<ChildWork> findByChildIdAndCategoryId(Long childId, Long categoryId);
+    List<ChildWork> findAll();
 }

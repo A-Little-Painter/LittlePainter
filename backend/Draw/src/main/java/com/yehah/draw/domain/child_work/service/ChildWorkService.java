@@ -16,4 +16,6 @@ public interface ChildWorkService {
 
     public List<ChildWork> uploadList();
 
+    public List<String> getGifTotalList();
+
 }

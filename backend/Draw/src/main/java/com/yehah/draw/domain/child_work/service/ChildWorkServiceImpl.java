@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -80,5 +81,13 @@ public class ChildWorkServiceImpl implements ChildWorkService{
         List<ChildWork> list = childWorkRepository.findByChildIdAndCategoryId(child.getChildId(),2L);
 
         return list;
+    }
+
+    public List<String> getGifTotalList(){
+        List<String> resultList = new ArrayList<>();
+        for(ChildWork childWork : childWorkRepository.findAll()){
+            resultList.add(childWork.getUrlGif());
+        }
+        return resultList;
     }
 }
