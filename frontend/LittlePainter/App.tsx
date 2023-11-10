@@ -6,6 +6,10 @@ import store from './src/redux/store';
 import axios from 'axios';
 import {refreshAccessToken} from './src/apis/baseUrl';
 import AppNavigator from './src/navigations/AppNavigator';
+import {TextEncoder, TextDecoder} from 'text-encoding';
+
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
 
 // Axios 인터셉터 설정
 axios.interceptors.response.use(

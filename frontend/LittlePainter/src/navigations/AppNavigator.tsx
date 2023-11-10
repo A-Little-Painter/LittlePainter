@@ -76,6 +76,7 @@ export type RootStackParams = {
       userEmail: string;
       title: string;
       originalImageUrl: string;
+      animalType: string;
     };
   };
   ColoringPictureScreen: {
@@ -85,10 +86,12 @@ export type RootStackParams = {
     pictureBorderURI: string;
     pictureExplanation: string;
     pictureOriginImageUri: string;
+    animalType: string;
   };
   CompleteDrawPictureScreen: {
     pictureId: number;
     completeDrawUri: string;
+    animatedGif: string;
   };
   SelectFairytaleScreen: undefined;
   FairytaleDrawScreen: undefined;
@@ -169,7 +172,7 @@ export default function AppNavigator() {
         name="SelectFairytaleScreen"
         component={SelectFairytaleScreen}
       />
-      <RootStack.Screen  
+      <RootStack.Screen
         name="ReadFairytaleScreen"
         component={ReadFairytaleScreen}
       />

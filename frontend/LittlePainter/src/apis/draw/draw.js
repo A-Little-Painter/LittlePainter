@@ -3,6 +3,7 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import {BASE_URL} from '../baseUrl';
+import {DRAW_URL} from '../baseUrl';
 
 const loadATokenFromKeychain = async () => {
   try {
@@ -11,7 +12,6 @@ const loadATokenFromKeychain = async () => {
     });
     if (credentials) {
       const token = credentials.password;
-      // console.log(token);
       return token;
     } else {
       console.error('저장된 토큰이 없습니다.');
@@ -53,6 +53,7 @@ export const animalBorder = async (animalId) => {
 export const animalCheckSimilarity = async (roomId, originBorderFileUri, compareBorderFileUri,) => {
   try {
     const formData = new FormData();
+    // formData.append('roomId', roomId);
     formData.append('roomId', roomId);
 
     formData.append('originalFile', {
@@ -78,26 +79,29 @@ export const animalCheckSimilarity = async (roomId, originBorderFileUri, compare
 };
 
 // 완성된 동물 마이페이지에 저장
-export const animalSaveToMypage = async (animalId, completeDrawUri) => {
+export const animalSaveToMypage = async (workId, completeDrawUri, gifUrl) => {
   try {
-    const accessToken = loadATokenFromKeychain();
+    const accessToken = await loadATokenFromKeychain();
     const formData = new FormData();
-    formData.append('animalId', animalId);
-
-    formData.append('file', {
+    formData.append('workId', workId);
+    formData.append('imageFile', {
       uri: completeDrawUri,
       type: 'image/png',
       name: 'originalFile.png',
     });
+    if (gifUrl !== '' && gifUrl !== undefined){
+      formData.append('gifUrl', JSON.stringify(gifUrl));
+    }
 
-    const response = await axios.post(`${BASE_URL}/draws/animals`, formData, {
+    const response = await axios.post(`${BASE_URL}/draws/child_work/animal`, formData, {
       headers: {
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${accessToken}`,
       },
     });
     return response;
   } catch (error) {
-    console.log('완성된 동물 마이페이지에 저장 실패:', error);
+    console.log('완성된 동물 마이페이지에 저장 실패 에러:', error);
     const response = error.response;
     return response;
   }
@@ -159,7 +163,7 @@ export const friendsPictureSimilarity = async (roomId, originBorderFileUri, comp
       name: 'newFile.png',
     });
     const response = await axios.post(`${BASE_URL}/draws/animals/similarcheck`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
-    console.log(response.data)
+    console.log(response.data);
     return response;
   } catch (error) {
     console.log('다른 사람이 올린 사진 그리기 유사도 검사 실패:', error);
@@ -168,26 +172,29 @@ export const friendsPictureSimilarity = async (roomId, originBorderFileUri, comp
   }
 };
 // 완성된 사진그리기 마이페이지에 저장
-export const friendsPictureSaveToMypage = async (friendsAnimalId, completeDrawUri) => {
+export const friendsPictureSaveToMypage = async (workId, completeDrawUri, gifUrl) => {
   try {
-    const accessToken = loadATokenFromKeychain();
+    const accessToken = await loadATokenFromKeychain();
     const formData = new FormData();
-    formData.append('friendsAnimalId', friendsAnimalId);
-
-    formData.append('file', {
+    formData.append('workId', workId);
+    formData.append('imageFile', {
       uri: completeDrawUri,
       type: 'image/png',
       name: 'originalFile.png',
     });
+    if (gifUrl !== '' && gifUrl !== undefined){
+      formData.append('gifUrl', JSON.stringify(gifUrl));
+    }
 
-    const response = await axios.post(`${BASE_URL}/draws/animals`, formData, {
+    const response = await axios.post(`${BASE_URL}/draws/child_work/friendsAnimal`, formData, {
       headers: {
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${accessToken}`,
       },
     });
     return response;
   } catch (error) {
-    console.log('완성된 동물 마이페이지에 저장 실패:', error);
+    console.log('완성된 동물 마이페이지에 저장 실패 에러:', error);
     const response = error.response;
     return response;
   }
@@ -395,17 +402,17 @@ export const imageDeleteMypicture = async () => {
     return response;
   }
 };
-// 마이페이지에 그림 저장하기
-export const imageRegistMypage = async () => {
-  try {
-    const response = await axios.post(`${BASE_URL}/images/comm/myWork`, null);
-    return response;
-  } catch (error) {
-    console.log('마이페이지에 그림 저장하기 실패:', error);
-    const response = error.response;
-    return response;
-  }
-};
+// // 마이페이지에 그림 저장하기
+// export const imageRegistMypage = async () => {
+//   try {
+//     const response = await axios.post(`${BASE_URL}/images/comm/myWork`, null);
+//     return response;
+//   } catch (error) {
+//     console.log('마이페이지에 그림 저장하기 실패:', error);
+//     const response = error.response;
+//     return response;
+//   }
+// };
 // 동물 소리 URL 요청
 export const soundAnimalRequest = async () => {
   try {

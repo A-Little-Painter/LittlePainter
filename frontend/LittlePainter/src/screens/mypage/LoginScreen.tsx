@@ -20,6 +20,8 @@ import {Alert} from 'react-native';
 import {signIn} from '../../apis/user/userApi';
 import * as Keychain from 'react-native-keychain';
 import {selected} from '../../redux/slices/user/user';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux/store';
 
 type LoginScreenProps = StackScreenProps<RootStackParams, 'LoginScreen'>;
 const windowWidth = Dimensions.get('window').width;
@@ -31,6 +33,10 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPasword] = useState('');
   const dispatch = useAppDispatch();
+
+  const havingGifUrl = useSelector(
+    (state: RootState) => state.draw.havingGifUrl,
+  );
 
   const moveToPasswordInput = () => {
     passwordInputRef.current.focus();
@@ -71,7 +77,11 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
         console.log(selecedData);
 
         dispatch(logIn());
-        navigation.navigate('MainScreen');
+        if (havingGifUrl) {
+          navigation.goBack();
+        } else {
+          navigation.navigate('MainScreen');
+        }
       } else {
         Alert.alert('이메일과 패스워드를 다시 한번 확인해 주세요');
       }

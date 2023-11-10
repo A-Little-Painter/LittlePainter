@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState, useRef} from 'react';
+import React, {createContext, useContext, useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -9,9 +9,11 @@ import {
   TouchableOpacity,
   Image,
   Pressable,
-  ToastAndroid, // 토스트안드로이드 잠깐 사용
+  ToastAndroid,
   BackHandler,
   ImageBackground,
+  Animated,
+  Easing,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
@@ -23,26 +25,23 @@ import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
-import OriginPictureModal from '../modals/OriginPictureModal';
+import OriginCompareModal from '../modals/OriginCompareModal';
 import DrawColorPaletteModal from '../modals/DrawColorPaletteModal';
 import {
   handleLineThickness,
-  handleisOriginPictureModalVisible,
+  handleisOriginCompareModalVisible,
   handleDrawColorSelect,
   handleisTestDrawCompareModalVisible, // 그림 임시 비교 모달
 } from '../../redux/slices/draw/draw';
-import {
-  friendsPictureBorder,
-  friendsPictureSimilarity,
-} from '../../apis/draw/draw';
+import {animalBorder, animalCheckSimilarity} from '../../apis/draw/draw';
 import TestDrawCompareModal from '../modals/TestDrawCompareModal';
 // 웹소켓 연결하기
 import SockJS from 'sockjs-client';
-import {CompatClient, Stomp} from '@stomp/stompjs';
+import {CompatClient, Client, Stomp} from '@stomp/stompjs';
 
-type DrawPictureScreenProps = StackScreenProps<
+type DrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
-  'DrawPictureScreen'
+  'DrawAnimalScreen'
 >;
 
 const windowWidth = Dimensions.get('window').width;
@@ -58,22 +57,28 @@ const fastcolorData = [
   '#9E00FF',
   '#000000',
 ];
+//////////////////// 웹소켓
+const WebSocketContext = createContext<CompatClient | null>(null);
 
-export default function DrawPictureScreen({
+//////////////////
+export default function DrawAnimalScreen({
   route,
   navigation,
-}: DrawPictureScreenProps) {
+}: DrawAnimalScreenProps) {
   //웹소켓
   ////////////////////////////
   // WebSocket 및 STOMP 클라이언트 설정
   const MAX_RECONNECT_ATTEMPTS = 5; // 최대 재연결 시도 횟수
   const RECONNECT_INTERVAL = 5000; // 재연결 간격 (밀리초)
-  const reconnectAttemptsRef = useRef(0);
   const [client, setClient] = useState<CompatClient | null>(null);
-  const [socketLinked, setSocketLinked] = useState<boolean>(false);
-  const [similarityMessage, setSimilarityMessage] = useState<string>('');
-  const [similarityState, setSimilarityState] = useState<string>('');
-  const [similarityValue, setSimilarityValue] = useState<string>('');
+  // const reconnectTimeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+  const reconnectAttemptsRef = useRef(0);
+  // const useWebSocket = () => useContext(WebSocketContext);
+  // const drawClient = useWebSocket();
+  // drawClient?.subscribe('/sub/room/a', (message) => {
+  //   console.log('되나');
+  //   // console.log(message);
+  // });
   useEffect(() => {
     let newClient: CompatClient;
 
@@ -84,24 +89,21 @@ export default function DrawPictureScreen({
         console.log('연결됨');
         console.log('Connected: ' + frame);
         setClient(newClient); // 연결 후 client 상태 업데이트
-        setSocketLinked(true);
       };
 
       newClient.onWebSocketClose = () => {
-        console.log('웹소켓 연결 끊김.');
+        console.log('WebSocket closed.');
         if (reconnectAttemptsRef.current < MAX_RECONNECT_ATTEMPTS) {
           // 최대 재연결 시도 횟수를 초과하지 않았다면 재연결 시도
           reconnectAttemptsRef.current += 1;
           setTimeout(() => {
-            console.log('재연결 중...');
+            console.log('Reconnecting...');
             connectAndSetupListeners();
           }, RECONNECT_INTERVAL);
-        } else if ((reconnectAttemptsRef.current = 100)) {
-          console.log('유저가 나감');
+        } else if (reconnectAttemptsRef.current = 100){
+          console.log('유저가 나간거임');
         } else {
-          console.log(
-            '최대 재연결 시도 횟수에 도달했습니다. 재연결 시도를 중단합니다.',
-          );
+          console.log('Max reconnect attempts reached. Stopping reconnection attempts.');
         }
       };
 
@@ -115,54 +117,57 @@ export default function DrawPictureScreen({
         clearTimeout(reconnectAttemptsRef.current); // 이미 예약된 재연결 타임아웃을 취소합니다.
         reconnectAttemptsRef.current = 100; // 재연결 타임아웃 ID를 리셋합니다.
         newClient.deactivate(); // 웹소켓 연결 종료
-        setSocketLinked(false);
       }
     };
   }, []);
   useEffect(() => {
     if (client) {
       client.subscribe('/sub/room/a', (message) => {
-        const messageContent = JSON.parse(message.body);
-        console.log('되나',messageContent);
-        setSimilarityMessage(messageContent.message);
-        setSimilarityState(messageContent.similarState);
-        setSimilarityValue(messageContent.similarValue);
+        console.log('되나');
+        console.log('나와라 메시지', message);
+        console.log('나와라 메시지', message.body);
       });
     }
   }, [client]);
-  useEffect(() => {
-    if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
-      if (similarityState === 'END') {
-        console.log('유사도: ', similarityValue);
-        handleGoColoring();
-      }
-    } else if (similarityMessage === '유사도 측정에 실패했습니다.') {
-      console.log('유사도: 0');
-    }
-  }, [similarityMessage, similarityState]);
 
-  //////////////////////////////////////////////////////////////////////////////
+  // useEffect(() => {
+  //   let stompClient = new Client();
+
+  //   stompClient.webSocketFactory = () => {
+  //     return new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity');
+  //   };
+  //   stompClient.onConnect = function(frame) {
+  //     console.log('Connected: ' + frame);
+  //     stompClient.subscribe('/sub/room/a', function(greeting){
+  //       console.log(JSON.parse(greeting.body).content);
+  //     });
+  //   };
+  //   stompClient.activate();
+  //   return () => {
+  //     console.log('Component will unmount. Disconnecting from STOMP server.');
+  //     stompClient.disconnect();
+  //   };
+  // },[]);
+  ///////////////////////////
   // 캡쳐 변수
-  const drawCaptureRef = useRef(null); //테두리 그리기 캡쳐
-  const originCaptureRef = useRef(null); //원본이미지 캡쳐
+  const drawCaptureRef = useRef(); //테두리 그리기 캡쳐
+  const originCaptureRef = useRef(); //원본이미지 캡쳐
   // 임시 이미지 비교 변수
   const isTestDrawCompareModalVisible = useSelector(
     (state: RootState) => state.draw.isTestDrawCompareModalVisible,
   );
-  const [pictureId] = useState<number>(
-    route.params.friendsAnimalInfo.friendsAnimalId,
-  );
-  const [pictureOriginImageUri] = useState<string>(
-    route.params.friendsAnimalInfo.originalImageUrl,
-  );
-  const [pictureTitle] = useState<string>(route.params.friendsAnimalInfo.title);
-  const [animalType] = useState<string>(route.params.friendsAnimalInfo.animalType);
-  const [pictureBorderURI, setPictureBorderURI] = useState<string>('');
-  const [pictureExplanation, setPictureExplanation] = useState<string>('');
+
+  const [animalId] = useState<number>(route.params.animalId);
+  const [animalType] = useState<string>(route.params.animalType);
+  const [originImage] = useState<string>(route.params.originImage);
+  const [animalBorderURI, setAnimalBorderURI] = useState<string>('');
+  const [animalExplanation, setAnimalExplanation] = useState<string>('');
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
   const [captureBorderImagePath, setCaptureBorderImagePath] =
     useState<string>('');
   const [canDrawCapture, setCanDrawCapture] = useState<boolean>(false);
+  // 로딩 변수
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
 
@@ -183,8 +188,8 @@ export default function DrawPictureScreen({
   const isDrawLineThicknessModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
   );
-  const isOriginPictureModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginPictureModalVisible,
+  const isOriginCompareModalVisible = useSelector(
+    (state: RootState) => state.draw.isOriginCompareModalVisible,
   );
   // 선 색깔 및 모달
   const isDrawColorPaletteModalVisible = useSelector(
@@ -195,46 +200,43 @@ export default function DrawPictureScreen({
   );
 
   // 서버 통신
-  const handleFriendsPictureBorder = async () => {
+  const handleAnimalBorder = async () => {
+    setIsLoading(true);
     try {
-      const response = await friendsPictureBorder(pictureId);
+      const response = await animalBorder(animalId);
       if (response.status === 200) {
-        console.log(
-          '다른 사람이 올린 사진 테두리 가져오기 성공',
-          response.data,
-        );
-        setPictureBorderURI(response.data.urlTrace);
-        setPictureExplanation(response.data.detail);
-        handleOriginCapture();
+        console.log('선택 동물 테두리 가져오기 성공', response.data);
+        setIsLoading(false);
+        setAnimalBorderURI(response.data.urlTrace);
+        setAnimalExplanation(response.data.detail);
+        // await handleOriginCapture();
       } else {
-        console.log(
-          '다른 사람이 올린 사진 테두리 가져오기 실패',
-          response.status,
-        );
+        console.log('선택 동물 테두리 가져오기 실패', response.status);
       }
     } catch (error) {
-      console.log('다른 사람이 올린 사진 테두리 가져오기 실패', error);
+      console.log('선택 동물 테두리 가져오기 실패', error);
     }
   };
-  const handlefriendsPictureSimilarity = async (compareImagePath: string) => {
+
+  const handleAnimalCheckSimilarity = async (compareImagePath: string) => {
     // const randomInt = Math.floor(Math.random() * (100 - 1 + 1) + 1);
     try {
-      const response = await friendsPictureSimilarity(
+      const response = await animalCheckSimilarity(
         // `abc${randomInt}`,
         'a',
         captureBorderImagePath,
         compareImagePath,
       );
       if (response.status === 200 || response.status === 404) {
-        console.log('유사도 검사 성공', response.data);
-        // if (response.data === 'END') {
-        //   handleGoColoring();
-        // }
+        console.log('동물 그리기 유사도 체크 성공', response.data);
+        if (response.data.similarState === 'END') {
+          handleGoColoring();
+        }
       } else {
-        console.log('유사도 검사 실패', response.status);
+        console.log('동물 그리기 유사도 체크 실패', response.status);
       }
     } catch (error) {
-      console.log('유사도 검사 체크 실패', error);
+      console.log('동물 그리기 유사도 체크 실패', error);
     }
   };
 
@@ -244,7 +246,7 @@ export default function DrawPictureScreen({
       const uri = await drawCaptureRef.current.capture();
       setCaptureImagePath(uri);
       setCanDrawCapture(false);
-      await handlefriendsPictureSimilarity(uri);
+      await handleAnimalCheckSimilarity(uri);
     } catch (error) {
       setCanDrawCapture(false);
       console.error('캡쳐 에러 발생: ', error);
@@ -258,16 +260,15 @@ export default function DrawPictureScreen({
       console.error('원본 이미지 캡쳐 에러 발생: ', error);
     }
   }
-
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
     setTimeout(() => {
       handleOriginCapture();
     }, 500);
-  }, [pictureBorderURI]);
-
+  }, [animalBorderURI]);
+  // 초기 테두리 원본 가져오기
   useEffect(() => {
-    handleFriendsPictureBorder();
+    handleAnimalBorder();
   }, []);
 
   // 그림 그리기 함수
@@ -335,7 +336,7 @@ export default function DrawPictureScreen({
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
       // dispatch(handleLineThickness(10));
-      dispatch(handleLineThickness(5));
+      dispatch(handleLineThickness(10));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
@@ -371,16 +372,39 @@ export default function DrawPictureScreen({
 
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
-    navigation.navigate('ColoringPictureScreen', {
-      pictureId: pictureId,
-      pictureTitle: pictureTitle,
+    navigation.navigate('ColoringAnimalScreen', {
+      animalId: animalId,
       completeLine: paths,
-      pictureBorderURI: pictureBorderURI,
-      pictureExplanation: pictureExplanation,
-      pictureOriginImageUri: pictureOriginImageUri,
       animalType: animalType,
+      originImage: originImage,
+      animalBorderURI: animalBorderURI,
+      animalExplanation: animalExplanation,
     });
   };
+
+  ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+
+    rotateImage();
+  }, []);
+
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+  ////////////
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -484,14 +508,15 @@ export default function DrawPictureScreen({
             format: 'png',
             quality: 1,
           }}>
-          {pictureBorderURI === '' ? null : (
+          {animalBorderURI === '' ? null : (
             <ImageBackground
-              source={{uri: pictureBorderURI}}
+              source={{uri: animalBorderURI}}
               // source={require('../../assets/images/animalImage/ovalTest.png')}
-              style={styles.pictureBorderImageBackground}
-              imageStyle={styles.backgroundImageOpacity}
+              // source={require('../../assets/images/animalImage/test1.jpg')}
+              style={styles.animalBorderImageBackground}
+              imageStyle={{opacity: 0.5}}
               resizeMode="contain">
-              {captureBorderImagePath !== '' && socketLinked ? (
+              {captureBorderImagePath !== '' ? (
                 <ViewShot
                   ref={drawCaptureRef}
                   options={{
@@ -502,7 +527,11 @@ export default function DrawPictureScreen({
                   style={[
                     styles.pathViewShot,
                     // eslint-disable-next-line react-native/no-inline-styles
-                    {backgroundColor: canDrawCapture ? 'white' : 'transparent'},
+                    {
+                      backgroundColor: canDrawCapture
+                        ? '#FFFFFF'
+                        : 'transparent',
+                    },
                   ]}>
                   <View
                     style={styles.pathView}
@@ -514,7 +543,10 @@ export default function DrawPictureScreen({
                         <Path
                           key={`path-${index}`}
                           d={item.path}
-                          stroke={item.color}
+                          stroke={
+                            // isClearButtonClicked ? 'transparent' : item.color
+                            item.color
+                          }
                           fill={'transparent'}
                           strokeWidth={item.strokeWidth}
                           strokeLinejoin={'round'}
@@ -523,7 +555,10 @@ export default function DrawPictureScreen({
                       ))}
                       <Path
                         d={currentPath}
-                        stroke={drawColorSelect}
+                        stroke={
+                          // isClearButtonClicked ? 'transparent' : drawColorSelect
+                          drawColorSelect
+                        }
                         fill={'transparent'}
                         strokeWidth={LineThickness}
                         strokeLinejoin={'round'}
@@ -544,7 +579,7 @@ export default function DrawPictureScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
-                dispatch(handleisOriginPictureModalVisible(true));
+                dispatch(handleisOriginCompareModalVisible(true));
               }}>
               <Image
                 style={styles.ideaLight}
@@ -606,12 +641,12 @@ export default function DrawPictureScreen({
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginPictureModalVisible ? (
-        <OriginPictureModal
-          pictureTitle={pictureTitle}
-          pictureBorderURI={pictureBorderURI}
-          pictureOriginImageUri={pictureOriginImageUri}
-          pictureExplanation={pictureExplanation}
+      {isOriginCompareModalVisible ? (
+        <OriginCompareModal
+          animalBorderURI={animalBorderURI}
+          animalExplanation={animalExplanation}
+          animalType={animalType}
+          originImage={originImage}
         />
       ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
@@ -622,6 +657,14 @@ export default function DrawPictureScreen({
           compareImageURI={captureImagePath}
         />
       ) : null}
+      {isLoading ? (
+        <View>
+          <Animated.Image
+            style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+            source={require('../../assets/images/loading2.png')}
+          />
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -629,7 +672,7 @@ export default function DrawPictureScreen({
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
   },
   subContainer: {
     alignSelf: 'center',
@@ -691,7 +734,7 @@ const styles = StyleSheet.create({
   xCircle: {
     justifyContent: 'center',
     borderRadius: windowWidth * 0.05 * 0.5,
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
     borderColor: '#5E9FF9',
@@ -703,14 +746,11 @@ const styles = StyleSheet.create({
   middleContainer: {
     flex: 0.8,
     width: '100%',
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
   },
-  pictureBorderImageBackground: {
+  animalBorderImageBackground: {
     width: '100%',
     height: '100%',
-  },
-  backgroundImageOpacity: {
-    opacity: 0.3,
   },
   pathViewShot: {
     width: '100%',
@@ -795,5 +835,12 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });

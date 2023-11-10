@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useRef} from 'react';
 import {
@@ -8,7 +9,7 @@ import {
   TouchableOpacity,
   Image,
   Pressable,
-  ToastAndroid, // 토스트안드로이드 잠깐 사용
+  ToastAndroid,
   BackHandler,
   ImageBackground,
   Animated,
@@ -34,6 +35,9 @@ import {
 } from '../../redux/slices/draw/draw';
 import {animalBorder, animalCheckSimilarity} from '../../apis/draw/draw';
 import TestDrawCompareModal from '../modals/TestDrawCompareModal';
+// 웹소켓 연결하기
+import SockJS from 'sockjs-client';
+import {CompatClient, Stomp} from '@stomp/stompjs';
 
 type DrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -58,9 +62,88 @@ export default function DrawAnimalScreen({
   route,
   navigation,
 }: DrawAnimalScreenProps) {
+  //웹소켓
+  ////////////////////////////
+  // WebSocket 및 STOMP 클라이언트 설정
+  const MAX_RECONNECT_ATTEMPTS = 5; // 최대 재연결 시도 횟수
+  const RECONNECT_INTERVAL = 5000; // 재연결 간격 (밀리초)
+  const reconnectAttemptsRef = useRef(0);
+  const [client, setClient] = useState<CompatClient | null>(null);
+  const [socketLinked, setSocketLinked] = useState<boolean>(false);
+  const [similarityMessage, setSimilarityMessage] = useState<string>('');
+  const [similarityState, setSimilarityState] = useState<string>('');
+  const [similarityValue, setSimilarityValue] = useState<string>('');
+  useEffect(() => {
+    let newClient: CompatClient;
+
+    const connectAndSetupListeners = () => {
+      newClient = Stomp.over(() => new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'));
+
+      newClient.onConnect = frame => {
+        console.log('연결됨');
+        console.log('Connected: ' + frame);
+        setClient(newClient); // 연결 후 client 상태 업데이트
+        setSocketLinked(true);
+      };
+
+      newClient.onWebSocketClose = () => {
+        console.log('웹소켓 연결 끊김.');
+        if (reconnectAttemptsRef.current < MAX_RECONNECT_ATTEMPTS) {
+          // 최대 재연결 시도 횟수를 초과하지 않았다면 재연결 시도
+          reconnectAttemptsRef.current += 1;
+          setTimeout(() => {
+            console.log('재연결 중...');
+            connectAndSetupListeners();
+          }, RECONNECT_INTERVAL);
+        } else if ((reconnectAttemptsRef.current = 100)) {
+          console.log('유저가 나감');
+        } else {
+          console.log(
+            '최대 재연결 시도 횟수에 도달했습니다. 재연결 시도를 중단합니다.',
+          );
+        }
+      };
+
+      newClient.activate(); // 웹소켓 연결 활성화
+    };
+
+    connectAndSetupListeners();
+
+    return () => {
+      if (newClient && newClient.connected) {
+        clearTimeout(reconnectAttemptsRef.current); // 이미 예약된 재연결 타임아웃을 취소합니다.
+        reconnectAttemptsRef.current = 100; // 재연결 타임아웃 ID를 리셋합니다.
+        newClient.deactivate(); // 웹소켓 연결 종료
+        setSocketLinked(false);
+      }
+    };
+  }, []);
+  useEffect(() => {
+    if (client) {
+      client.subscribe('/sub/room/a', (message) => {
+        const messageContent = JSON.parse(message.body);
+        console.log(message.body);
+        setSimilarityMessage(messageContent.message);
+        setSimilarityValue(messageContent.similarValue);
+        setSimilarityState(messageContent.similarState)
+      });
+    }
+  }, [client]);
+  useEffect(() => {
+    if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
+      if (similarityState === 'END') {
+        console.log('유사도: ', similarityValue);
+        handleGoColoring();
+      }
+    } else if (similarityMessage === '유사도 측정에 실패했습니다.') {
+      console.log('유사도: 0');
+    }
+  }, [similarityMessage, similarityState]);
+
+  //////////////////////////////////////////////////////////////////////////////
   // 캡쳐 변수
-  const drawCaptureRef = useRef(); //테두리 그리기 캡쳐
-  const originCaptureRef = useRef(); //원본이미지 캡쳐
+  const drawCaptureRef = useRef(null); //테두리 그리기 캡쳐
+  const originCaptureRef = useRef(null); //원본이미지 캡쳐
   // 임시 이미지 비교 변수
   const isTestDrawCompareModalVisible = useSelector(
     (state: RootState) => state.draw.isTestDrawCompareModalVisible,
@@ -128,18 +211,19 @@ export default function DrawAnimalScreen({
   };
 
   const handleAnimalCheckSimilarity = async (compareImagePath: string) => {
-    const randomInt = Math.floor(Math.random() * (100 - 1 + 1) + 1);
+    // const randomInt = Math.floor(Math.random() * (100 - 1 + 1) + 1);
     try {
       const response = await animalCheckSimilarity(
-        `abc${randomInt}`,
+        // `abc${randomInt}`,
+        'a',
         captureBorderImagePath,
         compareImagePath,
       );
       if (response.status === 200 || response.status === 404) {
         console.log('동물 그리기 유사도 체크 성공', response.data);
-        if (response.data.similarState === 'END') {
-          handleGoColoring();
-        }
+        // if (response.data.similarState === 'END') {
+        //   handleGoColoring();
+        // }
       } else {
         console.log('동물 그리기 유사도 체크 실패', response.status);
       }
@@ -164,7 +248,6 @@ export default function DrawAnimalScreen({
     try {
       const uri = await originCaptureRef.current.capture();
       setCaptureBorderImagePath(uri);
-      console.log('oo 캡쳐함', uri);
     } catch (error) {
       console.error('원본 이미지 캡쳐 에러 발생: ', error);
     }
@@ -172,9 +255,8 @@ export default function DrawAnimalScreen({
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
     setTimeout(() => {
-      console.log('캡쳐되나?', animalBorderURI);
       handleOriginCapture();
-    }, 10);
+    }, 500);
   }, [animalBorderURI]);
   // 초기 테두리 원본 가져오기
   useEffect(() => {
@@ -424,9 +506,9 @@ export default function DrawAnimalScreen({
               // source={require('../../assets/images/animalImage/ovalTest.png')}
               // source={require('../../assets/images/animalImage/test1.jpg')}
               style={styles.animalBorderImageBackground}
-              imageStyle={{opacity: 0.5}}
+              imageStyle={styles.backgroundImageOpacity}
               resizeMode="contain">
-              {captureBorderImagePath !== '' ? (
+              {captureBorderImagePath !== '' && socketLinked ? (
                 <ViewShot
                   ref={drawCaptureRef}
                   options={{
@@ -568,10 +650,12 @@ export default function DrawAnimalScreen({
         />
       ) : null}
       {isLoading ? (
-        <Animated.Image
-          style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
-          source={require('../../assets/images/loading2.png')}
-        />
+        <View>
+          <Animated.Image
+            style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+            source={require('../../assets/images/loading2.png')}
+          />
+        </View>
       ) : null}
     </View>
   );
@@ -659,6 +743,9 @@ const styles = StyleSheet.create({
   animalBorderImageBackground: {
     width: '100%',
     height: '100%',
+  },
+  backgroundImageOpacity: {
+    opacity: 0.3,
   },
   pathViewShot: {
     width: '100%',
