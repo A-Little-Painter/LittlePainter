@@ -7,8 +7,6 @@ from flask import Flask, request, send_file
 from flask_restx import Api, Resource
 from werkzeug.utils import secure_filename
 
-from examples import image_to_animation
-
 app = Flask(__name__)
 api = Api(app)
 
