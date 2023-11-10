@@ -122,7 +122,7 @@ class TestDance(Resource):
         except subprocess.CalledProcessError as e:
             logging.error("쉘 커맨드 수행 실패")
             return e.stderr
-        
+
 
 if __name__ == "__main__":
     logger = logging.getLogger()
