@@ -30,7 +30,7 @@ if __name__ == '__main__':
     # 인자 수신
     img_fn = sys.argv[1]
     char_anno_dir = sys.argv[2]
-    
+
     if len(sys.argv) > 3: # animal, tale 완료하면 조건 제거
         character = sys.argv[3]
         animation_type = sys.argv[4]
@@ -40,9 +40,8 @@ if __name__ == '__main__':
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
 
     if animation_type == 'animals':
-        animal_dictionary = {
-            "강아지"
-        }
+        animal_list = ['강아지', '고양이', '코끼리', '소', '오리', '쥐', '사자', '닭', '늑대', '원숭이', '돼지', '호랑이', '곰', '기타']
+        
         motion_cfg_fn = resource_filename(__name__, 'config/motion/zombie.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
     elif animation_type == 'tales':
