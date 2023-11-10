@@ -74,19 +74,19 @@ def detect_objects():
         # 이미지 데이터를 S3에 업로드합니다.
         rembg_filename = f"{unique_filename_base}_rembg{file_extension}"
 
-        # s3_client.upload_file(rembg_with_border, S3_BUCKET, rembg_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
+        s3_client.upload_file(rembg_with_border, S3_BUCKET, rembg_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
 
         rembg_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{rembg_filename}"
 
         border_filename = f"{unique_filename_base}_trace{file_extension}"
 
-        # s3_client.upload_file(border_only, S3_BUCKET, border_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
+        s3_client.upload_file(border_only, S3_BUCKET, border_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
 
         trace_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{border_filename}"
 
         os.remove('filename.png')
 
-        # clear_upload_folder()
+        clear_upload_folder()
 
         return jsonify({
             "border_image": rembg_url,
