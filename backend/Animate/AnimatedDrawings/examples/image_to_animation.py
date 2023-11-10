@@ -30,6 +30,7 @@ if __name__ == '__main__':
     # 인자 수신
     img_fn = sys.argv[1]
     char_anno_dir = sys.argv[2]
+    
     if len(sys.argv) > 3: # animal, tale 완료하면 조건 제거
         character = sys.argv[3]
         animation_type = sys.argv[4]
