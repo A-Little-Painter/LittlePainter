@@ -30,23 +30,24 @@ if __name__ == '__main__':
     logger.setLevel(logging.DEBUG)
 
     # 인자 수신
+    logger.debug(f"image_to_animation.py 진입 {len(sys.argv)}")
     img_fn = sys.argv[1]
     char_anno_dir = sys.argv[2]
 
-    if len(sys.argv) > 3: # animal, tale 완료하면 조건 제거(1)
+    if len(sys.argv) > 3:  # animal, tale 완료하면 조건 제거(1)
         character = sys.argv[3]
         animation_type = sys.argv[4]
         logger.debug('기본인자 : ' + img_fn + ' / ' + char_anno_dir + ' / ' + character + ' / ' + animation_type)
-    else: # animal, tale 완료하면 내용까지 제거(2)
+    else:  # animal, tale 완료하면 내용까지 제거(2)
         motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
         image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
 
-    animation_type = None #나중에 제거(3)
+    animation_type = None  # 나중에 제거(3)
 
     if animation_type == 'animals':
         animal_list = ['강아지', '고양이', '코끼리', '소', '오리', '쥐', '사자', '닭', '늑대', '원숭이', '돼지', '호랑이', '곰', '기타']
-        four_legs_animal = ['강아지', '고양이', '코끼리', '']
+        four_legs_animal = ['강아지', '고양이', '코끼리', '소', '사자', '늑대', '돼지', '호랑이']
         motion_cfg_fn = resource_filename(__name__, 'config/motion/zombie.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
         image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
