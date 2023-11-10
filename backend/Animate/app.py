@@ -139,7 +139,7 @@ class TestDance22(Resource):
         image.save(filename)
 
         # 저장한 이미지로 애니메이션 생성
-        image_to_animation(filename, output_dir)
+        image_to_animation.image_to_animation(filename, output_dir)
 
         # 임시값 반환
         return send_file(f"{output_dir}/video.gif", mimetype='image/gif')
