@@ -1,10 +1,13 @@
 # app.py
 import logging
 import subprocess
+from pathlib import Path
 
 from flask import Flask, request, send_file
 from flask_restx import Api, Resource
 from werkzeug.utils import secure_filename
+
+from examples import image_to_animation
 
 app = Flask(__name__)
 api = Api(app)
@@ -117,6 +120,29 @@ class TestDance(Resource):
         except subprocess.CalledProcessError as e:
             logging.error("쉘 커맨드 수행 실패")
             return e.stderr
+
+@api.route('/animations/comm/test-dance22')
+class TestDance(Resource):
+    def post(self):
+        output_dir = Path('./AnimatedDrawings/result/test-dance2')
+        output_dir.mkdir(exist_ok=True, parents=True)
+
+        # 진입 확인
+        logging.debug("Animate-Service22 : test dance requested22")
+
+        # requestbody 수신
+        animal_type = request.form['animalType']
+        image = request.files['image']
+
+        # 이미지 저장
+        filename = secure_filename(image.filename)
+        image.save(filename)
+
+        # 저장한 이미지로 애니메이션 생성
+        image_to_animation.image(filename, output_dir)
+
+        # 임시값 반환
+        return send_file(f"{output_dir}/video.gif", mimetype='image/gif')
 
 
 if __name__ == "__main__":
