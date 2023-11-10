@@ -10,13 +10,13 @@ import sys
 from pkg_resources import resource_filename
 
 
-def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str):
+def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None):
     """
     Given the image located at img_fn, create annotation files needed for animation.
     Then create animation from those animations and motion cfg and retarget cfg.
     """
     # create the annotations
-    image_to_annotations(img_fn, char_anno_dir)
+    image_to_annotations(img_fn, char_anno_dir, animation_type)
 
     # create the animation
     annotations_to_animation(char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
@@ -52,17 +52,21 @@ if __name__ == '__main__':
         if character in animal_list:
             motion_cfg_fn = resource_filename(__name__, 'config/motion/zombie.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
+
         else:
             motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
 
-        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
+        # 골격종류 포함하여 config파일 생성 함수 실행
+        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn, 'animals')
 
     elif animation_type == 'tales':
         title = sys.argv[5]
         page_no = sys.argv[6]
         logger.debug('동화 추가 인자 : ' + title + ' / ' + page_no)
-        
+
         motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
-        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
+
+        # 골격종류 포함하여 config파일 생성 함수 실행
+        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn, 'tales')
