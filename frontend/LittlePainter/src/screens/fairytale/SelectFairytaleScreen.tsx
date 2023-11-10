@@ -1,16 +1,17 @@
 // import React, {useState} from 'react';
-import React from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
   Image,
-  FlatList,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
+import {taleListInquiry} from '../../apis/draw/draw';
 
 type SelectFairytaleScreenProps = StackScreenProps<
   RootStackParams,
@@ -18,30 +19,60 @@ type SelectFairytaleScreenProps = StackScreenProps<
 >;
 
 const windowWidth = Dimensions.get('window').width;
-// const windowHeight = Dimensions.get('window').height;
+const windowHeight = Dimensions.get('window').height;
 
-const fairytaleData = [
-  {
-    id: 1,
-    title: '방귀시합',
-    image: '../../assets/images/dinosaur.png',
-  },
-  {
-    id: 2,
-    title: '밥만 먹는 밥벌레 장군',
-    image: '../../assets/images/dinosaur.png',
-  },
-  {
-    id: 3,
-    title: '흥부 놀부',
-    image: '../../assets/images/dinosaur.png',
-  },
-  {
-    id: 4,
-    title: '콩쥐팥쥐',
-    image: '../../assets/images/dinosaur.png',
-  },
-];
+// const fairytale = [
+//   {
+//     id: 1,
+//     title: '방귀시합',
+//     urlCover: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     id: 2,
+//     title: '밥만 먹는 밥벌레 장군',
+//     urlCover: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     id: 3,
+//     title: '흥부 놀부',
+//     urlCover: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     id: 4,
+//     title: '콩쥐팥쥐',
+//     urlCover: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     id: 5,
+//     title: '콩쥐팥쥐',
+//     urlCover: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     id: 6,
+//     title: '콩쥐팥쥐',
+//     urlCover: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     id: 7,
+//     title: '콩쥐팥쥐',
+//     urlCover: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     id: 8,
+//     title: '콩쥐팥쥐',
+//     urlCover: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     id: 9,
+//     title: '콩쥐팥쥐',
+//     urlCover: require('../../assets/images/dinosaur.png'),
+//   },
+//   {
+//     id: 10,
+//     title: '콩쥐팥쥐',
+//     urlCover: require('../../assets/images/dinosaur.png'),
+//   },
+// ];
 
 const randomBackgroundColor: string[] = [
   '#8C80E2',
@@ -58,11 +89,38 @@ const randomBackgroundColor: string[] = [
   '#C3FFC9',
 ];
 
+interface FairytaleType {
+  id: number;
+  title: string;
+  urlCover: string;
+  animalType: string;
+}
+
 export default function SelectFairytaleScreen({
   navigation,
 }: SelectFairytaleScreenProps) {
   // type NameType = string | undefined;
   // const name: NameType = '동물선택하기';
+  const [fairytale, setFairytale] = useState<FairytaleType[]>([]);
+
+  const handleTaleListInquiry = async () => {
+    try {
+      const response = await taleListInquiry();
+      if (response.status === 200) {
+        console.log('전체 동화 목록 조회하기 성공', response.data);
+        setFairytale(response.data.content);
+      } else {
+        console.log('전체 동화 목록 조회하기 실패', response.status);
+      }
+    } catch (error) {
+      console.log('전체 동화 목록 조회하기 실패', error);
+    }
+  };
+  useEffect(() => {
+    handleTaleListInquiry();
+    return () => {};
+  }, []);
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -76,41 +134,48 @@ export default function SelectFairytaleScreen({
         </View>
         {/* 중단 */}
         <View style={styles.middleContainer}>
-          <FlatList
-            data={fairytaleData}
-            numColumns={4}
-            renderItem={({item, index}) => {
-              return (
-                <View style={styles.animalCard1}>
+          <ScrollView
+            // ref={picturelistScrollViewRef}
+            style={styles.middleContainerFlatList}
+            // onScroll={handleScrollEnd}
+          >
+            <View style={styles.wrappingView}>
+              {fairytale.map((item, index) => (
+                <View style={styles.pictureCard1} key={index}>
                   <TouchableOpacity
                     onPress={() => {
                       navigation.navigate('ReadFairytaleScreen', {
                         title: item.title,
                       });
+                      // handleGoDrawPictureScreen({
+                      //   friendsAnimalId: item.friendsAnimalId,
+                      //   userEmail: item.userEmail,
+                      //   title: item.title,
+                      //   originalImageUrl: item.originalImageUrl,
+                      //   animalType: item.animalType,
+                      // });
                     }}
                     style={[
-                      styles.animalCard2,
+                      styles.pictureCard2,
                       {
                         backgroundColor:
                           randomBackgroundColor[
-                            index > randomBackgroundColor.length
+                            index >= randomBackgroundColor.length
                               ? index % randomBackgroundColor.length
                               : index
                           ],
                       },
                     ]}>
-                    {/* <Image
-                      style={styles.logoImage}
-                      source={{uri: item.image}}
-                    /> */}
+                    <Image
+                      style={styles.cardFairytaleImage}
+                      source={{uri: item.urlCover}}
+                    />
                   </TouchableOpacity>
-                  <Text style={styles.animalCardText}>{item.title}</Text>
+                  <Text style={styles.fairytaleCardText}>{item.title}</Text>
                 </View>
-              );
-            }}
-            // keyExtractor={(item, index) => index.toString()}
-            keyExtractor={item => item.id.toString()}
-          />
+              ))}
+            </View>
+          </ScrollView>
         </View>
       </View>
     </View>
@@ -147,19 +212,46 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'black',
   },
-  animalCard1: {
-    margin: windowWidth * 0.01,
+  middleContainerFlatList: {
+    width: '100%',
+    height: '100%',
   },
-  animalCard2: {
+  wrappingView: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+  },
+  pictureCard1: {
+    marginVertical: windowWidth * 0.01,
+    marginHorizontal: ((windowWidth * 0.9 * 0.95) / 4) * 0.04999,
+  },
+  pictureCard2: {
+    justifyContent: 'center',
     borderRadius: 20,
     borderColor: 'black',
-    borderWidth: 1,
-    width: windowWidth * 0.194,
-    height: windowWidth * 0.16,
+    width:
+      (windowWidth * 0.9 * 0.95) / 4 - ((windowWidth * 0.9 * 0.95) / 4) * 0.1,
+    height:
+      ((windowWidth * 0.9 * 0.95) / 4 -
+        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
+      0.75,
   },
-  animalCardText: {
-    textAlign: 'center',
+  cardFairytaleImage: {
+    alignSelf: 'center',
+    resizeMode: 'contain',
+    width:
+      ((windowWidth * 0.9 * 0.95) / 4 -
+        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
+      0.55,
+    height:
+      ((windowWidth * 0.9 * 0.95) / 4 -
+        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
+      0.55,
+  },
+  fairytaleCardText: {
+    paddingLeft: windowWidth * 0.007,
+    paddingTop: windowHeight * 0.01,
     fontSize: windowWidth * 0.018,
-    color: 'black',
+    fontWeight: '600',
   },
 });

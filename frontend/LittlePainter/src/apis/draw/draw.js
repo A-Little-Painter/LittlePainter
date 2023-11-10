@@ -3,7 +3,7 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import {BASE_URL} from '../baseUrl';
-import {DRAW_URL} from '../baseUrl';
+// import {DRAW_URL} from '../baseUrl';
 
 const loadATokenFromKeychain = async () => {
   try {

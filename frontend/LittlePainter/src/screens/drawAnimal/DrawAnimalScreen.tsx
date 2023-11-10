@@ -221,9 +221,6 @@ export default function DrawAnimalScreen({
       );
       if (response.status === 200 || response.status === 404) {
         console.log('동물 그리기 유사도 체크 성공', response.data);
-        // if (response.data.similarState === 'END') {
-        //   handleGoColoring();
-        // }
       } else {
         console.log('동물 그리기 유사도 체크 실패', response.status);
       }
@@ -519,11 +516,7 @@ export default function DrawAnimalScreen({
                   style={[
                     styles.pathViewShot,
                     // eslint-disable-next-line react-native/no-inline-styles
-                    {
-                      backgroundColor: canDrawCapture
-                        ? '#FFFFFF'
-                        : 'transparent',
-                    },
+                    {backgroundColor: canDrawCapture ? '#FFFFFF' : 'transparent'},
                   ]}>
                   <View
                     style={styles.pathView}
@@ -535,10 +528,7 @@ export default function DrawAnimalScreen({
                         <Path
                           key={`path-${index}`}
                           d={item.path}
-                          stroke={
-                            // isClearButtonClicked ? 'transparent' : item.color
-                            item.color
-                          }
+                          stroke={item.color}
                           fill={'transparent'}
                           strokeWidth={item.strokeWidth}
                           strokeLinejoin={'round'}
@@ -547,10 +537,7 @@ export default function DrawAnimalScreen({
                       ))}
                       <Path
                         d={currentPath}
-                        stroke={
-                          // isClearButtonClicked ? 'transparent' : drawColorSelect
-                          drawColorSelect
-                        }
+                        stroke={drawColorSelect}
                         fill={'transparent'}
                         strokeWidth={LineThickness}
                         strokeLinejoin={'round'}

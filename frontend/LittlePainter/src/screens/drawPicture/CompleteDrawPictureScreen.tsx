@@ -39,6 +39,7 @@ export default function CompleteDrawPictureScreen({
   const [pictureId] = useState<number>(route.params.pictureId);
   const [completeDrawUri] = useState(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
   const [animatedGif] = useState(route.params.animatedGif); // 완성된 Uri(gif파일 아님)
+  const [isSavedImage, setIsSavedImage] = useState<boolean>(false);
 
   const isLogin = useSelector((state: RootState) => state.user.isLogin);
   // const selectName = useSelector((state: RootState) => state.user.selectName);
@@ -55,8 +56,13 @@ export default function CompleteDrawPictureScreen({
 
   // function handlePressSaving(params:type) {
   function handlePressSaving() {
-    if (isLogin) {
+    if (isLogin && !isSavedImage) {
       handlefriendsPictureSaveToMypage();
+    } else if (isLogin && isSavedImage) {
+      ToastAndroid.show(
+        '내가 그린 그림은 이미 저장되었어요🐣',
+        ToastAndroid.SHORT,
+      );
     } else {
       dispatch(handleisSaveDrawnToLoginModalVisible(true));
     }
@@ -65,14 +71,16 @@ export default function CompleteDrawPictureScreen({
   const handlefriendsPictureSaveToMypage = async () => {
     try {
       const response = await friendsPictureSaveToMypage(pictureId, completeDrawUri, animatedGif);
-      if (response.status === 200) {
+      if (response.status === 201) {
         console.log('완성된 사진그리기 마이페이지에 저장 성공', response.data);
+        ToastAndroid.show(
+          '내가 그린 그림이 저장되었어요🐇',
+          ToastAndroid.SHORT,
+        );
+        setIsSavedImage(true);
         dispatch(handleHavingGifUrl(false));
       } else {
-        console.log(
-          '완성된 사진그리기 마이페이지에 저장 실패',
-          response.status,
-        );
+        console.log('완성된 사진그리기 마이페이지에 저장 실패',response.status);
       }
     } catch (error) {
       console.log('완성된 사진그리기 마이페이지에 저장 실패', error);
@@ -152,9 +160,9 @@ export default function CompleteDrawPictureScreen({
             style={styles.imageBackgroundSize}
             source={{
               uri:
-                animatedGif !== ('' || null || undefined)
-                  ? animatedGif
-                  : completeDrawUri,
+                (animatedGif === '' || animatedGif === undefined || animatedGif === null)
+                  ? completeDrawUri
+                  : animatedGif,
             }}
             // style={{backgroundColor: 'white'}}
             resizeMode="contain">

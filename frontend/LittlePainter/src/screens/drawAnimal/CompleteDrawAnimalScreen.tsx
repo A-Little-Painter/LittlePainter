@@ -36,9 +36,10 @@ export default function CompleteDrawAnimalScreen({
   navigation,
 }: CompleteDrawAnimalScreenProps) {
   const [animalId] = useState<number>(route.params.animalId);
-  const [animalType] = useState<string>(route.params.animalType);
+  // const [animalType] = useState<string>(route.params.animalType);
   const [completeDrawUri] = useState<string>(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
   const [animatedGif] = useState<string>(route.params.animatedGif);
+  const [isSavedImage, setIsSavedImage] = useState<boolean>(false);
 
   const isLogin = useSelector((state: RootState) => state.user.isLogin);
   // const selectName = useSelector((state: RootState) => state.user.selectName);
@@ -54,8 +55,13 @@ export default function CompleteDrawAnimalScreen({
 
   // function handlePressSaving(params:type) {
   function handlePressSaving() {
-    if (isLogin) {
+    if (isLogin && !isSavedImage) {
       handleAnimalSaveToMypage();
+    } else if (isLogin && isSavedImage) {
+      ToastAndroid.show(
+        '내가 그린 그림은 이미 저장되었어요🐣',
+        ToastAndroid.SHORT,
+      );
     } else {
       dispatch(handleisSaveDrawnToLoginModalVisible(true));
     }
@@ -67,6 +73,11 @@ export default function CompleteDrawAnimalScreen({
       const response = await animalSaveToMypage(animalId, completeDrawUri, animatedGif);
       if (response.status === 201) {
         console.log('완성된 동물 마이페이지에 저장 성공', response.data);
+        ToastAndroid.show(
+          '내가 그린 그림이 저장되었어요🐇',
+          ToastAndroid.SHORT,
+        );
+        setIsSavedImage(true);
         dispatch(handleHavingGifUrl(false));
       } else {
         console.log('완성된 동물 마이페이지에 저장 실패', response.status);
