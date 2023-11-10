@@ -27,9 +27,6 @@ if __name__ == '__main__':
     log_dir.mkdir(exist_ok=True, parents=True)
     logging.basicConfig(filename=f'{log_dir}/log.txt', level=logging.DEBUG)
 
-    global motion_cfg_fn
-    global retarget_cfg_fn
-    global animation_type
     # 인자 수신
     img_fn = sys.argv[1]
     char_anno_dir = sys.argv[2]
@@ -41,19 +38,19 @@ if __name__ == '__main__':
     else: # animal, tale 완료하면 제거
         motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
+        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
 
     animation_type = None #나중에 제거
 
     if animation_type == 'animals':
         animal_list = ['강아지', '고양이', '코끼리', '소', '오리', '쥐', '사자', '닭', '늑대', '원숭이', '돼지', '호랑이', '곰', '기타']
-        
         motion_cfg_fn = resource_filename(__name__, 'config/motion/zombie.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
+        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
     elif animation_type == 'tales':
         title = sys.argv[5]
         page_no = sys.argv[6]
         logging.debug('동화 추가 인자 : ' + title + ' / ' + page_no)
         motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
-
-    image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
+        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
