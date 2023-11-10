@@ -46,6 +46,7 @@ public class FriendsAnimalServiceImpl implements FriendsAnimalService{
 			.userEmail(friendsAnimal.getUserEmail())
 			.title(friendsAnimal.getTitle())
 			.originalImageUrl(friendsAnimal.getUrlOriginal())
+			.animalType(friendsAnimal.getAnimalType().getName())
 			.build();
 
 		return friendsAnimalListResDto;
