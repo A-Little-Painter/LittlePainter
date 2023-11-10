@@ -30,20 +30,26 @@ if __name__ == '__main__':
     # 인자 수신
     img_fn = sys.argv[1]
     char_anno_dir = sys.argv[2]
-    character = sys.argv[3]
-    animation_type = sys.argv[4]
-    logging.debug('기본인자 : '+img_fn + ' / ' + char_anno_dir + ' / ' + character + ' / ' + animation_type)
+    if len(sys.argv) > 3:
+        character = sys.argv[3]
+        animation_type = sys.argv[4]
+    else: # animal, tale 완료하면 제거
+        motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
+        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
+
+    logging.debug('기본인자 : ' + img_fn + ' / ' + char_anno_dir + ' / ' + character + ' / ' + animation_type)
+
     if animation_type == 'animals':
         animal_dictionary = {
             "강아지"
         }
-        None
+        motion_cfg_fn = resource_filename(__name__, 'config/motion/zombie.yaml')
+        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
     elif animation_type == 'tales':
         title = sys.argv[5]
         page_no = sys.argv[6]
-        logging.debug('동화 추가 인자 : '+title+' / '+page_no)
-
-    motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
-    retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
+        logging.debug('동화 추가 인자 : ' + title + ' / ' + page_no)
+        motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
+        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
 
     image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
