@@ -22,10 +22,11 @@ class Hello(Resource):
 
 def shell_create_animation(input_filename, output_file_path, character, animation_type, title=None, no=None):
     logging.debug("shell 명령어 호출")
-    if animation_type=='animals':
-        cmd = (f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path} {character} {animation_type}")
-    elif animation_type=='tales':
-        cmd = (f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path} {character} {animation_type} {title} {no}")
+    global cmd
+    if animation_type == 'animals':
+        cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path} {character} {animation_type}"
+    elif animation_type == 'tales':
+        cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path} {character} {animation_type} {title} {no}"
     # 셸 명령 실행
     try:
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
@@ -107,11 +108,11 @@ class TestDance(Resource):
 
     def shell_create_animation_test(self, input_filename, output_file_path):
         logging.debug("shell 명령어 호출")
-        cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path}"
+        cmd_test = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path}"
 
         # 셸 명령 실행
         try:
-            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
+            result = subprocess.run(cmd_test, shell=True, capture_output=True, text=True, check=True)
             return result.stdout
         except subprocess.CalledProcessError as e:
             logging.error("쉘 커맨드 수행 실패")
