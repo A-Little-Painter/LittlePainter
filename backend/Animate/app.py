@@ -23,11 +23,8 @@ class Hello(Resource):
 
 def shell_create_animation(input_filename, output_file_path, character, animation_type, title=None, no=None):
     logging.debug(f"shell 명령어 호출_common {input_filename} {output_file_path} {character}")
-    cmd = None
-    if animation_type == 'animals':
-        cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path} {character} {animation_type}"
-    elif animation_type == 'tales':
-        cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path} {character} {animation_type} {title} {no}"
+
+    cmd = generate_command(input_filename, output_file_path, character, animation_type, title, no)
     # 셸 명령 실행
     try:
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
@@ -35,6 +32,13 @@ def shell_create_animation(input_filename, output_file_path, character, animatio
     except subprocess.CalledProcessError as e:
         logging.error("쉘 커맨드 수행 실패")
         return e.stderr
+
+
+def generate_command(input_filename, output_file_path, character, animation_type, title=None, no=None):
+    base_cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path} {character} {animation_type}"
+    if animation_type == 'tales':
+        base_cmd += f" {title} {no}"
+    return base_cmd.strip()
 
 
 @api.route('/animations/comm/animals')
@@ -118,30 +122,7 @@ class TestDance(Resource):
         except subprocess.CalledProcessError as e:
             logging.error("쉘 커맨드 수행 실패")
             return e.stderr
-
-@api.route('/animations/comm/test-dance22')
-class TestDance22(Resource):
-    def post(self):
-        output_dir = Path('./AnimatedDrawings/result/test-dance2')
-        output_dir.mkdir(exist_ok=True, parents=True)
-
-        # 진입 확인
-        logging.debug("Animate-Service22 : test dance requested22")
-
-        # requestbody 수신
-        animal_type = request.form['animalType']
-        image = request.files['image']
-
-        # 이미지 저장
-        filename = secure_filename(image.filename)
-        image.save(filename)
-
-        # 저장한 이미지로 애니메이션 생성
-        image_to_animation.image_to_animation(filename, output_dir)
-
-        # 임시값 반환
-        return send_file(f"{output_dir}/video.gif", mimetype='image/gif')
-
+        
 
 if __name__ == "__main__":
     logger = logging.getLogger()
