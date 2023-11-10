@@ -17,4 +17,6 @@ public interface ChildWorkTaleRepository extends JpaRepository<ChildWorkTale, Lo
             "WHERE c.childId = :childId " +
             "GROUP BY c.taleId, t.urlCover, t.title")
     List<GetMyTalesResponseDTO> findDistinctTalesByChildId(@Param("childId") Long childId);
+
+     List<ChildWorkTale> findChildWorkTalesByChildIdAndAndTaleId(@Param("childId") Long childId, @Param("taleId") Long taleId);
 }

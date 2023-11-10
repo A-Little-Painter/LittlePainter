@@ -1,6 +1,9 @@
 package com.yehah.draw.domain.child_work_tale.controller;
 
+import java.util.List;
+
 import com.yehah.draw.domain.child_work_tale.dto.request.AddChildWorkTaleFormReqDto;
+import com.yehah.draw.domain.child_work_tale.dto.response.GetMyTaleDetailResponseDTO;
 import com.yehah.draw.domain.child_work_tale.service.ChildWorkTaleService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +31,7 @@ public class ChildWorkTaleController {
         return ResponseEntity.ok(childWorkTaleService.getMyTales());
     }
 
-    @Operation(summary = "동화 그리기 마이페이지 저장", description = "(USER) 내가 그린 동화 그림을 마이페이지에 저장한다.")
+    @Operation(summary = "동화 그리기 [마이페이지] 저장", description = "(USER) 내가 그린 동화 그림을 마이페이지에 저장한다.")
     @PostMapping("/{taleId}")
         public ResponseEntity<Void> saveChildWorkTale(@PathVariable Long taleId, @ModelAttribute AddChildWorkTaleFormReqDto request) {
         log.info("saveChildWorkTale() : taleId = {}", taleId);
@@ -43,12 +46,11 @@ public class ChildWorkTaleController {
         return ResponseEntity.ok().build();
     }
 
-
-//    //내 동화 상세 조회
-    //tale 아이디를 가져와야하나? 흠
-//    @GetMapping("/my_tales/{taleId}")
-//    public ResponseEntity<?> getMyTaleDetail(@PathVariable Long taleId){
-//        return ResponseEntity.ok(childWorkTaleService.getMyTaleDetail(taleId));
-//    }
+    @Operation(summary = "내 동화 상세 조회", description = "(USER) 마이페이지-동화 내가 그린 동화 그림을 조회한다.")
+    @GetMapping("/{taleId}")
+    public ResponseEntity<List<GetMyTaleDetailResponseDTO>> getMyTale(@PathVariable Long taleId) {
+        log.info("getMyTale() : taleId = {}", taleId);
+        return ResponseEntity.ok(childWorkTaleService.getMyTaleDetail(taleId));
+    }
 
 }
