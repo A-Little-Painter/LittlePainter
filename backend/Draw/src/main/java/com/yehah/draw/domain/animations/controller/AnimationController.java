@@ -43,8 +43,9 @@ public class AnimationController {
         bodyData.add("image", animationAnimalReqDto.getImage().getResource());
 
         try{
-            byte[] gifImage = commMethod.postMultipartAnimateMethod(bodyData, animatePath+"/animals");
+            //byte[] gifImage = commMethod.postMultipartAnimateMethod(bodyData, animatePath+"/animals");
 
+            byte[] gifImage = commMethod.postMultipartAnimateMethod(bodyData, animatePath+"/test-dance");
             bodyData.clear();
             bodyData.add("gifFile", new ByteArrayResource(gifImage){
                 @Override
@@ -74,7 +75,8 @@ public class AnimationController {
 
         try{
             log.info(animatePath+"/tales");
-            byte[] gifImage = commMethod.postMultipartAnimateMethod(bodyData, animatePath+"/tales");
+            //byte[] gifImage = commMethod.postMultipartAnimateMethod(bodyData, animatePath+"/tales");
+            byte[] gifImage = commMethod.postMultipartAnimateMethod(bodyData, animatePath+"/test-dance");
 
             bodyData.clear();
             bodyData.add("gifFile", new ByteArrayResource(gifImage){
