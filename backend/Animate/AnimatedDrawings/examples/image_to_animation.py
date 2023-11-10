@@ -27,6 +27,9 @@ if __name__ == '__main__':
     log_dir.mkdir(exist_ok=True, parents=True)
     logging.basicConfig(filename=f'{log_dir}/log.txt', level=logging.DEBUG)
 
+    global motion_cfg_fn
+    global retarget_cfg_fn
+    global animation_type
     # 인자 수신
     img_fn = sys.argv[1]
     char_anno_dir = sys.argv[2]
