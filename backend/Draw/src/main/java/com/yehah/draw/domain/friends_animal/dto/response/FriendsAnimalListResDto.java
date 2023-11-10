@@ -17,4 +17,5 @@ public class FriendsAnimalListResDto {
 	private String userEmail;
 	private String title;
 	private String originalImageUrl;	//동물 누끼 이미지
+	private String animalType;
 }
