@@ -48,12 +48,14 @@ type handleGoDrawPictureScreenType = {
   userEmail: string;
   title: string;
   originalImageUrl: string;
+  animalType: string;
 };
 interface FriendPicture {
   friendsAnimalId: number;
   originalImageUrl: string;
   title: string;
   userEmail: string;
+  animalType: string;
 }
 
 export default function SelectPictureScreen({
@@ -105,7 +107,7 @@ export default function SelectPictureScreen({
     try {
       const response = await friendsWholePicture(value, 0);
       if (response.status === 200) {
-        console.log('다른 사람이 올린 사진 전체 가져오기 성공');
+        console.log('다른 사람이 올린 사진 전체 가져오기 성공', response.data);
         const newData = response.data.content;
         if (newData.length > 0) {
           // setFriendsPictures(prevData => [...prevData, ...newData]);
@@ -200,12 +202,7 @@ export default function SelectPictureScreen({
   // 스크롤이 맨 아래로 도달했을 때 호출되는 함수
   const handleScrollEnd = (event) => {
     const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
-    if (
-      // layoutMeasurement.height + contentOffset.y >= contentSize.height - 20 // 20은 여분의 여백입니다.
-      layoutMeasurement.height + contentOffset.y >=
-      contentSize.height // 20은 여분의 여백입니다.
-    ) {
-      // 스크롤이 맨 아래로 도달했을 때 추가 데이터를 가져오는 작업을 수행합니다.
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height) {
       // getFriendsPictureList();
       getFriendsPictureList();
     }
@@ -258,6 +255,7 @@ export default function SelectPictureScreen({
                         userEmail: item.userEmail,
                         title: item.title,
                         originalImageUrl: item.originalImageUrl,
+                        animalType: item.animalType,
                       });
                     }}
                     style={[

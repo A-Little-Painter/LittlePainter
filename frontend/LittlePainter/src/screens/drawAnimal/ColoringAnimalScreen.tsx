@@ -126,7 +126,7 @@ export default function ColoringAnimalScreen({
           '동물 친구가 움직일 수가 없어요ㅠㅠ',
           ToastAndroid.LONG,
         );
-        handleGoComplete(response.data.gifImageUrl);
+        handleGoComplete('');
       }
     } catch (error) {
       console.log('동물 애니메이션 실패', error);

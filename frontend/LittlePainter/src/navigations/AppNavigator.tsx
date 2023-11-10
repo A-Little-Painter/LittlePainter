@@ -76,6 +76,7 @@ export type RootStackParams = {
       userEmail: string;
       title: string;
       originalImageUrl: string;
+      animalType: string;
     };
   };
   ColoringPictureScreen: {
@@ -85,6 +86,7 @@ export type RootStackParams = {
     pictureBorderURI: string;
     pictureExplanation: string;
     pictureOriginImageUri: string;
+    animalType: string;
   };
   CompleteDrawPictureScreen: {
     pictureId: number;

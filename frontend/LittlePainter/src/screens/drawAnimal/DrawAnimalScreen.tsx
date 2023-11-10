@@ -122,9 +122,10 @@ export default function DrawAnimalScreen({
     if (client) {
       client.subscribe('/sub/room/a', (message) => {
         const messageContent = JSON.parse(message.body);
+        console.log(message.body);
         setSimilarityMessage(messageContent.message);
-        setSimilarityState(messageContent.similarState);
         setSimilarityValue(messageContent.similarValue);
+        setSimilarityState(messageContent.similarState)
       });
     }
   }, [client]);

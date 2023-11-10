@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useRef} from 'react';
 import {
@@ -63,8 +64,8 @@ export default function CompleteDrawAnimalScreen({
   const handleAnimalSaveToMypage = async () => {
     try {
       // const response = await animalSaveToMypage(animalId, completeDrawUri);
-      const response = await animalSaveToMypage(workId, completeDrawUri, animatedGif);
-      if (response.status === 200) {
+      const response = await animalSaveToMypage(animalId, completeDrawUri, animatedGif);
+      if (response.status === 201) {
         console.log('완성된 동물 마이페이지에 저장 성공', response.data);
         dispatch(handleHavingGifUrl(false));
       } else {
@@ -148,10 +149,16 @@ export default function CompleteDrawAnimalScreen({
             style={styles.imageBackgroundSize}
             source={{
               uri:
-                animatedGif !== ('' || null || undefined)
-                  ? animatedGif
-                  : completeDrawUri,
+                (animatedGif === '' || animatedGif === undefined || animatedGif === null)
+                  ? completeDrawUri
+                  : animatedGif,
             }}
+            // source={{
+            //   uri:
+            //     (animatedGif !== '' || animatedGif !== null || animatedGif !== undefined)
+            //       ? animatedGif
+            //       : completeDrawUri,
+            // }}
             resizeMode="contain">
             {/* <View style={{width: '100%', height: '100%'}} /> */}
           </ImageBackground>

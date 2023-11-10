@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useRef} from 'react';
 import {
@@ -63,7 +64,7 @@ export default function CompleteDrawPictureScreen({
 
   const handlefriendsPictureSaveToMypage = async () => {
     try {
-      const response = await friendsPictureSaveToMypage(workId, completeDrawUri, gifUrl);
+      const response = await friendsPictureSaveToMypage(pictureId, completeDrawUri, animatedGif);
       if (response.status === 200) {
         console.log('완성된 사진그리기 마이페이지에 저장 성공', response.data);
         dispatch(handleHavingGifUrl(false));

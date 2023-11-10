@@ -66,6 +66,7 @@ export default function ColoringPictureScreen({
   const [pictureExplanation] = useState<string>(route.params.pictureExplanation);
   const [pictureOriginImageUri] = useState<string>(route.params.pictureOriginImageUri);
   const [completeLine] = useState(route.params.completeLine);
+  const [animalType] = useState(route.params.animalType);
 
   // 로딩함수
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -110,8 +111,6 @@ export default function ColoringPictureScreen({
   // 친구 사진 애니메이션
   async function handlePictureAnimations() {
     setIsLoading(true);
-    // 임시방편
-    const animalType = '강아지';
     try {
       dispatch(handleHavingGifUrl(true));
       const response = await animalAnimations(animalType, captureImagePath);

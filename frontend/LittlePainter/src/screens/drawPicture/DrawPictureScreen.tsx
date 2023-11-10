@@ -156,6 +156,7 @@ export default function DrawPictureScreen({
     route.params.friendsAnimalInfo.originalImageUrl,
   );
   const [pictureTitle] = useState<string>(route.params.friendsAnimalInfo.title);
+  const [animalType] = useState<string>(route.params.friendsAnimalInfo.animalType);
   const [pictureBorderURI, setPictureBorderURI] = useState<string>('');
   const [pictureExplanation, setPictureExplanation] = useState<string>('');
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
@@ -377,6 +378,7 @@ export default function DrawPictureScreen({
       pictureBorderURI: pictureBorderURI,
       pictureExplanation: pictureExplanation,
       pictureOriginImageUri: pictureOriginImageUri,
+      animalType: animalType,
     });
   };
   return (
