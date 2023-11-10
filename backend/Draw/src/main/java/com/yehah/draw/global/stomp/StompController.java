@@ -18,6 +18,7 @@ public class StompController {
     private final SimpMessagingTemplate messagingTemplate;
 
     // roomId는 FE에서 랜덤으로 생성해서 알려주기
+    // /pub/first-enter/animal/psi1908
     @MessageMapping("/first-enter/{animalType}/{roomId}")
     public void firstEnter(@DestinationVariable("animalType") AnimalType animalType, @DestinationVariable("roomId") String roomId){
         log.info("{} 방의 연결을 시작합니다", roomId);
@@ -30,6 +31,7 @@ public class StompController {
                         .message(roomId + "방의 연결을 시작합니다.").build());
     }
 
+    // /pub/similarCheck/friendsAnimal/psi1908
     @MessageMapping("/similarCheck/{animalType}/{roomId}")
     public void similarcheck(@DestinationVariable("animalType")AnimalType animalType, @DestinationVariable("roomId") String roomId){
         log.info("{} 방의 유사도 검사를 시작합니다.", roomId);
@@ -39,6 +41,6 @@ public class StompController {
                         .roomId(roomId)
                         .animalType(animalType)
                         .responseState(ResponseState.SUCCESS)
-                        .message(roomId + "유사도 검사를 시작합니다.").build());
+                        .message(roomId + "방의 유사도 검사를 시작합니다.").build());
     }
 }

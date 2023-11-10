@@ -15,7 +15,7 @@ public class StompService {
 
     // NOTE : STOMP 성공 응답 전송하기
     public void AnimalSuccessRes(String responseUrl, SimilarState similarState, SimilarMessageResponse similarMessageResponse){
-        similarMessageResponse.setSimilarState(SimilarState.END);
+        similarMessageResponse.setSimilarState(similarState);
         messagingTemplate.convertAndSend(responseUrl, similarMessageResponse);
     }
 
