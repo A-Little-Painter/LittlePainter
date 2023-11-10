@@ -39,6 +39,8 @@ if __name__ == '__main__':
         motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
 
+    animation_type = None #나중에 제거
+
     if animation_type == 'animals':
         animal_list = ['강아지', '고양이', '코끼리', '소', '오리', '쥐', '사자', '닭', '늑대', '원숭이', '돼지', '호랑이', '곰', '기타']
         
