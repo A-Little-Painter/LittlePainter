@@ -7,4 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChangeIconRequestDTO {
     private Long iconId;
+    private Long childId;
 }

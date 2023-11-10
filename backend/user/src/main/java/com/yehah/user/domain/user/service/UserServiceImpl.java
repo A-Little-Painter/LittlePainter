@@ -45,17 +45,23 @@ public class UserServiceImpl implements UserService{
     public List<ChildrenResponseDTO> getChildren() {
         User user = getLoginUser();
         log.info("user.getEmail() "+user.getEmail());
-        List<ChildrenResponseDTO> children = userRepository.findById(user.getId())
-                .map(userFromDB -> userFromDB.getChildren().stream()
-                        .map(this::toDTO)
-                        .collect(Collectors.toList()))
-                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 DB에서 찾을 수 없습니다."));
+
+        List<Child> children = childRepository.findByUserIdAndDeletedDateIsNull(user.getId());
+//        List<ChildrenResponseDTO> children = userRepository.findById(user.getId())
+//                .map(userFromDB -> userFromDB.getChildren().stream()
+//                        .map(this::toDTO)
+//                        .collect(Collectors.toList()))
+//                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 DB에서 찾을 수 없습니다."));
 
         if(children.isEmpty()){
             throw new NoDataFoundException("아이를 찾을 수 없습니다.");
         }
 
-        return children;
+        List<ChildrenResponseDTO> childrenResponseDTO = children.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+
+        return childrenResponseDTO;
     }
 
     public List<GetIconsResponseDTO> getIcons(){
@@ -155,23 +161,19 @@ public class UserServiceImpl implements UserService{
     }
 
     public ResponseEntity<?>  changeIcon(ChangeIconRequestDTO changeIconRequestDTO){
-        User user = getLoginUser();
-        log.info("user.getEmail() "+user.getEmail());
+
         Icon icon = iconRepository.findById(changeIconRequestDTO.getIconId())
                 .orElseThrow(() -> new IllegalArgumentException("아이콘을 찾을 수 없습니다."));
-        return userRepository.findById(user.getId())
-                .map(userFromDB -> {
-                    Child selectedChild = userFromDB.getChildren().stream()
-                            .filter(child -> child.getId().equals(userFromDB.getLastSelectedChildId()))
-                            .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이입니다."));
-                    try{
-                        childRepository.save(selectedChild.updateIcon(icon));
-                    }catch (Exception e){
-                        throw new DatabaseException("DB에 저장할 수 없습니다.");
-                    }
-                    return ResponseEntity.ok().body("아이콘 변경 성공");
-                })
-                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 찾을 수 없습니다."));
+        Child child = childRepository.findById(changeIconRequestDTO.getChildId())
+                .orElseThrow(() -> new IllegalArgumentException("아이를 찾을 수 없습니다."));
+        
+        try{
+            childRepository.save(child.updateIcon(icon));
+        } catch (Exception e){
+            throw new DatabaseException("DB 접근 불가능");
+        }
+
+        return ResponseEntity.ok().body("아이콘 변경 성공");
     }
 
     public ResponseEntity<?> updateChild(ChangeChildRequestDTO changeChildRequestDTO){
