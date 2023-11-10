@@ -122,7 +122,7 @@ class TestDance(Resource):
             return e.stderr
 
 @api.route('/animations/comm/test-dance22')
-class TestDance(Resource):
+class TestDance22(Resource):
     def post(self):
         output_dir = Path('./AnimatedDrawings/result/test-dance2')
         output_dir.mkdir(exist_ok=True, parents=True)
@@ -139,7 +139,7 @@ class TestDance(Resource):
         image.save(filename)
 
         # 저장한 이미지로 애니메이션 생성
-        image_to_animation.image(filename, output_dir)
+        image_to_animation(filename, output_dir)
 
         # 임시값 반환
         return send_file(f"{output_dir}/video.gif", mimetype='image/gif')
