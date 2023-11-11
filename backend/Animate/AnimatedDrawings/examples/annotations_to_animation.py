@@ -19,13 +19,13 @@ def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cf
     char_anno_dir2 = char_anno_dir
     if animation_type == 'animals':
         if character in animal_list:
-            char_anno_dir2 = f"AnimatedDrawings/my_cfg/animals/{character}"
+            char_anno_dir2 = f"/app/AnimatedDrawings/my_cfg/animals/{character}/char_cfg.yaml"
         else:
             logging.error('동물 이름이 잘못됨 : '+character)
 
     # package character_cfg_fn, motion_cfg_fn, and retarget_cfg_fn
     animated_drawing_dict = {
-        'character_cfg': str(Path(char_anno_dir2, 'char_cfg.yaml').resolve()),
+        'character_cfg': char_anno_dir2,
         'motion_cfg': str(Path(motion_cfg_fn).resolve()),
         'retarget_cfg': str(Path(retarget_cfg_fn).resolve())
     }
