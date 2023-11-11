@@ -18,6 +18,8 @@ import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 import {
   addUserChild,
+  updateUserChild,
+  updateUserIcon,
   callIconList,
   selectKids,
 } from '../../../../apis/mypage/mypageApi';
@@ -95,6 +97,7 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
   const kidBirthdayUpdate = useAppSelector(state => state.user.kidBirthday);
   const userEmail = useAppSelector(state => state.user.userEmail);
   const dispatch = useAppDispatch();
+  console.log(kidIdUpdate);
 
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
@@ -116,6 +119,8 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
 
   useEffect(() => {
     fetchData();
+    setName('');
+    setBirth('');
   }, []);
 
   const handleDayPress = (day: any) => {
@@ -146,7 +151,55 @@ const AddKidsComponents: React.FC<AddKidsComponentsProps> = ({
       await addUserChild(data);
       handleComponentChange('profile');
     } else {
-      console.log('나중에');
+      if (name && birth) {
+        const data = {
+          nickname: name,
+          birthday: birth,
+          childId: kidIdUpdate,
+        };
+        await updateUserChild(data);
+        console.log(data);
+      } else if (name) {
+        const formattedDate = kidBirthdayUpdate.replace(
+          /(\d{4})년\s(\d{2})월\s(\d{2})일/g,
+          '$1-$2-$3',
+        );
+        const data = {
+          nickname: name,
+          birthday: formattedDate,
+          childId: kidIdUpdate,
+        };
+        await updateUserChild(data);
+        console.log(data);
+      } else if (birth) {
+        const data = {
+          nickname: kidNameUpdate,
+          birthday: birth,
+          childId: kidIdUpdate,
+        };
+        await updateUserChild(data);
+        console.log(data);
+      } else {
+        const formattedDate = kidBirthdayUpdate.replace(
+          /(\d{4})년\s(\d{2})월\s(\d{2})일/g,
+          '$1-$2-$3',
+        );
+        const data = {
+          nickname: kidNameUpdate,
+          birthday: formattedDate,
+          childId: kidIdUpdate,
+        };
+        await updateUserChild(data);
+        console.log(data);
+      }
+      if (imageId !== -1) {
+        const imageData = {
+          iconId: imageId,
+          childId: kidIdUpdate,
+        };
+        updateUserIcon(imageData);
+        // dispatch(selected(selecedData));
+      }
       handleComponentChange('profile');
     }
   };

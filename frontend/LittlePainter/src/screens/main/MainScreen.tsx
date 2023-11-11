@@ -145,7 +145,9 @@ export default function MainScreen({navigation}: MainScreenProps) {
           </View>
           {/* 중단 */}
           <View style={styles.middleContainer}>
-            <ScrollView horizontal={true}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
               {/* 동물선택카드 */}
               <TouchableOpacity
                 style={[styles.cardFrame, {backgroundColor: '#5E9FF9'}]}
@@ -153,8 +155,8 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   navigation.navigate('SelectAnimalScreen');
                 }}>
                 <View style={styles.cardFrame1}>
-                  <Text style={styles.cardText}>
-                    <Text style={styles.cardTextBold}>동물</Text> 그리기
+                  <Text style={styles.cardText2}>
+                    <Text style={styles.cardText1}>동물</Text> 그리기
                   </Text>
                 </View>
                 <View style={styles.cardFrame2}>
@@ -181,8 +183,8 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   navigation.navigate('SelectFairytaleScreen');
                 }}>
                 <View style={styles.cardFrame1}>
-                  <Text style={styles.cardText}>
-                    <Text style={styles.cardTextBold}>동화</Text> 그리기
+                  <Text style={styles.cardText2}>
+                    <Text style={styles.cardText1}>동화</Text> 그리기
                   </Text>
                 </View>
                 <View style={styles.cardFrame2}>
@@ -209,8 +211,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   navigation.navigate('SelectPictureScreen');
                 }}>
                 <View style={styles.cardFrame1}>
-                  <Text style={styles.cardText1}>친구의 동물</Text>
-                  <Text style={styles.cardText2}>그리기</Text>
+                  <View style={styles.space}>
+                    <Text style={styles.cardText1}>친구의 동물</Text>
+                    <Text style={styles.cardText2}>그리기</Text>
+                  </View>
                 </View>
                 <View style={styles.cardFrame2}>
                   <Image
@@ -236,8 +240,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   setModalVisible(true);
                 }}>
                 <View style={styles.cardFrame1}>
-                  <Text style={styles.cardText1}>내 동물 사진</Text>
-                  <Text style={styles.cardText2}>올리기</Text>
+                  <View style={styles.space}>
+                    <Text style={styles.cardText1}>내 동물 사진</Text>
+                    <Text style={styles.cardText2}>올리기</Text>
+                  </View>
                 </View>
                 <View style={styles.cardFrame2}>
                   <Image
@@ -290,6 +296,36 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   </View>
                 </Pressable>
               </Modal>
+              {/* 쇼 앤 프루브 */}
+              <TouchableOpacity
+                style={[styles.cardFrame, {backgroundColor: '#FFBD3A'}]}
+                onPress={() => {
+                  navigation.navigate('ShowScreen');
+                }}>
+                <View style={styles.cardFrame1}>
+                  <View style={styles.space}>
+                    <Text style={styles.cardText1}>친구들의</Text>
+                    <Text style={styles.cardText2}>동물 보기</Text>
+                  </View>
+                </View>
+                <View style={styles.cardFrame2}>
+                  <Image
+                    style={styles.cardImage}
+                    source={require('../../assets/profile/monkey.png')}
+                    resizeMode="stretch"
+                  />
+                </View>
+                <TouchableOpacity style={styles.cardFrame3}>
+                  <View style={styles.playButtonCircle}>
+                    <Text>
+                      <IconFontAwesome5
+                        name="question"
+                        size={windowWidth * 0.03}
+                      />
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </TouchableOpacity>
             </ScrollView>
           </View>
           {/* 하단 */}
@@ -377,11 +413,12 @@ const styles = StyleSheet.create({
   cardText1: {
     fontSize: windowWidth * 0.035,
     color: 'white',
-    fontWeight: '600',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   cardText2: {
     fontSize: windowWidth * 0.035,
     color: 'white',
+    fontFamily: 'TmoneyRoundWindRegular',
   },
   loginText: {
     fontSize: windowWidth * 0.015,
@@ -408,6 +445,9 @@ const styles = StyleSheet.create({
     flex: 0.3,
     // flexDirection: 'row',
     justifyContent: 'center',
+  },
+  space: {
+    paddingTop: windowHeight * 0.05,
   },
   cardFrame2: {
     flex: 0.52,
@@ -468,6 +508,7 @@ const styles = StyleSheet.create({
   },
   modaltext: {
     fontSize: windowWidth * 0.02,
+    fontFamily: 'TmoneyRoundWindRegular',
   },
   modalbtns: {
     flexDirection: 'row',
@@ -487,5 +528,6 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.02,
     textAlign: 'center',
     textAlignVertical: 'center',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
 });

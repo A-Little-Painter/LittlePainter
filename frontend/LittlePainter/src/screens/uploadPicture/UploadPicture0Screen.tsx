@@ -13,9 +13,11 @@ import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import {useAppDispatch} from '../../redux/hooks';
 import {
-  update,
+  update0,
+  update2,
   destinationUpdate,
 } from '../../redux/slices/uploadPicture/uploadPicture';
+import {uploadPictureApi} from '../../apis/uploadPicture/uploadPicture';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import {googleSearchApi} from '../../apis/uploadPicture/uploadPicture';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
@@ -48,7 +50,7 @@ export default function UploadPicture0Screen({
     srcText = '';
   }
 
-  const uploadPicture1 = () => {
+  const uploadPicture1 = async () => {
     if (title && detail && srcText) {
       const data: {
         title: string;
@@ -56,17 +58,39 @@ export default function UploadPicture0Screen({
         pictureaddr: string;
         picturename: string;
         picturetype: string;
+        animal_type: string;
       } = {
         title: title,
         detail: detail,
         pictureaddr: srcText,
         picturename: nameText,
         picturetype: typeText,
+        animal_type: inputValue,
       };
-      dispatch(update(data));
+      const imageData = new FormData();
+      imageData.append('file', {
+        uri: srcText,
+        name: nameText,
+        type: typeText,
+      });
+      dispatch(update0(data));
       dispatch(destinationUpdate('UploadPicture5Screen'));
       console.log(data);
-      navigation.navigate('UploadPicture2Screen');
+      const temp = await uploadPictureApi(imageData);
+      const checkImage = temp.data;
+      const data2: {
+        animal_type: string;
+        border_image: string;
+        trace_image: string;
+        moving: boolean;
+      } = {
+        animal_type: inputValue,
+        border_image: checkImage.border_image,
+        trace_image: checkImage.trace_image,
+        moving: false,
+      };
+      dispatch(update2(data2));
+      navigation.navigate('UploadPicture5Screen');
     } else if (!srcText) {
       Alert.alert('잠깐!', '동물의 사진을 골라주세요');
     } else {
@@ -79,8 +103,8 @@ export default function UploadPicture0Screen({
       const temp = await googleSearchApi(value);
       const resizerImage = await ImageResizer.createResizedImage(
         temp,
-        400,
-        400,
+        500,
+        500,
         'JPEG',
         70,
         0,
@@ -107,6 +131,16 @@ export default function UploadPicture0Screen({
             />
             <Text style={styles.titleText}>동물 사진 검색하기</Text>
           </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('MainScreen');
+            }}
+            style={styles.goHomeArea}>
+            <Image
+              source={require('../../assets/images/VVector.png')}
+              style={styles.goHome}
+            />
+          </TouchableOpacity>
           {/* 상단 우측 */}
           <View style={styles.topRightContainer}>
             {/* <Text>검색</Text> */}
@@ -298,5 +332,13 @@ const styles = StyleSheet.create({
   uploadText: {
     textAlign: 'center',
     fontSize: windowWidth * 0.018,
+  },
+  goHomeArea: {
+    marginLeft: windowWidth * 0.35,
+    marginTop: windowWidth * 0.03,
+  },
+  goHome: {
+    height: windowWidth * 0.05,
+    width: windowWidth * 0.05,
   },
 });
