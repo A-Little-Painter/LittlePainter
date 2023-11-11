@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,8 @@ import {
   Image,
   Modal,
   Pressable,
+  Animated,
+  Easing,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -26,6 +28,7 @@ export default function UploadPicture5Screen({
   navigation,
 }: UploadPicture5ScreenProps) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const border_image = useAppSelector(
     state => state.uploadPicture.border_image,
   );
@@ -54,14 +57,54 @@ export default function UploadPicture5Screen({
     traceUrl: trace_image,
   };
 
-  const goUpload = () => {
-    uploadFriendImageApi(addFriendsAnimalReqDto);
+  ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+
+    rotateImage();
+  }, []);
+
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+  ////////////
+
+  function setIsLoadingAsync(value: boolean): Promise<void> {
+    return new Promise<void>(resolve => {
+      setIsLoading(value);
+      resolve(); // setIsLoading가 완료되면 프로미스를 해결합니다.
+    });
+  }
+
+  const goUpload = async () => {
+    await setIsLoadingAsync(true);
+    await uploadFriendImageApi(addFriendsAnimalReqDto);
     setModalVisible(!modalVisible);
     navigation.navigate('MainScreen');
   };
 
   return (
     <View style={styles.mainContainer}>
+      {isLoading ? (
+        <View style={{position: 'absolute', zIndex: 1}}>
+          <Animated.Image
+            style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+            source={require('../../assets/images/loading2.png')}
+          />
+        </View>
+      ) : null}
       <View style={styles.topLeftContainer}>
         <Image
           style={styles.logoImage}
@@ -295,5 +338,12 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.05,
     fontWeight: '600',
     color: 'black',
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });
