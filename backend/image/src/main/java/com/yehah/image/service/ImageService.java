@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,8 +71,8 @@ public class ImageService {
 		return Mono.just(result);
 	}
 
-	public Mono<UploadS3MypageResDto> addChildWork(String userId, String category, MultipartFile imageFile, String tempGifUrl) throws IOException {
-		if(imageFile.isEmpty()){
+	public Mono<UploadS3MypageResDto> addChildWork(String userId, String category, String tempImageUrl, String tempGifUrl) throws IOException {
+		if(tempImageUrl.isBlank()){
 			throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
 		} else if(category.isBlank()){
 			throw new CustomException(ExceptionEnum.CATEGORY_EMPTY);
@@ -82,7 +83,7 @@ public class ImageService {
 		String formattedDate = userId + "-" + dateFormat.format(currentDate);
 
 		if(category.equals("tale")){
-			formattedDate = userId + "-" + UUID.randomUUID().toString();
+			formattedDate = userId + "-" + UUID.randomUUID();
 		}
 
 		try {
@@ -92,9 +93,8 @@ public class ImageService {
 		}
 		String dirName = "child-work/" + category +"/" + formattedDate;
 
-		// 이미지 S3 저장
-		String imageUrl = s3Util.upload(imageFile, dirName + "img");
-		String gifUrl = (tempGifUrl == null) ? null : s3Util.update(tempGifUrl.substring(54), dirName + "gif.gif");
+		String imageUrl = s3Util.update(tempImageUrl.substring(54), dirName + "img." + StringUtils.getFilenameExtension(tempImageUrl));
+		String gifUrl = (tempGifUrl.isBlank()) ? null : s3Util.update(tempGifUrl.substring(54), dirName + "gif." + StringUtils.getFilenameExtension(tempGifUrl));
 
 		UploadS3MypageResDto result =  UploadS3MypageResDto.builder()
 			.imageFileUrl(imageUrl)
@@ -104,7 +104,7 @@ public class ImageService {
 		return Mono.just(result);
 	}
 
-	public Mono<TempSaveResDto> uploadTempGif(MultipartFile imageFile, MultipartFile gifFile) throws IOException {
+	public Mono<TempSaveResDto> uploadTempFiles(MultipartFile imageFile, MultipartFile gifFile) throws IOException {
 		if(imageFile.isEmpty() || gifFile.isEmpty()){
 			throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
 		}
@@ -113,7 +113,7 @@ public class ImageService {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 		String formattedDate = dateFormat.format(new Date()) + "/" + UUID.randomUUID();
 
-		// imgae S3 저장
+		// image S3 저장
 		String tempImageUrl = s3Util.upload(imageFile, "temp/" + formattedDate + "img");
 
 		// gif S3 저장

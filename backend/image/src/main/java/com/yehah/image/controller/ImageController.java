@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import com.yehah.image.dto.request.AddChildWorkReqDto;
 import com.yehah.image.dto.response.SaveMyAnimalResDto;
 import com.yehah.image.dto.response.TempSaveResDto;
 import com.yehah.image.dto.response.UploadS3MypageResDto;
@@ -27,11 +28,11 @@ public class ImageController {
 
 	private final ImageService imageService;
 
-	@Operation(summary = "S3- gif 파일 임시 저장하기", description = "(ALL) aws s3에 gif 파일을 임시로 저장한다.")
+	@Operation(summary = "S3- 임시 파일(img, gif) 저장하기", description = "(ALL) aws s3에 gif 파일을 임시로 저장한다.")
 	@PostMapping(value = "/temp")
 	public Mono<TempSaveResDto> uploadTempGif(@RequestPart(value="imageFile") MultipartFile imageFile, @RequestPart(value="gifFile") MultipartFile gifFile) throws IOException {
 		log.info("uploadTempGif() : imageFile = {}, gifFile = {}", imageFile.getOriginalFilename(), gifFile.getOriginalFilename());
-		return imageService.uploadTempGif(imageFile, gifFile);
+		return imageService.uploadTempFiles(imageFile, gifFile);
 	}
 
 	@Operation(summary = "S3- 내 동물 사진 올리기", description = "(USER) aws s3에 내 동물 사진 올리기에 업로드할 사진을 저장한다.")
@@ -42,12 +43,11 @@ public class ImageController {
 		return result;
 	}
 
-	@Operation(summary = "S3- 마이페이지에 그림 저장하기", description = "(USER) aws s3에 마이페이지에 저장할 그림을 저장한다.")
-	@PostMapping(value = "/childWork", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public Mono<UploadS3MypageResDto> addChildWork(@RequestPart(value="imageFile") MultipartFile imageFile, @RequestPart(value="gifUrl", required = false) String gifUrl,
-		@RequestPart(value="userId") Long userId, @RequestPart(value="category") String category) throws IOException {
-		log.info("addChildWork() : imageFile = {}, gifUrl = {}, category = {}, userId = {}", imageFile.getOriginalFilename(), gifUrl, category, userId);
-		return imageService.addChildWork(userId.toString(), category, imageFile, gifUrl);
+	@Operation(summary = "S3- 마이페이지에 그림 저장하기", description = "<<수정중>> (USER) aws s3에 마이페이지에 저장할 그림을 저장한다.")
+	@PostMapping(value = "/childWork")
+	public Mono<UploadS3MypageResDto> addChildWork(@RequestBody AddChildWorkReqDto addChildWorkReqDto) throws IOException {
+		log.info("addChildWork() : userId = {}, category = {}, imageUrl = {}, gifUrl = {}", addChildWorkReqDto.getUserId().toString(), addChildWorkReqDto.getCategory(), addChildWorkReqDto.getImageUrl(), addChildWorkReqDto.getGifUrl());
+		return imageService.addChildWork(addChildWorkReqDto.getUserId().toString(), addChildWorkReqDto.getCategory(), addChildWorkReqDto.getImageUrl(), addChildWorkReqDto.getGifUrl());
 	}
 
 	/*
