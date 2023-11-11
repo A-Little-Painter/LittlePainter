@@ -1,7 +1,7 @@
 package com.yehah.draw.domain.animations.controller;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.yehah.draw.domain.animations.ImageAndGifProcessor;
+import com.yehah.draw.global.Processor.ImageAndGifProcessor;
 import com.yehah.draw.domain.animations.dto.request.AnimationAnimalReqDto;
 import com.yehah.draw.domain.animations.dto.request.AnimationTaleReqDto;
 import com.yehah.draw.domain.animations.dto.response.AnimationResDto;

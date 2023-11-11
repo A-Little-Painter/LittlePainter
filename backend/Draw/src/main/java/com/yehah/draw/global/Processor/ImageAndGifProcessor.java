@@ -1,4 +1,4 @@
-package com.yehah.draw.domain.animations;
+package com.yehah.draw.global.Processor;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +6,6 @@ import com.yehah.draw.domain.animations.dto.response.AnimationResDto;
 import com.yehah.draw.domain.animations.exception.AnimationBorderExtractionException;
 import com.yehah.draw.domain.animations.exception.AnimationChangeException;
 import com.yehah.draw.domain.animations.exception.AnimationDataSaveException;
-import com.yehah.draw.global.communication.CommMethod;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,7 @@ public class ImageAndGifProcessor {
     @Value("${micro.path.image}")
     private String imagePath;
 
-    private final CommMethod commMethod;
+    private final CommunicationProcessor communicationProcessor;
     private MultiValueMap<String, Object> bodyData;
 
     @PostConstruct
@@ -44,7 +43,7 @@ public class ImageAndGifProcessor {
         bodyData.add("originalFile", originalFile.getResource());
         bodyData.add("newFile", newFile.getResource());
         try{
-            return commMethod.postMultipartAnimateMethod(bodyData, similarityPath+"/border-extraction");
+            return communicationProcessor.postMultipartAnimateMethod(bodyData, similarityPath+"/border-extraction");
         }catch(Exception e){
             throw new AnimationBorderExtractionException("테두리 내부 영역의 이미지를 추출할 수 없습니다.");
         }
@@ -60,7 +59,7 @@ public class ImageAndGifProcessor {
         });
 
         try{
-            return commMethod.postMultipartAnimateMethod(bodyData, animatePath+"/test-dance");
+            return communicationProcessor.postMultipartAnimateMethod(bodyData, animatePath+"/test-dance");
         }catch(Exception e){
             throw new AnimationChangeException("이미지를 GIF로 변환할 수 없습니다.");
         }
@@ -79,7 +78,7 @@ public class ImageAndGifProcessor {
         });
 
         try{
-            return commMethod.postMultipartAnimateMethod(bodyData, animatePath+"/tales");
+            return communicationProcessor.postMultipartAnimateMethod(bodyData, animatePath+"/tales");
         } catch (Exception e) {
             e.printStackTrace();
             throw new AnimationChangeException("이미지를 GIF로 변환할 수 없습니다.");
@@ -102,7 +101,7 @@ public class ImageAndGifProcessor {
 
         ObjectMapper objectMapper = new ObjectMapper();
         try{
-            String json = objectMapper.writeValueAsString(commMethod.postMultipartMethod(bodyData, imagePath+"/comm/temp"));
+            String json = objectMapper.writeValueAsString(communicationProcessor.postMultipartMethod(bodyData, imagePath+"/comm/temp", Object.class));
             log.info("Data : {}", json);
             return objectMapper.readValue(json, AnimationResDto.class);
         } catch(JsonMappingException e){
