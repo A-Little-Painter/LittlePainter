@@ -80,6 +80,10 @@ public class ImageService {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
 		String formattedDate = userId + "-" + dateFormat.format(currentDate);
 
+		if(category.equals("tale")){
+			formattedDate = userId + "-" + UUID.randomUUID().toString();
+		}
+
 		try {
 			WorkCategory workCategory = WorkCategory.valueOf(category);
 		} catch (IllegalArgumentException e) {
