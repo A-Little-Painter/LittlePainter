@@ -50,7 +50,7 @@ type handleGoDrawPictureScreenType = {
   originalImageUrl: string;
   animalType: string;
 };
-interface FriendPicture {
+interface FriendPictureType {
   friendsAnimalId: number;
   originalImageUrl: string;
   title: string;
@@ -66,8 +66,8 @@ export default function SelectPictureScreen({
   const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState(0);
   const [items, setItems] = useState([]);
-  // const [friendsPictures, setFriendsPictures] = useState<FriendPicture[]>([{"friendsAnimalId": 1, "originalImageUrl": "https://littlepainter.s3.ap-northeast-2.amazonaws.com/profile-icon/frog.png", "title": "ss 토끼", "userEmail": "email"}]);
-  const [friendsPictures, setFriendsPictures] = useState<FriendPicture[]>([]);
+  // const [friendsPictures, setFriendsPictures] = useState<FriendPictureType[]>([{"friendsAnimalId": 1, "originalImageUrl": "https://littlepainter.s3.ap-northeast-2.amazonaws.com/profile-icon/frog.png", "title": "ss 토끼", "userEmail": "email"}]);
+  const [friendsPictures, setFriendsPictures] = useState<FriendPictureType[]>([]);
   // const [selectAnimalTypeName, setSelectAnimalTypeName] = useState<string>('');
   const [selectPage, setSelectPage] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -113,7 +113,7 @@ export default function SelectPictureScreen({
     try {
       const response = await friendsWholePicture(value, 0);
       if (response.status === 200) {
-        console.log('다른 사람이 올린 사진 전체 가져오기 성공', response.data);
+        console.log('다른 사람이 올린 사진 전체 가져오기 성공');
         const newData = response.data.content;
         if (newData.length > 0) {
           // setFriendsPictures(prevData => [...prevData, ...newData]);
@@ -290,7 +290,7 @@ export default function SelectPictureScreen({
                       });
                     }}
                     style={[
-                      styles.pcitureCard2,
+                      styles.pictureCard2,
                       {
                         backgroundColor:
                           randomBackgroundColor[
@@ -374,9 +374,9 @@ const styles = StyleSheet.create({
   },
   pictureCard1: {
     marginVertical: windowWidth * 0.01,
-    marginHorizontal: ((windowWidth * 0.9 * 0.95) / 4) * 0.05,
+    marginHorizontal: ((windowWidth * 0.9 * 0.95) / 4) * 0.04999,
   },
-  pcitureCard2: {
+  pictureCard2: {
     justifyContent: 'center',
     borderRadius: 20,
     borderColor: 'black',
@@ -400,6 +400,8 @@ const styles = StyleSheet.create({
       0.55,
   },
   pictureCardText: {
+    paddingLeft: windowWidth * 0.007,
+    paddingTop: windowHeight * 0.01,
     fontSize: windowWidth * 0.018,
     fontWeight: '600',
   },

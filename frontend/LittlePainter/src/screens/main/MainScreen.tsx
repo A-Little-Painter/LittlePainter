@@ -102,7 +102,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 onPress={() => {
                   setIsmuted(!ismuted);
                   // 지울것
-                  console.log(selectName);
+                  // console.log(selectName);
                   navigation.navigate('LoadScreen');
                 }}>
                 <Text>
@@ -162,7 +162,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <View style={styles.cardFrame2}>
                   <Image
                     style={styles.cardImage}
-                    source={require('../../assets/images/orca.png')}
+                    source={require('../../assets/images/animalMain.png')}
                   />
                 </View>
                 <TouchableOpacity style={styles.cardFrame3}>
@@ -190,7 +190,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <View style={styles.cardFrame2}>
                   <Image
                     style={styles.cardImage}
-                    source={require('../../assets/images/piggy.png')}
+                    source={require('../../assets/images/talesMain.png')}
                   />
                 </View>
                 <TouchableOpacity style={styles.cardFrame3}>
@@ -211,15 +211,17 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   navigation.navigate('SelectPictureScreen');
                 }}>
                 <View style={styles.cardFrame1}>
-                  <View style={styles.space}>
-                    <Text style={styles.cardText1}>친구의 동물</Text>
-                    <Text style={styles.cardText2}>그리기</Text>
-                  </View>
+                  <Text style={styles.cardText}>
+                    <Text style={styles.cardTextBold}>친구의 동물{'\n'}</Text>
+                    그리기
+                  </Text>
+                  {/* <Text style={styles.cardText1}>친구의 동물{'\n'}그리기</Text> */}
+                  {/* <Text style={styles.cardText2}>그리기</Text> */}
                 </View>
                 <View style={styles.cardFrame2}>
                   <Image
                     style={styles.cardImage}
-                    source={require('../../assets/images/bunny.png')}
+                    source={require('../../assets/images/pictureMain.png')}
                   />
                 </View>
                 <TouchableOpacity style={styles.cardFrame3}>
@@ -240,10 +242,12 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   setModalVisible(true);
                 }}>
                 <View style={styles.cardFrame1}>
-                  <View style={styles.space}>
-                    <Text style={styles.cardText1}>내 동물 사진</Text>
-                    <Text style={styles.cardText2}>올리기</Text>
-                  </View>
+                  <Text style={styles.cardText}>
+                    <Text style={styles.cardTextBold}>내 동물 사진{'\n'}</Text>
+                    올리기
+                  </Text>
+                  {/* <Text style={styles.cardText1}>내 동물 사진</Text>
+                  <Text style={styles.cardText2}>올리기</Text> */}
                 </View>
                 <View style={styles.cardFrame2}>
                   <Image
@@ -399,27 +403,39 @@ const styles = StyleSheet.create({
     height: windowWidth * 0.025,
   },
   cardImage: {
-    width: windowWidth * 0.3 * 0.7,
-    height: windowWidth * 0.3 * 0.6,
-    borderRadius: windowHeight * 0.02,
+    // backgroundColor: 'red',
+    width: windowWidth * 0.3 * 0.75,
+    height: windowWidth * 0.3 * 0.75 * 0.75,
+    borderRadius: windowWidth * 0.3 * 0.75 * 0.13,
+    resizeMode: 'contain',
   },
   cardText: {
-    fontSize: windowWidth * 0.035,
+    // fontSize: windowWidth * 0.035,
+    fontSize: windowWidth * 0.033,
     color: 'white',
+    paddingTop: windowHeight * 0.03,
+    paddingBottom: -windowHeight * 0.03,
+    paddingLeft: windowWidth * 0.01,
   },
   cardTextBold: {
     fontWeight: '600',
   },
-  cardText1: {
-    fontSize: windowWidth * 0.035,
-    color: 'white',
-    fontFamily: 'TmoneyRoundWindExtraBold',
-  },
-  cardText2: {
-    fontSize: windowWidth * 0.035,
-    color: 'white',
-    fontFamily: 'TmoneyRoundWindRegular',
-  },
+  // cardText1: {
+  //   // fontSize: windowWidth * 0.035,
+  //   fontSize: windowWidth * 0.033,
+  //   color: 'white',
+  //   fontWeight: '600',
+  //   paddingTop: windowHeight * 0.03,
+  //   paddingBottom: -windowHeight * 0.03,
+  //   paddingLeft: windowWidth * 0.01,
+  // },
+  // cardText2: {
+  //   fontSize: windowWidth * 0.033,
+  //   color: 'white',
+  //   // paddingTop: windowHeight * 0.03,
+  //   paddingBottom: -windowHeight * 0.03,
+  //   paddingLeft: windowWidth * 0.01,
+  // },
   loginText: {
     fontSize: windowWidth * 0.015,
     color: '#7D7676',
@@ -437,14 +453,14 @@ const styles = StyleSheet.create({
   cardFrame: {
     width: windowWidth * 0.28,
     marginHorizontal: windowWidth * 0.01,
-    borderRadius: 20,
+    borderRadius: windowWidth * 0.28 * 0.1,
     paddingHorizontal: windowWidth * 0.3 * 0.05,
     // padding: windowWidth * 0.3 * 0.05,
   },
   cardFrame1: {
     flex: 0.3,
     // flexDirection: 'row',
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   space: {
     paddingTop: windowHeight * 0.05,

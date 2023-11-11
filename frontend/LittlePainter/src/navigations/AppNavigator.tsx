@@ -18,9 +18,14 @@ import ColoringPictureScreen from '../screens/drawPicture/ColoringPictureScreen'
 import CompleteDrawPictureScreen from '../screens/drawPicture/CompleteDrawPictureScreen';
 // 동화그리기
 import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
+import DrawFairytaleScreen from '../screens/fairytale/DrawFairytaleScreen';
+import FairytaleReadScreen from '../screens/fairytale/fairytaleRead/FairytaleReadScreen';
+
+// 동화그리기 이전. 안씀
 import ReadFairytaleScreen from '../screens/fairytale/Fairtytale1Screen.tsx/ReadFairytaleScreen';
 import FairytaleDrawScreen from '../screens/fairytale/Fairtytale1Screen.tsx/FairytaleDrawScreen';
 import FairytaleColoringScreen from '../screens/fairytale/Fairtytale1Screen.tsx/FairytaleColoringScreen';
+
 //이미지 업로드
 import UploadPicture0Screen from '../screens/uploadPicture/UploadPicture0Screen';
 import UploadPicture1Screen from '../screens/uploadPicture/UploadPicture1Screen';
@@ -95,7 +100,15 @@ export type RootStackParams = {
     completeDrawUri: string;
     animatedGif: string;
   };
+  // 동화 그리기
   SelectFairytaleScreen: undefined;
+  DrawFairytaleScreen: undefined;
+  FairytaleReadScreen: {
+    title: string;
+    taleId: number;
+  };
+
+  // 이제 안쓰는 동화 그리기
   FairytaleDrawScreen: undefined;
   ReadFairytaleScreen: {title: string};
   FairytaleColoringScreen: {
@@ -171,10 +184,20 @@ export default function AppNavigator() {
         name="CompleteDrawPictureScreen"
         component={CompleteDrawPictureScreen}
       />
+      {/* 동화 그리기 */}
       <RootStack.Screen
         name="SelectFairytaleScreen"
         component={SelectFairytaleScreen}
       />
+      <RootStack.Screen
+        name="DrawFairytaleScreen"
+        component={DrawFairytaleScreen}
+      />
+      <RootStack.Screen
+        name="FairytaleReadScreen"
+        component={FairytaleReadScreen}
+      />
+      {/* 이제 안씀 */}
       <RootStack.Screen
         name="ReadFairytaleScreen"
         component={ReadFairytaleScreen}
@@ -187,6 +210,7 @@ export default function AppNavigator() {
         name="FairytaleColoringScreen"
         component={FairytaleColoringScreen}
       />
+      {/* 이미지 업로드 */}
       <RootStack.Screen
         name="UploadPicture0Screen"
         component={UploadPicture0Screen}

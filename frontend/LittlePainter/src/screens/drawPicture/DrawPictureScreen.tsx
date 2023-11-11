@@ -82,7 +82,7 @@ export default function DrawPictureScreen({
 
       newClient.onConnect = frame => {
         console.log('연결됨');
-        console.log('Connected: ' + frame);
+        // console.log('Connected: ' + frame);
         setClient(newClient); // 연결 후 client 상태 업데이트
         setSocketLinked(true);
       };
@@ -227,9 +227,6 @@ export default function DrawPictureScreen({
       );
       if (response.status === 200 || response.status === 404) {
         console.log('유사도 검사 성공', response.data);
-        // if (response.data === 'END') {
-        //   handleGoColoring();
-        // }
       } else {
         console.log('유사도 검사 실패', response.status);
       }
@@ -487,10 +484,12 @@ export default function DrawPictureScreen({
           {pictureBorderURI === '' ? null : (
             <ImageBackground
               source={{uri: pictureBorderURI}}
+              // source={{uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/bf8169aa1ed346d7b90eaa98767e2902_trace.png'}}
               // source={require('../../assets/images/animalImage/ovalTest.png')}
               style={styles.pictureBorderImageBackground}
               imageStyle={styles.backgroundImageOpacity}
               resizeMode="contain">
+              {/* <View style={{position:'absolute', width: 500, height: 500, backgroundColor:'red'}} /> */}
               {captureBorderImagePath !== '' && socketLinked ? (
                 <ViewShot
                   ref={drawCaptureRef}
@@ -502,7 +501,7 @@ export default function DrawPictureScreen({
                   style={[
                     styles.pathViewShot,
                     // eslint-disable-next-line react-native/no-inline-styles
-                    {backgroundColor: canDrawCapture ? 'white' : 'transparent'},
+                    {backgroundColor: canDrawCapture ? '#FFFFFF' : 'transparent'},
                   ]}>
                   <View
                     style={styles.pathView}

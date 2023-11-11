@@ -154,44 +154,6 @@ export default function SelectAnimalScreen({
               ))}
             </View>
           </ScrollView>
-          {/* <FlatList
-            data={wholeAnimal}
-            numColumns={4}
-            renderItem={({item, index}) => {
-              return (
-                <View style={styles.animalCard1}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // 일단 여기로 옮김. 실제론 각 동물 id에 맞게 보내야함.
-                      navigation.navigate('DrawAnimalScreen', {
-                        animalId: item.animalId,
-                        animalType: item.animalType,
-                      });
-                    }}
-                    style={[
-                      styles.animalCard2,
-                      {
-                        backgroundColor:
-                          randomBackgroundColor[
-                            index >= randomBackgroundColor.length
-                              ? index % randomBackgroundColor.length
-                              : index
-                          ],
-                      },
-                    ]}>
-                    <Image
-                      style={styles.logoImage}
-                      source={{uri: item.urlOriginal}}
-                      // source={item.urlOriginal}
-                    />
-                  </TouchableOpacity>
-                  <Text style={styles.animalCardText}>{item.animalType}</Text>
-                </View>
-              );
-            }}
-            // keyExtractor={(item, index) => index.toString()}
-            keyExtractor={item => item.animalId.toString()}
-          /> */}
         </View>
       </View>
       {isLoading ? (
@@ -271,8 +233,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   animalCardText: {
-    textAlign: 'center',
+    paddingLeft: windowWidth * 0.007,
+    paddingTop: windowHeight * 0.01,
     fontSize: windowWidth * 0.018,
+    fontWeight: '600',
   },
   loadingImage: {
     position: 'absolute',

@@ -3,7 +3,7 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import {BASE_URL} from '../baseUrl';
-import {DRAW_URL} from '../baseUrl';
+// import {DRAW_URL} from '../baseUrl';
 
 const loadATokenFromKeychain = async () => {
   try {
@@ -267,28 +267,69 @@ export const taleListInquiry = async () => {
     return response;
   }
 };
-// 동화 페이지 조회하기
-export const talePageInquiry = async (talesId, pageNum) => {
+// 동화 페이지 전체 데이터 조회하기
+export const talePageListInquiry = async (taleId) => {
   try {
-    const response = await axios.get(`${BASE_URL}/draws/tales/${talesId}/${pageNum}`);
+    const response = await axios.get(`${BASE_URL}/draws/tale-pages/${taleId}`);
     return response;
   } catch (error) {
-    console.log('동화 페이지 조회하기 실패:', error);
+    console.log('동화 페이지 전체 데이터 조회하기 실패:', error);
     const response = error.response;
     return response;
   }
 };
-// 동화 페이지 다시 조회
-export const talePageReinquiry = async () => {
+// 동화 그림 마이페이지에 저장하기
+// talePageData에 talePageId와 urlGif, imageFile가 다 들어있음
+export const taleSaveToMypage = async (taleId, talePageData) => {
   try {
-    const response = await axios.get(`${BASE_URL}/draws/tales/exist`);
+    const accessToken = await loadATokenFromKeychain();
+    const formData = new FormData();
+    talePageData.forEach((data, index) => {
+      formData.append(`addChildWorkTaleReqDtoList[${index}].pageId`, data.pageId);
+      formData.append(`addChildWorkTaleReqDtoList[${index}].gifUrl`, JSON.stringify(data.urlGif));
+      formData.append(`addChildWorkTaleReqDtoList[${index}].imageFile`, {
+        uri: data.completeDrawUri,
+        type: 'image/png',
+        name: 'originalFile.png',
+      });
+    });
+
+    const response = await axios.post(`${BASE_URL}/draws/child_work_tale/${taleId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     return response;
   } catch (error) {
-    console.log('동화 페이지 다시 조회 실패:', error);
+    console.log('동화 그림 마이페이지에 저장하기 실패:', error);
     const response = error.response;
     return response;
   }
 };
+
+// // 동화 페이지 조회하기
+// export const talePageInquiry = async (talesId, pageNum) => {
+//   try {
+//     const response = await axios.get(`${BASE_URL}/draws/tales/${talesId}/${pageNum}`);
+//     return response;
+//   } catch (error) {
+//     console.log('동화 페이지 조회하기 실패:', error);
+//     const response = error.response;
+//     return response;
+//   }
+// };
+// // 동화 페이지 다시 조회
+// export const talePageReinquiry = async () => {
+//   try {
+//     const response = await axios.get(`${BASE_URL}/draws/tales/exist`);
+//     return response;
+//   } catch (error) {
+//     console.log('동화 페이지 다시 조회 실패:', error);
+//     const response = error.response;
+//     return response;
+//   }
+// };
 // 동화 유사도 검사
 export const taleCheckSimilarity = async () => {
   try {
