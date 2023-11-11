@@ -13,6 +13,8 @@ interface CounterState {
   isSaveDrawnToLoginModalVisible: boolean;
   // 그림이미지 테스트 비교 모달
   isTestDrawCompareModalVisible: boolean;
+  // 미로그인시 완성하기 누르고 로그인하면 복귀할 수 있게하는 변수
+  havingGifUrl: boolean;
 }
 
 const initialState: CounterState = {
@@ -27,6 +29,8 @@ const initialState: CounterState = {
   isSaveDrawnToLoginModalVisible: false,
   // 그림이미지 테스트 비교 모달
   isTestDrawCompareModalVisible: false,
+  // 미로그인시 완성하기 누르고 로그인하면 복귀할 수 있게하는 변수
+  havingGifUrl: false,
 };
 
 export const drawSlice = createSlice({
@@ -84,6 +88,10 @@ export const drawSlice = createSlice({
     ) => {
       state.isTestDrawCompareModalVisible = action.payload;
     },
+    // 미로그인시 완성하기 누르고 로그인하면 복귀할 수 있게하는 변수 변경함수
+    handleHavingGifUrl: (state, action: PayloadAction<boolean>) => {
+      state.havingGifUrl = action.payload;
+    },
   },
 });
 
@@ -97,6 +105,7 @@ export const {
   handleIsDrawScreenshotModalVisible,
   handleisSaveDrawnToLoginModalVisible,
   handleisTestDrawCompareModalVisible, // 임시 그림 비교 모달
+  handleHavingGifUrl,
 } = drawSlice.actions;
 export const LineThickness = (state: RootState) => state.draw.LineThickness;
 export const isDrawLineThicknessModalVisible = (state: RootState) =>
@@ -118,5 +127,8 @@ export const drawColorSelect = (state: RootState) => state.draw.drawColorSelect;
 // 임시 그림 비교 모달
 export const isTestDrawCompareModalVisible = (state: RootState) => {
   state.draw.isTestDrawCompareModalVisible;
+};
+export const havingGifUrl = (state: RootState) => {
+  state.draw.havingGifUrl;
 };
 export default drawSlice.reducer;

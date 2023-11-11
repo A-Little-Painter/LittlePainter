@@ -7,7 +7,12 @@ import axios from 'axios';
 import {refreshAccessToken} from './src/apis/baseUrl';
 import AppNavigator from './src/navigations/AppNavigator';
 import {setCustomText} from 'react-native-global-props';
+import {TextEncoder, TextDecoder} from 'text-encoding';
 import Tts from 'react-native-tts';
+
+
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
 
 Tts.setDefaultLanguage('ko-KR');
 Tts.setDefaultRate(0.5);

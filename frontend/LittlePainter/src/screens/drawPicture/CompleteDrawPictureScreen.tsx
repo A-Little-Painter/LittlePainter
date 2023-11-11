@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -13,7 +15,10 @@ import ViewShot from 'react-native-view-shot';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import {handleisSaveDrawnToLoginModalVisible} from '../../redux/slices/draw/draw';
+import {
+  handleisSaveDrawnToLoginModalVisible,
+  handleHavingGifUrl,
+} from '../../redux/slices/draw/draw';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {friendsPictureSaveToMypage} from '../../apis/draw/draw';
@@ -33,6 +38,7 @@ export default function CompleteDrawPictureScreen({
 }: CompleteDrawPictureScreenProps) {
   const [pictureId] = useState<number>(route.params.pictureId);
   const [completeDrawUri] = useState(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
+  const [animatedGif] = useState(route.params.animatedGif); // 완성된 Uri(gif파일 아님)
 
   const isLogin = useSelector((state: RootState) => state.user.isLogin);
   // const selectName = useSelector((state: RootState) => state.user.selectName);
@@ -45,7 +51,7 @@ export default function CompleteDrawPictureScreen({
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
-  const captureRef = useRef();
+  const captureRef = useRef(null);
 
   // function handlePressSaving(params:type) {
   function handlePressSaving() {
@@ -58,12 +64,10 @@ export default function CompleteDrawPictureScreen({
 
   const handlefriendsPictureSaveToMypage = async () => {
     try {
-      const response = await friendsPictureSaveToMypage(
-        pictureId,
-        completeDrawUri,
-      );
+      const response = await friendsPictureSaveToMypage(pictureId, completeDrawUri, animatedGif);
       if (response.status === 200) {
         console.log('완성된 사진그리기 마이페이지에 저장 성공', response.data);
+        dispatch(handleHavingGifUrl(false));
       } else {
         console.log(
           '완성된 사진그리기 마이페이지에 저장 실패',
@@ -74,6 +78,11 @@ export default function CompleteDrawPictureScreen({
       console.log('완성된 사진그리기 마이페이지에 저장 실패', error);
     }
   };
+  useEffect(() => {
+    return () => {
+      dispatch(handleHavingGifUrl(false));
+    };
+  }, []);
   //뒤로가기 2번시 뒤로가기
   useEffect(() => {
     const backAction = () => {
@@ -140,19 +149,16 @@ export default function CompleteDrawPictureScreen({
           }}>
           <ImageBackground
             // source={require('../../assets/images/animalImage/deerTest1.png')}
-            source={{uri: completeDrawUri}}
+            style={styles.imageBackgroundSize}
+            source={{
+              uri:
+                animatedGif !== ('' || null || undefined)
+                  ? animatedGif
+                  : completeDrawUri,
+            }}
             // style={{backgroundColor: 'white'}}
             resizeMode="contain">
-            {/* <Image
-              style={{
-                position: 'absolute',
-                width: windowWidth,
-                height: windowHeight * 0.8,
-                resizeMode: 'contain',
-              }}
-              source={{uri: completeDrawUri}}
-            /> */}
-            <View style={{width: '100%', height: '100%'}} />
+            {/* <View style={{width: '100%', height: '100%'}} /> */}
           </ImageBackground>
           {/* </View> */}
         </ViewShot>
@@ -257,6 +263,10 @@ const styles = StyleSheet.create({
   middleContainer: {
     flex: 0.8,
     // borderWidth: 1,
+  },
+  imageBackgroundSize: {
+    width: '100%',
+    height: '100%',
   },
   bottomContainer: {
     // marginHorizontal: windowWidth * 0.01,

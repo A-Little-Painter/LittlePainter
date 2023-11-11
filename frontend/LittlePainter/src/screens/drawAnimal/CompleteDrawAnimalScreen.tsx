@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -13,12 +15,14 @@ import ViewShot from 'react-native-view-shot';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import {handleisSaveDrawnToLoginModalVisible} from '../../redux/slices/draw/draw';
+import {
+  handleisSaveDrawnToLoginModalVisible,
+  handleHavingGifUrl,
+} from '../../redux/slices/draw/draw';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {animalSaveToMypage} from '../../apis/draw/draw';
 import SaveDrawnToLoginModal from '../modals/SaveDrawnToLoginModal';
-
 type CompleteDrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
   'CompleteDrawAnimalScreen'
@@ -43,11 +47,10 @@ export default function CompleteDrawAnimalScreen({
   const isSaveDrawnToLoginModalVisible = useSelector(
     (state: RootState) => state.draw.isSaveDrawnToLoginModalVisible,
   );
-
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
-  const captureRef = useRef();
+  const captureRef = useRef(null);
 
   // function handlePressSaving(params:type) {
   function handlePressSaving() {
@@ -60,9 +63,11 @@ export default function CompleteDrawAnimalScreen({
 
   const handleAnimalSaveToMypage = async () => {
     try {
-      const response = await animalSaveToMypage(animalId, completeDrawUri);
-      if (response.status === 200) {
+      // const response = await animalSaveToMypage(animalId, completeDrawUri);
+      const response = await animalSaveToMypage(animalId, completeDrawUri, animatedGif);
+      if (response.status === 201) {
         console.log('완성된 동물 마이페이지에 저장 성공', response.data);
+        dispatch(handleHavingGifUrl(false));
       } else {
         console.log('완성된 동물 마이페이지에 저장 실패', response.status);
       }
@@ -70,6 +75,12 @@ export default function CompleteDrawAnimalScreen({
       console.log('완성된 동물 마이페이지에 저장 실패', error);
     }
   };
+  useEffect(() => {
+    return () => {
+      dispatch(handleHavingGifUrl(false));
+    };
+  }, []);
+
   //뒤로가기 2번시 뒤로가기
   useEffect(() => {
     const backAction = () => {
@@ -135,13 +146,19 @@ export default function CompleteDrawAnimalScreen({
             quality: 0.9,
           }}>
           <ImageBackground
-            style={{width: '100%', height: '100%'}}
+            style={styles.imageBackgroundSize}
             source={{
               uri:
-                animatedGif !== ('' || null || undefined)
-                  ? animatedGif
-                  : completeDrawUri,
+                (animatedGif === '' || animatedGif === undefined || animatedGif === null)
+                  ? completeDrawUri
+                  : animatedGif,
             }}
+            // source={{
+            //   uri:
+            //     (animatedGif !== '' || animatedGif !== null || animatedGif !== undefined)
+            //       ? animatedGif
+            //       : completeDrawUri,
+            // }}
             resizeMode="contain">
             {/* <View style={{width: '100%', height: '100%'}} /> */}
           </ImageBackground>
@@ -247,10 +264,12 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
-    // borderWidth: 1,
+  },
+  imageBackgroundSize: {
+    width: '100%',
+    height: '100%',
   },
   bottomContainer: {
-    // marginHorizontal: windowWidth * 0.01,
     paddingHorizontal: windowWidth * 0.01,
     flex: 0.1,
     flexDirection: 'row',

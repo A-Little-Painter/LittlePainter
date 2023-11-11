@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable prettier/prettier */
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -9,6 +11,8 @@ import {
   Pressable,
   ToastAndroid, // 토스트안드로이드 잠깐 사용
   BackHandler,
+  Animated,
+  Easing,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
@@ -29,8 +33,9 @@ import {
   handleisDrawLineThicknessModalVisible,
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
+  handleHavingGifUrl,
 } from '../../redux/slices/draw/draw';
-import {friendsAnimations} from '../../apis/draw/draw';
+import {animalAnimations} from '../../apis/draw/draw';
 
 type ColoringPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -58,18 +63,17 @@ export default function ColoringPictureScreen({
   const [pictureTitle] = useState<string>(route.params.pictureTitle);
   const [pictureId] = useState<number>(route.params.pictureId);
   const [pictureBorderURI] = useState<string>(route.params.pictureBorderURI);
-  const [pictureExplanation] = useState<string>(
-    route.params.pictureExplanation,
-  );
-  const [pictureOriginImageUri] = useState<string>(
-    route.params.pictureOriginImageUri,
-  );
-
+  const [pictureExplanation] = useState<string>(route.params.pictureExplanation);
+  const [pictureOriginImageUri] = useState<string>(route.params.pictureOriginImageUri);
   const [completeLine] = useState(route.params.completeLine);
+  const [animalType] = useState(route.params.animalType);
+
+  // 로딩함수
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
-  const drawCaptureRef = useRef();
+  const drawCaptureRef = useRef(null);
 
   // 그림 그리기 변수
   const [paths, setPaths] = useState<
@@ -106,25 +110,34 @@ export default function ColoringPictureScreen({
 
   // 친구 사진 애니메이션
   async function handlePictureAnimations() {
+    setIsLoading(true);
     try {
-      const response = await friendsAnimations(animalType, captureImagePath);
+      dispatch(handleHavingGifUrl(true));
+      const response = await animalAnimations(animalType, captureImagePath);
       if (response.status === 200) {
         console.log('친구 사진 애니메이션 성공', response.data);
+        setIsLoading(false);
+        console.log(response.data.gifImageUrl);
+        handleGoComplete(response.data.gifImageUrl);
       } else {
         console.log('친구 사진 애니메이션 실패', response.status);
+        setIsLoading(false);
         ToastAndroid.show(
           '우리 친구가 움직일 수가 없어요ㅠㅠ',
           ToastAndroid.LONG,
         );
+        handleGoComplete(response.data.gifImageUrl);
       }
     } catch (error) {
       console.log('친구 사진 애니메이션 실패', error);
+      setIsLoading(false);
       ToastAndroid.show(
         '우리 친구가 움직일 수가 없어요ㅠㅠ',
         ToastAndroid.LONG,
       );
+      handleGoComplete('');
     }
-    handleGoComplete();
+    setIsLoading(false);
   }
 
   // 캡쳐 함수
@@ -139,22 +152,26 @@ export default function ColoringPictureScreen({
 
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
-    const locationX = event.nativeEvent.locationX;
-    const locationY = event.nativeEvent.locationY;
-    const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    setCurrentPath(point);
-    setTmpPaths([]);
+    if (!isLoading) {
+      const locationX = event.nativeEvent.locationX;
+      const locationY = event.nativeEvent.locationY;
+      const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+      setCurrentPath(point);
+      setTmpPaths([]);
+    }
   };
 
   const onTouchMove = (event: GestureResponderEvent) => {
-    const locationX = event.nativeEvent.locationX;
-    const locationY = event.nativeEvent.locationY;
-    const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    setCurrentPath(prevPath => prevPath + newPoint);
+    if (!isLoading) {
+      const locationX = event.nativeEvent.locationX;
+      const locationY = event.nativeEvent.locationY;
+      const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+      setCurrentPath(prevPath => prevPath + newPoint);
+    }
   };
 
   const onTouchEnd = () => {
-    if (currentPath) {
+    if (currentPath && !isLoading) {
       setPaths([
         ...paths,
         {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
@@ -191,10 +208,11 @@ export default function ColoringPictureScreen({
     handleDrawCapture();
   };
 
-  const handleGoComplete = () => {
+  const handleGoComplete = (receiveanimatedGif: string) => {
     navigation.navigate('CompleteDrawPictureScreen', {
       pictureId: pictureId,
       completeDrawUri: captureImagePath,
+      animatedGif: receiveanimatedGif,
     });
   };
 
@@ -244,6 +262,29 @@ export default function ColoringPictureScreen({
   useEffect(() => {
     handleDrawCapture();
   }, [paths]);
+
+    ////// 로딩 애니메이션
+    const [rotation] = useState(new Animated.Value(0));
+    useEffect(() => {
+      const rotateImage = () => {
+        Animated.timing(rotation, {
+          toValue: 360,
+          duration: 2000, // 회전에 걸리는 시간 (밀리초)
+          easing: Easing.linear,
+          useNativeDriver: false, // 필요에 따라 변경
+        }).start(() => {
+          rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+          rotateImage();
+        });
+      };
+      rotateImage();
+    }, []);
+
+    const spin = rotation.interpolate({
+      inputRange: [0, 360],
+      outputRange: ['0deg', '360deg'],
+    });
+    ////////////
 
   return (
     <View style={styles.mainContainer}>
@@ -417,6 +458,7 @@ export default function ColoringPictureScreen({
           <View style={styles.bottomContainerMiddle}>
             <TouchableOpacity
               style={styles.clearButton}
+              disabled={isLoading}
               onPress={() => {
                 handleClearButtonClick();
               }}>
@@ -427,6 +469,7 @@ export default function ColoringPictureScreen({
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
               style={[styles.doneButton]}
+              disabled={isLoading}
               onPress={() => {
                 handlePictureAnimations();
                 // handleGoComplete();
@@ -450,6 +493,12 @@ export default function ColoringPictureScreen({
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
       {isDrawScreenshotModalVisible ? (
         <DrawScreenshotModal captureUri={captureImagePath} />
+      ) : null}
+      {isLoading ? (
+        <Animated.Image
+          style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+          source={require('../../assets/images/loading2.png')}
+        />
       ) : null}
     </View>
   );
@@ -607,5 +656,12 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });
