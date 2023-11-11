@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import com.yehah.image.dto.response.SaveMyAnimalResDto;
+import com.yehah.image.dto.response.TempSaveResDto;
 import com.yehah.image.dto.response.UploadS3MypageResDto;
 import com.yehah.image.service.ImageService;
 
@@ -26,11 +27,11 @@ public class ImageController {
 
 	private final ImageService imageService;
 
-	@Operation(summary = "S3- gif 파일 임시 저장하기", description = "(ALL) aws s3에 gif 파일을 임시로 저장한다.")
+	@Operation(summary = "S3- gif 파일 임시 저장하기", description = "<<수정중>> (ALL) aws s3에 gif 파일을 임시로 저장한다.")
 	@PostMapping(value = "/temp")
-	public Mono<String> uploadTempGif(@RequestPart(value="gifFile") MultipartFile gifFile) throws IOException {
-		log.info("uploadTempGif() : gifFile = {}", gifFile.getOriginalFilename());
-		return imageService.uploadTempGif(gifFile);
+	public Mono<TempSaveResDto> uploadTempGif(@RequestPart(value="imageFile") MultipartFile imageFile, @RequestPart(value="gifFile") MultipartFile gifFile) throws IOException {
+		log.info("uploadTempGif() : imageFile = {}, gifFile = {}", imageFile.getOriginalFilename(), gifFile.getOriginalFilename());
+		return imageService.uploadTempGif(imageFile, gifFile);
 	}
 
 	@Operation(summary = "S3- 내 동물 사진 올리기", description = "(USER) aws s3에 내 동물 사진 올리기에 업로드할 사진을 저장한다.")

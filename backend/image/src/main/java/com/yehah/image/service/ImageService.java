@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yehah.image.dto.response.SaveMyAnimalResDto;
+import com.yehah.image.dto.response.TempSaveResDto;
 import com.yehah.image.dto.response.UploadS3MypageResDto;
 import com.yehah.image.exception.CustomException;
 import com.yehah.image.exception.ExceptionEnum;
@@ -103,8 +104,8 @@ public class ImageService {
 		return Mono.just(result);
 	}
 
-	public Mono<String> uploadTempGif(MultipartFile gifFile) throws IOException {
-		if(gifFile.isEmpty()){
+	public Mono<TempSaveResDto> uploadTempGif(MultipartFile imageFile, MultipartFile gifFile) throws IOException {
+		if(imageFile.isEmpty() || gifFile.isEmpty()){
 			throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
 		}
 
@@ -112,10 +113,18 @@ public class ImageService {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 		String formattedDate = dateFormat.format(new Date()) + "/" + UUID.randomUUID();
 
-		// gif S3 저장
-		String tempGifUrl = s3Util.upload(gifFile, "temp/" + formattedDate);
+		// imgae S3 저장
+		String tempImageUrl = s3Util.upload(imageFile, "temp/" + formattedDate + "img");
 
-		return Mono.just(tempGifUrl);
+		// gif S3 저장
+		String tempGifUrl = s3Util.upload(gifFile, "temp/" + formattedDate + "gif");
+
+		TempSaveResDto tempSaveResDto = TempSaveResDto.builder()
+			.imageUrl(tempImageUrl)
+			.gifUrl(tempGifUrl)
+			.build();
+
+		return Mono.just(tempSaveResDto);
 	}
 
 }
