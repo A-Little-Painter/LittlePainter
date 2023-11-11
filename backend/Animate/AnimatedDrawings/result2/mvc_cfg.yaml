@@ -1,0 +1,10 @@
+controller:
+  MODE: video_render
+  OUTPUT_VIDEO_PATH: /app/AnimatedDrawings/result/animals/video.gif
+scene:
+  ANIMATED_CHARACTERS:
+  - character_cfg: /app/AnimatedDrawings/result/animals/char_cfg.yaml
+    motion_cfg: /app/AnimatedDrawings/examples/config/motion/zombie.yaml
+    retarget_cfg: /app/AnimatedDrawings/examples/config/retarget/four_legs.yaml
+view:
+  USE_MESA: true
