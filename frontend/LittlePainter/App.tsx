@@ -9,7 +9,9 @@ import AppNavigator from './src/navigations/AppNavigator';
 import {setCustomText} from 'react-native-global-props';
 import {TextEncoder, TextDecoder} from 'text-encoding';
 import Tts from 'react-native-tts';
-
+import {LogBox} from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications.
 
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;

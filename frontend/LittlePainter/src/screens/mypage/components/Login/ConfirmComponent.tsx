@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,11 +8,17 @@ import {
   Alert,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {
+  findCodeSend,
+  emailDuplication,
+  authCode,
+} from '../../../../apis/user/userApi';
 import IconFontisto from 'react-native-vector-icons/Fontisto';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconIonicons from 'react-native-vector-icons/Ionicons';
 
-type EmailComponentsProps = {
+type ComfirmComponentProps = {
+  email: string;
   setEmail: (email: string) => void;
   navigation: any; // navigation의 타입은 화면 이동과 관련된 내용에 따라 다를 수 있으므로 "any"로 지정
   selectComponent: (componentName: string) => void;
@@ -21,14 +27,21 @@ type EmailComponentsProps = {
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const EmailComponents: React.FC<EmailComponentsProps> = ({
+const ComfirmComponent: React.FC<ComfirmComponentProps> = ({
+  email,
   setEmail,
   navigation,
   selectComponent,
 }) => {
   const [code, setCode] = useState('');
-  const [duplication, setDuplication] = useState(false);
+  const [duplication, setDuplication] = useState(true);
   const [codeConfirm, setCodeConfirm] = useState(false);
+  const emailInputRef = useRef(null);
+  const codeInputRef = useRef(null);
+
+  const moveToCodeInput = () => {
+    codeInputRef.current.focus();
+  };
 
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
@@ -37,26 +50,27 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
   const emailConfirm = (text: string) => {
     setEmail(text);
     if (text.includes('.')) {
-      // 이 이하의 부분을 갈아치워야 함
-      if (text === 'poi1229@hanmail.net') {
-        setDuplication(true);
-      } else {
-        setDuplication(false);
-      }
+      emailDuplication(text, setDuplication);
     }
+  };
+  const sendCode = (value: string) => {
+    const cleanEmail = value.replace(/\s/g, '');
+    const emailData = {email: cleanEmail};
+    findCodeSend(emailData);
+    moveToCodeInput();
   };
   const passCode = (text: string) => {
     setCode(text);
-    if (text === '1234') {
-      setCodeConfirm(true);
-    } else {
-      setCodeConfirm(false);
-    }
+    const data = {
+      email: email,
+      code: text,
+    };
+    authCode(data, setCodeConfirm);
   };
   const goNext = () => {
-    if (duplication === false && codeConfirm === true) {
+    if (duplication === true && codeConfirm === true) {
       handleComponentChange('password');
-    } else if (duplication === true) {
+    } else if (duplication === false || email === '') {
       Alert.alert('', '이메일을 다시 확인해 주세요');
     } else {
       Alert.alert('', '인증번호를 다시 확인해 주세요');
@@ -98,14 +112,16 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
                 />
               </Text>
               <TextInput
+                ref={emailInputRef}
                 placeholder="이메일"
                 placeholderTextColor={'black'}
                 style={styles.loginInputText1}
                 onChangeText={text => emailConfirm(text)}
+                onSubmitEditing={() => sendCode(email)}
               />
             </View>
             <View style={styles.ConfirmButton}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => sendCode(email)}>
                 <Text style={styles.ConfirmButtonText}>인증번호 전송</Text>
               </TouchableOpacity>
             </View>
@@ -120,18 +136,20 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
               />
             </Text>
             <TextInput
+              ref={codeInputRef}
               placeholder="인증코드"
               placeholderTextColor={'black'}
               style={styles.loginInputText2}
               onChangeText={text => passCode(text)}
+              onSubmitEditing={() => goNext()}
             />
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View>
               {duplication ? (
-                <Text style={styles.alert}>등록되지 않은 이메일입니다.</Text>
-              ) : (
                 <Text> </Text>
+              ) : (
+                <Text style={styles.alert}>등록되지않은 이메일입니다.</Text>
               )}
               {code.length >= 4 && !codeConfirm ? (
                 <Text style={styles.alert}>인증코드를 다시 확인해 주세요.</Text>
@@ -283,4 +301,4 @@ const styles = StyleSheet.create({
     paddingLeft: windowHeight * 0.01,
   },
 });
-export default EmailComponents;
+export default ComfirmComponent;

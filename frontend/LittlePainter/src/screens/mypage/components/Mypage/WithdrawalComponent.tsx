@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
+import {deleteUser} from '../../../../apis/mypage/mypageApi';
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
@@ -28,6 +29,11 @@ const WithdrawalComponents: React.FC<WithdrawalComponentsProps> = ({
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
     selectComponent(newComponentName);
+  };
+
+  const withdrawalUser = () => {
+    deleteUser();
+    navigation.navigate('LoginScreen');
   };
   return (
     <View style={styles.rightContainer}>
@@ -95,7 +101,7 @@ const WithdrawalComponents: React.FC<WithdrawalComponentsProps> = ({
           <View style={styles.confirmButtons}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('LoginScreen');
+                withdrawalUser();
               }}>
               <Text style={styles.loginText}>회원탈퇴 &gt;</Text>
             </TouchableOpacity>

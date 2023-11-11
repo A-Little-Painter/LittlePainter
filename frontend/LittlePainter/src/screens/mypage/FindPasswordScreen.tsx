@@ -30,6 +30,7 @@ export default function FindPasswordScreen({
     if (selectedComponent === 'email') {
       return (
         <ComfirmComponent
+          email={email}
           setEmail={setEmail}
           navigation={navigation}
           selectComponent={(componentName: string) =>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,6 +6,8 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
+  Animated,
+  Easing,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -19,18 +21,51 @@ type UploadPicture2ScreenProps = StackScreenProps<
 >;
 
 const windowWidth = Dimensions.get('window').width;
-// const windowHeight = Dimensions.get('window').height;
+const windowHeight = Dimensions.get('window').height;
 
 export default function UploadPicture2Screen({
   navigation,
 }: UploadPicture2ScreenProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const pictureaddr = useAppSelector(state => state.uploadPicture.pictureaddr);
   const picturename = useAppSelector(state => state.uploadPicture.picturename);
   const picturetype = useAppSelector(state => state.uploadPicture.picturetype);
   const destination = useAppSelector(state => state.uploadPicture.destination);
   const dispatch = useAppDispatch();
 
+  function setIsLoadingAsync(value: boolean): Promise<void> {
+    return new Promise<void>(resolve => {
+      setIsLoading(value);
+      resolve(); // setIsLoading가 완료되면 프로미스를 해결합니다.
+    });
+  }
+
+  ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+
+    rotateImage();
+  }, []);
+
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+  ////////////
+
   const moving = async () => {
+    setIsLoadingAsync(true);
     const imageData = new FormData();
     imageData.append('file', {
       uri: pictureaddr,
@@ -50,10 +85,8 @@ export default function UploadPicture2Screen({
       trace_image: checkImage.trace_image,
       moving: true,
     };
-    console.log('data');
-    console.log(data);
-
     dispatch(update2(data));
+    setIsLoadingAsync(false);
     if (destination === 'UploadPicture3Screen') {
       console.log(destination);
       navigation.navigate('UploadPicture3Screen');
@@ -63,6 +96,7 @@ export default function UploadPicture2Screen({
     }
   };
   const unMoving = async () => {
+    setIsLoadingAsync(true);
     const imageData = new FormData();
     imageData.append('file', {
       uri: pictureaddr,
@@ -83,6 +117,7 @@ export default function UploadPicture2Screen({
       moving: false,
     };
     dispatch(update2(data));
+    setIsLoadingAsync(false);
     if (destination === 'UploadPicture3Screen') {
       console.log(destination);
       navigation.navigate('UploadPicture3Screen');
@@ -94,6 +129,14 @@ export default function UploadPicture2Screen({
 
   return (
     <View style={styles.mainContainer}>
+      {isLoading ? (
+        <View style={{position: 'absolute', zIndex: 1}}>
+          <Animated.Image
+            style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+            source={require('../../assets/images/loading2.png')}
+          />
+        </View>
+      ) : null}
       <View style={styles.subContainer}>
         {/* 상단 */}
         <View style={styles.topContainer}>
@@ -211,5 +254,12 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.2,
     height: windowWidth * 0.05,
     borderRadius: windowWidth * 0.01,
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });

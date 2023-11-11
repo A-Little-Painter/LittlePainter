@@ -211,6 +211,7 @@ export const myUpload = async () => {
       {headers},
     );
     const data = response.data;
+    console.log('good');
     return data;
   } catch (error) {
     console.log('fall');
@@ -227,6 +228,26 @@ export const ttsTogle = async () => {
       Authorization: `Bearer ${token}`,
     };
     const response = await axios.patch(`${BASE_URL}/user/sound`, null, {
+      headers,
+    });
+    const data = response.data;
+    console.log('good');
+    return data;
+  } catch (error) {
+    console.log('fall');
+    console.log(error);
+    const response = error.response;
+    return response;
+  }
+};
+
+export const deleteUser = async () => {
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.delete(`${BASE_URL}/user`, {
       headers,
     });
     const data = response.data;

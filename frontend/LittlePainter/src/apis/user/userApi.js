@@ -30,6 +30,19 @@ export const confirmCodeSend = async data => {
   }
 };
 
+export const findCodeSend = async data => {
+  console.log(data);
+  try {
+    const response = await axios.post(`${BASE_URL}/auth/email`, data);
+    console.log('success');
+    return response;
+  } catch (error) {
+    console.log('fail');
+    const response = error.response;
+    return response;
+  }
+};
+
 export const emailDuplication = async (data, setDuplication) => {
   console.log(data);
   try {

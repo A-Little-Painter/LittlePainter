@@ -54,14 +54,16 @@ const EmailComponents: React.FC<EmailComponentsProps> = ({
     }
   };
   const sendCode = (value: string) => {
-    const emailData = {email: value};
+    const cleanEmail = value.replace(/\s/g, '');
+    const emailData = {email: cleanEmail};
     confirmCodeSend(emailData);
     moveToCodeInput();
   };
   const passCode = (text: string) => {
     setCode(text);
+    const cleanEmail = email.replace(/\s/g, '');
     const data = {
-      email: email,
+      email: cleanEmail,
       code: text,
     };
     authCode(data, setCodeConfirm);
