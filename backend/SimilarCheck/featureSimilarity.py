@@ -1,68 +1,37 @@
-import sys
 import cv2
-print(sys.version)
-# 영상 불러오기
-src1 = cv2.imread('./images/gom1.png', cv2.IMREAD_GRAYSCALE)
-src2 = cv2.imread('./images/gom4.png', cv2.IMREAD_GRAYSCALE)
+import numpy as np
 
-# src1 = cv2.imread('./images/polar_bear.jpg', cv2.IMREAD_GRAYSCALE)
-# src2 = cv2.imread('./images/polar_bear_1.jpg', cv2.IMREAD_GRAYSCALE)
+# [사진1]과 [사진2]의 이미지 파일 경로를 지정합니다.
+image1_path = 'similarImages/image1.jpg'  # [사진1] 파일 경로
+image2_path = 'similarImages/image2.jpg'  # [사진2] 파일 경로
 
-if src1 is None or src2 is None:
-    print('Image load failed!')
-    sys.exit()
+# [사진1] 로드
+image1 = cv2.imread(image1_path)
+if image1 is None:
+    print(f'Unable to load image from {image1_path}')
+    exit()
 
-# 특징점 알고리즘 객체 생성 (KAZE, AKAZE, ORB 등)
-#feature = cv2.KAZE_create()
-#feature = cv2.AKAZE_create()
-feature = cv2.ORB_create()
+# [사진2] 로드
+image2 = cv2.imread(image2_path)
+if image2 is None:
+    print(f'Unable to load image from {image2_path}')
+    exit()
 
+# [사진1]에서 코뿔소의 테두리 영역을 추출
+contours1, _ = cv2.findContours(cv2.inRange(image1, (0, 0, 0), (30, 30, 30)), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+# [사진2]에서 [사진1]의 코뿔소 테두리를 기반으로 마스크 생성
+mask = np.zeros(image2.shape, dtype=np.uint8)
+cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
 
-# 특징점 검출 및 기술자 계산
-kp1 = feature.detect(src1)
-_, desc1 = feature.compute(src1, kp1)
+# [사진2]에서 [사진1]의 코뿔소 테두리를 기반으로 영역 추출
+result_image = cv2.bitwise_and(image2, mask)
 
-kp2, desc2 = feature.detectAndCompute(src2, None)
+# 테두리 밖의 영역을 하얀색 배경으로 만들기
+result_image[np.where((result_image == [0, 0, 0]).all(axis=2))] = [255, 255, 255]
 
-print('desc1.shape:', desc1.shape)
-print('desc1.dtype:', desc1.dtype)
-print('desc2.shape:', desc2.shape)
-print('desc2.dtype:', desc2.dtype)
-
-
-# 특징점 일치 검출
-bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-matches = bf.match(desc1, desc2)
-matches = sorted(matches, key=lambda x: x.distance)
-
-# 일치 특징점 그리기
-match_img = cv2.drawMatches(src1, kp1, src2, kp2, matches[:10], outImg=None)
-
-# 일치 정확도 측정
-match_accuracy = len(matches) / len(kp1)
-
-print('Match accuracy:', match_accuracy)
-
-
-
-
-# -------------------------
-# # 결과 이미지 출력
-# cv2.imshow('Matched KeyPoints', match_img)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-# # 검출된 특징점 출력 영상 생성
-# dst1 = cv2.drawKeypoints(src1,
-#                          kp1,
-#                          None,
-#                          flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-# dst2 = cv2.drawKeypoints(src2,
-#                          kp2,
-#                          None,
-#                          flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-#
-# cv2.imshow('dst1', dst1)
-# cv2.imshow('dst2', dst2)
-# cv2.waitKey()
-# cv2.destroyAllWindows()
+# 결과 이미지를 저장하거나 표시합니다.
+cv2.imwrite('similarImages/output.jpg', result_image)
+cv2.imshow('Output', result_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
