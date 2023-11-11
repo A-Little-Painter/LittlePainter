@@ -7,5 +7,5 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class SimilarCheckProcessor {
 
-    public
+
 }
