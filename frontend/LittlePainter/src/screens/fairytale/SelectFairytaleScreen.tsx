@@ -1,5 +1,5 @@
 // import React, {useState} from 'react';
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -144,8 +144,9 @@ export default function SelectFairytaleScreen({
                 <View style={styles.pictureCard1} key={index}>
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate('ReadFairytaleScreen', {
+                      navigation.navigate('FairytaleReadScreen', {
                         title: item.title,
+                        taleId: item.id,
                       });
                       // handleGoDrawPictureScreen({
                       //   friendsAnimalId: item.friendsAnimalId,
