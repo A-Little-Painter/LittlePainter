@@ -40,12 +40,12 @@ public class ChildWorkTaleServiceImpl implements ChildWorkTaleService{
 
             for(AddChildWorkTaleReqDto reqDto : addChildWorkTaleReqDtoList){
                 UploadS3MypageResDto uploadS3MypageResDto = childWorkCommService.postS3MyPage("tale", 1L, reqDto.getImageFile(),
-                    reqDto.getGifUrl()).block();
+                    reqDto.getUrlGif()).block();
 
                 childWorkTaleRepository.save(ChildWorkTale.builder()
                         .childId(1L)
                         .taleId(taleId)
-                        .pageId(reqDto.getPageId())
+                        .pageId(reqDto.getTalePageId())
                         .urlWork(uploadS3MypageResDto.getImageFileUrl())
                         .urlGif(uploadS3MypageResDto.getGifFileUrl())
                         .createdDate(createDateTime)

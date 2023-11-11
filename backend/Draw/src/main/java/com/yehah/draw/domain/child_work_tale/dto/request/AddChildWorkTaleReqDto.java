@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class AddChildWorkTaleReqDto {
-	private Long pageId;
-	private String gifUrl;
+	private Long talePageId;
+	private String urlGif;
 	private MultipartFile imageFile;
 }
