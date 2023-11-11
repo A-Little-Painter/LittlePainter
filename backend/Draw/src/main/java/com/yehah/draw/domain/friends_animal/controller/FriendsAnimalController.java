@@ -80,7 +80,7 @@ public class FriendsAnimalController {
 		String stompUrl = "/sub/room/"+animalSimilarReqDto.getRoomId();
 
 		try{
-			double value = Double.parseDouble(String.valueOf(commMethod.postMultipartMethod(bodyData, similarityUrl)));
+			double value = Double.parseDouble(String.valueOf(commMethod.postMultipartMethod(bodyData, similarityUrl+"/similarcheck")));
 			log.info("-----유사도-----> "+value);
 
 			// NOTE : STOMP 연결하기

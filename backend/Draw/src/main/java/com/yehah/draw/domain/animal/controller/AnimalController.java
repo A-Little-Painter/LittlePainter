@@ -67,7 +67,7 @@ public class AnimalController {
         String stompUrl = "/sub/room/"+animalSimilarReqDto.getRoomId();
 
         try{
-            double value = Double.parseDouble(String.valueOf(commMethod.postMultipartMethod(bodyData, similarityPath)));
+            double value = Double.parseDouble(String.valueOf(commMethod.postMultipartMethod(bodyData, similarityPath+"/similarcheck")));
             log.info("-----유사도-----> "+value);
 
             // NOTE : STOMP 연결하기
