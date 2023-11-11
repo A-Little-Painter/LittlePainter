@@ -27,7 +27,7 @@ public class ImageController {
 
 	private final ImageService imageService;
 
-	@Operation(summary = "S3- gif 파일 임시 저장하기", description = "<<수정중>> (ALL) aws s3에 gif 파일을 임시로 저장한다.")
+	@Operation(summary = "S3- gif 파일 임시 저장하기", description = "(ALL) aws s3에 gif 파일을 임시로 저장한다.")
 	@PostMapping(value = "/temp")
 	public Mono<TempSaveResDto> uploadTempGif(@RequestPart(value="imageFile") MultipartFile imageFile, @RequestPart(value="gifFile") MultipartFile gifFile) throws IOException {
 		log.info("uploadTempGif() : imageFile = {}, gifFile = {}", imageFile.getOriginalFilename(), gifFile.getOriginalFilename());
