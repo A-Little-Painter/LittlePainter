@@ -12,7 +12,14 @@ import {
 import IconFontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {useAppDispatch, useAppSelector} from '../../../../redux/hooks';
 import {addKids, updateKids} from '../../../../redux/slices/user/user';
-import {callUserData} from '../../../../apis/mypage/mypageApi';
+import {callUserData, deleteUserChild} from '../../../../apis/mypage/mypageApi';
+
+interface Child {
+  id: number;
+  birthday: string;
+  iconUrl: string;
+  nickname: string;
+}
 
 type ProfileComponentsProps = {
   setProfileImage: (profileImage: string) => void;
@@ -28,7 +35,10 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
   navigation,
   selectComponent,
 }) => {
-  const [childs, setChildData] = useState([]);
+  const [childs, setChildData] = useState<Child[]>([]);
+  const [temp, setTemp] = useState('1');
+  const selectId = useAppSelector(state => state.user.selectId);
+  const selectName = useAppSelector(state => state.user.selectName);
 
   const handleComponentChange = (value: string) => {
     const newComponentName = value;
@@ -36,19 +46,52 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
+    function formatDateToKorean(dateString: string) {
+      const formattedDate = dateString.replace(
+        /^(\d{4})-(\d{2})-(\d{2})$/,
+        '$1년 $2월 $3일',
+      );
+      return formattedDate;
+    }
     const fetchData = async () => {
+      console.log(temp);
       try {
-        const response = await callUserData();
-        setChildData(response); // 여기서 데이터를 설정하거나 다른 처리를 수행합니다.
+        const response: Child[] = await callUserData();
+        const formatted = response.map(item => ({
+          ...item,
+          birthday: formatDateToKorean(item.birthday),
+        }));
+        console.log('on');
+        setChildData(formatted);
+        setTemp('2');
       } catch (error) {
         console.error('데이터 불러오기 실패:', error);
       }
     };
     fetchData();
   }, []);
-  const selectId = useAppSelector(state => state.user.selectId);
-  const selectName = useAppSelector(state => state.user.selectName);
-  const handleLongPress = () => {
+
+  useEffect(() => {
+    console.log(temp);
+    if (childs.length !== 0) {
+      console.log('move');
+      const moveItemToFront = (item: number) => {
+        const updatedData = [...childs];
+        const index = updatedData.findIndex(child => child.id === item);
+        if (index !== -1) {
+          const selectedChild = updatedData.splice(index, 1)[0];
+          updatedData.unshift(selectedChild);
+          setChildData(updatedData);
+          console.log(updatedData);
+        }
+      };
+      moveItemToFront(selectId);
+    } else {
+      console.log('no move');
+    }
+  }, [temp]);
+
+  const handleLongPress = (id: number) => {
     Alert.alert('프로필 제거', '이 프로필을 지울까요?', [
       {
         text: '취소',
@@ -57,11 +100,39 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
       {
         text: '확인',
         onPress: () => {
-          console.log('나중에');
+          deleteUserChild(id);
+          function formatDateToKorean(dateString: string) {
+            const formattedDate = dateString.replace(
+              /^(\d{4})-(\d{2})-(\d{2})$/,
+              '$1년 $2월 $3일',
+            );
+            return formattedDate;
+          }
+          const fetchData = async () => {
+            console.log(temp);
+            try {
+              const response: Child[] = await callUserData();
+              const formatted = response.map(item => ({
+                ...item,
+                birthday: formatDateToKorean(item.birthday),
+              }));
+              console.log('on');
+              setChildData(formatted);
+              if (temp === '2') {
+                setTemp('3');
+              } else {
+                setTemp('2');
+              }
+            } catch (error) {
+              console.error('데이터 불러오기 실패:', error);
+            }
+          };
+          fetchData();
         },
       },
     ]);
   };
+
   return (
     <View style={styles.rightContainer}>
       <View style={styles.subrightContainer}>
@@ -109,7 +180,9 @@ const ProfileComponents: React.FC<ProfileComponentsProps> = ({
                         dispatch(updateKids(item));
                         setProfileImage(item.iconUrl);
                       }}
-                      onLongPress={handleLongPress}>
+                      onLongPress={() => {
+                        handleLongPress(item.id);
+                      }}>
                       <Image
                         style={styles.childCardImage}
                         source={{uri: item.iconUrl}}
@@ -264,12 +337,14 @@ const styles = StyleSheet.create({
   },
   childNameText: {
     fontWeight: 'bold',
-    fontSize: windowWidth * 0.018,
+    fontSize: windowWidth * 0.015,
     color: 'black',
+    marginTop: windowHeight * 0.03,
   },
   birthdayText: {
     color: 'black',
-    fontSize: windowWidth * 0.015,
+    fontSize: windowWidth * 0.013,
+    marginTop: windowHeight * 0.01,
   },
   passwordView: {
     flexDirection: 'row',

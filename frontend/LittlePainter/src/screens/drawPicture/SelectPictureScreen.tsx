@@ -93,11 +93,17 @@ export default function SelectPictureScreen({
         setItems(transformedData);
       } else {
         console.log('전체 동물 이름 조회하기 실패', response.status);
-        ToastAndroid.show('친구들의 이름을 불러오지 못했어요.', ToastAndroid.SHORT);
+        ToastAndroid.show(
+          '친구들의 이름을 불러오지 못했어요.',
+          ToastAndroid.SHORT,
+        );
       }
     } catch (error) {
       console.log('전체 동물 이름 조회하기 실패', error);
-      ToastAndroid.show('친구들의 이름을 불러오지 못했어요.', ToastAndroid.SHORT);
+      ToastAndroid.show(
+        '친구들의 이름을 불러오지 못했어요.',
+        ToastAndroid.SHORT,
+      );
     }
     setIsLoading(false);
   };
@@ -127,7 +133,10 @@ export default function SelectPictureScreen({
           '다른 사람이 올린 사진 전체 가져오기 실패',
           response.status,
         );
-        ToastAndroid.show('우리 친구들을 불러오지 못했어요.', ToastAndroid.SHORT);
+        ToastAndroid.show(
+          '우리 친구들을 불러오지 못했어요.',
+          ToastAndroid.SHORT,
+        );
       }
     } catch (error) {
       console.log('다른 사람이 올린 사진 전체 가져오기 실패', error);
@@ -155,11 +164,17 @@ export default function SelectPictureScreen({
           '다른 사람이 올린 추가 사진 가져오기 실패',
           response.status,
         );
-        ToastAndroid.show('우리 친구들을 더 불러오지 못했어요.', ToastAndroid.SHORT);
+        ToastAndroid.show(
+          '우리 친구들을 더 불러오지 못했어요.',
+          ToastAndroid.SHORT,
+        );
       }
     } catch (error) {
       console.log('다른 사람이 올린 추가 사진 가져오기 실패', error);
-      ToastAndroid.show('우리 친구들을 더 불러오지 못했어요.', ToastAndroid.SHORT);
+      ToastAndroid.show(
+        '우리 친구들을 더 불러오지 못했어요.',
+        ToastAndroid.SHORT,
+      );
     }
     setIsLoading(false);
   };
@@ -200,7 +215,7 @@ export default function SelectPictureScreen({
   ////////////
 
   // 스크롤이 맨 아래로 도달했을 때 호출되는 함수
-  const handleScrollEnd = (event) => {
+  const handleScrollEnd = event => {
     const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
     if (layoutMeasurement.height + contentOffset.y >= contentSize.height) {
       // getFriendsPictureList();
@@ -221,8 +236,24 @@ export default function SelectPictureScreen({
             />
             <Text style={styles.titleText}>친구의 동물 그리기</Text>
           </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('MainScreen');
+            }}
+            style={styles.goHomeArea}>
+            <Image
+              source={require('../../assets/images/PVector.png')}
+              style={styles.goHome}
+            />
+          </TouchableOpacity>
           {/* 상단 우측 */}
-          <View style={styles.topRightContainer}>
+          <View
+            style={[
+              styles.topRightContainer,
+              {
+                transform: [{translateX: -windowHeight * 0.25}],
+              },
+            ]}>
             {/* <Text>검색</Text> */}
             <View style={styles.dropdownView}>
               <DropDownPicker
@@ -312,7 +343,6 @@ const styles = StyleSheet.create({
   topRightContainer: {
     flexDirection: 'row',
     alignSelf: 'flex-end',
-    justifyContent: 'flex-end',
     marginRight: windowWidth * 0.04,
     paddingBottom: windowWidth * 0.03,
   },
@@ -390,5 +420,13 @@ const styles = StyleSheet.create({
     height: windowHeight * 0.3,
     top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
     left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
+  },
+  goHomeArea: {
+    marginLeft: windowWidth * 0.35,
+    marginTop: windowWidth * 0.03,
+  },
+  goHome: {
+    height: windowWidth * 0.05,
+    width: windowWidth * 0.05,
   },
 });

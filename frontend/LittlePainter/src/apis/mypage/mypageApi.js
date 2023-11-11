@@ -57,6 +57,69 @@ export const addUserChild = async data => {
   }
 };
 
+export const updateUserChild = async data => {
+  console.log(data);
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    console.log(headers);
+    const response = await axios.patch(`${BASE_URL}/user/child`, data, {
+      headers,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log('fall');
+    console.error(error);
+    const response = error.response;
+    return response;
+  }
+};
+
+export const deleteUserChild = async data => {
+  console.log(data);
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    console.log(headers);
+    const response = await axios.delete(`${BASE_URL}/user/child/${data}`, {
+      headers,
+    });
+    console.log(response.data);
+    return response;
+  } catch (error) {
+    console.log('fall');
+    console.error(error);
+    const response = error.response;
+    return response;
+  }
+};
+
+export const updateUserIcon = async data => {
+  console.log(data);
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    console.log(headers);
+    const response = await axios.patch(`${BASE_URL}/user/icons`, data, {
+      headers,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log('fall');
+    console.error(error);
+    const response = error.response;
+    return response;
+  }
+};
+
 export const callIconList = async () => {
   try {
     const token = await loadATokenFromKeychain();

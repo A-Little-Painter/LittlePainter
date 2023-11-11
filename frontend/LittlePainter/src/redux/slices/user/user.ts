@@ -86,6 +86,9 @@ export const userSlice = createSlice({
       state.selectImage = action.payload.selectImage;
       state.userEmail = action.payload.userEmail;
     },
+    iconUpdate: (state, action: PayloadAction<string>) => {
+      state.selectImage = action.payload;
+    },
   },
 });
 
@@ -99,6 +102,7 @@ export const {
   updateKids,
   addKids,
   selected,
+  iconUpdate,
 } = userSlice.actions;
 export const selectCount = (state: RootState) => state.user.testValue;
 export const selectPracticeValue = (state: RootState) =>

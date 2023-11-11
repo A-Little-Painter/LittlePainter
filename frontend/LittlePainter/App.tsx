@@ -6,10 +6,18 @@ import store from './src/redux/store';
 import axios from 'axios';
 import {refreshAccessToken} from './src/apis/baseUrl';
 import AppNavigator from './src/navigations/AppNavigator';
+import {setCustomText} from 'react-native-global-props';
 import {TextEncoder, TextDecoder} from 'text-encoding';
+import Tts from 'react-native-tts';
+
 
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
+
+Tts.setDefaultLanguage('ko-KR');
+Tts.setDefaultRate(0.5);
+Tts.setDefaultVoice('ko-KR-SMTf00');
+Tts.speak('꼬마화가');
 
 // Axios 인터셉터 설정
 axios.interceptors.response.use(
@@ -68,6 +76,13 @@ function App(): JSX.Element {
       }
     };
   }, []);
+
+  const customTextProps = {
+    style: {
+      fontFamily: 'TmoneyRoundWindRegular',
+    },
+  };
+  setCustomText(customTextProps);
 
   return (
     <Provider store={store}>

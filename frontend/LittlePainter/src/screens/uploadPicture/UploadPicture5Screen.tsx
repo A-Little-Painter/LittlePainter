@@ -36,6 +36,7 @@ export default function UploadPicture5Screen({
     state => state.uploadPicture.animal_type_num,
   );
   const moving = useAppSelector(state => state.uploadPicture.moving);
+  const animal_type = useAppSelector(state => state.uploadPicture.animal_type);
 
   const addFriendsAnimalReqDto: {
     title: string;
@@ -61,10 +62,30 @@ export default function UploadPicture5Screen({
 
   return (
     <View style={styles.mainContainer}>
+      <View style={styles.topLeftContainer}>
+        <Image
+          style={styles.logoImage}
+          source={require('../../assets/images/elephant.png')}
+        />
+        <Text style={styles.titleText}>동물 사진 검색하기</Text>
+      </View>
       <View style={styles.subContainer}>
-        <View style={styles.middleContainer}>
-          <Image source={{uri: border_image}} style={styles.image1} />
-          <Image source={{uri: trace_image}} style={styles.image2} />
+        <View style={styles.contentArea}>
+          <View style={styles.middleContainer}>
+            <Image source={{uri: border_image}} style={styles.image1} />
+            <Image source={{uri: trace_image}} style={styles.image2} />
+          </View>
+          <View style={styles.content}>
+            <View style={styles.textArea}>
+              <View style={styles.upper}>
+                <Text style={styles.text1}>이름: {title} </Text>
+                <Text style={styles.text2}>한줄설명: {detail} </Text>
+              </View>
+              <Text style={styles.text3}>
+                {title}은(는) 귀여운 {animal_type}입니다.
+              </Text>
+            </View>
+          </View>
         </View>
         <View style={styles.bot}>
           <TouchableOpacity
@@ -122,13 +143,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
   },
-  middleContainer: {
-    flex: 3,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: windowWidth * 0.03,
+  contentArea: {
     flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderRadius: windowHeight * 0.01,
+  },
+  middleContainer: {
+    width: '40%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: windowHeight * 0.02,
+    marginBottom: windowHeight * 0.02,
   },
   image1: {
     alignItems: 'center',
@@ -136,6 +163,9 @@ const styles = StyleSheet.create({
     height: windowWidth * 0.3,
     width: windowWidth * 0.3,
     position: 'absolute',
+    borderWidth: windowHeight * 0.002,
+    borderColor: '#000000',
+    borderRadius: windowHeight * 0.02,
   },
   image2: {
     alignItems: 'center',
@@ -144,12 +174,50 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.3,
     opacity: 0.3,
   },
-  bot: {
-    flex: 0.7,
+  content: {
+    height: '100%',
+    width: '40%',
+    marginTop: windowHeight * 0.02,
+    marginBottom: windowHeight * 0.02,
+    alignItems: 'center',
+  },
+  textArea: {
+    height: windowWidth * 0.3,
+    width: windowWidth * 0.3,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  upper: {
     width: '100%',
-    marginHorizontal: windowWidth * 0.055,
+    alignItems: 'center',
+    marginTop: windowHeight * 0.02,
+  },
+  text1: {
+    borderBottomColor: '#000000',
+    borderBottomWidth: 1,
+    width: '100%',
+    fontSize: windowWidth * 0.028,
+    color: '#000000',
+  },
+  text2: {
+    width: '100%',
+    fontSize: windowWidth * 0.02,
+    marginTop: windowHeight * 0.02,
+    color: '#000000',
+  },
+  text3: {
+    width: '100%',
+    fontSize: windowWidth * 0.015,
+    marginTop: windowHeight * 0.02,
+    color: '#000000',
+  },
+  bot: {
+    flex: 0.5,
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    paddingRight: windowHeight * 0.088,
+    marginTop: windowHeight * 0.04,
   },
   button: {
     width: windowWidth * 0.15,
@@ -213,5 +281,19 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.02,
     textAlign: 'center',
     textAlignVertical: 'center',
+  },
+  topLeftContainer: {
+    flexDirection: 'row',
+  },
+  logoImage: {
+    alignSelf: 'center',
+    width: windowWidth * 0.11,
+    height: windowWidth * 0.11,
+  },
+  titleText: {
+    alignSelf: 'center',
+    fontSize: windowWidth * 0.05,
+    fontWeight: '600',
+    color: 'black',
   },
 });
