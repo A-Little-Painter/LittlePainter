@@ -28,11 +28,11 @@ public class CommMethod {
 
         HttpEntity<?> httpEntity = new HttpEntity<>(bodyData, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(
+        ResponseEntity<Object> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
                 httpEntity,
-                String.class
+                Object.class
         );
         return response.getBody();
     }
@@ -55,5 +55,9 @@ public class CommMethod {
 
         return response.getBody();
     }
+
+
+
+
 
 }

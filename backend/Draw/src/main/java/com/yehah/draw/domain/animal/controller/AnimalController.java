@@ -1,5 +1,6 @@
 package com.yehah.draw.domain.animal.controller;
 
+import com.yehah.draw.domain.animal.SimilarCheckProcessor;
 import com.yehah.draw.domain.animal.dto.request.AnimalSimilarReqDto;
 import com.yehah.draw.domain.animal.dto.request.AnimalUploadReqDto;
 import com.yehah.draw.domain.animal.dto.response.AnimalChoiceResDto;
@@ -43,6 +44,8 @@ public class AnimalController {
 
     private final CommMethod commMethod;
 
+    private final SimilarCheckProcessor similarCheckProcessor;
+
     @Operation(summary = "전체 동물의 아이디, 종류, 원본 사진을 가져온다." , description = "ALL")
     @GetMapping
     public ResponseEntity<List<AnimalResDto>> getAnimalList(){
@@ -66,9 +69,12 @@ public class AnimalController {
 
         String stompUrl = "/sub/room/"+animalSimilarReqDto.getRoomId();
 
+//        similarCheckProcessor.similarCheck(animalSimilarReqDto.getRoomId(), animalSimilarReqDto.getOriginalFile(), animalSimilarReqDto.getNewFile()
+//        ,comparisonValue, AnimalType.animal);
+
         try{
             double value = Double.parseDouble(String.valueOf(commMethod.postMultipartMethod(bodyData, similarityPath+"/similarcheck")));
-            log.info("-----유사도-----> "+value);
+            log.info("-----유사도-----> {}", value);
 
             // NOTE : STOMP 연결하기
             SimilarMessageResponse similarMessageResponse = SimilarMessageResponse.builder()
@@ -103,29 +109,4 @@ public class AnimalController {
             throw new SimilarityCheckException("유사도 측정에 실패했습니다.");
         }
     }
-
-
-    // /child-work/{category}로 변경함
-    /*
-    @Operation(summary = "이미지를 S3에 저장한다.", description = "USER")
-    @PostMapping
-    public ResponseEntity<Void> saveUserImage(@ModelAttribute AnimalUploadReqDto animalUploadReqDto) throws IOException {
-        MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
-
-        // TODO : contextHolder에서 userId 가져오기
-        bodyData.set("userId", 1L);
-        bodyData.set("category", AnimalType.animal.name());
-        bodyData.set("image", animalUploadReqDto.getFile().getResource());
-        try{
-            String urlWork = String.valueOf(commMethod.postMultipartMethod(bodyData, imagePath+"/comm/myWork"));
-
-            // NOTE : childWork에 정보 저장하기
-            childWorkService.saveChildWork(animalUploadReqDto.getAnimalId(), AnimalType.animal.name(), urlWork);
-            return ResponseEntity.ok().build();
-        }catch (Exception e){
-            throw new SaveImageException("이미지를 S3에 저장할 수 없습니다.");
-        }
-    }
-    */
-
 }
