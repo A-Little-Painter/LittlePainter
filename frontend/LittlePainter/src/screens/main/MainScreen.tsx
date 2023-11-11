@@ -155,8 +155,8 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   navigation.navigate('SelectAnimalScreen');
                 }}>
                 <View style={styles.cardFrame1}>
-                  <Text style={styles.cardText2}>
-                    <Text style={styles.cardText1}>동물</Text> 그리기
+                  <Text style={styles.cardText}>
+                    <Text style={styles.cardTextBold}>동물</Text> 그리기
                   </Text>
                 </View>
                 <View style={styles.cardFrame2}>
@@ -183,8 +183,8 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   navigation.navigate('SelectFairytaleScreen');
                 }}>
                 <View style={styles.cardFrame1}>
-                  <Text style={styles.cardText2}>
-                    <Text style={styles.cardText1}>동화</Text> 그리기
+                  <Text style={styles.cardText}>
+                    <Text style={styles.cardTextBold}>동화</Text> 그리기
                   </Text>
                 </View>
                 <View style={styles.cardFrame2}>
@@ -307,10 +307,12 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   navigation.navigate('ShowScreen');
                 }}>
                 <View style={styles.cardFrame1}>
-                  <View style={styles.space}>
-                    <Text style={styles.cardText1}>친구들의</Text>
-                    <Text style={styles.cardText2}>동물 보기</Text>
-                  </View>
+                  {/* <View style={styles.space}> */}
+                  <Text style={styles.cardText}>
+                    <Text style={styles.cardTextBold}>친구들의{'\n'}</Text>
+                    동물 보기
+                  </Text>
+                  {/* </View> */}
                 </View>
                 <View style={styles.cardFrame2}>
                   <Image
