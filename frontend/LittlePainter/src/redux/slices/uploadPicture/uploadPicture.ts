@@ -33,6 +33,24 @@ export const uploadPictureSlice = createSlice({
   name: 'uploadPicture',
   initialState,
   reducers: {
+    update0: (
+      state,
+      action: PayloadAction<{
+        title: string;
+        detail: string;
+        pictureaddr: string;
+        picturename: string;
+        picturetype: string;
+        animal_type: string;
+      }>,
+    ) => {
+      state.title = action.payload.title;
+      state.detail = action.payload.detail;
+      state.pictureaddr = action.payload.pictureaddr;
+      state.picturename = action.payload.picturename;
+      state.picturetype = action.payload.picturetype;
+      state.animal_type = action.payload.animal_type;
+    },
     update: (
       state,
       action: PayloadAction<{
@@ -72,7 +90,7 @@ export const uploadPictureSlice = createSlice({
   },
 });
 
-export const {update, update2, update3, destinationUpdate} =
+export const {update0, update, update2, update3, destinationUpdate} =
   uploadPictureSlice.actions;
 export const title = (state: RootState) => state.uploadPicture.title;
 export const detail = (state: RootState) => state.uploadPicture.detail;
@@ -84,4 +102,6 @@ export const picturetpye = (state: RootState) =>
   state.uploadPicture.picturetype;
 export const animal_type_num = (state: RootState) =>
   state.uploadPicture.animal_type_num;
+export const animal_type = (state: RootState) =>
+  state.uploadPicture.animal_type;
 export default uploadPictureSlice.reducer;

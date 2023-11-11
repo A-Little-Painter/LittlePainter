@@ -131,6 +131,16 @@ export default function SelectFairytaleScreen({
             source={require('../../assets/images/fox.png')}
           />
           <Text style={styles.titleText}>동화 그리기</Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('MainScreen');
+            }}
+            style={styles.goHomeArea}>
+            <Image
+              source={require('../../assets/images/GVector.png')}
+              style={styles.goHome}
+            />
+          </TouchableOpacity>
         </View>
         {/* 중단 */}
         <View style={styles.middleContainer}>
@@ -254,5 +264,13 @@ const styles = StyleSheet.create({
     paddingTop: windowHeight * 0.01,
     fontSize: windowWidth * 0.018,
     fontWeight: '600',
+  },
+  goHomeArea: {
+    marginLeft: windowWidth * 0.51,
+    marginTop: windowWidth * 0.03,
+  },
+  goHome: {
+    height: windowWidth * 0.05,
+    width: windowWidth * 0.05,
   },
 });

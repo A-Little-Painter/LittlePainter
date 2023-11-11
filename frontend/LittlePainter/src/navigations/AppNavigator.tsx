@@ -40,8 +40,10 @@ import SignupScreen from '../screens/mypage/SignupScreen';
 // 모달
 import SaveDrawnToLoginModal from '../screens/modals/SaveDrawnToLoginModal';
 
-// 이후 삭제
+//기타
 import LoadScreen from '../screens/load/LoadScreen';
+import ShowScreen from '../screens/show/ShowScreen';
+// 이후 삭제
 
 import MainTmpScreen from '../screens/main/MainTmpScreen';
 import Detail1Screen from '../screens/detail/Detail1Screen';
@@ -123,6 +125,7 @@ export type RootStackParams = {
   SignupScreen: undefined;
   FindPasswordScreen: undefined;
   LoadScreen: undefined;
+  ShowScreen: undefined;
 
   // 모달
   SaveDrawnToLoginModal: undefined;
@@ -242,8 +245,9 @@ export default function AppNavigator() {
         name="SaveDrawnToLoginModal"
         component={SaveDrawnToLoginModal}
       />
-
+      {/* 기타 */}
       <RootStack.Screen name="LoadScreen" component={LoadScreen} />
+      <RootStack.Screen name="ShowScreen" component={ShowScreen} />
 
       {/* 이하는 테스트용이었음 */}
       <RootStack.Screen name="MainTmpScreen" component={MainTmpScreen} />

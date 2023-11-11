@@ -46,8 +46,8 @@ export default function UploadPicture1Screen({
       if (selectedImage) {
         const resizerImage = await ImageResizer.createResizedImage(
           selectedImage.uri,
-          400,
-          400,
+          500,
+          500,
           'JPEG',
           70,
           0,
@@ -119,6 +119,16 @@ export default function UploadPicture1Screen({
             />
             <Text style={styles.titleText}>내 동물 사진 등록하기</Text>
           </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('MainScreen');
+            }}
+            style={styles.goHomeArea}>
+            <Image
+              source={require('../../assets/images/VVector.png')}
+              style={styles.goHome}
+            />
+          </TouchableOpacity>
           {/* 상단 우측 */}
           <View style={styles.topRightContainer}>
             {/* <Text>검색</Text> */}
@@ -335,5 +345,13 @@ const styles = StyleSheet.create({
   originPart: {
     height: '100%',
     width: '40%',
+  },
+  goHomeArea: {
+    marginLeft: windowWidth * 0.29,
+    marginTop: windowWidth * 0.03,
+  },
+  goHome: {
+    height: windowWidth * 0.05,
+    width: windowWidth * 0.05,
   },
 });

@@ -106,7 +106,18 @@ export default function SelectAnimalScreen({
             source={require('../../assets/images/orca.png')}
           />
           <Text style={styles.titleText}>동물 그리기</Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('MainScreen');
+            }}
+            style={styles.goHomeArea}>
+            <Image
+              source={require('../../assets/images/BVector.png')}
+              style={styles.goHome}
+            />
+          </TouchableOpacity>
         </View>
+
         {/* 중단 */}
         <View style={styles.middleContainer}>
           <ScrollView style={styles.middleContainerFlatList}>
@@ -233,5 +244,13 @@ const styles = StyleSheet.create({
     height: windowHeight * 0.3,
     top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
     left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
+  },
+  goHomeArea: {
+    marginLeft: windowWidth * 0.51,
+    marginTop: windowWidth * 0.03,
+  },
+  goHome: {
+    height: windowWidth * 0.05,
+    width: windowWidth * 0.05,
   },
 });

@@ -62,7 +62,7 @@ export default function LoadScreen({navigation}: LoadScreenProp) {
       // 페이드 아웃 애니메이션 적용
       Animated.timing(fadeInAnimation, {
         toValue: 0,
-        duration: 1000,
+        duration: 500,
         useNativeDriver: true,
       }).start(() => {
         setCurrentImageIndex(nextImageIndex);
@@ -71,11 +71,11 @@ export default function LoadScreen({navigation}: LoadScreenProp) {
         // 페이드 인 애니메이션 적용
         Animated.timing(fadeInAnimation, {
           toValue: 1,
-          duration: 1000,
+          duration: 500,
           useNativeDriver: true,
         }).start();
       });
-    }, 2000);
+    }, 1000);
 
     return () => clearInterval(imageChangeInterval);
   }, [currentImageIndex, dataList.length, fadeInAnimation]);
