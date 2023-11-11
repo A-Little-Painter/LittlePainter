@@ -102,7 +102,7 @@ def colorChangeToBlack(originalPath):
     new_image.save(originalPath)
 
 
-@app.route('/border-extraction/comm', methods=['POST'])
+@app.route('/border-extraction', methods=['POST'])
 def borderExtraction():
     roomId = request.form.get('roomId')
     originalFile = request.files['originalFile']
@@ -129,7 +129,7 @@ def borderExtraction():
     return send_file('./borderImages/'+roomId+'output.jpg', as_attachment=True)
 
 
-@app.route('/similarcheck/comm', methods=['POST'])
+@app.route('/similarcheck', methods=['POST'])
 def similarityCheck():
 
     # JSON 데이터 파싱
