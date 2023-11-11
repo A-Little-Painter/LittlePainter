@@ -15,6 +15,8 @@ def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, reta
     Given the image located at img_fn, create annotation files needed for animation.
     Then create animation from those animations and motion cfg and retarget cfg.
     """
+    logging.debug('image_to_animation 진입')
+
     # create the annotations
     image_to_annotations(img_fn, char_anno_dir, animation_type)
 
