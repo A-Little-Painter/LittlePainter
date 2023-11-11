@@ -19,7 +19,7 @@ def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cf
     char_anno_dir2 = char_anno_dir
     if animation_type == 'animals':
         if character in animal_list:
-            char_anno_dir2 = f"../my_cfg/animals/{character}"
+            char_anno_dir2 = f"AnimatedDrawings/my_cfg/animals/{character}"
         else:
             logging.error('동물 이름이 잘못됨 : '+character)
 
