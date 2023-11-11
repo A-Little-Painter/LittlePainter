@@ -10,7 +10,7 @@ import sys
 from pkg_resources import resource_filename
 
 
-def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None):
+def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None, character=None):
     """
     Given the image located at img_fn, create annotation files needed for animation.
     Then create animation from those animations and motion cfg and retarget cfg.
@@ -19,7 +19,7 @@ def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, reta
     image_to_annotations(img_fn, char_anno_dir, animation_type)
 
     # create the animation
-    annotations_to_animation(char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
+    annotations_to_animation(char_anno_dir, motion_cfg_fn, retarget_cfg_fn, animation_type, character)
 
 
 if __name__ == '__main__':
@@ -45,20 +45,21 @@ if __name__ == '__main__':
 
     # motion, retarget config 할당
     if animation_type == 'animals':
-        animal_list = ['강아지', '고양이', '코끼리', '소', '오리', '쥐', '사자', '닭', '늑대', '원숭이', '돼지', '호랑이', '곰', '기타','얼룩말', '코뿔소', '하마', '판다']
-        # four_legs_animal = ['강아지', '고양이', '코끼리', '소', '사자', '늑대', '돼지', '호랑이', ]
-
         # 동물별로 분기 제공
-        if character in animal_list:
-            motion_cfg_fn = resource_filename(__name__, 'config/motion/zombie.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
+        # if character in animal_list:
+        #     motion_cfg_fn = resource_filename(__name__, 'config/motion/zombie.yaml')
+        #     retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
+        #
+        # else:
+        #     motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
+        #     retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
 
-        else:
-            motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
+        # 분기 제공 취소. 동물은 모두 걷기만 적용
+        motion_cfg_fn = resource_filename(__name__, 'config/motion/zombie.yaml')
+        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
 
         # 골격종류 포함하여 config파일 생성 함수 실행
-        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn, 'animals')
+        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn, 'animals', character)
 
     elif animation_type == 'tales':
         title = sys.argv[5]
@@ -69,4 +70,4 @@ if __name__ == '__main__':
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
 
         # 골격종류 포함하여 config파일 생성 함수 실행
-        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn, 'tales')
+        image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn, 'tales', character)

@@ -7,18 +7,23 @@ import logging
 from pathlib import Path
 import sys
 import yaml
-from pkg_resources import resource_filename
-
-
-def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str):
+def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None, character=None):
     """
     Given a path to a directory with character annotations, a motion configuration file, and a retarget configuration file,
     creates an animation and saves it to {annotation_dir}/video.png
     """
+    # 동물의 경우 사전 설정한 캐릭터 파일로 설정
+    animal_list = ['곰', '기린', '낙타', '돼지', '얼룩말', '원숭이', '코뿔소', '판다', '하마', '호랑이']
+    char_anno_dir2 = char_anno_dir
+    if animation_type == 'animals':
+        if character in animal_list:
+            char_anno_dir2 = f"../my_cfg/animals/{character}"
+        else:
+            logging.error('동물 이름이 잘못됨 : '+character)
 
     # package character_cfg_fn, motion_cfg_fn, and retarget_cfg_fn
     animated_drawing_dict = {
-        'character_cfg': str(Path(char_anno_dir, 'char_cfg.yaml').resolve()),
+        'character_cfg': str(Path(char_anno_dir2, 'char_cfg.yaml').resolve()),
         'motion_cfg': str(Path(motion_cfg_fn).resolve()),
         'retarget_cfg': str(Path(retarget_cfg_fn).resolve())
     }
@@ -41,6 +46,9 @@ def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cf
 
     # render the video
     animated_drawings.render.start(output_mvc_cfn_fn)
+
+
+from pkg_resources import resource_filename
 
 
 if __name__ == '__main__':
