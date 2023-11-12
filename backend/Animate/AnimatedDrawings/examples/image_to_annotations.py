@@ -27,7 +27,6 @@ def image_to_annotations(img_fn: str, out_dir: str, animation_type=None) -> None
 
     # create output directory
     outdir = Path(f"{out_dir}/")
-    outdir.mkdir(exist_ok=True)
 
     # read image
     img = cv2.imread(img_fn)
