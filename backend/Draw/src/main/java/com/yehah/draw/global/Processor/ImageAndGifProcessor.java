@@ -70,8 +70,8 @@ public class ImageAndGifProcessor {
     public byte[] taleConvertToGif(int pageNo, String taleTitle, String character, byte[] image){
         bodyData.clear();
         bodyData.add("pageNo", pageNo);
-        bodyData.add("taleTitle", taleTitle);
-        bodyData.add("character", character);
+        bodyData.add("taleTitle", taleTitle.replace(" ", ""));
+        bodyData.add("character", character.replace(" ", ""));
         bodyData.add("image", new ByteArrayResource(image){
             @Override
             public String getFilename() throws IllegalStateException{
