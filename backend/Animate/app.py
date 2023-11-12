@@ -1,5 +1,6 @@
 # app.py
 import logging
+import os
 import subprocess
 from pathlib import Path
 from datetime import datetime
@@ -86,6 +87,9 @@ class Tales(Resource):
         # 저장한 이미지로 애니메이션 생성
         result = shell_create_animation(filename, OUTPUT_FILE_PATH, character, 'tales', tale_title, page_no)
         logging.debug(result)
+
+        # 임시로 저장한 이미지 삭제
+        os.remove(filename)
 
         # 임시애니메이션 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')

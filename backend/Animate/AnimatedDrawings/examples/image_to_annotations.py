@@ -23,7 +23,7 @@ def image_to_annotations(img_fn: str, out_dir: str, animation_type=None) -> None
         img_fn: path to RGB image
         out_dir: directory where outputs will be saved
     """
-    logging.debug('image_to_annotations 진입')
+    logging.debug(f'image_to_annotations 진입 {img_fn} {out_dir} {animation_type}')
 
     # create output directory
     outdir = Path(f"{out_dir}/")

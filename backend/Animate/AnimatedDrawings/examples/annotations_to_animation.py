@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 import yaml
 def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None, character=None):
-    logging.debug('annotations_to_animation 진입')
+    logging.debug(f"annotations_to_animation 진입 {char_anno_dir} {motion_cfg_fn} {retarget_cfg_fn} {animation_type} {character}")
 
     """
     Given a path to a directory with character annotations, a motion configuration file, and a retarget configuration file,
