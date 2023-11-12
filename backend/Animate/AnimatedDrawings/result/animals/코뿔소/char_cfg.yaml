@@ -1,83 +1,83 @@
-height: 370
+height: 303
 skeleton:
-- loc:
-  - 353
-  - 167
-  name: root
-  parent: null
-- loc:
-  - 353
-  - 167
-  name: hip
-  parent: root
-- loc:
-  - 150
-  - 150
-  name: torso
-  parent: hip
-- loc:
-  - 75
-  - 150
-  name: neck
-  parent: torso
-- loc:
-  - 59
-  - 241
-  name: right_hip_f
-  parent: root
-- loc:
-  - 55
-  - 289
-  name: right_knee_f
-  parent: right_hip_f
-- loc:
-  - 50
-  - 339
-  name: right_foot_f
-  parent: right_knee_f
-- loc:
-  - 218
-  - 236
-  name: left_hip_f
-  parent: root
-- loc:
-  - 200
-  - 300
-  name: left_knee_f
-  parent: left_hip_f
-- loc:
-  - 180
-  - 355
-  name: left_foot_f
-  parent: left_knee_f
-- loc:
-  - 312
-  - 238
-  name: right_hip_b
-  parent: root
-- loc:
-  - 300
-  - 280
-  name: right_knee_b
-  parent: right_hip_b
-- loc:
-  - 289
-  - 337
-  name: right_foot_b
-  parent: right_knee_b
-- loc:
-  - 406
-  - 220
-  name: left_hip_b
-  parent: root
-- loc:
-  - 404
-  - 276
-  name: left_knee_b
-  parent: left_hip_b
-- loc:
-  - 383
-  - 328
-  name: left_foot_b
-  parent: left_knee_b
-width: 457
+  - loc:
+      - 189
+      - 194
+    name: root
+    parent: null
+  - loc:
+      - 189
+      - 194
+    name: hip
+    parent: root
+  - loc:
+      - 359
+      - 157
+    name: torso
+    parent: hip
+  - loc:
+      - 429
+      - 221
+    name: neck
+    parent: torso
+  - loc:
+      - 288
+      - 183
+    name: right_hip_f
+    parent: root
+  - loc:
+      - 281
+      - 232
+    name: right_knee_f
+    parent: right_hip_f
+  - loc:
+      - 282
+      - 284
+    name: right_foot_f
+    parent: right_knee_f
+  - loc:
+      - 318
+      - 207
+    name: left_hip_f
+    parent: root
+  - loc:
+      - 324
+      - 238
+    name: left_knee_f
+    parent: left_hip_f
+  - loc:
+      - 341
+      - 274
+    name: left_foot_f
+    parent: left_knee_f
+  - loc:
+      - 86
+      - 164
+    name: right_hip_b
+    parent: root
+  - loc:
+      - 90
+      - 231
+    name: right_knee_b
+    parent: right_hip_b
+  - loc:
+      - 120
+      - 282
+    name: right_foot_b
+    parent: right_knee_b
+  - loc:
+      - 45
+      - 200
+    name: left_hip_b
+    parent: root
+  - loc:
+      - 41
+      - 240
+    name: left_knee_b
+    parent: left_hip_b
+  - loc:
+      - 57
+      - 283
+    name: left_foot_b
+    parent: left_knee_b
+width: 487
