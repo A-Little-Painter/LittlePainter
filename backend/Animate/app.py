@@ -135,42 +135,6 @@ class Tales(Resource):
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
 
 
-@api.route('/animations/comm/test-dance')
-class TestDance(Resource):
-    def post(self):
-        OUTPUT_FILE_PATH = "AnimatedDrawings/result/test-dance"
-
-        # 진입 확인
-        logging.debug("Animate-Service : test dance requested")
-
-        # requestbody 수신
-        animal_type = request.form['animalType']
-        image = request.files['image']
-
-        # 이미지 저장
-        filename = secure_filename(image.filename)
-        image.save(filename)
-
-        # 저장한 이미지로 애니메이션 생성
-        result = self.shell_create_animation_test(filename, OUTPUT_FILE_PATH)
-        logging.debug(result)
-
-        # 임시값 반환
-        return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
-
-    def shell_create_animation_test(self, input_filename, output_file_path):
-        logging.debug("shell 명령어 호출_test")
-        cmd_test = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {output_file_path}"
-
-        # 셸 명령 실행
-        try:
-            result = subprocess.run(cmd_test, shell=True, capture_output=True, text=True, check=True)
-            return result.stdout
-        except subprocess.CalledProcessError as e:
-            logging.error("쉘 커맨드 수행 실패")
-            return e.stderr
-
-
 if __name__ == "__main__":
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
