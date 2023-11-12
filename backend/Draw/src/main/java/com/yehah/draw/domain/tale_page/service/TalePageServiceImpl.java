@@ -1,5 +1,7 @@
 package com.yehah.draw.domain.tale_page.service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,11 +22,12 @@ public class TalePageServiceImpl implements TalePageService {
 
 	private final TalePageRepository talePageRepository;
 
-	public List<GetTalePagesResDto> getTalePagess(Long taleId){
+	public List<GetTalePagesResDto> getTalePages(Long taleId){
 		List<TalePage> talePageList = talePageRepository.findByTaleId(taleId);
-		return talePageList.stream()
+		List<GetTalePagesResDto> result =  talePageList.stream()
 			.map(talePage -> {
-
+				int index = 0;
+				Boolean flag = false;
 				List<GetTaleCharacterResDto> characterResDtoList = talePage.getTaleCharacters().stream()
 					.map(taleCharacter -> {
 						GetTaleCharacterResDto characterResDto = GetTaleCharacterResDto.builder()
@@ -39,9 +42,16 @@ public class TalePageServiceImpl implements TalePageService {
 							.endX(taleCharacter.getEndX())
 							.endY(taleCharacter.getEndY())
 							.build();
+
 						return characterResDto;
 					})
 					.collect(Collectors.toList());
+
+
+				// characterResDtoList 중에서 characterName이 null이 아닌 요소를 [0]번째로 위치하도록 조정합니다.
+				if (talePage.getDrawing()) {
+					characterResDtoList.sort(Comparator.comparing(c -> c.getUrlTrace() == null));
+				}
 
 				return GetTalePagesResDto.builder()
 					.talePageId(talePage.getId())
@@ -54,6 +64,8 @@ public class TalePageServiceImpl implements TalePageService {
 					.build();
 			})
 			.collect(Collectors.toList());
+
+		return result;
 	}
 
 }
