@@ -14,13 +14,13 @@ public class StompService {
     private final SimpMessagingTemplate messagingTemplate;
 
     // NOTE : STOMP 성공 응답 전송하기
-    public void AnimalSuccessRes(String responseUrl, SimilarState similarState, SimilarMessageResponse similarMessageResponse){
+    public void stompSuccessRes(String responseUrl, SimilarState similarState, SimilarMessageResponse similarMessageResponse){
         similarMessageResponse.setSimilarState(similarState);
         messagingTemplate.convertAndSend(responseUrl, similarMessageResponse);
     }
 
     // NOTE : STOMP 실패 응답 전송하기
-    public void AnimalFailRes(String responseUrl, MessageResponse messageResponse){
+    public void stompFailRes(String responseUrl, MessageResponse messageResponse){
         messagingTemplate.convertAndSend(responseUrl, messageResponse);
     }
 }

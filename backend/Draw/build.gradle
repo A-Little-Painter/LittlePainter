@@ -96,8 +96,6 @@ dependencies {
 
     compileOnly group: 'org.json', name: 'json', version: '20160810'
 
-
-
 }
 
 dependencyManagement {

@@ -8,12 +8,16 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @NoArgsConstructor
 public class AnimationAnimalReqDto {
-    private MultipartFile image;
+    private String roomId;
+    private MultipartFile originalFile;
+    private MultipartFile newFile;
     private String animalType;
 
     @Builder
-    public AnimationAnimalReqDto(MultipartFile image, String animalType){
-        this.image = image;
+    public AnimationAnimalReqDto(String roomId, MultipartFile originalFile, MultipartFile newFile, String animalType){
+        this.roomId = roomId;
+        this.originalFile = originalFile;
+        this.newFile = newFile;
         this.animalType = animalType;
     }
 }

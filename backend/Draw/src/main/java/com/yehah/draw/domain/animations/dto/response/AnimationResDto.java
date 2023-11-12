@@ -5,12 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 public class AnimationResDto {
-    private String gifImageUrl;
+    private String imageUrl;
+    private String gifUrl;
+
+    public AnimationResDto(){}
 
     @Builder
-    public AnimationResDto(String gifImageUrl){
-        this.gifImageUrl = gifImageUrl;
+    public AnimationResDto(String imageUrl, String gifUrl){
+        this.imageUrl = imageUrl;
+        this.gifUrl = gifUrl;
     }
 }
