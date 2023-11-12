@@ -2,6 +2,7 @@
 import logging
 import subprocess
 from pathlib import Path
+from datetime import datetime
 
 from flask import Flask, request, send_file
 from flask_restx import Api, Resource
@@ -44,14 +45,15 @@ def generate_command(input_filename, output_file_path, character, animation_type
 @api.route('/animations/comm/animals')
 class Animals(Resource):
     def post(self):
-        OUTPUT_FILE_PATH = "AnimatedDrawings/result/animals"
-
         # 진입 확인
         logging.debug("Animate-Service : animateAnimal Called")
 
         # requestbody 수신
         animal_type = request.form['animalType']
         image = request.files['image']
+
+        OUTPUT_FILE_PATH = f"AnimatedDrawings/result/animals/{animal_type}/{datetime.now().strftime('%m%d%H%M%S')}"
+
 
         # 이미지 저장
         filename = secure_filename(image.filename)
@@ -68,13 +70,14 @@ class Animals(Resource):
 @api.route('/animations/comm/tales')
 class Tales(Resource):
     def post(self):
-        OUTPUT_FILE_PATH = "AnimatedDrawings/result/tales"
-
         # requestbody 수신
         tale_title = request.form['taleTitle']
         character = request.form['character']
         page_no = request.form['pageNo']
         image = request.files['image']
+
+        OUTPUT_FILE_PATH = f"AnimatedDrawings/result/animals/{tale_title}/{character}{page_no}/{datetime.now().strftime('%m%d%H%M%S')}"
+
 
         # 이미지 저장
         filename = secure_filename(image.filename)

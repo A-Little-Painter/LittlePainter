@@ -26,7 +26,7 @@ def image_to_annotations(img_fn: str, out_dir: str, animation_type=None) -> None
     logging.debug('image_to_annotations 진입')
 
     # create output directory
-    outdir = Path(out_dir)
+    outdir = Path(f"{out_dir}/")
     outdir.mkdir(exist_ok=True)
 
     # read image
