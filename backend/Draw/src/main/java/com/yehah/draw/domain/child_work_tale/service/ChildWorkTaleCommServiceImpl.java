@@ -1,12 +1,16 @@
-package com.yehah.draw.domain.child_work.service;
+package com.yehah.draw.domain.child_work_tale.service;
 
+import java.util.List;
+
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.yehah.draw.domain.child_work.dto.request.SaveS3ChildWorkReqDto;
 import com.yehah.draw.domain.child_work.dto.response.UploadS3MypageResDto;
+import com.yehah.draw.domain.child_work_tale.dto.request.AddChildWorkTaleReqDto;
+import com.yehah.draw.domain.child_work_tale.dto.response.UploadS3MypageTaleResDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,26 +19,18 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ChildWorkCommServiceImpl implements ChildWorkCommService{
+public class ChildWorkTaleCommServiceImpl implements ChildWorkTaleCommService{
 
 	private final WebClient imageWebClient;
 
-	public Mono<UploadS3MypageResDto> postS3MyPage(String category, Long childId, String imageUrl, String gifUrl) {
-		SaveS3ChildWorkReqDto saveS3ChildWorkReqDto = SaveS3ChildWorkReqDto.builder()
-			.userId(childId)
-			.category(category)
-			.imageUrl(imageUrl)
-			.gifUrl(gifUrl)
-			.build();
-
+	public Mono<List<UploadS3MypageTaleResDto>> postS3MyPage(List<AddChildWorkTaleReqDto> addChildWorkTaleReqDtoList) {
 		return imageWebClient
 			.post()
-			.uri("/comm/childWork")
+			.uri("/comm/child-work-tale")
 			.contentType(MediaType.APPLICATION_JSON)
-			// .body(BodyInserters.fromMultipartData(builder.build()))
-			.bodyValue(saveS3ChildWorkReqDto)
+			.bodyValue(addChildWorkTaleReqDtoList)
 			.retrieve()
-			.bodyToMono(UploadS3MypageResDto.class)
+			.bodyToMono(new ParameterizedTypeReference<List<UploadS3MypageTaleResDto>>() {})
 			.doOnSuccess(response -> {
 				log.info("Image uploaded successfully!");
 			})

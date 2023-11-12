@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class AddChildWorkTaleReqDto {
 	private Long talePageId;
 	private String urlGif;
-	private MultipartFile imageFile;
+	private String urlImage ; //MultipartFile imageFile;
 }
