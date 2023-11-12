@@ -90,9 +90,9 @@ class Tales(Resource):
         image = request.files['image']
 
         # requestbody 확인되면 요청별 전용 경로 생성
-        tale_list = ['방귀시합','']
+        tale_list = ['방귀시합']
         # if tale_title in
-        OUTPUT_FILE_PATH = f"AnimatedDrawings/result/animals/{tale_title}/{character}{page_no}/{datetime.now().strftime('%m%d%H%M%S')}"
+        OUTPUT_FILE_PATH = f"AnimatedDrawings/result/tales/{tale_title}/{character}{page_no}/{datetime.now().strftime('%m%d%H%M%S')}"
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
         # 이미지 저장
