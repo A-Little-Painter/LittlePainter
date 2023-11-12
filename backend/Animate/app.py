@@ -53,8 +53,16 @@ class Animals(Resource):
         animal_type = request.form['animalType']
         image = request.files['image']
 
-        OUTPUT_FILE_PATH = f"/app/AnimatedDrawings/result/animals/{animal_type}/{datetime.now().strftime('%m%d%H%M%S')}"
-        Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
+        # 동물의 경우 사전 설정한 캐릭터 파일로 설정
+        animal_list = ['곰', '기린', '낙타', '돼지', '얼룩말', '원숭이', '코뿔소', '판다', '하마', '호랑이']
+
+        if animal_type in animal_list:
+            OUTPUT_FILE_PATH = f"/app/AnimatedDrawings/result/animals/{animal_type}/{datetime.now().strftime('%m%d%H%M%S')}"
+            Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
+        else:
+            return {
+                "message": "동물 이름(animalType) 잘못됨"
+            }, 400
 
 
         # 이미지 저장
