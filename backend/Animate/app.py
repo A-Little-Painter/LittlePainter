@@ -53,10 +53,10 @@ class Animals(Resource):
         animal_type = request.form['animalType']
         image = request.files['image']
 
-        # 동물의 경우 사전 설정한 캐릭터 파일로 설정
-        animal_list = ['곰', '기린', '낙타', '돼지', '얼룩말', '원숭이', '코뿔소', '판다', '하마', '호랑이']
-
+        # requestbody 확인되면 요청별 전용 경로 생성
+        animal_list = ['곰', '낙타', '돼지', '얼룩말', '원숭이', '코뿔소', '판다', '하마', '호랑이']
         if animal_type in animal_list:
+            # 월일시분초에 따른 전용폴더에서 작업
             OUTPUT_FILE_PATH = f"/app/AnimatedDrawings/result/animals/{animal_type}/{datetime.now().strftime('%m%d%H%M%S')}"
             Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
         else:
@@ -73,6 +73,9 @@ class Animals(Resource):
         result = shell_create_animation(filename, OUTPUT_FILE_PATH, animal_type, 'animals')
         logging.debug(result)
 
+        # 임시로 저장한 이미지 삭제
+        os.remove(filename)
+
         # 임시값 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
 
@@ -86,6 +89,9 @@ class Tales(Resource):
         page_no = request.form['pageNo']
         image = request.files['image']
 
+        # requestbody 확인되면 요청별 전용 경로 생성
+        tale_list = ['방귀시합','']
+        # if tale_title in
         OUTPUT_FILE_PATH = f"AnimatedDrawings/result/animals/{tale_title}/{character}{page_no}/{datetime.now().strftime('%m%d%H%M%S')}"
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 

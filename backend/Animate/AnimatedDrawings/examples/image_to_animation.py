@@ -24,6 +24,10 @@ def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, reta
     # create the annotations
     image_to_annotations(img_fn, char_anno_dir, animation_type)
 
+    # # # preset 설정용 texture.png, char_cfg.yaml 보존
+    shutil.copy( f"{char_anno_dir}/char_cfg.yaml", f"{char_anno_dir}/char_cfg2.yaml")
+    shutil.copy( f"{char_anno_dir}/texture.png", f"{char_anno_dir}/texture2.png")
+
     # 모델이 도출한 annotation(mask, texture) 프리셋에 맞게 수정
     # 프리셋 반영 1) char_cfg파일 복사
     if animation_type == 'tales' or animation_type == 'animals':
