@@ -1,5 +1,6 @@
 package com.yehah.draw.domain.person.service;
 
+import com.yehah.draw.domain.person.dto.response.PersonChoiceResponseDTO;
 import com.yehah.draw.domain.person.dto.response.PersonListResponseDTO;
 import com.yehah.draw.domain.person.entity.Person;
 import com.yehah.draw.domain.person.repository.PersonRepository;
@@ -38,6 +39,14 @@ public class PersonServiceImpl implements PersonService{
             .build();
 
         return personListResponseDTO;
+    }
+
+    public PersonChoiceResponseDTO getPersonChoice(Long personId){
+        Person person = personRepository.findById(personId).orElseThrow(
+                () -> new IllegalArgumentException("해당 사진의 정보를 가지고 있지 않습니다."));
+        return PersonChoiceResponseDTO.builder()
+                .detail(person.getDetail())
+                .urlTrace(person.getUrlTrace()).build();
     }
 
 }
