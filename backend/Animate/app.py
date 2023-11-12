@@ -91,7 +91,7 @@ class Tales(Resource):
 
         # requestbody 확인되면 요청별 전용 경로 생성
         tale_list = ['방귀시합']
-        # if tale_title in
+        # if tale_title in tale_list:
         OUTPUT_FILE_PATH = f"AnimatedDrawings/result/tales/{tale_title}/{character}{page_no}/{datetime.now().strftime('%m%d%H%M%S')}"
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
@@ -101,6 +101,31 @@ class Tales(Resource):
 
         # 저장한 이미지로 애니메이션 생성
         result = shell_create_animation(filename, OUTPUT_FILE_PATH, character, 'tales', tale_title, page_no)
+        logging.debug(result)
+
+        # 임시로 저장한 이미지 삭제
+        os.remove(filename)
+
+        # 임시애니메이션 반환
+        return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
+
+
+@api.route('/animations/comm/friends')
+class Tales(Resource):
+    def post(self):
+        # requestbody 수신
+        image = request.files['image']
+
+        # requestbody 확인되면 요청별 전용 경로 생성
+        OUTPUT_FILE_PATH = f"AnimatedDrawings/result/friends/{datetime.now().strftime('%m%d%H%M%S')}"
+        Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
+
+        # 이미지 저장
+        filename = secure_filename(image.filename)
+        image.save(filename)
+
+        # 저장한 이미지로 애니메이션 생성
+        result = shell_create_animation(filename, OUTPUT_FILE_PATH, 'friend', 'friends')
         logging.debug(result)
 
         # 임시로 저장한 이미지 삭제
