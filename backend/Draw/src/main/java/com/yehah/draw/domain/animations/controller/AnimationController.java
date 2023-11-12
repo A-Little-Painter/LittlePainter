@@ -1,6 +1,7 @@
 package com.yehah.draw.domain.animations.controller;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.yehah.draw.domain.animations.dto.request.AnimationFriendReqDto;
 import com.yehah.draw.global.Processor.ImageAndGifProcessor;
 import com.yehah.draw.domain.animations.dto.request.AnimationAnimalReqDto;
 import com.yehah.draw.domain.animations.dto.request.AnimationTaleReqDto;
@@ -42,6 +43,14 @@ public class AnimationController {
                 animationTaleReqDto.getNewFile());
         gifFile = imageAndGifProcessor.taleConvertToGif(animationTaleReqDto.getPageNumber(), animationTaleReqDto.getTitle(),
                 animationTaleReqDto.getRequestCharacter(), imageFile);
+        return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(imageFile, gifFile));
+    }
+
+    @PostMapping("/friends")
+    public ResponseEntity<AnimationResDto> sendAnimatedFriends(@ModelAttribute AnimationFriendReqDto animationFriendReqDto) throws JsonMappingException {
+        imageFile = imageAndGifProcessor.extractBorderImage(animationFriendReqDto.getRoomId(), animationFriendReqDto.getOriginalFile(),
+                animationFriendReqDto.getNewFile());
+        gifFile = imageAndGifProcessor.friendConvertToGif(imageFile);
         return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(imageFile, gifFile));
     }
 

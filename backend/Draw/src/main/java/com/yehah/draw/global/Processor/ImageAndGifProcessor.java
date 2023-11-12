@@ -61,7 +61,7 @@ public class ImageAndGifProcessor {
         });
 
         try{
-            return communicationProcessor.postMultipartAnimateMethod(bodyData, animatePath+"/test-dance");
+            return communicationProcessor.postMultipartAnimateMethod(bodyData, animatePath+"/animals");
         }catch(Exception e){
             throw new AnimationChangeException("이미지를 GIF로 변환할 수 없습니다.");
         }
@@ -81,6 +81,23 @@ public class ImageAndGifProcessor {
 
         try{
             return communicationProcessor.postMultipartAnimateMethod(bodyData, animatePath+"/tales");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AnimationChangeException("이미지를 GIF로 변환할 수 없습니다.");
+        }
+    }
+
+    public byte[] friendConvertToGif(byte[] image){
+        bodyData.clear();
+        bodyData.add("image", new ByteArrayResource(image){
+            @Override
+            public String getFilename() throws IllegalStateException{
+                return "image.jpg";
+            }
+        });
+
+        try{
+            return communicationProcessor.postMultipartAnimateMethod(bodyData, animatePath+"/friends");
         } catch (Exception e) {
             e.printStackTrace();
             throw new AnimationChangeException("이미지를 GIF로 변환할 수 없습니다.");
