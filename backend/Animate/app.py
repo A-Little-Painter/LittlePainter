@@ -77,7 +77,7 @@ class Tales(Resource):
         image = request.files['image']
 
         OUTPUT_FILE_PATH = f"AnimatedDrawings/result/animals/{tale_title}/{character}{page_no}/{datetime.now().strftime('%m%d%H%M%S')}"
-
+        Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True)
 
         # 이미지 저장
         filename = secure_filename(image.filename)

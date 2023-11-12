@@ -20,6 +20,9 @@ def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, reta
     # create the annotations
     image_to_annotations(img_fn, char_anno_dir, animation_type)
 
+    # 모델이 도출한 annotation(mask, texture) 프리셋에 맞게 수정
+
+
     # create the animation
     annotations_to_animation(char_anno_dir, motion_cfg_fn, retarget_cfg_fn, animation_type, character)
 
