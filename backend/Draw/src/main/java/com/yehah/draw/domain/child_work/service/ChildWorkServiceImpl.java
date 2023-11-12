@@ -40,11 +40,11 @@ public class ChildWorkServiceImpl implements ChildWorkService{
     }
     */
 
-    public Long saveChildWorksComm(String category, Long workId, MultipartFile imageFile, String gifUrl){
+    public Long saveChildWorksComm(String category, Long workId, String imageUrl, String gifUrl){
 
         // TODO : childId 가져와야함
 //        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UploadS3MypageResDto response = childWorkCommService.postS3MyPage(category, 1L, imageFile, gifUrl).block();
+        UploadS3MypageResDto response = childWorkCommService.postS3MyPage(category, 1L, imageUrl, gifUrl).block();
 
         return saveChildWorks(category, workId, response, 1L);
 
