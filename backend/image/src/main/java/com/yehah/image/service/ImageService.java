@@ -2,17 +2,23 @@ package com.yehah.image.service;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.yehah.image.dto.request.AddChildWorkReqDto;
+import com.yehah.image.dto.request.AddChildWorkTaleReqDto;
 import com.yehah.image.dto.response.SaveMyAnimalResDto;
 import com.yehah.image.dto.response.TempSaveResDto;
 import com.yehah.image.dto.response.UploadS3MypageResDto;
+import com.yehah.image.dto.response.UploadS3MypageTaleResDto;
 import com.yehah.image.exception.CustomException;
 import com.yehah.image.exception.ExceptionEnum;
 import com.yehah.image.s3.S3Util;
@@ -67,6 +73,35 @@ public class ImageService {
 			.originalUrl(originalUrl)
 			.traceUrl(traceUrl)
 			.build();
+
+		return Mono.just(result);
+	}
+
+	public Mono<List<UploadS3MypageTaleResDto>> addChildWorkTale(List<AddChildWorkTaleReqDto> addChildWorkReqDtoList) throws
+		IOException {
+		List<UploadS3MypageTaleResDto> result = new ArrayList<>();
+		for(AddChildWorkTaleReqDto reqDto : addChildWorkReqDtoList) {
+			if(reqDto.getUrlImage().isBlank()){
+				throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
+			}
+
+			Date currentDate = new Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+			String formattedDate = dateFormat.format(currentDate) + "-" + UUID.randomUUID();
+
+			String dirName = "child-work/tale/" + formattedDate;
+
+			String imageUrl = s3Util.update(reqDto.getUrlImage().substring(54), dirName + "img." + StringUtils.getFilenameExtension(reqDto.getUrlImage()));
+
+			String gifUrl = (reqDto.getUrlGif().isBlank()) ? null : s3Util.update(reqDto.getUrlGif().substring(54), dirName + "gif." + StringUtils.getFilenameExtension(reqDto.getUrlGif()));
+
+			UploadS3MypageTaleResDto uploadS3MypageTaleResDto =  UploadS3MypageTaleResDto.builder()
+				.talePageId(reqDto.getTalePageId())
+				.imageFileUrl(imageUrl)
+				.gifFileUrl(gifUrl)
+				.build();
+			result.add(uploadS3MypageTaleResDto);
+		}
 
 		return Mono.just(result);
 	}

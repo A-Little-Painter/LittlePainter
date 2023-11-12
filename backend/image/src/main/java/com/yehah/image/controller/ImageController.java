@@ -1,14 +1,17 @@
 package com.yehah.image.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import com.yehah.image.dto.request.AddChildWorkReqDto;
+import com.yehah.image.dto.request.AddChildWorkTaleReqDto;
 import com.yehah.image.dto.response.SaveMyAnimalResDto;
 import com.yehah.image.dto.response.TempSaveResDto;
 import com.yehah.image.dto.response.UploadS3MypageResDto;
+import com.yehah.image.dto.response.UploadS3MypageTaleResDto;
 import com.yehah.image.service.ImageService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,11 +46,22 @@ public class ImageController {
 		return result;
 	}
 
-	@Operation(summary = "S3- 마이페이지에 그림 저장하기", description = "<<수정중>> (USER) aws s3에 마이페이지에 저장할 그림을 저장한다.")
+	@Operation(summary = "S3- 마이페이지에 그림 저장하기", description = "(USER) aws s3에 마이페이지에 저장할 그림을 저장한다.")
 	@PostMapping(value = "/childWork")
 	public Mono<UploadS3MypageResDto> addChildWork(@RequestBody AddChildWorkReqDto addChildWorkReqDto) throws IOException {
 		log.info("addChildWork() : userId = {}, category = {}, imageUrl = {}, gifUrl = {}", addChildWorkReqDto.getUserId().toString(), addChildWorkReqDto.getCategory(), addChildWorkReqDto.getImageUrl(), addChildWorkReqDto.getGifUrl());
 		return imageService.addChildWork(addChildWorkReqDto.getUserId().toString(), addChildWorkReqDto.getCategory(), addChildWorkReqDto.getImageUrl(), addChildWorkReqDto.getGifUrl());
+	}
+
+	@Operation(summary = "S3- 마이페이지에 동화 그림 저장하기", description = "<<수정중>> (USER) aws s3에 마이페이지에 저장할 그림을 저장한다.")
+	@PostMapping(value = "/child-work-tale")
+	public Mono<List<UploadS3MypageTaleResDto>> addChildWorkTale(@RequestBody List<AddChildWorkTaleReqDto> addChildWorkTaleReqDtoList) throws IOException {
+		log.info("addChildWorkTale() : ");
+
+		for(AddChildWorkTaleReqDto reqDto : addChildWorkTaleReqDtoList) {
+			System.out.println(reqDto.getTalePageId()  + " : " + reqDto.getUrlImage() + " : " + reqDto.getUrlGif());
+		}
+		return imageService.addChildWorkTale(addChildWorkTaleReqDtoList);
 	}
 
 	/*
