@@ -34,6 +34,7 @@ public class PersonServiceImpl implements PersonService{
     @Transactional
     public PersonListResponseDTO convertToDto(Person person){
         PersonListResponseDTO personListResponseDTO = PersonListResponseDTO.builder()
+                .personId(person.getId())
             .title(person.getTitle())
             .originalImageUrl(person.getUrlOriginal())
             .build();

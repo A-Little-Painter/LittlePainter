@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 public class PersonListResponseDTO {
+    private Long personId;
     private String title;
     private String originalImageUrl;
 }
