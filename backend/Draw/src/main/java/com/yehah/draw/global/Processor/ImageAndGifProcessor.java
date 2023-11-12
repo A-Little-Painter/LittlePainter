@@ -39,6 +39,7 @@ public class ImageAndGifProcessor {
 
     // 1. 테두리의 영역 안에 있는 이미지만 추출하기
     public byte[] extractBorderImage(String roomId, MultipartFile originalFile, MultipartFile newFile){
+        bodyData.clear();
         bodyData.add("roomId", roomId);
         bodyData.add("originalFile", originalFile.getResource());
         bodyData.add("newFile", newFile.getResource());
@@ -50,6 +51,7 @@ public class ImageAndGifProcessor {
     }
 
     public byte[] animalConvertToGif(String animalType, byte[] imageFile){
+        bodyData.clear();
         bodyData.add("animalType", animalType);
         bodyData.add("image", new ByteArrayResource(imageFile){
             @Override
@@ -66,7 +68,7 @@ public class ImageAndGifProcessor {
     }
 
     public byte[] taleConvertToGif(int pageNo, String taleTitle, String character, byte[] image){
-
+        bodyData.clear();
         bodyData.add("pageNo", pageNo);
         bodyData.add("taleTitle", taleTitle);
         bodyData.add("character", character);
@@ -86,6 +88,7 @@ public class ImageAndGifProcessor {
     }
 
     public AnimationResDto uploadsImageAndGif(byte[] imageFile, byte[] gifFile) throws JsonMappingException {
+        bodyData.clear();
         bodyData.add("imageFile", new ByteArrayResource(imageFile){
             @Override
             public String getFilename() throws IllegalStateException {

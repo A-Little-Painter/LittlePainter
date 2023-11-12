@@ -36,6 +36,7 @@ public class SimilarCheckProcessor {
     public void similarCheck(String roomId, MultipartFile originalFile, MultipartFile newFile
             ,double comparisonValue, AnimalType animalType){
 
+        bodyData.clear();
         bodyData.add("roomId", roomId);
         bodyData.add("originalFile", originalFile.getResource());
         bodyData.add("newFile", newFile.getResource());
@@ -43,6 +44,7 @@ public class SimilarCheckProcessor {
         String stompUrl = "/sub/room/"+roomId;
 
         try{
+            log.info("-----체크-----> {}", similarityPath );
             double value = Double.parseDouble(String.valueOf(communicationProcessor.postMultipartMethod(bodyData, similarityPath+"/similarcheck", String.class)));
             log.info("-----유사도-----> {}", value);
 
