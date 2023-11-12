@@ -25,7 +25,7 @@ def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, reta
     image_to_annotations(img_fn, char_anno_dir, animation_type)
 
     # 모델이 도출한 annotation(mask, texture) 프리셋에 맞게 수정
-    # char_cfg파일 복사
+    # 프리셋 반영 1) char_cfg파일 복사
     if animation_type == 'tales' or animation_type == 'animals':
         try:
             # Copy the file to the destination folder
@@ -37,7 +37,8 @@ def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, reta
             print("Permission error: Check if you have write access to the destination folder.")
         except Exception as e:
             print(f"An error occurred: {e}")
-    # 복사한 char_cfg파일에 맞게 이미지 수정
+
+    # 프리셋 반영 2) 복사한 char_cfg파일에 맞게 이미지 수정
     # # cfg파일 로드
     with open(f"{char_anno_dir}/char_cfg.yaml", "r") as file:
         cfg_file = yaml.safe_load(file)
