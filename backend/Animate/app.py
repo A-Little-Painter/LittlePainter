@@ -53,7 +53,8 @@ class Animals(Resource):
         animal_type = request.form['animalType']
         image = request.files['image']
 
-        OUTPUT_FILE_PATH = f"AnimatedDrawings/result/animals/{animal_type}/{datetime.now().strftime('%m%d%H%M%S')}"
+        OUTPUT_FILE_PATH = f"/app/AnimatedDrawings/result/animals/{animal_type}/{datetime.now().strftime('%m%d%H%M%S')}"
+        Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
 
         # 이미지 저장
