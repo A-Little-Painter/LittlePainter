@@ -60,6 +60,10 @@ export default function ColoringPictureScreen({
   route,
   navigation,
 }: ColoringPictureScreenProps) {
+  const [roomId] = useState<string>(route.params.roomId);
+  const [captureBorderImagePath] = useState<string>(
+    route.params.captureBorderImagePath,
+  );
   const [pictureTitle] = useState<string>(route.params.pictureTitle);
   const [pictureId] = useState<number>(route.params.pictureId);
   const [pictureBorderURI] = useState<string>(route.params.pictureBorderURI);
@@ -113,12 +117,12 @@ export default function ColoringPictureScreen({
     setIsLoading(true);
     try {
       dispatch(handleHavingGifUrl(true));
-      const response = await animalAnimations(animalType, captureImagePath);
+      const response = await animalAnimations(roomId, animalType, captureBorderImagePath, captureImagePath);
       if (response.status === 200) {
         console.log('친구 사진 애니메이션 성공', response.data);
         setIsLoading(false);
-        console.log(response.data.gifImageUrl);
-        handleGoComplete(response.data.gifImageUrl);
+        // handleGoComplete(response.data.gifImageUrl);
+        handleGoComplete(response.data.gifUrl, response.data.imageUrl);
       } else {
         console.log('친구 사진 애니메이션 실패', response.status);
         setIsLoading(false);
@@ -126,7 +130,7 @@ export default function ColoringPictureScreen({
           '우리 친구가 움직일 수가 없어요ㅠㅠ',
           ToastAndroid.LONG,
         );
-        handleGoComplete(response.data.gifImageUrl);
+        handleGoComplete('','');
       }
     } catch (error) {
       console.log('친구 사진 애니메이션 실패', error);
@@ -135,7 +139,7 @@ export default function ColoringPictureScreen({
         '우리 친구가 움직일 수가 없어요ㅠㅠ',
         ToastAndroid.LONG,
       );
-      handleGoComplete('');
+      handleGoComplete('', '');
     }
     setIsLoading(false);
   }
@@ -208,11 +212,12 @@ export default function ColoringPictureScreen({
     handleDrawCapture();
   };
 
-  const handleGoComplete = (receiveanimatedGif: string) => {
+  const handleGoComplete = (receiveanimatedGif: string, receiveDrawUri: string,) => {
     navigation.navigate('CompleteDrawPictureScreen', {
       pictureId: pictureId,
-      completeDrawUri: captureImagePath,
+      completeDrawUri: receiveDrawUri,
       animatedGif: receiveanimatedGif,
+      originDrawUri: captureImagePath,
     });
   };
 

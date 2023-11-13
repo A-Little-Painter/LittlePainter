@@ -138,6 +138,8 @@ export type RootStackParams = {
     };
   };
   ColoringPictureScreen: {
+    roomId: string;
+    captureBorderImagePath: string;
     pictureId: number;
     pictureTitle: string;
     completeLine: {path: string; color: string; strokeWidth: number}[];
@@ -150,6 +152,7 @@ export type RootStackParams = {
     pictureId: number;
     completeDrawUri: string;
     animatedGif: string;
+    originDrawUri: string;
   };
 
   // 동화 그리기

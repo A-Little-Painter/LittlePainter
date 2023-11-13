@@ -38,7 +38,8 @@ export default function CompleteDrawPictureScreen({
 }: CompleteDrawPictureScreenProps) {
   const [pictureId] = useState<number>(route.params.pictureId);
   const [completeDrawUri] = useState(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
-  const [animatedGif] = useState(route.params.animatedGif); // 완성된 Uri(gif파일 아님)
+  const [animatedGif] = useState(route.params.animatedGif); // 완성된 Uri(gif파일)
+  const [originDrawUri] = useState(route.params.originDrawUri);
   const [isSavedImage, setIsSavedImage] = useState<boolean>(false);
 
   const isLogin = useSelector((state: RootState) => state.user.isLogin);
@@ -158,10 +159,16 @@ export default function CompleteDrawPictureScreen({
           <ImageBackground
             // source={require('../../assets/images/animalImage/deerTest1.png')}
             style={styles.imageBackgroundSize}
+            // source={{
+            //   uri:
+            //     (animatedGif === '' || animatedGif === undefined || animatedGif === null)
+            //       ? completeDrawUri
+            //       : animatedGif,
+            // }}
             source={{
               uri:
                 (animatedGif === '' || animatedGif === undefined || animatedGif === null)
-                  ? completeDrawUri
+                  ? (completeDrawUri === '' || completeDrawUri === undefined || completeDrawUri === null) ? originDrawUri : completeDrawUri
                   : animatedGif,
             }}
             // style={{backgroundColor: 'white'}}
@@ -181,7 +188,8 @@ export default function CompleteDrawPictureScreen({
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
-              style={[styles.doneButton]}
+              style={[styles.doneButton, {backgroundColor : animatedGif === '' ? 'gray' : '#A8CEFF'}]}
+              disabled={animatedGif === ''}
               onPress={() => {
                 handlePressSaving();
               }}>
