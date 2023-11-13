@@ -17,7 +17,7 @@ def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cf
     # package character_cfg_fn, motion_cfg_fn, and retarget_cfg_fn
     animated_drawing_dict = {
         'character_cfg': str(Path(f"{char_anno_dir}/char_cfg.yaml")),
-        'motion_cfg': str(Path(motion_cfg_fn)),
+        'motion_cfg': str(Path(motion_cfg_fn).resolve()),
         'retarget_cfg': str(Path(retarget_cfg_fn).resolve())
     }
 
