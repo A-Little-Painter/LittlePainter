@@ -362,11 +362,11 @@ ROOT Hips
       }
     }
   }
-  JOINT RightThigh
+  JOINT RightUpLeg
   {
     OFFSET -8.1000 0.0000 0.0000
     CHANNELS 3 Yrotation Xrotation Zrotation
-    JOINT RightShin
+    JOINT RightLeg
     {
       OFFSET 0.0000 -43.2000 0.0000
       CHANNELS 3 Yrotation Xrotation Zrotation
@@ -374,7 +374,7 @@ ROOT Hips
       {
         OFFSET 0.0000 -43.3000 -0.0626
         CHANNELS 3 Yrotation Xrotation Zrotation
-        JOINT RightToe
+        JOINT RightToeBase
         {
           OFFSET 0.0000 -13.1694 6.2394
           CHANNELS 3 Yrotation Xrotation Zrotation
@@ -391,11 +391,11 @@ ROOT Hips
       }
     }
   }
-  JOINT LeftThigh
+  JOINT LeftUpLeg
   {
     OFFSET 8.1000 0.0000 0.0000
     CHANNELS 3 Yrotation Xrotation Zrotation
-    JOINT LeftShin
+    JOINT LeftLeg
     {
       OFFSET 0.0000 -43.2000 0.0000
       CHANNELS 3 Yrotation Xrotation Zrotation
@@ -403,7 +403,7 @@ ROOT Hips
       {
         OFFSET 0.0000 -43.3000 -0.0626
         CHANNELS 3 Yrotation Xrotation Zrotation
-        JOINT LeftToe
+        JOINT LeftToeBase
         {
           OFFSET 0.0000 -13.1694 6.2394
           CHANNELS 3 Yrotation Xrotation Zrotation
