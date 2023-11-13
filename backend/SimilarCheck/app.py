@@ -60,20 +60,12 @@ def borderExtractionTest(roomId, originalPath, newPath):
     contours1, _ = cv2.findContours(cv2.inRange(originalImage, (0, 0, 0), (30, 30, 30)), cv2.RETR_EXTERNAL,
                                     cv2.CHAIN_APPROX_SIMPLE)
 
-
-
     # [newImage]에서 [originalImage]의 테두리를 기반으로 마스크 생성
     mask = np.zeros(newImage.shape, dtype=np.uint8)
     cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
 
-    # mask = cv2.bitwise_not(mask)
-
-    # cv2.imwrite('./borderImages/' + roomId + 'output1.jpg', mask)
-
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
     result_image = cv2.bitwise_and(newImage, mask)
-
-    #cv2.imwrite('./borderImages/' + roomId + 'output2.jpg', result_image)
 
     # mask 영역의 검은색 부분이 있는 위치를 찾습니다.
     black_pixels_in_mask = (mask == [0, 0, 0]).all(axis=2)
@@ -83,9 +75,6 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/'+roomId+'output.jpg', result_image)
-
-    # 결과 이미지를 보여줌
-    # cv2.imshow('./borderImages/output.jpg', result_image)
 
 # 원본의 이미지 테두리를 회색에서 검은색으로 변경해서 저장함
 def colorChangeToBlack(originalPath):
@@ -132,8 +121,8 @@ def borderExtraction():
     borderExtractionTest(roomId, originalPath, newPath)
 
     # 이미지를 서버에서 삭제
-    #os.remove(originalPath)
-    #os.remove(newPath)
+    os.remove(originalPath)
+    os.remove(newPath)
 
     return send_file('./borderImages/'+roomId+'output.jpg', as_attachment=True)
 
