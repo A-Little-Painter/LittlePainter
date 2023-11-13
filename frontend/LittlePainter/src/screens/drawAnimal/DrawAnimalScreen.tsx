@@ -120,12 +120,14 @@ export default function DrawAnimalScreen({
   }, []);
   useEffect(() => {
     if (client) {
-      client.subscribe('/sub/room/a', (message) => {
+      const randomInt = Math.floor(Math.random() * (100000 - 1 + 1) + 1);
+      setRoomId(`${randomInt}`);
+      client.subscribe(`/sub/room/${randomInt}`, (message) => {
         const messageContent = JSON.parse(message.body);
         console.log(message.body);
         setSimilarityMessage(messageContent.message);
         setSimilarityValue(messageContent.similarValue);
-        setSimilarityState(messageContent.similarState)
+        setSimilarityState(messageContent.similarState);
       });
     }
   }, [client]);
@@ -149,6 +151,7 @@ export default function DrawAnimalScreen({
     (state: RootState) => state.draw.isTestDrawCompareModalVisible,
   );
 
+  const [roomId, setRoomId] = useState<string>('');
   const [animalId] = useState<number>(route.params.animalId);
   const [animalType] = useState<string>(route.params.animalType);
   const [originImage] = useState<string>(route.params.originImage);
@@ -215,7 +218,7 @@ export default function DrawAnimalScreen({
     try {
       const response = await animalCheckSimilarity(
         // `abc${randomInt}`,
-        'a',
+        roomId,
         captureBorderImagePath,
         compareImagePath,
       );
@@ -362,6 +365,8 @@ export default function DrawAnimalScreen({
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
     navigation.navigate('ColoringAnimalScreen', {
+      roomId: roomId,
+      captureBorderImagePath: captureBorderImagePath,
       animalId: animalId,
       completeLine: paths,
       animalType: animalType,

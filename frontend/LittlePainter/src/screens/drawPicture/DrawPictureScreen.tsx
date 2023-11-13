@@ -332,7 +332,7 @@ export default function DrawPictureScreen({
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
       // dispatch(handleLineThickness(10));
-      dispatch(handleLineThickness(5));
+      dispatch(handleLineThickness(10));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
