@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  ImageBackground,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -65,26 +66,30 @@ export default function SelectFairytaleScreen({
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.subContainer}>
-        {/* 상단 */}
-        <View style={styles.topContainer}>
-          <Image
-            style={styles.logoImage}
-            source={require('../../assets/images/fox.png')}
-          />
-          <Text style={styles.titleText}>동화 그리기</Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('MainScreen');
-            }}
-            style={styles.goHomeArea}>
+      <ImageBackground
+        source={require('../../assets/bgImage/fairytale.png')}
+        resizeMode="cover"
+        style={styles.backgroundImage}>
+        <View style={styles.subContainer}>
+          {/* 상단 */}
+          <View style={styles.topContainer}>
             <Image
-              source={require('../../assets/images/GVector.png')}
-              style={styles.goHome}
+              style={styles.logoImage}
+              source={require('../../assets/logo/fairy.png')}
             />
-          </TouchableOpacity>
-        </View>
-        {/* 중단 */}
+            <Text style={styles.titleText}>동화 그리기</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('MainScreen');
+              }}
+              style={styles.goHomeArea}>
+              <Image
+                source={require('../../assets/images/GVector.png')}
+                style={styles.goHome}
+              />
+            </TouchableOpacity>
+          </View>
+          {/* 중단 */}
         <View style={styles.middleContainer}>
           <ScrollView
             // ref={picturelistScrollViewRef}
@@ -121,9 +126,11 @@ export default function SelectFairytaleScreen({
                 </View>
               ))}
             </View>
-          </ScrollView>
+            </ScrollView>
+          </View>
         </View>
-      </View>
+      </ImageBackground>
+        
     </View>
   );
 }
@@ -138,6 +145,11 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '95%',
   },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   topContainer: {
     flex: 0.3,
     flexDirection: 'row',
@@ -151,6 +163,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: windowWidth * 0.11,
     height: windowWidth * 0.11,
+    resizeMode: 'contain',
   },
   titleText: {
     alignSelf: 'center',

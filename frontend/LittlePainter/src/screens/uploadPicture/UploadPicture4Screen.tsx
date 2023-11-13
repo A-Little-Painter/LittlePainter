@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   ScrollView,
+  ImageBackground,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -92,33 +93,38 @@ export default function UploadPicture4Screen({
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.subContainer}>
-        <View style={styles.middleContainer}>
-          <Image source={{uri: border_image}} style={styles.image} />
-          <View style={styles.arrow}>
-            <Text style={styles.text}>동물을 선택해주세요!</Text>
-            <AntDesign
-              name="arrowdown"
-              size={windowWidth * 0.03}
-              color={'#FF9800'}
-            />
+      <ImageBackground
+        source={require('../../assets/bgImage/upload.png')}
+        resizeMode="cover"
+        style={styles.backgroundImage}>
+        <View style={styles.subContainer}>
+          <View style={styles.middleContainer}>
+            <Image source={{uri: border_image}} style={styles.image} />
+            <View style={styles.arrow}>
+              <Text style={styles.text}>동물을 선택해주세요!</Text>
+              <AntDesign
+                name="arrowdown"
+                size={windowWidth * 0.03}
+                color={'#FF9800'}
+              />
+            </View>
+          </View>
+          <View style={styles.bot}>
+            <ScrollView horizontal>
+              {animalList.map(animal => (
+                <TouchableOpacity
+                  key={animal.id}
+                  style={[styles.button, {backgroundColor: getRandomColor()}]}
+                  onPress={() => {
+                    confirmType(animal.id, animal.urlSound);
+                  }}>
+                  <Text style={styles.buttontext}>{animal.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
         </View>
-        <View style={styles.bot}>
-          <ScrollView horizontal>
-            {animalList.map(animal => (
-              <TouchableOpacity
-                key={animal.id}
-                style={[styles.button, {backgroundColor: getRandomColor()}]}
-                onPress={() => {
-                  confirmType(animal.id, animal.urlSound);
-                }}>
-                <Text style={styles.buttontext}>{animal.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -126,12 +132,16 @@ export default function UploadPicture4Screen({
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#BAC0CA',
   },
   subContainer: {
     alignItems: 'center',
     flex: 1,
     width: '95%',
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   middleContainer: {
     flex: 3,

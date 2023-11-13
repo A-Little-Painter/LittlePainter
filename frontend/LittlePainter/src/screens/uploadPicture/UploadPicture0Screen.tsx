@@ -10,6 +10,7 @@ import {
   Alert,
   Animated,
   Easing,
+  ImageBackground,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -175,103 +176,108 @@ export default function UploadPicture0Screen({
 
   return (
     <View style={styles.mainContainer}>
-      {isLoading ? (
-        <View style={{position: 'absolute', zIndex: 1}}>
-          <Animated.Image
-            style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
-            source={require('../../assets/images/loading2.png')}
-          />
-        </View>
-      ) : null}
-      <View style={styles.subContainer}>
-        {/* 상단 */}
-        <View style={styles.topContainer}>
-          {/* 상단 좌측 */}
-          <View style={styles.topLeftContainer}>
-            <Image
-              style={styles.logoImage}
-              source={require('../../assets/images/elephant.png')}
+      <ImageBackground
+        source={require('../../assets/bgImage/upload.png')}
+        resizeMode="cover"
+        style={styles.backgroundImage}>
+        {isLoading ? (
+          <View style={{position: 'absolute', zIndex: 1}}>
+            <Animated.Image
+              style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+              source={require('../../assets/images/loading2.png')}
             />
-            <Text style={styles.titleText}>동물 사진 검색하기</Text>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('MainScreen');
-            }}
-            style={styles.goHomeArea}>
-            <Image
-              source={require('../../assets/images/VVector.png')}
-              style={styles.goHome}
-            />
-          </TouchableOpacity>
-          {/* 상단 우측 */}
-          <View style={styles.topRightContainer}>
-            {/* <Text>검색</Text> */}
-          </View>
-        </View>
-        {/* 중단 */}
-        <View style={styles.middleContainer}>
-          <View style={styles.imageArea}>
-            <View style={styles.searchImage}>
-              {!imageSource ? (
-                <Image
-                  source={require('../../assets/images/searching_dog.png')}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
-              ) : (
-                <Image
-                  source={{uri: imageSource}}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
-              )}
-            </View>
-            <View style={styles.textArea}>
-              <TextInput
-                placeholder="이름"
-                style={styles.text1}
-                maxLength={15}
-                onChangeText={text => setTitle(text)}
+        ) : null}
+        <View style={styles.subContainer}>
+          {/* 상단 */}
+          <View style={styles.topContainer}>
+            {/* 상단 좌측 */}
+            <View style={styles.topLeftContainer}>
+              <Image
+                style={styles.logoImage}
+                source={require('../../assets/logo/upload.png')}
               />
-              <TextInput
-                placeholder="한줄 소개"
-                style={styles.text2}
-                maxLength={30}
-                onChangeText={text => setDetail(text)}
-              />
+              <Text style={styles.titleText}>동물 사진 검색하기</Text>
             </View>
-          </View>
-          <View style={styles.uploadContentContainer}>
-            <TextInput
-              style={styles.searchbar}
-              placeholder="동물 이름을 입력해 주세요."
-              value={inputValue}
-              onChangeText={text => setInputValue(text)}
-              onSubmitEditing={() => {
-                goSearch(inputValue);
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('MainScreen');
               }}
-            />
-            <TouchableOpacity
-              activeOpacity={1}
-              style={styles.searchMark}
-              onPress={() => {
-                goSearch(inputValue);
-              }}>
-              <IconFontAwesome name="search" size={windowWidth * 0.03} />
+              style={styles.goHomeArea}>
+              <Image
+                source={require('../../assets/images/VVector.png')}
+                style={styles.goHome}
+              />
             </TouchableOpacity>
+            {/* 상단 우측 */}
+            <View style={styles.topRightContainer}>
+              {/* <Text>검색</Text> */}
+            </View>
           </View>
-          <View style={styles.btnArea}>
-            <TouchableOpacity
-              style={styles.uploadButton}
-              onPress={() => {
-                uploadPicture1();
-              }}>
-              <Text style={styles.uploadText}>올리기</Text>
-            </TouchableOpacity>
+          {/* 중단 */}
+          <View style={styles.middleContainer}>
+            <View style={styles.imageArea}>
+              <View style={styles.searchImage}>
+                {!imageSource ? (
+                  <Image
+                    source={require('../../assets/images/searching_dog.png')}
+                    style={styles.image}
+                    resizeMode="contain"
+                  />
+                ) : (
+                  <Image
+                    source={{uri: imageSource}}
+                    style={styles.image}
+                    resizeMode="contain"
+                  />
+                )}
+              </View>
+              <View style={styles.textArea}>
+                <TextInput
+                  placeholder="이름"
+                  style={styles.text1}
+                  maxLength={15}
+                  onChangeText={text => setTitle(text)}
+                />
+                <TextInput
+                  placeholder="한줄 소개"
+                  style={styles.text2}
+                  maxLength={30}
+                  onChangeText={text => setDetail(text)}
+                />
+              </View>
+            </View>
+            <View style={styles.uploadContentContainer}>
+              <TextInput
+                style={styles.searchbar}
+                placeholder="동물 이름을 입력해 주세요."
+                value={inputValue}
+                onChangeText={text => setInputValue(text)}
+                onSubmitEditing={() => {
+                  goSearch(inputValue);
+                }}
+              />
+              <TouchableOpacity
+                activeOpacity={1}
+                style={styles.searchMark}
+                onPress={() => {
+                  goSearch(inputValue);
+                }}>
+                <IconFontAwesome name="search" size={windowWidth * 0.03} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.btnArea}>
+              <TouchableOpacity
+                style={styles.uploadButton}
+                onPress={() => {
+                  uploadPicture1();
+                }}>
+                <Text style={styles.uploadText}>올리기</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -279,12 +285,16 @@ export default function UploadPicture0Screen({
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#BAC0CA',
   },
   subContainer: {
     alignSelf: 'center',
     flex: 1,
     width: '95%',
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   topContainer: {
     flex: 0.3,

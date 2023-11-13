@@ -12,6 +12,7 @@ import {
   Easing,
   ScrollView,
   ToastAndroid,
+  ImageBackground,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -67,7 +68,9 @@ export default function SelectPictureScreen({
   const [value, setValue] = useState(0);
   const [items, setItems] = useState([]);
   // const [friendsPictures, setFriendsPictures] = useState<FriendPictureType[]>([{"friendsAnimalId": 1, "originalImageUrl": "https://littlepainter.s3.ap-northeast-2.amazonaws.com/profile-icon/frog.png", "title": "ss 토끼", "userEmail": "email"}]);
-  const [friendsPictures, setFriendsPictures] = useState<FriendPictureType[]>([]);
+  const [friendsPictures, setFriendsPictures] = useState<FriendPictureType[]>(
+    [],
+  );
   // const [selectAnimalTypeName, setSelectAnimalTypeName] = useState<string>('');
   const [selectPage, setSelectPage] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -225,99 +228,104 @@ export default function SelectPictureScreen({
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.subContainer}>
-        {/* 상단 */}
-        <View style={styles.topContainer}>
-          {/* 상단 좌측 */}
-          <View style={styles.topLeftContainer}>
-            <Image
-              style={styles.logoImage}
-              source={require('../../assets/images/rabbitFace.png')}
-            />
-            <Text style={styles.titleText}>친구의 동물 그리기</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('MainScreen');
-            }}
-            style={styles.goHomeArea}>
-            <Image
-              source={require('../../assets/images/PVector.png')}
-              style={styles.goHome}
-            />
-          </TouchableOpacity>
-          {/* 상단 우측 */}
-          <View
-            style={[
-              styles.topRightContainer,
-              {
-                transform: [{translateX: -windowHeight * 0.25}],
-              },
-            ]}>
-            {/* <Text>검색</Text> */}
-            <View style={styles.dropdownView}>
-              <DropDownPicker
-                searchPlaceholder="동물을 찾아볼까요?"
-                searchable={true}
-                showTickIcon={false}
-                placeholder="전체"
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
+      <ImageBackground
+        source={require('../../assets/bgImage/friendAnimal.png')}
+        resizeMode="cover"
+        style={styles.backgroundImage}>
+        <View style={styles.subContainer}>
+          {/* 상단 */}
+          <View style={styles.topContainer}>
+            {/* 상단 좌측 */}
+            <View style={styles.topLeftContainer}>
+              <Image
+                style={styles.logoImage}
+                source={require('../../assets/logo/friendAnimal.png')}
               />
+              <Text style={styles.titleText}>친구의 동물 그리기</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('MainScreen');
+              }}
+              style={styles.goHomeArea}>
+              <Image
+                source={require('../../assets/images/PVector.png')}
+                style={styles.goHome}
+              />
+            </TouchableOpacity>
+            {/* 상단 우측 */}
+            <View
+              style={[
+                styles.topRightContainer,
+                {
+                  transform: [{translateX: -windowHeight * 0.25}],
+                },
+              ]}>
+              {/* <Text>검색</Text> */}
+              <View style={styles.dropdownView}>
+                <DropDownPicker
+                  searchPlaceholder="동물을 찾아볼까요?"
+                  searchable={true}
+                  showTickIcon={false}
+                  placeholder="전체"
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                />
+              </View>
             </View>
           </View>
+          <View style={styles.middleContainer}>
+            <ScrollView
+              ref={picturelistScrollViewRef}
+              style={styles.middleContainerFlatList}
+              onScroll={handleScrollEnd}>
+              <View style={styles.wrappingView}>
+                {friendsPictures.map((item, index) => (
+                  <View style={styles.pictureCard1} key={index}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        handleGoDrawPictureScreen({
+                          friendsAnimalId: item.friendsAnimalId,
+                          userEmail: item.userEmail,
+                          title: item.title,
+                          originalImageUrl: item.originalImageUrl,
+                          animalType: item.animalType,
+                        });
+                      }}
+                      style={[
+                        styles.pictureCard2,
+                        {
+                          backgroundColor:
+                            randomBackgroundColor[
+                              index >= randomBackgroundColor.length
+                                ? index % randomBackgroundColor.length
+                                : index
+                            ],
+                        },
+                      ]}>
+                      <Image
+                        style={styles.cardAnimalImage}
+                        source={{uri: item.originalImageUrl}}
+                      />
+                    </TouchableOpacity>
+                    <Text style={styles.pictureCardText}>{item.title}</Text>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
         </View>
-        <View style={styles.middleContainer}>
-          <ScrollView
-            ref={picturelistScrollViewRef}
-            style={styles.middleContainerFlatList}
-            onScroll={handleScrollEnd}>
-            <View style={styles.wrappingView}>
-              {friendsPictures.map((item, index) => (
-                <View style={styles.pictureCard1} key={index}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleGoDrawPictureScreen({
-                        friendsAnimalId: item.friendsAnimalId,
-                        userEmail: item.userEmail,
-                        title: item.title,
-                        originalImageUrl: item.originalImageUrl,
-                        animalType: item.animalType,
-                      });
-                    }}
-                    style={[
-                      styles.pictureCard2,
-                      {
-                        backgroundColor:
-                          randomBackgroundColor[
-                            index >= randomBackgroundColor.length
-                              ? index % randomBackgroundColor.length
-                              : index
-                          ],
-                      },
-                    ]}>
-                    <Image
-                      style={styles.cardAnimalImage}
-                      source={{uri: item.originalImageUrl}}
-                    />
-                  </TouchableOpacity>
-                  <Text style={styles.pictureCardText}>{item.title}</Text>
-                </View>
-              ))}
-            </View>
-          </ScrollView>
-        </View>
-      </View>
-      {isLoading ? (
-        <Animated.Image
-          style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
-          source={require('../../assets/images/loading2.png')}
-        />
-      ) : null}
+        {isLoading ? (
+          <Animated.Image
+            style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+            source={require('../../assets/images/loading2.png')}
+          />
+        ) : null}
+      </ImageBackground>
     </View>
   );
 }
@@ -325,12 +333,16 @@ export default function SelectPictureScreen({
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#FDDFE0',
   },
   subContainer: {
     alignSelf: 'center',
     flex: 1,
     width: '95%',
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   topContainer: {
     flex: 0.3,
@@ -365,6 +377,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: windowWidth * 0.11,
     height: windowWidth * 0.11,
+    resizeMode: 'contain',
   },
   titleText: {
     alignSelf: 'center',

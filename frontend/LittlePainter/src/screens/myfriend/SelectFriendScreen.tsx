@@ -14,11 +14,11 @@ import {
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
-import {animalWholeData} from '../../apis/draw/draw';
+import {friendWholeData} from '../../apis/draw/draw';
 
-type SelectAnimalScreenProps = StackScreenProps<
+type SelectFriendScreenProps = StackScreenProps<
   RootStackParams,
-  'SelectAnimalScreen'
+  'SelectFriendScreen'
 >;
 
 const windowWidth = Dimensions.get('window').width;
@@ -39,37 +39,38 @@ const randomBackgroundColor: string[] = [
   '#C3FFC9',
 ];
 
-interface Animal {
-  animalId: number;
-  animalType: string;
-  urlOriginal: string;
+interface Friend {
+  personId: number;
+  title: string;
+  originalImageUrl: string;
 }
 
-export default function SelectAnimalScreen({
+export default function SelectFriendScreen({
   navigation,
-}: SelectAnimalScreenProps) {
+}: SelectFriendScreenProps) {
   // type NameType = string | undefined;
   // const name: NameType = '동물선택하기';
-  const [wholeAnimal, setWholeAnimal] = useState<Animal[]>([]);
+  const [wholeFriend, setWholeFriend] = useState<Friend[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const handleAnimalWholeData = async () => {
+  const handleFriendWholeData = async () => {
     setIsLoading(true);
     try {
-      const response = await animalWholeData();
+      const response = await friendWholeData();
       if (response.status === 200) {
-        setWholeAnimal(response.data);
+        setWholeFriend(response.data.content);
       } else {
-        console.log('전체 동물 데이터 조회 성공', response.status);
+        console.log('전체 데이터 조회 성공', response.status);
       }
     } catch (error) {
-      console.log('전체 동물 데이터 조회 실패', error);
+      console.log('power');
+      console.log('전체 데이터 조회 실패', error);
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    handleAnimalWholeData();
+    handleFriendWholeData();
   }, []);
 
   ////// 로딩 애니메이션
@@ -100,7 +101,7 @@ export default function SelectAnimalScreen({
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
-        source={require('../../assets/bgImage/Animal.png')}
+        source={require('../../assets/bgImage/myFriend.png')}
         resizeMode="cover"
         style={styles.backgroundImage}>
         <View style={styles.subContainer}>
@@ -108,16 +109,16 @@ export default function SelectAnimalScreen({
           <View style={styles.topContainer}>
             <Image
               style={styles.logoImage}
-              source={require('../../assets/logo/animal.png')}
+              source={require('../../assets/logo/friend.png')}
             />
-            <Text style={styles.titleText}>동물 그리기</Text>
+            <Text style={styles.titleText}>내 친구 그리기</Text>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('MainScreen');
               }}
               style={styles.goHomeArea}>
               <Image
-                source={require('../../assets/images/BVector.png')}
+                source={require('../../assets/images/OVector.png')}
                 style={styles.goHome}
               />
             </TouchableOpacity>
@@ -127,14 +128,14 @@ export default function SelectAnimalScreen({
           <View style={styles.middleContainer}>
             <ScrollView style={styles.middleContainerFlatList}>
               <View style={styles.wrappingView}>
-                {wholeAnimal.map((item, index) => (
+                {wholeFriend.map((item, index) => (
                   <View style={styles.animalCard1} key={index}>
                     <TouchableOpacity
                       onPress={() => {
-                        navigation.navigate('DrawAnimalScreen', {
-                          animalId: item.animalId,
-                          animalType: item.animalType,
-                          originImage: item.urlOriginal,
+                        navigation.navigate('DrawFriendScreen', {
+                          personId: item.personId,
+                          title: item.title,
+                          originalImageUrl: item.originalImageUrl,
                         });
                       }}
                       style={[
@@ -150,13 +151,29 @@ export default function SelectAnimalScreen({
                       ]}>
                       <Image
                         style={styles.cardAnimalImage}
-                        source={{uri: item.urlOriginal}}
+                        source={{uri: item.originalImageUrl}}
                         // source={item.urlOriginal}
                       />
                     </TouchableOpacity>
-                    <Text style={styles.animalCardText}>{item.animalType}</Text>
+                    <Text style={styles.animalCardText}>{item.title}</Text>
                   </View>
                 ))}
+                <View style={styles.animalCard1}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('FriendUploadPicture1Screen');
+                    }}
+                    style={[
+                      styles.animalCard2,
+                      {
+                        backgroundColor: '#FFFFFF',
+                        borderWidth: 3,
+                      },
+                    ]}>
+                    <Text style={styles.childPlusText}>+</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.animalCardText} />
+                </View>
               </View>
             </ScrollView>
           </View>
@@ -175,10 +192,9 @@ export default function SelectAnimalScreen({
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#E1EBF8',
   },
   subContainer: {
-    alignSelf: 'center',
+    alignItems: 'center',
     flex: 1,
     width: '95%',
   },
@@ -236,7 +252,7 @@ const styles = StyleSheet.create({
   },
   animalCard2: {
     borderRadius: 20,
-    borderColor: 'black',
+    borderColor: '#FE7F22',
     // borderWidth: 1,
     width:
       (windowWidth * 0.95 * 0.8) / 4 - ((windowWidth * 0.95 * 0.8) / 4) * 0.1,
@@ -258,11 +274,16 @@ const styles = StyleSheet.create({
     left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
   goHomeArea: {
-    marginLeft: windowWidth * 0.51,
+    marginLeft: windowWidth * 0.447,
     marginTop: windowWidth * 0.03,
   },
   goHome: {
     height: windowWidth * 0.05,
     width: windowWidth * 0.05,
+  },
+  childPlusText: {
+    fontSize: windowWidth * 0.08,
+    color: '#D9D9D9',
+    textAlign: 'center',
   },
 });
