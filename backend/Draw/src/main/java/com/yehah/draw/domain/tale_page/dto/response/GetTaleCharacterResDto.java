@@ -1,5 +1,7 @@
 package com.yehah.draw.domain.tale_page.dto.response;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,8 +20,8 @@ public class GetTaleCharacterResDto {
 	String urlGif;
 	String urlTrace;
 	String movement;
-	Integer startX;
-	Integer startY;
-	Integer endX;
-	Integer endY;
+	BigDecimal startX;
+	BigDecimal startY;
+	BigDecimal endX;
+	BigDecimal endY;
 }
