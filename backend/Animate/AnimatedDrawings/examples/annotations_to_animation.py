@@ -1,12 +1,13 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-
 import animated_drawings.render
 import logging
 from pathlib import Path
 import sys
 import yaml
+
+
 def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None, character=None):
     """
     Given a path to a directory with character annotations, a motion configuration file, and a retarget configuration file,
@@ -16,7 +17,7 @@ def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cf
     # package character_cfg_fn, motion_cfg_fn, and retarget_cfg_fn
     animated_drawing_dict = {
         'character_cfg': str(Path(f"{char_anno_dir}/char_cfg.yaml")),
-        'motion_cfg': motion_cfg_fn,
+        'motion_cfg': str(Path(motion_cfg_fn)),
         'retarget_cfg': str(Path(retarget_cfg_fn).resolve())
     }
 
