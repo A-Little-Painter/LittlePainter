@@ -8,8 +8,6 @@ from pathlib import Path
 import sys
 import yaml
 def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None, character=None):
-    logging.debug(f"annotations_to_animation 진입 {char_anno_dir} {motion_cfg_fn} {retarget_cfg_fn} {animation_type} {character}")
-
     """
     Given a path to a directory with character annotations, a motion configuration file, and a retarget configuration file,
     creates an animation and saves it to {annotation_dir}/video.png
@@ -18,7 +16,7 @@ def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cf
     # package character_cfg_fn, motion_cfg_fn, and retarget_cfg_fn
     animated_drawing_dict = {
         'character_cfg': str(Path(f"{char_anno_dir}/char_cfg.yaml")),
-        'motion_cfg': str(Path(motion_cfg_fn).resolve()),
+        'motion_cfg': motion_cfg_fn,
         'retarget_cfg': str(Path(retarget_cfg_fn).resolve())
     }
 
