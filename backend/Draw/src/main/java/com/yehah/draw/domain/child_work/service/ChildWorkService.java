@@ -10,7 +10,7 @@ public interface ChildWorkService {
 
     // public void saveChildWork(Long workId, String name, String urlWork);
 
-    public Long saveChildWorksComm(String category, Long workId, MultipartFile imageFile, String gifUrl);
+    public Long saveChildWorksComm(String category, Long workId, String imageUrl, String gifUrl);
 
     public List<ChildWork> animalList();
 

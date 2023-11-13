@@ -27,8 +27,8 @@ public class TalePageController {
 	@GetMapping("/{taleId}")
 	public ResponseEntity<List<GetTalePagesResDto>> getTalePages(@PathVariable(name = "taleId") Long taleId){
 		log.debug("getTalePages() : taleId = {}, ", taleId);
-		List<GetTalePagesResDto> result = talePageService.getTalePagess(taleId);
-		return ResponseEntity.ok(talePageService.getTalePagess(taleId));
+		// List<GetTalePagesResDto> result = talePageService.getTalePagess(taleId);
+		return ResponseEntity.ok(talePageService.getTalePages(taleId));
 	}
 
 }
