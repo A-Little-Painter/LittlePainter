@@ -61,6 +61,9 @@ export default function ColoringFriendScreen({
 }: ColoringFriendScreenProps) {
   const dispatch = useDispatch();
   const [roomId] = useState<string>(route.params.roomId);
+  const [captureBorderImagePath] = useState<string>(
+    route.params.captureBorderImagePath,
+  );
   const [animalId] = useState<number>(route.params.animalId);
   const [animalType] = useState<string>(route.params.animalType);
   const [originImage] = useState<string>(route.params.originImage);
@@ -116,9 +119,10 @@ export default function ColoringFriendScreen({
       dispatch(handleHavingGifUrl(true));
       const response = await FriendAnimations(
         roomId,
-        animalBorderURI,
+        captureBorderImagePath,
         captureImagePath,
       );
+      console.log('이거원본', captureBorderImagePath);
       if (response.status === 200) {
         console.log('애니메이션 성공', response.data);
         setIsLoading(false);

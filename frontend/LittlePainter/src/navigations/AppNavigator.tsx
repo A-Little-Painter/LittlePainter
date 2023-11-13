@@ -111,6 +111,7 @@ export type RootStackParams = {
   };
   ColoringFriendScreen: {
     roomId: string;
+    captureBorderImagePath: string;
     animalId: number;
     completeLine: {path: string; color: string; strokeWidth: number}[];
     animalType: string;
