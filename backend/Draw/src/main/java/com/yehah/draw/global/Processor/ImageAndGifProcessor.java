@@ -50,15 +50,17 @@ public class ImageAndGifProcessor {
         }
     }
 
-    public byte[] animalConvertToGif(String animalType, byte[] imageFile){
+    public byte[] animalConvertToGif(String animalType, MultipartFile imageFile){
         bodyData.clear();
         bodyData.add("animalType", animalType);
-        bodyData.add("image", new ByteArrayResource(imageFile){
-            @Override
-            public String getFilename() throws IllegalStateException{
-                return "image.jpg";
-            }
-        });
+//        bodyData.add("image", new ByteArrayResource(imageFile){
+//            @Override
+//            public String getFilename() throws IllegalStateException{
+//                return "image.jpg";
+//            }
+//        });
+
+        bodyData.add("image", imageFile.getResource());
 
         try{
             return communicationProcessor.postMultipartAnimateMethod(bodyData, animatePath+"/animals");
