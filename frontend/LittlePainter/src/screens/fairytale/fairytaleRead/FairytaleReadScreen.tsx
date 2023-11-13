@@ -41,10 +41,6 @@ type FairytaleReadScreenProps = StackScreenProps<
 const windowWidth: number = Dimensions.get('window').width;
 const windowHeight: number = Dimensions.get('window').height;
 
-Tts.setDefaultLanguage('ko-KR');
-Tts.setDefaultRate(0.5);
-Tts.setDefaultVoice('ko-KR-SMTf00');
-
 export default function FairytaleReadScreen({
   navigation,
   route,
@@ -121,8 +117,6 @@ export default function FairytaleReadScreen({
         if (lineIndex < lineChunks.length) {
           const newLines = lineChunks.slice(lineIndex, lineIndex + 1);
           setContentLines(newLines);
-          Tts.speak(newLines[0]);
-
           lineIndex += 1;
         } else {
           clearInterval(interval);
@@ -173,7 +167,6 @@ export default function FairytaleReadScreen({
         }),
       ])
     ).start();
-
     return [moveX, moveY];
   };
 

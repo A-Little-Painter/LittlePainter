@@ -121,7 +121,9 @@ export default function DrawPictureScreen({
   }, []);
   useEffect(() => {
     if (client) {
-      client.subscribe('/sub/room/a', (message) => {
+      const randomInt = Math.floor(Math.random() * (100000 - 1 + 1) + 1);
+      setRoomId(`${randomInt}`);
+      client.subscribe(`/sub/room/${randomInt}`, (message) => {
         const messageContent = JSON.parse(message.body);
         console.log('되나',messageContent);
         setSimilarityMessage(messageContent.message);
@@ -143,6 +145,7 @@ export default function DrawPictureScreen({
 
   //////////////////////////////////////////////////////////////////////////////
   // 캡쳐 변수
+  const [roomId, setRoomId] = useState<string>('');
   const drawCaptureRef = useRef(null); //테두리 그리기 캡쳐
   const originCaptureRef = useRef(null); //원본이미지 캡쳐
   // 임시 이미지 비교 변수
@@ -221,7 +224,7 @@ export default function DrawPictureScreen({
     try {
       const response = await friendsPictureSimilarity(
         // `abc${randomInt}`,
-        'a',
+        roomId,
         captureBorderImagePath,
         compareImagePath,
       );
@@ -369,6 +372,8 @@ export default function DrawPictureScreen({
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
     navigation.navigate('ColoringPictureScreen', {
+      roomId: roomId,
+      captureBorderImagePath: captureBorderImagePath,
       pictureId: pictureId,
       pictureTitle: pictureTitle,
       completeLine: paths,

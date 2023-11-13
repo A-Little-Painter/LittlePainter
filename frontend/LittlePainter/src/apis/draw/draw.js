@@ -88,17 +88,23 @@ export const animalCheckSimilarity = async (
 // 완성된 동물 마이페이지에 저장
 export const animalSaveToMypage = async (workId, completeDrawUri, gifUrl) => {
   try {
+    console.log(workId);
     console.log(completeDrawUri);
     console.log(gifUrl);
     const accessToken = await loadATokenFromKeychain();
-    const formData = new FormData();
-    formData.append('workId', workId);
-    formData.append('imageUrl', {
-      uri: completeDrawUri,
-      type: 'image/png',
-      name: 'originalFile.png',
-    });
-    formData.append('gifUrl', JSON.stringify(gifUrl));
+    const formData = {
+      workId: workId,
+      imageUrl: completeDrawUri,
+      gifUrl: gifUrl,
+    };
+    // const formData = new FormData();
+    // formData.append('workId', workId);
+    // formData.append('imageUrl', {
+    //   uri: completeDrawUri,
+    //   type: 'image/png',
+    //   name: 'originalFile.png',
+    // });
+    // formData.append('gifUrl', JSON.stringify(gifUrl));
     // if (gifUrl !== '' && gifUrl !== undefined){
     //   formData.append('gifUrl', JSON.stringify(gifUrl));
     //   // formData.append('gifUrl', gifUrl);
@@ -109,7 +115,7 @@ export const animalSaveToMypage = async (workId, completeDrawUri, gifUrl) => {
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          // 'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${accessToken}`,
         },
       },
@@ -199,30 +205,34 @@ export const friendsPictureSimilarity = async (
   }
 };
 // 완성된 사진그리기 마이페이지에 저장
-export const friendsPictureSaveToMypage = async (
-  workId,
-  completeDrawUri,
-  gifUrl,
-) => {
+export const friendsPictureSaveToMypage = async (workId, completeDrawUri,gifUrl) => {
   try {
     const accessToken = await loadATokenFromKeychain();
-    const formData = new FormData();
-    formData.append('workId', workId);
-    formData.append('imageFile', {
-      uri: completeDrawUri,
-      type: 'image/png',
-      name: 'originalFile.png',
-    });
-    if (gifUrl !== '' && gifUrl !== undefined) {
-      formData.append('gifUrl', JSON.stringify(gifUrl));
-    }
+    console.log(workId);
+    console.log(completeDrawUri);
+    console.log(gifUrl);
+    const formData = {
+      workId: workId,
+      imageUrl: completeDrawUri,
+      gifUrl: gifUrl,
+    };
+    // const formData = new FormData();
+    // formData.append('workId', workId);
+    // formData.append('imageFile', {
+    //   uri: completeDrawUri,
+    //   type: 'image/png',
+    //   name: 'originalFile.png',
+    // });
+    // if (gifUrl !== '' && gifUrl !== undefined) {
+    //   formData.append('gifUrl', JSON.stringify(gifUrl));
+    // }
 
     const response = await axios.post(
       `${BASE_URL}/draws/child_work/friendsAnimal`,
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          // 'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${accessToken}`,
         },
       },
