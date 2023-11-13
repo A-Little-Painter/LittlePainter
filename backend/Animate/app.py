@@ -23,8 +23,10 @@ class Hello(Resource):
         }, 989, None
 
 
-def shell_create_animation(input_filename, char_anno_dir, character, animation_type):
-    cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {char_anno_dir} {character} {animation_type}"
+def shell_create_animation(input_filename, char_anno_dir, character, animation_type, title=None, no=None):
+    logging.debug(f"shell 명령어 호출_common {input_filename} {char_anno_dir} {character}")
+
+    cmd = generate_command(input_filename, char_anno_dir, character, animation_type, title, no)
     # 셸 명령 실행
     try:
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
@@ -32,6 +34,13 @@ def shell_create_animation(input_filename, char_anno_dir, character, animation_t
     except subprocess.CalledProcessError as e:
         logging.error("쉘 커맨드 수행 실패")
         return e.stderr
+
+
+def generate_command(input_filename, char_anno_dir, character, animation_type, title=None, no=None):
+    base_cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {char_anno_dir} {character} {animation_type}"
+    if animation_type == 'tales':
+        base_cmd += f" {title} {no}"
+    return base_cmd.strip()
 
 
 @api.route('/animations/comm/animals')
@@ -48,8 +57,8 @@ class Animals(Resource):
         animal_list = ['곰', '낙타', '돼지', '얼룩말', '원숭이', '코뿔소', '판다', '하마', '호랑이']
         if animal_type in animal_list:
             # 월일시분초에 따른 전용폴더에서 작업
-            char_anno_dir = f"/app/AnimatedDrawings/result/animals/{animal_type}/{datetime.now().strftime('%m%d%H%M%S')}"
-            Path(char_anno_dir).mkdir(exist_ok=True, parents=True)
+            OUTPUT_FILE_PATH = f"/app/AnimatedDrawings/result/animals/{animal_type}/{datetime.now().strftime('%m%d%H%M%S')}"
+            Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
         else:
             return {
                 "message": "동물 이름(animalType) 잘못됨"
@@ -61,14 +70,14 @@ class Animals(Resource):
         image.save(filename)
 
         # 저장한 이미지로 애니메이션 생성
-        result = shell_create_animation(filename, char_anno_dir, animal_type, 'animals')
+        result = shell_create_animation(filename, OUTPUT_FILE_PATH, animal_type, 'animals')
         logging.debug(result)
 
         # 임시로 저장한 이미지 삭제
         os.remove(filename)
 
         # 임시값 반환
-        return send_file(f"{char_anno_dir}/video.gif", mimetype='image/gif')
+        return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
 
 
 @api.route('/animations/comm/tales')
@@ -91,7 +100,7 @@ class Tales(Resource):
         image.save(filename)
 
         # 저장한 이미지로 애니메이션 생성
-        result = shell_create_animation(filename, OUTPUT_FILE_PATH, character, 'tales')
+        result = shell_create_animation(filename, OUTPUT_FILE_PATH, character, 'tales', tale_title, page_no)
         logging.debug(result)
 
         # 임시로 저장한 이미지 삭제
