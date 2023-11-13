@@ -37,8 +37,12 @@ import {talePageListInquiry, taleSaveToMypage} from '../../../apis/draw/draw';
 import TalePageScriptModal from '../../modals/TalePageScriptModal';
 import SaveDrawnToLoginModal from '../../modals/SaveDrawnToLoginModal';
 import FairytaleEndingPage from './FairytaleEndingPage';
-import {FairytaleReadScreenType, FairyTaleInfoType, CharactersInfoType} from '../fairytaleType';
-
+import {
+  FairytaleReadScreenType,
+  FairyTaleInfoType,
+  CharactersInfoType,
+} from '../fairytaleType';
+import Tts from 'react-native-tts';
 
 type FairytaleReadScreenProps = StackScreenProps<
   RootStackParams,
@@ -93,15 +97,11 @@ export default function FairytaleReadScreen({
   const isFairytaleEndingPageVisible = useSelector(
     (state: RootState) => state.tale.isFairytaleEndingPageVisible,
   );
-  const pageNum = useSelector(
-    (state: RootState) => state.tale.pageNum,
-  );
+  const pageNum = useSelector((state: RootState) => state.tale.pageNum);
   const isDrawReadDone = useSelector(
     (state: RootState) => state.tale.isDrawReadDone,
   );
-  const isReReading = useSelector(
-    (state: RootState) => state.tale.isReReading,
-  );
+  const isReReading = useSelector((state: RootState) => state.tale.isReReading);
   const taleDrawedImage = useSelector(
     (state: RootState) => state.tale.taleDrawedImage,
   );
@@ -116,7 +116,9 @@ export default function FairytaleReadScreen({
 
   const [fairytaleData, setFairytaleData] = useState<FairyTaleInfoType[]>([]);
   const [maxPage, setMaxPage] = useState<number>(1);
-  const [charactersInfo, setCharactersInfo] = useState<CharactersInfoType[]>([]);
+  const [charactersInfo, setCharactersInfo] = useState<CharactersInfoType[]>(
+    [],
+  );
 
   const handleTalePageListInquiry = async () => {
     try {
@@ -215,7 +217,12 @@ export default function FairytaleReadScreen({
   }, [dispatch]);
 
   // 움직이게 하기
-  const imageMoving = (startX:number, startY:number, endX:number, endY:number) => {
+  const imageMoving = (
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+  ) => {
     let moveX = new Animated.Value(startX);
     let moveY = new Animated.Value(startY);
     Animated.loop(
@@ -230,7 +237,7 @@ export default function FairytaleReadScreen({
           duration: 3000,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
 
     Animated.loop(
@@ -245,7 +252,7 @@ export default function FairytaleReadScreen({
           duration: 3000,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
     return [moveX, moveY];
   };
@@ -307,33 +314,41 @@ export default function FairytaleReadScreen({
               {/* 중단 중앙 */}
               <View style={styles.middleCenterContainer}>
                 {isFairytaleEndingPageVisible ? (
-                <FairytaleEndingPage fairytaleTitle={fairytaleTitle} />
-                ) : null }
-              {charactersInfo.map((item, index) => {
-                // 탐색할 taleDrawedImage 객체를 찾는다.
-                const matchedImage = taleDrawedImage.find(drawnItem => drawnItem.characterName === item.characterName);
-                const [moveX, moveY] = imageMoving(item.startX, item.startY, item.endX, item.endY);
-                // const [moveX, moveY] = imageMoving(-windowWidth / 4, 0, windowWidth / 5, -windowHeight / 4);
-                return (
-                  isDrawReadDone && matchedImage ?
-                  // 만약 isDrawReadDone이 true이고, 위에서 찾은 객체가 존재하면 그 객체의 gifUri를 사용한다.
-                  <Animated.Image
-                    key={index}
-                    source={{uri: matchedImage.contentUri.gifUri}}
-                    style={styles.fairytaleImage}
-                  />
-                  :
-                  // 그렇지 않다면 기존의 로직을 따른다.
-                  <Animated.Image
-                    key={index}
-                    source={{uri: item.urlGif ? item.urlGif : item.urlOriginal}}
-                    style={[
-                      styles.fairytaleImage,
-                      {transform: [{translateX: moveX}, {translateY: moveY}]},
-                    ]}
-                  />
-                );
-              })}
+                  <FairytaleEndingPage fairytaleTitle={fairytaleTitle} />
+                ) : null}
+                {charactersInfo.map((item, index) => {
+                  // 탐색할 taleDrawedImage 객체를 찾는다.
+                  const matchedImage = taleDrawedImage.find(
+                    drawnItem => drawnItem.characterName === item.characterName,
+                  );
+                  const [moveX, moveY] = imageMoving(
+                    item.startX,
+                    item.startY,
+                    item.endX,
+                    item.endY,
+                  );
+                  // const [moveX, moveY] = imageMoving(-windowWidth / 4, 0, windowWidth / 5, -windowHeight / 4);
+                  return isDrawReadDone && matchedImage ? (
+                    // 만약 isDrawReadDone이 true이고, 위에서 찾은 객체가 존재하면 그 객체의 gifUri를 사용한다.
+                    <Animated.Image
+                      key={index}
+                      source={{uri: matchedImage.contentUri.gifUri}}
+                      style={styles.fairytaleImage}
+                    />
+                  ) : (
+                    // 그렇지 않다면 기존의 로직을 따른다.
+                    <Animated.Image
+                      key={index}
+                      source={{
+                        uri: item.urlGif ? item.urlGif : item.urlOriginal,
+                      }}
+                      style={[
+                        styles.fairytaleImage,
+                        {transform: [{translateX: moveX}, {translateY: moveY}]},
+                      ]}
+                    />
+                  );
+                })}
               </View>
               {/* 중단 우측 */}
               <View style={styles.middleRightContainer}>
@@ -385,10 +400,9 @@ export default function FairytaleReadScreen({
               </View>
             </View>
             {/* 하단 */}
-            {isFairytaleEndingPageVisible ?
-              (isDrawReadDone && !isReReading)
-                ?
-                (<View style={styles.bottomContainerEndingToRereading}>
+            {isFairytaleEndingPageVisible ? (
+              isDrawReadDone && !isReReading ? (
+                <View style={styles.bottomContainerEndingToRereading}>
                   {/* 다시보기 */}
                   <TouchableOpacity
                     style={styles.endingBoxToRereading}
@@ -397,11 +411,13 @@ export default function FairytaleReadScreen({
                       dispatch(handlePageNum(1));
                       dispatch(handleisFairytaleEndingPageVisible(false));
                     }}>
-                    <Text style={styles.endingBoxTextToRereading}>내가 그린 그림으로 다시보기</Text>
+                    <Text style={styles.endingBoxTextToRereading}>
+                      내가 그린 그림으로 다시보기
+                    </Text>
                   </TouchableOpacity>
-                </View>)
-                :
-                (<View style={styles.bottomContainerEnding}>
+                </View>
+              ) : (
+                <View style={styles.bottomContainerEnding}>
                   {/* 다시보기 */}
                   <TouchableOpacity
                     style={styles.endingBox}
@@ -415,8 +431,9 @@ export default function FairytaleReadScreen({
                   <TouchableOpacity style={styles.endingBox} onPress={() => {handlePressSaving();}}>
                     <Text style={styles.endingBoxText}>저장하기</Text>
                   </TouchableOpacity>
-                </View>)
-               : (
+                </View>
+              )
+            ) : (
               <View style={styles.bottomContainer}>
                 <View style={styles.bottomTextContainer}>
                   <Text style={styles.subtitles1}>{contentLines[0]}</Text>
