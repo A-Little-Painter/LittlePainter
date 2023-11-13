@@ -81,7 +81,7 @@ if __name__ == '__main__':
         # 동화 추가인자 수신
         title = sys.argv[5]
         page_no = sys.argv[6]
-        motion_cfg_fn = resource_filename(__name__, f'app/AniamtedDrawings/result/tales/{title}/{character}/motion_cfg.yaml')
+        motion_cfg_fn = resource_filename(__name__, f'../result/tales/{title}/{character}/motion_cfg.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
     elif animation_type == 'friends':
         motion_cfg_fn = resource_filename(__name__, 'config/motion/wave_hello.yaml')
