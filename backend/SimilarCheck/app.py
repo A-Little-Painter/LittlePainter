@@ -66,11 +66,20 @@ def borderExtractionTest(roomId, originalPath, newPath):
     mask = np.zeros(newImage.shape, dtype=np.uint8)
     cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
 
+    # mask = cv2.bitwise_not(mask)
+
+    #cv2.imwrite('./borderImages/' + roomId + 'output1.jpg', mask)
+
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
     result_image = cv2.bitwise_and(newImage, mask)
 
-    # 테두리 밖의 영역을 하얀색 배경으로 만들기
-    result_image[np.where((result_image == [0, 0, 0]).all(axis=2))] = [255, 255, 255]
+    #cv2.imwrite('./borderImages/' + roomId + 'output2.jpg', result_image)
+
+    # mask 영역의 검은색 부분이 있는 위치를 찾습니다.
+    black_pixels_in_mask = (mask == [0, 0, 0]).all(axis=2)
+
+    # result_image에서 mask 영역의 검은색 부분에 해당하는 영역에서만 픽셀을 하얀색으로 변경
+    result_image[black_pixels_in_mask] = [255, 255, 255]
 
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/'+roomId+'output.jpg', result_image)
@@ -156,5 +165,3 @@ def similarityCheck():
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=8600, debug=True)
-
-
