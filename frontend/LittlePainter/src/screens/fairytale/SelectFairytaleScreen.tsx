@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ImageBackground,
+  ToastAndroid,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -101,21 +102,20 @@ export default function SelectFairytaleScreen({
                 <View style={styles.pictureCard1} key={index}>
                     <TouchableOpacity
                       onPress={() => {
-                        navigation.navigate('FairytaleReadScreen', {
-                          title: item.title,
-                          taleId: item.id,
-                        });
+                        if ( item.isAvailable ){
+                          navigation.navigate('FairytaleReadScreen', {
+                            title: item.title,
+                            taleId: item.id,
+                          });
+                        } else {
+                          ToastAndroid.show(
+                            `'${item.title}' 동화는 아직 준비중인 동화에요.`,
+                            ToastAndroid.SHORT,
+                          );
+                        }
                       }}
                       style={[
                         styles.pictureCard2,
-                        // {
-                        //   backgroundColor:
-                        //     randomBackgroundColor[
-                        //       index >= randomBackgroundColor.length
-                        //         ? index % randomBackgroundColor.length
-                        //         : index
-                        //     ],
-                        // },
                       ]}>
                       <ImageBackground
                         source={{uri: item.urlCover}}
@@ -135,7 +135,6 @@ export default function SelectFairytaleScreen({
           </View>
         </View>
       </ImageBackground>
-        
     </View>
   );
 }

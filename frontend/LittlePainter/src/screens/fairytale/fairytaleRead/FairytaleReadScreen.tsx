@@ -223,18 +223,24 @@ export default function FairytaleReadScreen({
     endX: number,
     endY: number,
   ) => {
-    let moveX = new Animated.Value(startX);
-    let moveY = new Animated.Value(startY);
+    // let moveX = new Animated.Value(startX);
+    // let moveY = new Animated.Value(startY);
+    const tmpstartX = 0;
+    const tmpstartY = -windowHeight * 0.65 * 0.25;
+    let moveX = new Animated.Value(tmpstartX);
+    let moveY = new Animated.Value(tmpstartY);
     Animated.loop(
       Animated.sequence([
         Animated.timing(moveX, {
-          toValue: endX,
-          duration: 3000,
+          // toValue: endX,
+          toValue: tmpstartX,
+          duration: 1000,
           useNativeDriver: true,
         }),
         Animated.timing(moveX, {
-          toValue: startX,
-          duration: 3000,
+          // toValue: startX,
+          toValue: tmpstartX,
+          duration: 1000,
           useNativeDriver: true,
         }),
       ]),
@@ -243,13 +249,15 @@ export default function FairytaleReadScreen({
     Animated.loop(
       Animated.sequence([
         Animated.timing(moveY, {
-          toValue: endY,
-          duration: 3000,
+          // toValue: endY,
+          toValue: tmpstartY,
+          duration: 1000,
           useNativeDriver: true,
         }),
         Animated.timing(moveY, {
-          toValue: startY,
-          duration: 3000,
+          // toValue: startY,
+          toValue: tmpstartY,
+          duration: 1000,
           useNativeDriver: true,
         }),
       ]),
@@ -372,19 +380,26 @@ export default function FairytaleReadScreen({
                             dispatch(handlePageNum(1));
                           }
                       } else if (!isDrawReadDone && !isReReading){
-                          // 다 그리지도 않고, 읽기 중도 아니라면
-                          if (fairytaleData[pageNum - 1].drawing) {
-                            const characterPageId = fairytaleData[pageNum - 1].talePageId;
-                            navigation.navigate(
-                              'DrawFairytaleScreen',
-                              {charactersInfo, fairytaleTitle: fairytaleTitle, characterPageId}
-                            );
-                          } else if (maxPage > pageNum) {
+                          if (maxPage > pageNum){
                             dispatch(handlePageNum(pageNum + 1));
-                          } else if (maxPage === pageNum) {
+                          } else if (maxPage === pageNum){
                             dispatch(handleIsDrawReadDone(true));
-                            dispatch(handleisFairytaleEndingPageVisible(true));
+                            dispatch(handleIsReReading(true));
+                            dispatch(handlePageNum(1));
                           }
+                          // // 다 그리지도 않고, 읽기 중도 아니라면
+                          // if (fairytaleData[pageNum - 1].drawing) {
+                          //   const characterPageId = fairytaleData[pageNum - 1].talePageId;
+                          //   navigation.navigate(
+                          //     'DrawFairytaleScreen',
+                          //     {charactersInfo, fairytaleTitle: fairytaleTitle, characterPageId}
+                          //   );
+                          // } else if (maxPage > pageNum) {
+                          //   dispatch(handlePageNum(pageNum + 1));
+                          // } else if (maxPage === pageNum) {
+                          //   dispatch(handleIsDrawReadDone(true));
+                          //   dispatch(handleisFairytaleEndingPageVisible(true));
+                          // }
                       }
                     }}
                     style={styles.xCircle}>
@@ -519,8 +534,8 @@ const styles = StyleSheet.create({
   fairytaleImage: {
     // backgroundColor: 'red',
     position: 'absolute',
-    height: windowHeight * 0.65 * 0.35,
-    width: windowHeight * 0.65 * 0.35,
+    height: windowHeight * 0.65 * 0.5,
+    width: windowHeight * 0.65 * 0.5,
     resizeMode: 'contain',
   },
   // fairytaleImage: {

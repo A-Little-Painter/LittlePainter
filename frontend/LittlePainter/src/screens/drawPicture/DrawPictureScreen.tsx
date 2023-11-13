@@ -483,7 +483,7 @@ export default function DrawPictureScreen({
           ref={originCaptureRef}
           options={{
             fileName: 'originImageCapture',
-            format: 'png',
+            format: 'jpg',
             quality: 1,
           }}>
           {pictureBorderURI === '' ? null : (
