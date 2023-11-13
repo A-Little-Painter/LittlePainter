@@ -156,6 +156,7 @@ export default function DrawFairytaleScreen({
   // 동화 그리기 변수
   const [roomId, setRoomId] = useState<string>('');
   const [fairytaleTitle, setFairytaleTitle] = useState<string>(route.params.fairytaleTitle);
+  const [characterPageId, setCharacterPageId] = useState<number>(route.params.characterPageId);
   const [charactersInfo, setCharactersInfo] = useState<CharactersInfoType[]>(route.params.charactersInfo);
   const [characterId, setCharacterId] = useState<CharactersInfoType['taleCharacterid']>(route.params.charactersInfo[0].taleCharacterid);
   const [characterOriginImageUri, setCharacterOriginImageUri] = useState<CharactersInfoType['urlOriginal']>(
@@ -369,6 +370,7 @@ export default function DrawFairytaleScreen({
         roomId: roomId,
         captureBorderImagePath: captureBorderImagePath,
         fairytaleTitle: fairytaleTitle,
+        characterPageId: characterPageId,
         charactersInfo: charactersInfo,
         completeLine: paths,
         characterId: characterId,

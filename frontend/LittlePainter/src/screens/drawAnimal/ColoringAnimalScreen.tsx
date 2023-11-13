@@ -133,24 +133,24 @@ export default function ColoringAnimalScreen({
         console.log(
           'gifUrl:',
           response.data.gifUrl,
-          'gifUrl:',
+          'imageUrl:',
           response.data.imageUrl,
         );
         handleGoComplete(response.data.gifUrl, response.data.imageUrl);
       } else {
         console.log('동물 애니메이션 실패', response.status);
-        // ToastAndroid.show(
-        //   '동물 친구가 움직일 수가 없어요ㅠㅠ',
-        //   ToastAndroid.LONG,
-        // );
+        ToastAndroid.show(
+          '동물 친구가 움직일 수가 없어요ㅠㅠ',
+          ToastAndroid.LONG,
+        );
         handleGoComplete('', '');
       }
     } catch (error) {
       console.log('동물 애니메이션 실패', error);
-      // ToastAndroid.show(
-      //   '동물 친구가 움직일 수가 없어요ㅠㅠ',
-      //   ToastAndroid.LONG,
-      // );
+      ToastAndroid.show(
+        '동물 친구가 움직일 수가 없어요ㅠㅠ',
+        ToastAndroid.LONG,
+      );
       handleGoComplete('', '');
     }
     setIsLoading(false);

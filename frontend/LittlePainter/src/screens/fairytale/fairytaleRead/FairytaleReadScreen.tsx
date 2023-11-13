@@ -10,6 +10,8 @@ import {
   Text,
   TouchableOpacity,
   Animated,
+  ToastAndroid,
+  BackHandler,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../../navigations/AppNavigator';
@@ -27,8 +29,13 @@ import {
   handleTaleDrawedImageInitial,
   // handleTaleDrawedImage,
 } from '../../../redux/slices/tale/tale';
-import {talePageListInquiry} from '../../../apis/draw/draw';
+import {
+  handleisSaveDrawnToLoginModalVisible,
+  handleHavingGifUrl,
+} from '../../../redux/slices/draw/draw';
+import {talePageListInquiry, taleSaveToMypage} from '../../../apis/draw/draw';
 import TalePageScriptModal from '../../modals/TalePageScriptModal';
+import SaveDrawnToLoginModal from '../../modals/SaveDrawnToLoginModal';
 import FairytaleEndingPage from './FairytaleEndingPage';
 import {FairytaleReadScreenType, FairyTaleInfoType, CharactersInfoType} from '../fairytaleType';
 
@@ -46,7 +53,37 @@ export default function FairytaleReadScreen({
   route,
 }: FairytaleReadScreenProps) {
   ///////////////////////////
-
+  // 뒤로가기 변수
+  // 뒤로가기 변수
+  const [backHandleNum, setBackHandleNum] = useState<number>(0);
+  //뒤로가기 2번시 뒤로가기
+  useEffect(() => {
+    const backAction = () => {
+      if (navigation.isFocused()) {
+        if (backHandleNum === 0) {
+          setBackHandleNum(1);
+          ToastAndroid.show(
+            '뒤로가기를 한 번 더 누르면 동화 선택 페이지로 돌아갑니다.',
+            ToastAndroid.SHORT,
+          );
+          setTimeout(() => {
+            setBackHandleNum(0);
+          }, 1000);
+          return true; // 뒤로가기 이벤트 무시하지 않도록 설정
+        } else if (backHandleNum === 1) {
+          dispatch(handlePageNum(1));
+          navigation.navigate('SelectFairytaleScreen');
+        }
+        return true;
+      }
+      return false; // 다른 페이지에서는 뒤로가기 이벤트를 처리하지 않음
+    };
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove();
+  }, [backHandleNum, navigation]);
   ///////////////////////////
 
   const dispatch = useDispatch();
@@ -68,6 +105,11 @@ export default function FairytaleReadScreen({
   const taleDrawedImage = useSelector(
     (state: RootState) => state.tale.taleDrawedImage,
   );
+  const isSaveDrawnToLoginModalVisible = useSelector(
+    (state: RootState) => state.draw.isSaveDrawnToLoginModalVisible,
+  );
+  const [isSavedImage, setIsSavedImage] = useState<boolean>(false);
+  const isLogin = useSelector((state: RootState) => state.user.isLogin);
   const [fairytaleTitle] = useState<FairytaleReadScreenType['title']>(route.params.title);
   const [taleId] = useState<FairytaleReadScreenType['taleId']>(route.params.taleId);
   const [contentLines, setContentLines] = useState<string[]>([]);
@@ -84,7 +126,8 @@ export default function FairytaleReadScreen({
         // console.log('동화 페이지 전체 데이터 조회하기 성공', response.data);
         console.log('동화 페이지 전체 데이터 조회하기 성공');
         setFairytaleData(response.data);
-        console.log(response.data[0].characters);
+        console.log(response.data);
+        // console.log(response.data[0].characters);
         // console.log(response.data);
         if (response.data.length) {
           setMaxPage(response.data.length);
@@ -96,6 +139,43 @@ export default function FairytaleReadScreen({
       console.log('동화 페이지 전체 데이터 조회하기 실패', error);
     }
   };
+
+  function handlePressSaving() {
+    if (isLogin && !isSavedImage) {
+      handleTaleSaveToMypage();
+    } else if (isLogin && isSavedImage) {
+      ToastAndroid.show(
+        '내가 그린 그림은 이미 저장되었어요🐣',
+        ToastAndroid.SHORT,
+      );
+    } else {
+      dispatch(handleisSaveDrawnToLoginModalVisible(true));
+    }
+  }
+
+  const handleTaleSaveToMypage = async () => {
+    try {
+      const response = await taleSaveToMypage(taleId, taleDrawedImage);
+      if (response.status === 200) {
+        console.log('동화 그림 마이페이지에 저장하기 저장', response.data);
+        ToastAndroid.show(
+          '내가 그린 동화 친구들이 저장되었어요🐇',
+          ToastAndroid.SHORT,
+        );
+        setIsSavedImage(true);
+        dispatch(handleHavingGifUrl(false));
+      } else {
+        console.log('동화 그림 마이페이지에 저장하기 실패', response.status);
+      }
+    } catch (error){
+      console.log('동화 그림 마이페이지에 저장하기 실패', error);
+    }
+  };
+  useEffect(() => {
+    return () => {
+      dispatch(handleHavingGifUrl(false));
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(handleIsDrawReadDone(false));
@@ -279,9 +359,10 @@ export default function FairytaleReadScreen({
                       } else if (!isDrawReadDone && !isReReading){
                           // 다 그리지도 않고, 읽기 중도 아니라면
                           if (fairytaleData[pageNum - 1].drawing) {
+                            const characterPageId = fairytaleData[pageNum - 1].talePageId;
                             navigation.navigate(
                               'DrawFairytaleScreen',
-                              { charactersInfo, fairytaleTitle: fairytaleTitle }
+                              {charactersInfo, fairytaleTitle: fairytaleTitle, characterPageId}
                             );
                           } else if (maxPage > pageNum) {
                             dispatch(handlePageNum(pageNum + 1));
@@ -331,7 +412,7 @@ export default function FairytaleReadScreen({
                     <Text style={styles.endingBoxText}>다시보기</Text>
                   </TouchableOpacity>
                   {/* 저장하기 */}
-                  <TouchableOpacity style={styles.endingBox} onPress={() => {}}>
+                  <TouchableOpacity style={styles.endingBox} onPress={() => {handlePressSaving();}}>
                     <Text style={styles.endingBoxText}>저장하기</Text>
                   </TouchableOpacity>
                 </View>)
@@ -364,6 +445,7 @@ export default function FairytaleReadScreen({
           pageContent={fairytaleData[pageNum - 1].narration.split('\n')}
         />
       ) : null}
+      {isSaveDrawnToLoginModalVisible ? <SaveDrawnToLoginModal /> : null}
     </View>
   );
 }

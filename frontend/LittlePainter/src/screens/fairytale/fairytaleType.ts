@@ -23,6 +23,7 @@ export interface CharactersInfoType {
 export interface DrawFairytaleScreenType {
   charactersInfo: FairyTaleInfoType['characters'];
   fairytaleTitle: string;
+  characterPageId: number;
 }
 
 export interface TaleListInquiryType {
@@ -69,6 +70,7 @@ export interface ColoringFairytaleScreenType {
   roomId: string;
   captureBorderImagePath: string;
   fairytaleTitle: string;
+  characterPageId: number;
   charactersInfo: CharactersInfoType[];
   completeLine: {path: string; color: string; strokeWidth: number}[];
   characterId: number;

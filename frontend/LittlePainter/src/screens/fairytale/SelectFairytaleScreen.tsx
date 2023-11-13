@@ -99,28 +99,33 @@ export default function SelectFairytaleScreen({
             <View style={styles.wrappingView}>
               {fairytale.map((item, index) => (
                 <View style={styles.pictureCard1} key={index}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate('FairytaleReadScreen', {
-                        title: item.title,
-                        taleId: item.id,
-                      });
-                    }}
-                    style={[
-                      styles.pictureCard2,
-                      {
-                        backgroundColor:
-                          randomBackgroundColor[
-                            index >= randomBackgroundColor.length
-                              ? index % randomBackgroundColor.length
-                              : index
-                          ],
-                      },
-                    ]}>
-                    <Image
-                      style={styles.cardFairytaleImage}
-                      source={{uri: item.urlCover}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('FairytaleReadScreen', {
+                          title: item.title,
+                          taleId: item.id,
+                        });
+                      }}
+                      style={[
+                        styles.pictureCard2,
+                        // {
+                        //   backgroundColor:
+                        //     randomBackgroundColor[
+                        //       index >= randomBackgroundColor.length
+                        //         ? index % randomBackgroundColor.length
+                        //         : index
+                        //     ],
+                        // },
+                      ]}>
+                      <ImageBackground
+                        source={{uri: item.urlCover}}
+                        resizeMode="cover"
+                        style={styles.taleImage}>
+                      {/* <Image
+                        style={styles.cardFairytaleImage}
+                        source={{uri: item.urlCover}}
+                      /> */}
+                    </ImageBackground>
                   </TouchableOpacity>
                   <Text style={styles.fairytaleCardText}>{item.title}</Text>
                 </View>
@@ -147,6 +152,10 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  taleImage: {
     width: '100%',
     height: '100%',
   },
@@ -182,31 +191,32 @@ const styles = StyleSheet.create({
   },
   pictureCard1: {
     marginVertical: windowWidth * 0.01,
-    marginHorizontal: ((windowWidth * 0.9 * 0.95) / 4) * 0.04999,
+    marginHorizontal: ((windowWidth * 0.9 * 0.95) / 3) * 0.04999,
   },
   pictureCard2: {
+    overflow: 'hidden',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: windowWidth * 0.015,
     borderColor: 'black',
     width:
-      (windowWidth * 0.9 * 0.95) / 4 - ((windowWidth * 0.9 * 0.95) / 4) * 0.1,
+      (windowWidth * 0.9 * 0.95) / 3 - ((windowWidth * 0.9 * 0.95) / 3) * 0.1,
     height:
-      ((windowWidth * 0.9 * 0.95) / 4 -
-        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
-      0.75,
+      ((windowWidth * 0.9 * 0.95) / 3 -
+        ((windowWidth * 0.9 * 0.95) / 3) * 0.1) *
+      0.5625,
   },
-  cardFairytaleImage: {
-    alignSelf: 'center',
-    resizeMode: 'contain',
-    width:
-      ((windowWidth * 0.9 * 0.95) / 4 -
-        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
-      0.55,
-    height:
-      ((windowWidth * 0.9 * 0.95) / 4 -
-        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
-      0.55,
-  },
+  // cardFairytaleImage: {
+  //   alignSelf: 'center',
+  //   resizeMode: 'contain',
+  //   width:
+  //     ((windowWidth * 0.9 * 0.95) / 4 -
+  //       ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
+  //     0.55,
+  //   height:
+  //     ((windowWidth * 0.9 * 0.95) / 4 -
+  //       ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
+  //     0.55,
+  // },
   fairytaleCardText: {
     paddingLeft: windowWidth * 0.007,
     paddingTop: windowHeight * 0.01,

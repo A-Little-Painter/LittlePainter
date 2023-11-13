@@ -69,10 +69,12 @@ export const taleSlice = createSlice({
         pageNum: number;
         gifUri: string;
         drawUri: string;
+        characterPageId: number;
       }>,
     ) => {
       const addDrawedImage = {
         characterName: action.payload.characterName,
+        talePageId: action.payload.characterPageId,
         contentUri: {
           gifUri: action.payload.gifUri,
           drawUri: action.payload.drawUri,

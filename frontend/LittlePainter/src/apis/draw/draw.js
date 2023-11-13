@@ -344,32 +344,27 @@ export const talePageListInquiry = async taleId => {
 };
 // 동화 그림 마이페이지에 저장하기
 // talePageData에 talePageId와 urlGif, imageFile가 다 들어있음
-export const taleSaveToMypage = async (taleId, talePageData) => {
+export const taleSaveToMypage = async (taleId, taleDrawedImage) => {
   try {
     const accessToken = await loadATokenFromKeychain();
-    const formData = new FormData();
-    talePageData.forEach((data, index) => {
-      formData.append(
-        `addChildWorkTaleReqDtoList[${index}].pageId`,
-        data.pageId,
+    const formData = [];
+    taleDrawedImage.forEach((data, index) => {
+      formData.push(
+        {
+          'talePageId': data.talePageId,
+          'urlGif': data.contentUri.gifUri,
+          'urlImage': data.contentUri.drawUri,
+        }
       );
-      formData.append(
-        `addChildWorkTaleReqDtoList[${index}].gifUrl`,
-        JSON.stringify(data.urlGif),
-      );
-      formData.append(`addChildWorkTaleReqDtoList[${index}].imageFile`, {
-        uri: data.completeDrawUri,
-        type: 'image/png',
-        name: 'originalFile.png',
-      });
     });
+    console.log(formData);
 
     const response = await axios.post(
       `${BASE_URL}/draws/child_work_tale/${taleId}`,
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          // 'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${accessToken}`,
         },
       },
