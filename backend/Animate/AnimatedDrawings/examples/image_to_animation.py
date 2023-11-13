@@ -79,9 +79,7 @@ if __name__ == '__main__':
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
     elif animation_type == 'tales':
         # 동화 추가인자 수신
-        title = sys.argv[5]
-        page_no = sys.argv[6]
-        motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
+        motion_cfg_fn = resource_filename(__name__, f'{char_anno_dir}/../wave_hello.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
     elif animation_type == 'friends':
         motion_cfg_fn = resource_filename(__name__, 'config/motion/wave_hello.yaml')
