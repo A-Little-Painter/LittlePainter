@@ -11,6 +11,14 @@ import DrawAnimalScreen from '../screens/drawAnimal/DrawAnimalScreen';
 import ColoringAnimalScreen from '../screens/drawAnimal/ColoringAnimalScreen';
 import CompleteDrawAnimalScreen from '../screens/drawAnimal/CompleteDrawAnimalScreen';
 
+//친구 그리기
+import SelectFriendScreen from '../screens/myfriend/SelectFriendScreen';
+import FriendUploadPicture1Screen from '../screens/myfriend/FriendUploadPicture1Screen';
+import FriendUploadPicture2Screen from '../screens/myfriend/FriendUploadPicture2Screen';
+import DrawFriendScreen from '../screens/myfriend/DrawFriendScreen';
+import ColoringFriendScreen from '../screens/myfriend/ColoringFriendScreen';
+import CompleteDrawFriendScreen from '../screens/myfriend/CompleteDrawFriendScreen';
+
 // 사진그리기
 import SelectPictureScreen from '../screens/drawPicture/SelectPictureScreen';
 import DrawPictureScreen from '../screens/drawPicture/DrawPictureScreen';
@@ -56,6 +64,8 @@ export type RootStackParams = {
   MainScreen: undefined;
   LoginScreen: undefined;
   MypageProfileScreen: undefined;
+
+  // 동물 그리기
   SelectAnimalScreen: undefined;
   DrawAnimalScreen: {
     animalId: number;
@@ -76,6 +86,33 @@ export type RootStackParams = {
     completeDrawUri: string;
     animatedGif: string;
   };
+
+  // 친구 그리기
+  SelectFriendScreen: undefined;
+  FriendUploadPicture1Screen: undefined;
+  FriendUploadPicture2Screen: undefined;
+  DrawFriendScreen: {
+    personId: number;
+    title: string;
+    originalImageUrl: string;
+  };
+  ColoringFriendScreen: {
+    roomId: string;
+    animalId: number;
+    completeLine: {path: string; color: string; strokeWidth: number}[];
+    animalType: string;
+    originImage: string;
+    animalBorderURI: string;
+    animalExplanation: string;
+  };
+  CompleteDrawFriendScreen: {
+    animalId: number;
+    animalType: string;
+    completeDrawUri: string;
+    animatedGif: string;
+  };
+
+  // 사진 그리기
   SelectPictureScreen: undefined;
   DrawPictureScreen: {
     friendsAnimalInfo: {
@@ -100,6 +137,7 @@ export type RootStackParams = {
     completeDrawUri: string;
     animatedGif: string;
   };
+
   // 동화 그리기
   SelectFairytaleScreen: undefined;
   DrawFairytaleScreen: undefined;
@@ -167,6 +205,27 @@ export default function AppNavigator() {
       <RootStack.Screen
         name="CompleteDrawAnimalScreen"
         component={CompleteDrawAnimalScreen}
+      />
+      <RootStack.Screen
+        name="SelectFriendScreen"
+        component={SelectFriendScreen}
+      />
+      <RootStack.Screen
+        name="FriendUploadPicture1Screen"
+        component={FriendUploadPicture1Screen}
+      />
+      <RootStack.Screen
+        name="FriendUploadPicture2Screen"
+        component={FriendUploadPicture2Screen}
+      />
+      <RootStack.Screen name="DrawFriendScreen" component={DrawFriendScreen} />
+      <RootStack.Screen
+        name="ColoringFriendScreen"
+        component={ColoringFriendScreen}
+      />
+      <RootStack.Screen
+        name="CompleteDrawFriendScreen"
+        component={CompleteDrawFriendScreen}
       />
       <RootStack.Screen
         name="SelectPictureScreen"

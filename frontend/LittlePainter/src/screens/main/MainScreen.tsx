@@ -204,6 +204,34 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   </View>
                 </TouchableOpacity>
               </TouchableOpacity>
+              {/* 내사진선택카드 */}
+              <TouchableOpacity
+                style={[styles.cardFrame, {backgroundColor: '#FE7F22'}]}
+                onPress={() => {
+                  navigation.navigate('SelectFriendScreen');
+                }}>
+                <View style={styles.cardFrame1}>
+                  <Text style={styles.cardText}>
+                    <Text style={styles.cardTextBold}>내 사진</Text> 그리기
+                  </Text>
+                </View>
+                <View style={styles.cardFrame2}>
+                  <Image
+                    style={styles.cardImage}
+                    source={require('../../assets/images/talesMain.png')}
+                  />
+                </View>
+                <TouchableOpacity style={styles.cardFrame3}>
+                  <View style={styles.playButtonCircle}>
+                    <Text>
+                      <IconFontAwesome5
+                        name="question"
+                        size={windowWidth * 0.03}
+                      />
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </TouchableOpacity>
               {/* 사진따라그리기카드 */}
               <TouchableOpacity
                 style={[styles.cardFrame, {backgroundColor: '#FE7779'}]}

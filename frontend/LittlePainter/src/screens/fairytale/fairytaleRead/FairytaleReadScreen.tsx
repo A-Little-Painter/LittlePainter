@@ -25,6 +25,7 @@ import {
 import {talePageListInquiry} from '../../../apis/draw/draw';
 import TalePageScriptModal from '../../modals/TalePageScriptModal';
 // import FairytaleEndingPage from './FairytaleEndingPage';
+import Tts from 'react-native-tts';
 
 type FairytaleReadScreenProps = StackScreenProps<
   RootStackParams,
@@ -33,6 +34,10 @@ type FairytaleReadScreenProps = StackScreenProps<
 
 const windowWidth: number = Dimensions.get('window').width;
 const windowHeight: number = Dimensions.get('window').height;
+
+Tts.setDefaultLanguage('ko-KR');
+Tts.setDefaultRate(0.5);
+Tts.setDefaultVoice('ko-KR-SMTf00');
 
 export default function FairytaleReadScreen({
   navigation,
@@ -83,6 +88,7 @@ export default function FairytaleReadScreen({
     if (fairytaleData) {
       // 그려야 할 대상의 대기 번호변경
       dispatch(handleDrawingWaitingNumber(0));
+      Tts.stop();
       // 그려야 할 페이지 수 계산
       const numToDraw = fairytaleData[pageNum - 1].characters.length;
       console.log('그려야할 페이지 수', numToDraw);
@@ -92,11 +98,14 @@ export default function FairytaleReadScreen({
         fairytaleData[pageNum - 1].narration.split('\n');
       const initialLines: string[] = lineChunks.slice(0, 1);
       setContentLines(initialLines);
+      Tts.speak(initialLines[0]);
       let lineIndex = 1;
       const interval = setInterval(() => {
         if (lineIndex < lineChunks.length) {
           const newLines = lineChunks.slice(lineIndex, lineIndex + 1);
           setContentLines(newLines);
+          Tts.speak(newLines[0]);
+
           lineIndex += 1;
         } else {
           clearInterval(interval);

@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  ImageBackground,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -123,72 +124,77 @@ export default function SelectFairytaleScreen({
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.subContainer}>
-        {/* 상단 */}
-        <View style={styles.topContainer}>
-          <Image
-            style={styles.logoImage}
-            source={require('../../assets/images/fox.png')}
-          />
-          <Text style={styles.titleText}>동화 그리기</Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('MainScreen');
-            }}
-            style={styles.goHomeArea}>
+      <ImageBackground
+        source={require('../../assets/bgImage/fairytale.png')}
+        resizeMode="cover"
+        style={styles.backgroundImage}>
+        <View style={styles.subContainer}>
+          {/* 상단 */}
+          <View style={styles.topContainer}>
             <Image
-              source={require('../../assets/images/GVector.png')}
-              style={styles.goHome}
+              style={styles.logoImage}
+              source={require('../../assets/logo/fairy.png')}
             />
-          </TouchableOpacity>
+            <Text style={styles.titleText}>동화 그리기</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('MainScreen');
+              }}
+              style={styles.goHomeArea}>
+              <Image
+                source={require('../../assets/images/GVector.png')}
+                style={styles.goHome}
+              />
+            </TouchableOpacity>
+          </View>
+          {/* 중단 */}
+          <View style={styles.middleContainer}>
+            <ScrollView
+              // ref={picturelistScrollViewRef}
+              style={styles.middleContainerFlatList}
+              // onScroll={handleScrollEnd}
+            >
+              <View style={styles.wrappingView}>
+                {fairytale.map((item, index) => (
+                  <View style={styles.pictureCard1} key={index}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('FairytaleReadScreen', {
+                          title: item.title,
+                          taleId: item.id,
+                        });
+                        // handleGoDrawPictureScreen({
+                        //   friendsAnimalId: item.friendsAnimalId,
+                        //   userEmail: item.userEmail,
+                        //   title: item.title,
+                        //   originalImageUrl: item.originalImageUrl,
+                        //   animalType: item.animalType,
+                        // });
+                      }}
+                      style={[
+                        styles.pictureCard2,
+                        {
+                          backgroundColor:
+                            randomBackgroundColor[
+                              index >= randomBackgroundColor.length
+                                ? index % randomBackgroundColor.length
+                                : index
+                            ],
+                        },
+                      ]}>
+                      <Image
+                        style={styles.cardFairytaleImage}
+                        source={{uri: item.urlCover}}
+                      />
+                    </TouchableOpacity>
+                    <Text style={styles.fairytaleCardText}>{item.title}</Text>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
         </View>
-        {/* 중단 */}
-        <View style={styles.middleContainer}>
-          <ScrollView
-            // ref={picturelistScrollViewRef}
-            style={styles.middleContainerFlatList}
-            // onScroll={handleScrollEnd}
-          >
-            <View style={styles.wrappingView}>
-              {fairytale.map((item, index) => (
-                <View style={styles.pictureCard1} key={index}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate('FairytaleReadScreen', {
-                        title: item.title,
-                        taleId: item.id,
-                      });
-                      // handleGoDrawPictureScreen({
-                      //   friendsAnimalId: item.friendsAnimalId,
-                      //   userEmail: item.userEmail,
-                      //   title: item.title,
-                      //   originalImageUrl: item.originalImageUrl,
-                      //   animalType: item.animalType,
-                      // });
-                    }}
-                    style={[
-                      styles.pictureCard2,
-                      {
-                        backgroundColor:
-                          randomBackgroundColor[
-                            index >= randomBackgroundColor.length
-                              ? index % randomBackgroundColor.length
-                              : index
-                          ],
-                      },
-                    ]}>
-                    <Image
-                      style={styles.cardFairytaleImage}
-                      source={{uri: item.urlCover}}
-                    />
-                  </TouchableOpacity>
-                  <Text style={styles.fairytaleCardText}>{item.title}</Text>
-                </View>
-              ))}
-            </View>
-          </ScrollView>
-        </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -203,6 +209,11 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '95%',
   },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   topContainer: {
     flex: 0.3,
     flexDirection: 'row',
@@ -216,6 +227,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: windowWidth * 0.11,
     height: windowWidth * 0.11,
+    resizeMode: 'contain',
   },
   titleText: {
     alignSelf: 'center',

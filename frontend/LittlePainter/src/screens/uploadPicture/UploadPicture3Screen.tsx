@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
+  ImageBackground,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -31,29 +32,34 @@ export default function UploadPicture3Screen({
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.subContainer}>
-        {/* 상단 */}
-        <View style={styles.middleContainer}>
-          <Image source={{uri: border_image}} style={styles.image} />
-          <Text style={styles.text}>{animal_type} 이(가) 맞나요?</Text>
+      <ImageBackground
+        source={require('../../assets/bgImage/upload.png')}
+        resizeMode="cover"
+        style={styles.backgroundImage}>
+        <View style={styles.subContainer}>
+          {/* 상단 */}
+          <View style={styles.middleContainer}>
+            <Image source={{uri: border_image}} style={styles.image} />
+            <Text style={styles.text}>{animal_type} 이(가) 맞나요?</Text>
+          </View>
+          <View style={styles.bot}>
+            <TouchableOpacity
+              style={styles.button1}
+              onPress={() => {
+                navigation.navigate('UploadPicture5Screen');
+              }}>
+              <Text style={styles.buttontext}>네</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button2}
+              onPress={() => {
+                navigation.navigate('UploadPicture4Screen');
+              }}>
+              <Text style={styles.buttontext}>아니오</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.bot}>
-          <TouchableOpacity
-            style={styles.button1}
-            onPress={() => {
-              navigation.navigate('UploadPicture5Screen');
-            }}>
-            <Text style={styles.buttontext}>네</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button2}
-            onPress={() => {
-              navigation.navigate('UploadPicture4Screen');
-            }}>
-            <Text style={styles.buttontext}>아니오</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -61,12 +67,16 @@ export default function UploadPicture3Screen({
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#BAC0CA',
   },
   subContainer: {
     alignItems: 'center',
     flex: 1,
     width: '95%',
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   middleContainer: {
     flex: 1,

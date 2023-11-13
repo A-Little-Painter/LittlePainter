@@ -14,20 +14,20 @@ import {
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import {useAppSelector} from '../../redux/hooks';
-import {uploadAnimalImageApi} from '../../apis/uploadPicture/uploadPicture';
+import {uploadFriendImageApi} from '../../apis/uploadPicture/uploadPicture';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-type UploadPicture5ScreenProps = StackScreenProps<
+type FriendUploadPicture2ScreenProps = StackScreenProps<
   RootStackParams,
-  'UploadPicture5Screen'
+  'FriendUploadPicture2Screen'
 >;
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default function UploadPicture5Screen({
+export default function FriendUploadPicture2Screen({
   navigation,
-}: UploadPicture5ScreenProps) {
+}: FriendUploadPicture2ScreenProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const border_image = useAppSelector(
@@ -36,24 +36,15 @@ export default function UploadPicture5Screen({
   const trace_image = useAppSelector(state => state.uploadPicture.trace_image);
   const title = useAppSelector(state => state.uploadPicture.title);
   const detail = useAppSelector(state => state.uploadPicture.detail);
-  const animal_type_num = useAppSelector(
-    state => state.uploadPicture.animal_type_num,
-  );
-  const moving = useAppSelector(state => state.uploadPicture.moving);
-  const animal_type = useAppSelector(state => state.uploadPicture.animal_type);
 
-  const addFriendsAnimalReqDto: {
+  const addFriendsReqDto: {
     title: string;
     detail: string;
-    animalTypeId: number;
-    movable: boolean;
     originalUrl: string;
     traceUrl: string;
   } = {
     title: title,
     detail: detail,
-    animalTypeId: animal_type_num,
-    movable: moving,
     originalUrl: border_image,
     traceUrl: trace_image,
   };
@@ -91,7 +82,7 @@ export default function UploadPicture5Screen({
 
   const goUpload = async () => {
     await setIsLoadingAsync(true);
-    await uploadAnimalImageApi(addFriendsAnimalReqDto);
+    await uploadFriendImageApi(addFriendsReqDto);
     setModalVisible(!modalVisible);
     navigation.navigate('MainScreen');
   };
@@ -99,7 +90,7 @@ export default function UploadPicture5Screen({
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
-        source={require('../../assets/bgImage/upload.png')}
+        source={require('../../assets/bgImage/myFriend.png')}
         resizeMode="cover"
         style={styles.backgroundImage}>
         {isLoading ? (
@@ -113,7 +104,7 @@ export default function UploadPicture5Screen({
         <View style={styles.topLeftContainer}>
           <Image
             style={styles.logoImage}
-            source={require('../../assets/logo/upload.png')}
+            source={require('../../assets/logo/friend.png')}
           />
           <Text style={styles.titleText}>동물 사진 검색하기</Text>
         </View>
@@ -130,7 +121,7 @@ export default function UploadPicture5Screen({
                   <Text style={styles.text2}>한줄설명: {detail} </Text>
                 </View>
                 <Text style={styles.text3}>
-                  {title}은(는) 귀여운 {animal_type}입니다.
+                  저는 {title}입니다, 만나서 반가워.
                 </Text>
               </View>
             </View>
@@ -188,8 +179,8 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
     flex: 1,
+    width: '95%',
   },
   backgroundImage: {
     flex: 1,
@@ -279,7 +270,7 @@ const styles = StyleSheet.create({
     marginHorizontal: windowWidth * 0.01,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#C68AEB',
+    backgroundColor: '#FE7F22',
     marginRight: windowWidth * 0.05,
   },
   buttontext: {
@@ -336,14 +327,15 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   topLeftContainer: {
+    marginTop: windowHeight * 0.03,
+    marginLeft: windowHeight * 0.03,
     flexDirection: 'row',
   },
   logoImage: {
     alignSelf: 'center',
     width: windowWidth * 0.11,
     height: windowWidth * 0.11,
-    marginTop: windowHeight * 0.03,
-    marginLeft: windowHeight * 0.03,
+    resizeMode: 'contain',
   },
   titleText: {
     alignSelf: 'center',

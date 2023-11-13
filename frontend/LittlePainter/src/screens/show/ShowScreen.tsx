@@ -105,7 +105,7 @@ export default function ShowScreen({navigation}: ShowScreenProps) {
           }}
           style={styles.goHomeArea}>
           <Image
-            source={require('../../assets/images/OVector.png')}
+            source={require('../../assets/images/YVector.png')}
             style={styles.goHome}
           />
         </TouchableOpacity>

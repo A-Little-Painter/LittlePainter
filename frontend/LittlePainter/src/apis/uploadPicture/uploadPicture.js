@@ -55,7 +55,7 @@ export const animalTypeListApi = async () => {
   }
 };
 
-export const uploadFriendImageApi = async addFriendsAnimalReqDto => {
+export const uploadAnimalImageApi = async addFriendsAnimalReqDto => {
   try {
     const token = await loadATokenFromKeychain();
     const headers = {
@@ -70,6 +70,31 @@ export const uploadFriendImageApi = async addFriendsAnimalReqDto => {
       },
     );
     console.log(addFriendsAnimalReqDto);
+    const data = response.data;
+    console.log(data);
+    return response;
+  } catch (error) {
+    console.log('fall');
+    console.error(error);
+    return error.response;
+  }
+};
+
+export const uploadFriendImageApi = async addFriendsReqDto => {
+  try {
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    console.log(addFriendsReqDto);
+    const response = await axios.post(
+      `${BASE_URL}/draws/person`,
+      addFriendsReqDto,
+      {
+        headers,
+      },
+    );
+    console.log(addFriendsReqDto);
     const data = response.data;
     console.log(data);
     return response;
