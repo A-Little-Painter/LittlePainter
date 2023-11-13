@@ -38,8 +38,8 @@ public class AnimationController {
             return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(imageFile, gifFile));
         }catch(Exception e){
             e.printStackTrace();
-            throw new RuntimeException("에러발생");
         }
+        return null;
     }
 
     @PostMapping("/tales")
