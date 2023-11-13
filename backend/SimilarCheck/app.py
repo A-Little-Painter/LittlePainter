@@ -68,7 +68,7 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # mask = cv2.bitwise_not(mask)
 
-    #cv2.imwrite('./borderImages/' + roomId + 'output1.jpg', mask)
+    # cv2.imwrite('./borderImages/' + roomId + 'output1.jpg', mask)
 
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
     result_image = cv2.bitwise_and(newImage, mask)
@@ -132,8 +132,8 @@ def borderExtraction():
     borderExtractionTest(roomId, originalPath, newPath)
 
     # 이미지를 서버에서 삭제
-    os.remove(originalPath)
-    os.remove(newPath)
+    #os.remove(originalPath)
+    #os.remove(newPath)
 
     return send_file('./borderImages/'+roomId+'output.jpg', as_attachment=True)
 
