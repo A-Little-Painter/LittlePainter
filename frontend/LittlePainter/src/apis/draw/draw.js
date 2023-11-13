@@ -81,17 +81,21 @@ export const animalCheckSimilarity = async (roomId, originBorderFileUri, compare
 // 완성된 동물 마이페이지에 저장
 export const animalSaveToMypage = async (workId, completeDrawUri, gifUrl) => {
   try {
+    console.log(completeDrawUri);
+    console.log(gifUrl);
     const accessToken = await loadATokenFromKeychain();
     const formData = new FormData();
     formData.append('workId', workId);
-    formData.append('imageFile', {
+    formData.append('imageUrl', {
       uri: completeDrawUri,
       type: 'image/png',
       name: 'originalFile.png',
     });
-    if (gifUrl !== '' && gifUrl !== undefined){
-      formData.append('gifUrl', JSON.stringify(gifUrl));
-    }
+    formData.append('gifUrl', JSON.stringify(gifUrl));
+    // if (gifUrl !== '' && gifUrl !== undefined){
+    //   formData.append('gifUrl', JSON.stringify(gifUrl));
+    //   // formData.append('gifUrl', gifUrl);
+    // }
 
     const response = await axios.post(`${BASE_URL}/draws/child_work/animal`, formData, {
       headers: {
@@ -375,7 +379,6 @@ export const taleSaveEveryDrawn = async () => {
 //animations
 // 동물 애니메이션
 export const animalAnimations = async (roomId, animalType, captureBorderImagePath, drawCaptureImageURI) => {
-  console.log(animalType, drawCaptureImageURI);
   try {
     const formData = new FormData();
     formData.append('roomId', roomId);
@@ -389,7 +392,7 @@ export const animalAnimations = async (roomId, animalType, captureBorderImagePat
     formData.append('newFile', {
       uri: drawCaptureImageURI,
       type: 'image/png',
-      name: 'originalFile.png',
+      name: 'newFile.png',
     });
 
     const response = await axios.post(

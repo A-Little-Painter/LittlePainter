@@ -60,6 +60,7 @@ export default function ColoringAnimalScreen({
   navigation,
 }: ColoringAnimalScreenProps) {
   const dispatch = useDispatch();
+  const [roomId] = useState<string>(route.params.roomId);
   const [captureBorderImagePath] = useState<string>(
     route.params.captureBorderImagePath,
   );
@@ -117,11 +118,12 @@ export default function ColoringAnimalScreen({
     try {
       dispatch(handleHavingGifUrl(true));
       const response = await animalAnimations(
-        'a',
+        roomId,
         animalType,
         captureBorderImagePath,
         captureImagePath,
       );
+      console.log('이거원본', captureBorderImagePath);
       // const response = await animalAnimations(roomId, animalType, captureBorderImagePath, captureImagePath);
       if (response.status === 200) {
         console.log('동물 애니메이션 성공', response.data);

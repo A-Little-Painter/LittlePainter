@@ -73,6 +73,7 @@ export type RootStackParams = {
     originImage: string;
   };
   ColoringAnimalScreen: {
+    roomId: string;
     captureBorderImagePath: string;
     animalId: number;
     completeLine: {path: string; color: string; strokeWidth: number}[];

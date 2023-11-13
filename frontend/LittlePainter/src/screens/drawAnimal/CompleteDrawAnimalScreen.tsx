@@ -70,6 +70,9 @@ export default function CompleteDrawAnimalScreen({
 
   const handleAnimalSaveToMypage = async () => {
     try {
+      console.log(completeDrawUri);
+      console.log(animatedGif);
+      console.log(originDrawUri);
       let sendUri = animatedGif;
       if (animatedGif === ''){
         sendUri = originDrawUri;
