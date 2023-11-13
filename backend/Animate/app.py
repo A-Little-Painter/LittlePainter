@@ -20,7 +20,7 @@ class Hello(Resource):
         value = "d106!@##"
         return {
             key: value
-        }, 201, None
+        }, 989, None
 
 
 def shell_create_animation(input_filename, output_file_path, character, animation_type, title=None, no=None):
