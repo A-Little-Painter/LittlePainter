@@ -88,17 +88,21 @@ export const animalCheckSimilarity = async (
 // 완성된 동물 마이페이지에 저장
 export const animalSaveToMypage = async (workId, completeDrawUri, gifUrl) => {
   try {
+    console.log(completeDrawUri);
+    console.log(gifUrl);
     const accessToken = await loadATokenFromKeychain();
     const formData = new FormData();
     formData.append('workId', workId);
-    formData.append('imageFile', {
+    formData.append('imageUrl', {
       uri: completeDrawUri,
       type: 'image/png',
       name: 'originalFile.png',
     });
-    if (gifUrl !== '' && gifUrl !== undefined) {
-      formData.append('gifUrl', JSON.stringify(gifUrl));
-    }
+    formData.append('gifUrl', JSON.stringify(gifUrl));
+    // if (gifUrl !== '' && gifUrl !== undefined){
+    //   formData.append('gifUrl', JSON.stringify(gifUrl));
+    //   // formData.append('gifUrl', gifUrl);
+    // }
 
     const response = await axios.post(
       `${BASE_URL}/draws/child_work/animal`,
@@ -391,17 +395,31 @@ export const taleSaveToMypage = async (taleId, talePageData) => {
 //   }
 // };
 // 동화 유사도 검사
-export const taleCheckSimilarity = async () => {
+export const taleCheckSimilarity = async (roomId, originBorderFileUri, compareBorderFileUri,) => {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/draws/tales/comm-similarity`,
-      null,
+    const formData = new FormData();
+    // formData.append('roomId', roomId);
+    formData.append('roomId', roomId);
+
+    formData.append('originalFile', {
+      uri: originBorderFileUri,
+      type: 'image/png',
+      name: 'originalFile.png',
+    });
+
+    formData.append('newFile', {
+      uri: compareBorderFileUri,
+      type: 'image/png',
+      name: 'newFile.png',
+    });
+    const response = await axios.post(`${BASE_URL}/draws/tales/similarcheck`, formData, {headers: {'Content-Type': 'multipart/form-data'}},
     );
     return response;
   } catch (error) {
-    console.log('동화 유사도 검사 실패:', error);
-    const response = error.response;
-    return response;
+    if (error.response.status !== 404){
+      console.error('동화 유사도 검사 실패:', error);
+      return error.response;
+    }
   }
 };
 
@@ -420,18 +438,23 @@ export const taleSaveEveryDrawn = async () => {
 
 //animations
 // 동물 애니메이션
-export const animalAnimations = async (animalType, drawCaptureImageURI) => {
-  console.log(animalType, drawCaptureImageURI);
+export const animalAnimations = async (roomId, animalType, captureBorderImagePath, drawCaptureImageURI) => {
   try {
     const formData = new FormData();
-    formData.append('animalType ', animalType);
+    formData.append('roomId', roomId);
+    formData.append('animalType', animalType);
 
-    formData.append('image', {
-      uri: drawCaptureImageURI,
+    formData.append('originalFile', {
+      uri: captureBorderImagePath,
       type: 'image/png',
       name: 'originalFile.png',
     });
-    console.log(formData._parts);
+    formData.append('newFile', {
+      uri: drawCaptureImageURI,
+      type: 'image/png',
+      name: 'newFile.png',
+    });
+
     const response = await axios.post(
       `${BASE_URL}/draws/animations/animals`,
       formData,
@@ -445,25 +468,29 @@ export const animalAnimations = async (animalType, drawCaptureImageURI) => {
   }
 };
 // 동화 애니메이션
-export const taleAnimations = async (
-  taleTitle,
-  pageNum,
-  drawCaptureImageURI,
-) => {
+export const taleAnimations = async (roomId, pageNum, fairytaleTitle, characterName, captureBorderImagePath, drawCaptureImageURI) => {
   try {
+    // console.log('######################################################')
+    // console.log(roomId, pageNum, fairytaleTitle, characterName);
+    // 띄어쓰기 제거함.
+    // fairytaleTitle = fairytaleTitle.replace(/\s/g, '');
+    // characterName = characterName.replace(/\s/g, '');
     const formData = new FormData();
-    formData.append('taleTitle ', taleTitle);
-    formData.append('pageNum ', pageNum);
+    formData.append('roomId', roomId);
+    formData.append('pageNumber', pageNum);
+    formData.append('title', fairytaleTitle);
+    formData.append('requestCharacter', characterName);
     formData.append('originalFile', {
-      uri: drawCaptureImageURI,
+      uri: captureBorderImagePath,
       type: 'image/png',
       name: 'originalFile.png',
     });
-    const response = await axios.post(
-      `${BASE_URL}/draws/animations/tales`,
-      formData,
-      {headers: {'Content-Type': 'multipart/form-data'}},
-    );
+    formData.append('newFile', {
+      uri: drawCaptureImageURI,
+      type: 'image/png',
+      name: 'newFile.png',
+    });
+    const response = await axios.post(`${BASE_URL}/draws/animations/tales`, formData, {headers: {'Content-Type': 'multipart/form-data'}},);
     return response;
   } catch (error) {
     console.log('동화 애니메이션 실패:', error);

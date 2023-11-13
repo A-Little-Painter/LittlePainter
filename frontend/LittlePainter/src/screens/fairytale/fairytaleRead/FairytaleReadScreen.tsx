@@ -1,12 +1,15 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
+  // Image,
   ImageBackground,
   View,
   Dimensions,
   Text,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../../navigations/AppNavigator';
@@ -18,14 +21,17 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   handleisTalePageScriptModalVisible,
   handleisFairytaleEndingPageVisible,
-  handleisDrawnFairytale,
-  handleNumberOfCharactersTodraw,
-  handleDrawingWaitingNumber,
+  handlePageNum,
+  handleIsDrawReadDone,
+  handleIsReReading,
+  handleTaleDrawedImageInitial,
+  // handleTaleDrawedImage,
 } from '../../../redux/slices/tale/tale';
 import {talePageListInquiry} from '../../../apis/draw/draw';
 import TalePageScriptModal from '../../modals/TalePageScriptModal';
-// import FairytaleEndingPage from './FairytaleEndingPage';
-import Tts from 'react-native-tts';
+import FairytaleEndingPage from './FairytaleEndingPage';
+import {FairytaleReadScreenType, FairyTaleInfoType, CharactersInfoType} from '../fairytaleType';
+
 
 type FairytaleReadScreenProps = StackScreenProps<
   RootStackParams,
@@ -43,6 +49,10 @@ export default function FairytaleReadScreen({
   navigation,
   route,
 }: FairytaleReadScreenProps) {
+  ///////////////////////////
+
+  ///////////////////////////
+
   const dispatch = useDispatch();
   const isTalePageScriptModalVisible = useSelector(
     (state: RootState) => state.tale.isTalePageScriptModalVisible,
@@ -50,28 +60,39 @@ export default function FairytaleReadScreen({
   const isFairytaleEndingPageVisible = useSelector(
     (state: RootState) => state.tale.isFairytaleEndingPageVisible,
   );
-  const isDrawnFairytale = useSelector(
-    (state: RootState) => state.tale.isDrawnFairytale,
+  const pageNum = useSelector(
+    (state: RootState) => state.tale.pageNum,
   );
-  const numberOfCharactersTodraw = useSelector(
-    (state: RootState) => state.tale.numberOfCharactersTodraw,
+  const isDrawReadDone = useSelector(
+    (state: RootState) => state.tale.isDrawReadDone,
   );
-  const [fairytaleTitle] = useState<string>(route.params.title);
-  const [taleId] = useState<number>(route.params.taleId);
+  const isReReading = useSelector(
+    (state: RootState) => state.tale.isReReading,
+  );
+  const taleDrawedImage = useSelector(
+    (state: RootState) => state.tale.taleDrawedImage,
+  );
+  const [fairytaleTitle] = useState<FairytaleReadScreenType['title']>(route.params.title);
+  const [taleId] = useState<FairytaleReadScreenType['taleId']>(route.params.taleId);
   const [contentLines, setContentLines] = useState<string[]>([]);
 
-  const [fairytaleData, setFairytaleData] = useState(null);
-  const [pageNum, setPageNum] = useState<number>(1);
+  const [fairytaleData, setFairytaleData] = useState<FairyTaleInfoType[]>([]);
   const [maxPage, setMaxPage] = useState<number>(1);
+  const [charactersInfo, setCharactersInfo] = useState<CharactersInfoType[]>([]);
 
   const handleTalePageListInquiry = async () => {
     try {
+      dispatch(handleTaleDrawedImageInitial([]));
       const response = await talePageListInquiry(taleId);
       if (response.status === 200) {
-        console.log('동화 페이지 전체 데이터 조회하기 성공', response.data);
+        // console.log('동화 페이지 전체 데이터 조회하기 성공', response.data);
+        console.log('동화 페이지 전체 데이터 조회하기 성공');
         setFairytaleData(response.data);
-        setMaxPage(response.data.length);
         console.log(response.data[0].characters);
+        // console.log(response.data);
+        if (response.data.length) {
+          setMaxPage(response.data.length);
+        }
       } else {
         console.log('동화 페이지 전체 데이터 조회하기 실패', response.status);
       }
@@ -81,26 +102,22 @@ export default function FairytaleReadScreen({
   };
 
   useEffect(() => {
+    dispatch(handleIsDrawReadDone(false));
+    dispatch(handleIsReReading(false));
     handleTalePageListInquiry();
   }, []);
 
   useEffect(() => {
-    if (fairytaleData) {
-      // 그려야 할 대상의 대기 번호변경
-      dispatch(handleDrawingWaitingNumber(0));
-      Tts.stop();
-      // 그려야 할 페이지 수 계산
-      const numToDraw = fairytaleData[pageNum - 1].characters.length;
-      console.log('그려야할 페이지 수', numToDraw);
-      dispatch(handleNumberOfCharactersTodraw(numToDraw));
+    if (fairytaleData.length !== 0) {
+      setCharactersInfo(fairytaleData[pageNum - 1].characters);
       // 자막
       const lineChunks: string[] =
         fairytaleData[pageNum - 1].narration.split('\n');
       const initialLines: string[] = lineChunks.slice(0, 1);
       setContentLines(initialLines);
-      Tts.speak(initialLines[0]);
-      let lineIndex = 1;
-      const interval = setInterval(() => {
+      let lineIndex: number = 1;
+      let interval: NodeJS.Timeout | undefined;
+      interval = setInterval(() => {
         if (lineIndex < lineChunks.length) {
           const newLines = lineChunks.slice(lineIndex, lineIndex + 1);
           setContentLines(newLines);
@@ -123,9 +140,46 @@ export default function FairytaleReadScreen({
     };
   }, [dispatch]);
 
+  // 움직이게 하기
+  const imageMoving = (startX:number, startY:number, endX:number, endY:number) => {
+    let moveX = new Animated.Value(startX);
+    let moveY = new Animated.Value(startY);
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(moveX, {
+          toValue: endX,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(moveX, {
+          toValue: startX,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(moveY, {
+          toValue: endY,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(moveY, {
+          toValue: startY,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
+    return [moveX, moveY];
+  };
+
   return (
     <View style={styles.mainContainer}>
-      {fairytaleData ? (
+      {fairytaleData.length ? (
         <ImageBackground
           // source={require('../../../assets/bgImage/taleBackground.png')}
           source={{uri: fairytaleData[pageNum - 1].urlBackground}}
@@ -140,6 +194,7 @@ export default function FairytaleReadScreen({
               {/* X버튼 */}
               <TouchableOpacity
                 onPress={() => {
+                  dispatch(handlePageNum(1));
                   navigation.navigate('MainScreen');
                 }}
                 style={styles.xCircle}>
@@ -162,7 +217,7 @@ export default function FairytaleReadScreen({
                       if (isFairytaleEndingPageVisible) {
                         dispatch(handleisFairytaleEndingPageVisible(false));
                       } else if (pageNum > 1) {
-                        setPageNum(pageNum - 1);
+                        dispatch(handlePageNum(pageNum - 1));
                       }
                     }}
                     style={styles.xCircle}>
@@ -178,33 +233,69 @@ export default function FairytaleReadScreen({
               </View>
               {/* 중단 중앙 */}
               <View style={styles.middleCenterContainer}>
-                {/* {isFairytaleEndingPageVisible ? (
-                <FairytaleEndingPage fairytaleTitle={tmptaleData[2].title} />
-              ) : (
-                <Image
-                  // source={fairytaleData[pageNum-1].imgUrl}
-                  source={fairytaleData[pageNum - 1].imgUrl}
-                  style={styles.fairytaleImage}
-                />
-              )} */}
+                {isFairytaleEndingPageVisible ? (
+                <FairytaleEndingPage fairytaleTitle={fairytaleTitle} />
+                ) : null }
+              {charactersInfo.map((item, index) => {
+                // 탐색할 taleDrawedImage 객체를 찾는다.
+                const matchedImage = taleDrawedImage.find(drawnItem => drawnItem.characterName === item.characterName);
+                const [moveX, moveY] = imageMoving(item.startX, item.startY, item.endX, item.endY);
+                // const [moveX, moveY] = imageMoving(-windowWidth / 4, 0, windowWidth / 5, -windowHeight / 4);
+                return (
+                  isDrawReadDone && matchedImage ?
+                  // 만약 isDrawReadDone이 true이고, 위에서 찾은 객체가 존재하면 그 객체의 gifUri를 사용한다.
+                  <Animated.Image
+                    key={index}
+                    source={{uri: matchedImage.contentUri.gifUri}}
+                    style={styles.fairytaleImage}
+                  />
+                  :
+                  // 그렇지 않다면 기존의 로직을 따른다.
+                  <Animated.Image
+                    key={index}
+                    source={{uri: item.urlGif ? item.urlGif : item.urlOriginal}}
+                    style={[
+                      styles.fairytaleImage,
+                      {transform: [{translateX: moveX}, {translateY: moveY}]},
+                    ]}
+                  />
+                );
+              })}
               </View>
               {/* 중단 우측 */}
               <View style={styles.middleRightContainer}>
                 {isFairytaleEndingPageVisible ? null : (
                   <TouchableOpacity
                     onPress={() => {
-                      // if (
-                      //   !isDrawnFairytale &&
-                      //   fairytaleData[pageNum - 1].drawing
-                      // ) {
-                      //   navigation.navigate('DrawFairytaleScreen');
-                      // } else if (maxPage > pageNum) {
-                      if (maxPage > pageNum) {
-                        dispatch(handleisDrawnFairytale(false));
-                        setPageNum(pageNum + 1);
-                      } else if (maxPage === pageNum) {
-                        dispatch(handleisFairytaleEndingPageVisible(true));
-                        dispatch(handleisDrawnFairytale(false));
+                      if (isDrawReadDone && isReReading) {
+                          // 다 그리고, 읽기 중이라면
+                          if (maxPage > pageNum){
+                            dispatch(handlePageNum(pageNum + 1));
+                          } else if (maxPage === pageNum){
+                            dispatch(handleisFairytaleEndingPageVisible(true));
+                          }
+                      } else if (isDrawReadDone && !isReReading){
+                          // 다 그리고, 읽기 중이 아니라면
+                          if (maxPage > pageNum){
+                            dispatch(handlePageNum(pageNum + 1));
+                          } else if (maxPage === pageNum){
+                            dispatch(handleIsDrawReadDone(true));
+                            dispatch(handleIsReReading(true));
+                            dispatch(handlePageNum(1));
+                          }
+                      } else if (!isDrawReadDone && !isReReading){
+                          // 다 그리지도 않고, 읽기 중도 아니라면
+                          if (fairytaleData[pageNum - 1].drawing) {
+                            navigation.navigate(
+                              'DrawFairytaleScreen',
+                              { charactersInfo, fairytaleTitle: fairytaleTitle }
+                            );
+                          } else if (maxPage > pageNum) {
+                            dispatch(handlePageNum(pageNum + 1));
+                          } else if (maxPage === pageNum) {
+                            dispatch(handleIsDrawReadDone(true));
+                            dispatch(handleisFairytaleEndingPageVisible(true));
+                          }
                       }
                     }}
                     style={styles.xCircle}>
@@ -220,27 +311,42 @@ export default function FairytaleReadScreen({
               </View>
             </View>
             {/* 하단 */}
-            {isFairytaleEndingPageVisible ? (
-              <View style={styles.bottomContainerEnding}>
-                {/* 다시보기 */}
-                <TouchableOpacity
-                  style={styles.endingBox}
-                  onPress={() => {
-                    setPageNum(1);
-                    dispatch(handleisFairytaleEndingPageVisible(false));
-                  }}>
-                  <Text style={styles.endingBoxText}>다시보기</Text>
-                </TouchableOpacity>
-                {/* 저장하기 */}
-                <TouchableOpacity style={styles.endingBox} onPress={() => {}}>
-                  <Text style={styles.endingBoxText}>저장하기</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
+            {isFairytaleEndingPageVisible ?
+              (isDrawReadDone && !isReReading)
+                ?
+                (<View style={styles.bottomContainerEndingToRereading}>
+                  {/* 다시보기 */}
+                  <TouchableOpacity
+                    style={styles.endingBoxToRereading}
+                    onPress={() => {
+                      dispatch(handleIsReReading(true));
+                      dispatch(handlePageNum(1));
+                      dispatch(handleisFairytaleEndingPageVisible(false));
+                    }}>
+                    <Text style={styles.endingBoxTextToRereading}>내가 그린 그림으로 다시보기</Text>
+                  </TouchableOpacity>
+                </View>)
+                :
+                (<View style={styles.bottomContainerEnding}>
+                  {/* 다시보기 */}
+                  <TouchableOpacity
+                    style={styles.endingBox}
+                    onPress={() => {
+                      dispatch(handlePageNum(1));
+                      dispatch(handleisFairytaleEndingPageVisible(false));
+                    }}>
+                    <Text style={styles.endingBoxText}>다시보기</Text>
+                  </TouchableOpacity>
+                  {/* 저장하기 */}
+                  <TouchableOpacity style={styles.endingBox} onPress={() => {}}>
+                    <Text style={styles.endingBoxText}>저장하기</Text>
+                  </TouchableOpacity>
+                </View>)
+               : (
               <View style={styles.bottomContainer}>
                 <View style={styles.bottomTextContainer}>
                   <Text style={styles.subtitles1}>{contentLines[0]}</Text>
-                  <Text style={styles.subtitles2}>{contentLines[1]}</Text>
+                  {/* <Text style={styles.subtitles2}>{contentLines[1]}</Text> */}
                 </View>
                 <View style={styles.bottomScriptContainer}>
                   <TouchableOpacity
@@ -260,7 +366,7 @@ export default function FairytaleReadScreen({
         </ImageBackground>
       ) : null}
 
-      {fairytaleData && isTalePageScriptModalVisible ? (
+      {fairytaleData.length !== 0 && isTalePageScriptModalVisible ? (
         <TalePageScriptModal
           pageContent={fairytaleData[pageNum - 1].narration.split('\n')}
         />
@@ -275,7 +381,6 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
-    // justifyContent: 'center',
   },
   subContainer: {
     alignSelf: 'center',
@@ -308,7 +413,6 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.65,
-    // backgroundColor: 'green',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -321,10 +425,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fairytaleImage: {
-    height: '100%',
-    width: '100%',
+    // backgroundColor: 'red',
+    position: 'absolute',
+    height: windowHeight * 0.65 * 0.35,
+    width: windowHeight * 0.65 * 0.35,
     resizeMode: 'contain',
   },
+  // fairytaleImage: {
+  //   height: '100%',
+  //   width: '100%',
+  //   resizeMode: 'contain',
+  // },
   middleRightContainer: {
     flex: 0.1,
     alignItems: 'center',
@@ -333,7 +444,7 @@ const styles = StyleSheet.create({
     flex: 0.2,
     flexDirection: 'row',
     alignSelf: 'center',
-    width: '95%',
+    width: '100%',
   },
   bottomContainerEnding: {
     flex: 0.2,
@@ -343,6 +454,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  bottomContainerEndingToRereading: {
+    flex: 0.2,
+    flexDirection: 'row',
+    alignSelf: 'center',
+    width: '95%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   endingBox: {
     justifyContent: 'center',
     width: windowWidth * 0.2,
@@ -350,24 +469,37 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAFFBA',
     borderRadius: windowHeight * 0.12 * 0.25,
   },
+  endingBoxToRereading: {
+    justifyContent: 'center',
+    width: windowWidth * 0.7,
+    height: windowHeight * 0.12,
+    backgroundColor: '#EAFFBA',
+    borderRadius: windowHeight * 0.12 * 0.25,
+  },
   endingBoxText: {
     fontSize: windowHeight * 0.06,
-    color: 'black',
+    color: '#000000',
+    textAlign: 'center',
+  },
+  endingBoxTextToRereading: {
+    fontSize: windowHeight * 0.06,
+    color: '#000000',
     textAlign: 'center',
   },
   bottomTextContainer: {
     borderRadius: windowHeight * 0.12 * 0.25,
     backgroundColor: '#FFFFFF',
     flex: 0.95,
+    height: windowHeight * 0.2 * 0.9,
     justifyContent: 'center',
   },
   subtitles1: {
-    paddingHorizontal: windowWidth * 0.01,
+    textAlign: 'center',
+    paddingHorizontal: windowWidth * 1 * 0.95 * 0.005,
     fontSize: windowHeight * 0.04,
     color: '#000000',
   },
   subtitles2: {
-    paddingHorizontal: windowWidth * 0.01,
     fontSize: windowHeight * 0.04,
     color: '#000000',
     alignSelf: 'flex-end',

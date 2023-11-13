@@ -23,19 +23,20 @@ import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
-import OriginPictureModal from '../modals/OriginPictureModal';
+import OriginCharacterModal from '../modals/OriginCharacterModal';
 import DrawColorPaletteModal from '../modals/DrawColorPaletteModal';
 import {
   handleLineThickness,
-  handleisOriginPictureModalVisible,
+  handleisOriginCharacterModalVisible,
   handleDrawColorSelect,
   handleisTestDrawCompareModalVisible, // 그림 임시 비교 모달
 } from '../../redux/slices/draw/draw';
 import {
-  friendsPictureBorder,
-  friendsPictureSimilarity,
+  taleCheckSimilarity,
 } from '../../apis/draw/draw';
 import TestDrawCompareModal from '../modals/TestDrawCompareModal';
+import {CharactersInfoType} from './fairytaleType';
+
 // 웹소켓 연결하기
 import SockJS from 'sockjs-client';
 import {CompatClient, Stomp} from '@stomp/stompjs';
@@ -80,9 +81,10 @@ export default function DrawFairytaleScreen({
     const connectAndSetupListeners = () => {
       newClient = Stomp.over(() => new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'));
 
-      newClient.onConnect = frame => {
+      // newClient.onConnect = (frame) => {
+      newClient.onConnect = (frame) => {
         console.log('연결됨');
-        // console.log('Connected: ' + frame);
+        console.log('Connected: ' + frame);
         setClient(newClient); // 연결 후 client 상태 업데이트
         setSocketLinked(true);
       };
@@ -121,12 +123,14 @@ export default function DrawFairytaleScreen({
   }, []);
   useEffect(() => {
     if (client) {
-      client.subscribe('/sub/room/a', (message) => {
+      const randomInt = Math.floor(Math.random() * (100000 - 1 + 1) + 1);
+      setRoomId(`${randomInt}`);
+      client.subscribe(`/sub/room/${randomInt}`, (message) => {
         const messageContent = JSON.parse(message.body);
-        console.log('되나',messageContent);
+        console.log(message.body);
         setSimilarityMessage(messageContent.message);
-        setSimilarityState(messageContent.similarState);
         setSimilarityValue(messageContent.similarValue);
+        setSimilarityState(messageContent.similarState);
       });
     }
   }, [client]);
@@ -149,16 +153,28 @@ export default function DrawFairytaleScreen({
   const isTestDrawCompareModalVisible = useSelector(
     (state: RootState) => state.draw.isTestDrawCompareModalVisible,
   );
-  const [pictureId] = useState<number>(
-    route.params.friendsAnimalInfo.friendsAnimalId,
+  // 동화 그리기 변수
+  const [roomId, setRoomId] = useState<string>('');
+  const [fairytaleTitle, setFairytaleTitle] = useState<string>(route.params.fairytaleTitle);
+  const [charactersInfo, setCharactersInfo] = useState<CharactersInfoType[]>(route.params.charactersInfo);
+  const [characterId, setCharacterId] = useState<CharactersInfoType['taleCharacterid']>(route.params.charactersInfo[0].taleCharacterid);
+  const [characterOriginImageUri, setCharacterOriginImageUri] = useState<CharactersInfoType['urlOriginal']>(
+    route.params.charactersInfo[0].urlOriginal,
   );
-  const [pictureOriginImageUri] = useState<string>(
-    route.params.friendsAnimalInfo.originalImageUrl,
-  );
-  const [pictureTitle] = useState<string>(route.params.friendsAnimalInfo.title);
-  const [animalType] = useState<string>(route.params.friendsAnimalInfo.animalType);
-  const [pictureBorderURI, setPictureBorderURI] = useState<string>('');
-  const [pictureExplanation, setPictureExplanation] = useState<string>('');
+  const [characterName, setCharacterName] = useState<CharactersInfoType['characterName']>(route.params.charactersInfo[0].characterName);
+  const [characterBorderURI, setCharacterBorderURI] = useState<CharactersInfoType['urlTrace']>(route.params.charactersInfo[0].urlTrace);
+  const [characterExplanation] = useState<string>(''); // 우선 비워두자.
+  useEffect(() => {
+    setFairytaleTitle(route.params.fairytaleTitle);
+    setCharactersInfo(route.params.charactersInfo);
+    setCharacterId(route.params.charactersInfo[0].taleCharacterid);
+    setCharacterOriginImageUri(
+      route.params.charactersInfo[0].urlOriginal,
+    );
+    setCharacterName(route.params.charactersInfo[0].characterName);
+    setCharacterBorderURI(route.params.charactersInfo[0].urlTrace);
+  }, [route.params]);
+
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
   const [captureBorderImagePath, setCaptureBorderImagePath] =
     useState<string>('');
@@ -183,8 +199,8 @@ export default function DrawFairytaleScreen({
   const isDrawLineThicknessModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
   );
-  const isOriginPictureModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginPictureModalVisible,
+  const isOriginCharacterModalVisible = useSelector(
+    (state: RootState) => state.draw.isOriginCharacterModalVisible,
   );
   // 선 색깔 및 모달
   const isDrawColorPaletteModalVisible = useSelector(
@@ -195,33 +211,12 @@ export default function DrawFairytaleScreen({
   );
 
   // 서버 통신
-  const handleFriendsPictureBorder = async () => {
-    try {
-      const response = await friendsPictureBorder(pictureId);
-      if (response.status === 200) {
-        console.log(
-          '다른 사람이 올린 사진 테두리 가져오기 성공',
-          response.data,
-        );
-        setPictureBorderURI(response.data.urlTrace);
-        setPictureExplanation(response.data.detail);
-        handleOriginCapture();
-      } else {
-        console.log(
-          '다른 사람이 올린 사진 테두리 가져오기 실패',
-          response.status,
-        );
-      }
-    } catch (error) {
-      console.log('다른 사람이 올린 사진 테두리 가져오기 실패', error);
-    }
-  };
-  const handlefriendsPictureSimilarity = async (compareImagePath: string) => {
+  const handleTaleCheckSimilarity = async (compareImagePath: string) => {
     // const randomInt = Math.floor(Math.random() * (100 - 1 + 1) + 1);
     try {
-      const response = await friendsPictureSimilarity(
+      const response = await taleCheckSimilarity(
         // `abc${randomInt}`,
-        'a',
+        roomId,
         captureBorderImagePath,
         compareImagePath,
       );
@@ -241,7 +236,7 @@ export default function DrawFairytaleScreen({
       const uri = await drawCaptureRef.current.capture();
       setCaptureImagePath(uri);
       setCanDrawCapture(false);
-      await handlefriendsPictureSimilarity(uri);
+      await handleTaleCheckSimilarity(uri);
     } catch (error) {
       setCanDrawCapture(false);
       console.error('캡쳐 에러 발생: ', error);
@@ -261,11 +256,8 @@ export default function DrawFairytaleScreen({
     setTimeout(() => {
       handleOriginCapture();
     }, 500);
-  }, [pictureBorderURI]);
+  }, [characterBorderURI]);
 
-  useEffect(() => {
-    handleFriendsPictureBorder();
-  }, []);
 
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
@@ -318,21 +310,25 @@ export default function DrawFairytaleScreen({
   };
 
   // 화면 캡쳐 동작 useEffect
+
   useEffect(() => {
     if (captureBorderImagePath !== '') {
       handleDrawCapture();
     }
   }, [paths]);
 
-  useEffect(() => {
-    dispatch(handleDrawColorSelect('#000000'));
-  }, []);
+  // useEffect(() => {
+  //   // handleOriginCapture();
+  //   dispatch(handleDrawColorSelect('#000000'));
+  // }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
       // dispatch(handleLineThickness(10));
-      dispatch(handleLineThickness(5));
+      setPaths([]);
+      dispatch(handleDrawColorSelect('#000000'));
+      dispatch(handleLineThickness(10));
     });
 
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
@@ -345,7 +341,7 @@ export default function DrawFairytaleScreen({
         if (backHandleNum === 0) {
           setBackHandleNum(1);
           ToastAndroid.show(
-            '뒤로가기를 한 번 더 누르면 선택화면으로 돌아갑니다.',
+            '뒤로가기를 한 번 더 누르면 이전으로 돌아갑니다.',
             ToastAndroid.SHORT,
           );
           setTimeout(() => {
@@ -368,14 +364,19 @@ export default function DrawFairytaleScreen({
 
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
-    navigation.navigate('ColoringPictureScreen', {
-      pictureId: pictureId,
-      pictureTitle: pictureTitle,
-      completeLine: paths,
-      pictureBorderURI: pictureBorderURI,
-      pictureExplanation: pictureExplanation,
-      pictureOriginImageUri: pictureOriginImageUri,
-      animalType: animalType,
+    navigation.navigate('ColoringFairytaleScreen', {
+      fairytaleDrawInfo: {
+        roomId: roomId,
+        captureBorderImagePath: captureBorderImagePath,
+        fairytaleTitle: fairytaleTitle,
+        charactersInfo: charactersInfo,
+        completeLine: paths,
+        characterId: characterId,
+        characterName: characterName,
+        characterBorderURI: characterBorderURI,
+        characterExplanation: characterExplanation,
+        characterOriginImageUri: characterOriginImageUri,
+      },
     });
   };
   return (
@@ -459,7 +460,7 @@ export default function DrawFairytaleScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('MainScreen');
+                navigation.goBack();
               }}
               style={styles.xCircle}>
               <Text style={styles.xText}>
@@ -481,9 +482,9 @@ export default function DrawFairytaleScreen({
             format: 'png',
             quality: 1,
           }}>
-          {pictureBorderURI === '' ? null : (
+          {characterBorderURI === '' ? null : (
             <ImageBackground
-              source={{uri: pictureBorderURI}}
+              source={{uri: characterBorderURI}}
               // source={{uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/bf8169aa1ed346d7b90eaa98767e2902_trace.png'}}
               // source={require('../../assets/images/animalImage/ovalTest.png')}
               style={styles.pictureBorderImageBackground}
@@ -543,7 +544,7 @@ export default function DrawFairytaleScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
-                dispatch(handleisOriginPictureModalVisible(true));
+                dispatch(handleisOriginCharacterModalVisible(true));
               }}>
               <Image
                 style={styles.ideaLight}
@@ -605,12 +606,12 @@ export default function DrawFairytaleScreen({
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginPictureModalVisible ? (
-        <OriginPictureModal
-          pictureTitle={pictureTitle}
-          pictureBorderURI={pictureBorderURI}
-          pictureOriginImageUri={pictureOriginImageUri}
-          pictureExplanation={pictureExplanation}
+      {isOriginCharacterModalVisible ? (
+        <OriginCharacterModal
+          characterName={characterName}
+          characterBorderURI={characterBorderURI}
+          characterOriginImageUri={characterOriginImageUri}
+          characterExplanation={characterExplanation}
         />
       ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // import React, {useState} from 'react';
 import React, {useState, useEffect} from 'react';
 import {
@@ -13,6 +14,8 @@ import {
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import {taleListInquiry} from '../../apis/draw/draw';
+// 타입
+import {TaleListInquiryType} from './fairytaleType';
 
 type SelectFairytaleScreenProps = StackScreenProps<
   RootStackParams,
@@ -21,59 +24,6 @@ type SelectFairytaleScreenProps = StackScreenProps<
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
-// const fairytale = [
-//   {
-//     id: 1,
-//     title: '방귀시합',
-//     urlCover: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     id: 2,
-//     title: '밥만 먹는 밥벌레 장군',
-//     urlCover: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     id: 3,
-//     title: '흥부 놀부',
-//     urlCover: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     id: 4,
-//     title: '콩쥐팥쥐',
-//     urlCover: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     id: 5,
-//     title: '콩쥐팥쥐',
-//     urlCover: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     id: 6,
-//     title: '콩쥐팥쥐',
-//     urlCover: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     id: 7,
-//     title: '콩쥐팥쥐',
-//     urlCover: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     id: 8,
-//     title: '콩쥐팥쥐',
-//     urlCover: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     id: 9,
-//     title: '콩쥐팥쥐',
-//     urlCover: require('../../assets/images/dinosaur.png'),
-//   },
-//   {
-//     id: 10,
-//     title: '콩쥐팥쥐',
-//     urlCover: require('../../assets/images/dinosaur.png'),
-//   },
-// ];
 
 const randomBackgroundColor: string[] = [
   '#8C80E2',
@@ -90,19 +40,10 @@ const randomBackgroundColor: string[] = [
   '#C3FFC9',
 ];
 
-interface FairytaleType {
-  id: number;
-  title: string;
-  urlCover: string;
-  animalType: string;
-}
-
 export default function SelectFairytaleScreen({
   navigation,
 }: SelectFairytaleScreenProps) {
-  // type NameType = string | undefined;
-  // const name: NameType = '동물선택하기';
-  const [fairytale, setFairytale] = useState<FairytaleType[]>([]);
+  const [fairytale, setFairytale] = useState<TaleListInquiryType['content']>([]);
 
   const handleTaleListInquiry = async () => {
     try {
@@ -110,6 +51,7 @@ export default function SelectFairytaleScreen({
       if (response.status === 200) {
         console.log('전체 동화 목록 조회하기 성공', response.data);
         setFairytale(response.data.content);
+        console.log(response.data);
       } else {
         console.log('전체 동화 목록 조회하기 실패', response.status);
       }
@@ -148,53 +90,47 @@ export default function SelectFairytaleScreen({
             </TouchableOpacity>
           </View>
           {/* 중단 */}
-          <View style={styles.middleContainer}>
-            <ScrollView
-              // ref={picturelistScrollViewRef}
-              style={styles.middleContainerFlatList}
-              // onScroll={handleScrollEnd}
-            >
-              <View style={styles.wrappingView}>
-                {fairytale.map((item, index) => (
-                  <View style={styles.pictureCard1} key={index}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate('FairytaleReadScreen', {
-                          title: item.title,
-                          taleId: item.id,
-                        });
-                        // handleGoDrawPictureScreen({
-                        //   friendsAnimalId: item.friendsAnimalId,
-                        //   userEmail: item.userEmail,
-                        //   title: item.title,
-                        //   originalImageUrl: item.originalImageUrl,
-                        //   animalType: item.animalType,
-                        // });
-                      }}
-                      style={[
-                        styles.pictureCard2,
-                        {
-                          backgroundColor:
-                            randomBackgroundColor[
-                              index >= randomBackgroundColor.length
-                                ? index % randomBackgroundColor.length
-                                : index
-                            ],
-                        },
-                      ]}>
-                      <Image
-                        style={styles.cardFairytaleImage}
-                        source={{uri: item.urlCover}}
-                      />
-                    </TouchableOpacity>
-                    <Text style={styles.fairytaleCardText}>{item.title}</Text>
-                  </View>
-                ))}
-              </View>
+        <View style={styles.middleContainer}>
+          <ScrollView
+            // ref={picturelistScrollViewRef}
+            style={styles.middleContainerFlatList}
+            // onScroll={handleScrollEnd}
+          >
+            <View style={styles.wrappingView}>
+              {fairytale.map((item, index) => (
+                <View style={styles.pictureCard1} key={index}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('FairytaleReadScreen', {
+                        title: item.title,
+                        taleId: item.id,
+                      });
+                    }}
+                    style={[
+                      styles.pictureCard2,
+                      {
+                        backgroundColor:
+                          randomBackgroundColor[
+                            index >= randomBackgroundColor.length
+                              ? index % randomBackgroundColor.length
+                              : index
+                          ],
+                      },
+                    ]}>
+                    <Image
+                      style={styles.cardFairytaleImage}
+                      source={{uri: item.urlCover}}
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.fairytaleCardText}>{item.title}</Text>
+                </View>
+              ))}
+            </View>
             </ScrollView>
           </View>
         </View>
       </ImageBackground>
+        
     </View>
   );
 }
