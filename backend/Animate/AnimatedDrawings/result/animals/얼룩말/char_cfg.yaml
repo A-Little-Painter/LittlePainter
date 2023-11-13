@@ -11,12 +11,12 @@ skeleton:
     name: hip
     parent: root
   - loc:
-      - 278
-      - 120
+      - 306
+      - 173
     name: torso
     parent: hip
   - loc:
-      - 344
+      - 306
       - 113
     name: neck
     parent: torso

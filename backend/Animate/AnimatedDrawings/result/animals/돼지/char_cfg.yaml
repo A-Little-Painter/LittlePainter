@@ -11,8 +11,8 @@ skeleton:
     name: hip
     parent: root
   - loc:
-      - 155
-      - 136
+      - 253
+      - 202
     name: torso
     parent: hip
   - loc:
