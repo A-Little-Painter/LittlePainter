@@ -123,7 +123,9 @@ export default function DrawFriendScreen({
   }, []);
   useEffect(() => {
     if (client) {
-      client.subscribe('/sub/room/a', message => {
+      const randomInt = Math.floor(Math.random() * (100000 - 1 + 1) + 1);
+      setRoomId(`${randomInt}`);
+      client.subscribe(`/sub/room/${randomInt}`, message => {
         const messageContent = JSON.parse(message.body);
         console.log(message.body);
         setSimilarityMessage(messageContent.message);
@@ -152,6 +154,7 @@ export default function DrawFriendScreen({
     (state: RootState) => state.draw.isTestDrawCompareModalVisible,
   );
 
+  const [roomId, setRoomId] = useState<string>('');
   const [personId] = useState<number>(route.params.personId);
   const [title] = useState<string>(route.params.title);
   const [originalImageUrl] = useState<string>(route.params.originalImageUrl);
@@ -218,7 +221,7 @@ export default function DrawFriendScreen({
     try {
       const response = await friendCheckSimilarity(
         // `abc${randomInt}`,
-        'a',
+        roomId,
         captureBorderImagePath,
         compareImagePath,
       );
@@ -365,11 +368,12 @@ export default function DrawFriendScreen({
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
     navigation.navigate('ColoringFriendScreen', {
-      roomId: 'a',
+      roomId: roomId,
+      captureBorderImagePath: captureBorderImagePath,
       animalId: personId,
       completeLine: paths,
       animalType: '사람',
-      originImage: captureBorderImagePath,
+      originImage: originalImageUrl,
       animalBorderURI: animalBorderURI,
       animalExplanation: animalExplanation,
     });
