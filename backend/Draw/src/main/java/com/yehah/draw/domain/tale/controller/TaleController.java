@@ -26,7 +26,7 @@ public class TaleController {
 
 	private final SimilarCheckProcessor similarCheckProcessor;
 
-	@Operation(summary = "동화 전체 목록을 조회", description = "친구의 동물 전체 목록을 페이징 처리하여 리턴한다.")
+	@Operation(summary = "동화 전체 목록을 조회", description = "동화 전체 목록을 페이징 처리하여 리턴한다.")
 	@GetMapping("")
 	public ResponseEntity<Slice<TaleListResDto>> getFriendsAnimalList(@RequestParam(value = "page", defaultValue = "0") int page){
 		log.debug("getFriendsAnimals() : page = {}, ", page);

@@ -13,5 +13,5 @@ import com.yehah.draw.domain.tale.entity.Tale;
 
 @Repository
 public interface TaleRepository extends JpaRepository<Tale, Long> {
-	Slice<TaleListResDto> findSliceBy(Pageable pageable);
+	Slice<Tale> findSliceBy(Pageable pageable);
 }
