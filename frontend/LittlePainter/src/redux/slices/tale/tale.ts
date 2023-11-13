@@ -1,20 +1,23 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import type {RootState} from '../../store';
+import {TaleDrawedImageType} from '../../../screens/fairytale/fairytaleType';
 
 interface CounterState {
   isTalePageScriptModalVisible: boolean;
   isFairytaleEndingPageVisible: boolean;
-  isDrawnFairytale: boolean;
-  numberOfCharactersTodraw: number;
-  drawingWaitingNumber: number;
+  pageNum: number;
+  taleDrawedImage: TaleDrawedImageType[];
+  isDrawReadDone: boolean; // 그림 그리기하는 읽기도 끝인지
+  isReReading: boolean; // 그림 다 그리고 재읽기 중인지
 }
 
 const initialState: CounterState = {
   isTalePageScriptModalVisible: false,
   isFairytaleEndingPageVisible: false,
-  isDrawnFairytale: false,
-  numberOfCharactersTodraw: 0,
-  drawingWaitingNumber: 0,
+  pageNum: 1,
+  taleDrawedImage: [],
+  isDrawReadDone: false,
+  isReReading: false,
 };
 
 export const taleSlice = createSlice({
@@ -33,14 +36,71 @@ export const taleSlice = createSlice({
     ) => {
       state.isFairytaleEndingPageVisible = action.payload;
     },
-    handleisDrawnFairytale: (state, action: PayloadAction<boolean>) => {
-      state.isDrawnFairytale = action.payload;
+    handlePageNum: (state, action: PayloadAction<number>) => {
+      console.log('페이지값:', action.payload);
+      state.pageNum = action.payload;
     },
-    handleNumberOfCharactersTodraw: (state, action: PayloadAction<number>) => {
-      state.numberOfCharactersTodraw = action.payload;
+    handleTaleDrawedImageInitial: (state, action: PayloadAction<[]>) => {
+      state.taleDrawedImage = action.payload;
     },
-    handleDrawingWaitingNumber: (state, action: PayloadAction<number>) => {
-      state.drawingWaitingNumber = action.payload;
+    // handleTaleDrawedImage: (
+    //   state,
+    //   action: PayloadAction<{
+    //     characterName: string;
+    //     pageNum: number;
+    //     gifUri: string;
+    //     drawUri: string;
+    //   }>,
+    // ) => {
+    //   const addDrawedImage = {
+    //     characterName: action.payload.characterName,
+    //     contentUri: {
+    //       gifUri: action.payload.gifUri,
+    //       drawUri: action.payload.drawUri,
+    //     },
+    //   };
+    //   state.taleDrawedImage.push(addDrawedImage);
+    //   console.log('저장한 그림들', state.taleDrawedImage);
+    // },
+    handleTaleDrawedImage: (
+      state,
+      action: PayloadAction<{
+        characterName: string;
+        pageNum: number;
+        gifUri: string;
+        drawUri: string;
+      }>,
+    ) => {
+      const addDrawedImage = {
+        characterName: action.payload.characterName,
+        contentUri: {
+          gifUri: action.payload.gifUri,
+          drawUri: action.payload.drawUri,
+        },
+      };
+
+      // 존재하는 캐릭터의 인덱스 찾기
+      const existingIndex = state.taleDrawedImage.findIndex(
+        item => item.characterName === action.payload.characterName,
+      );
+
+      if (existingIndex >= 0) {
+        // 존재하는 캐릭터라면, 새로운 데이터로 교체
+        state.taleDrawedImage[existingIndex] = addDrawedImage;
+      } else {
+        // 존재하지 않는 캐릭터라면, 배열에 추가
+        state.taleDrawedImage.push(addDrawedImage);
+      }
+
+      console.log('저장한 그림들', state.taleDrawedImage);
+    },
+    handleIsDrawReadDone: (state, action: PayloadAction<boolean>) => {
+      console.log('값 isDrawReadDone:', action.payload);
+      state.isDrawReadDone = action.payload;
+    },
+    handleIsReReading: (state, action: PayloadAction<boolean>) => {
+      console.log('값 isReReading:', action.payload);
+      state.isReReading = action.payload;
     },
   },
 });
@@ -48,19 +108,19 @@ export const taleSlice = createSlice({
 export const {
   handleisTalePageScriptModalVisible,
   handleisFairytaleEndingPageVisible,
-  handleisDrawnFairytale,
-  handleNumberOfCharactersTodraw,
-  handleDrawingWaitingNumber,
+  handlePageNum,
+  handleTaleDrawedImageInitial,
+  handleTaleDrawedImage,
+  handleIsDrawReadDone,
+  handleIsReReading,
 } = taleSlice.actions;
 
 export const isTalePageScriptModalVisible = (state: RootState) =>
   state.tale.isTalePageScriptModalVisible;
 export const isFairytaleEndingPageVisible = (state: RootState) =>
   state.tale.isFairytaleEndingPageVisible;
-export const isDrawnFairytale = (state: RootState) =>
-  state.tale.isDrawnFairytale;
-export const numberOfCharactersTodraw = (state: RootState) =>
-  state.tale.numberOfCharactersTodraw;
-export const drawingWaitingNumber = (state: RootState) =>
-  state.tale.drawingWaitingNumber;
+export const pageNum = (state: RootState) => state.tale.pageNum;
+export const taleDrawedImage = (state: RootState) => state.tale.taleDrawedImage;
+export const isDrawReadDone = (state: RootState) => state.tale.isDrawReadDone;
+export const isReReading = (state: RootState) => state.tale.isReReading;
 export default taleSlice.reducer;

@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable prettier/prettier */
 import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -9,6 +11,8 @@ import {
   Pressable,
   ToastAndroid, // 토스트안드로이드 잠깐 사용
   BackHandler,
+  Animated,
+  Easing,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
@@ -20,21 +24,24 @@ import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
-import OriginCompareModal from '../modals/OriginCompareModal';
+import OriginCharacterModal from '../modals/OriginCharacterModal';
 import DrawColorPaletteModal from '../modals/DrawColorPaletteModal';
 import DrawScreenshotModal from '../modals/DrawScreenshotModal';
 import {
   handleLineThickness,
-  handleisOriginCompareModalVisible,
+  handleisOriginCharacterModalVisible,
   handleisDrawLineThicknessModalVisible,
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
+  handleHavingGifUrl,
 } from '../../redux/slices/draw/draw';
-import {handleisDrawnFairytale} from '../../redux/slices/tale/tale';
+import {handlePageNum, handleTaleDrawedImage,} from '../../redux/slices/tale/tale';
+import {taleAnimations} from '../../apis/draw/draw';
+// import {CharactersInfoType} from './fairytaleType';
 
-type FairytaleColoringScreenProps = StackScreenProps<
+type ColoringFairytaleScreenProps = StackScreenProps<
   RootStackParams,
-  'FairytaleColoringScreen'
+  'ColoringFairytaleScreen'
 >;
 
 const windowWidth = Dimensions.get('window').width;
@@ -51,20 +58,35 @@ const fastcolorData = [
   '#000000',
 ];
 
-export default function FairytaleColoringScreen({
+export default function ColoringFairytaleScreen({
   route,
   navigation,
-}: FairytaleColoringScreenProps) {
-  // const [completeLineUri] = useState(route.params.completeLineUri);
-  const [completeLine] = useState(route.params.completeLine);
-  // 동화 그리기 그림 여부
-  const isDrawnFairytale = useSelector(
-    (state: RootState) => state.tale.isDrawnFairytale,
+}: ColoringFairytaleScreenProps) {
+  const [roomId] = useState<string>(route.params.fairytaleDrawInfo.roomId);
+  const [captureBorderImagePath] = useState<string>(route.params.fairytaleDrawInfo.captureBorderImagePath);
+  const [fairytaleTitle] = useState<string>(route.params.fairytaleDrawInfo.fairytaleTitle);
+  // const [charactersInfo] = useState<CharactersInfoType[]>(route.params.fairytaleDrawInfo.charactersInfo);
+  const [characterName] = useState<string>(route.params.fairytaleDrawInfo.characterName);
+  // const [characterId] = useState<number>(route.params.fairytaleDrawInfo.characterId);
+  const [characterBorderURI] = useState<string>(route.params.fairytaleDrawInfo.characterBorderURI);
+  const [characterExplanation] = useState<string>(route.params.fairytaleDrawInfo.characterExplanation);
+  const [characterOriginImageUri] = useState<string>(route.params.fairytaleDrawInfo.characterOriginImageUri);
+  const [completeLine] = useState(route.params.fairytaleDrawInfo.completeLine);
+
+  const pageNum = useSelector(
+    (state: RootState) => state.tale.pageNum,
   );
+  // const taleDrawedImage = useSelector(
+  //   (state: RootState) => state.tale.taleDrawedImage,
+  // );
+  // const [animalType] = useState(route.params.fairytaleDrawInfo.animalType);
+
+  // 로딩함수
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   // 캡쳐 변수
-  const captureRef = useRef();
+  const drawCaptureRef = useRef(null);
 
   // 그림 그리기 변수
   const [paths, setPaths] = useState<
@@ -74,8 +96,6 @@ export default function FairytaleColoringScreen({
     {path: string; color: string; strokeWidth: number}[]
   >([]);
   const [currentPath, setCurrentPath] = useState<string>('');
-  const [isClearButtonClicked, setClearButtonClicked] =
-    useState<boolean>(false);
 
   const dispatch = useDispatch();
   // 선 굵기 모달을 위한 라인
@@ -85,8 +105,8 @@ export default function FairytaleColoringScreen({
   const isDrawLineThicknessModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
   );
-  const isOriginCompareModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginCompareModalVisible,
+  const isOriginCharacterModalVisible = useSelector(
+    (state: RootState) => state.draw.isOriginCharacterModalVisible,
   );
   // 선 색깔 및 모달
   const isDrawColorPaletteModalVisible = useSelector(
@@ -101,44 +121,87 @@ export default function FairytaleColoringScreen({
   );
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
 
+  // 동화 애니메이션
+  async function handleTaleAnimations() {
+    setIsLoading(true);
+    try {
+      dispatch(handleHavingGifUrl(true));
+      handleGoComplete();
+      const response = await taleAnimations(roomId, pageNum, fairytaleTitle, characterName, captureBorderImagePath, captureImagePath);
+      if (response.status === 200) {
+        console.log('동화 애니메이션 성공', response.data);
+        setIsLoading(false);
+        // dispatch(handleTaleDrawedImage({pageNum: pageNum, gifUri: response.data.gifUrl, drawUri:captureImagePath}));
+        dispatch(handleTaleDrawedImage({characterName: characterName, pageNum: pageNum, gifUri: response.data.gifUrl, drawUri:response.data.imageUrl}));
+        // handleGoComplete();
+      } else {
+        console.log('동화 애니메이션 실패', response.status);
+        setIsLoading(false);
+        ToastAndroid.show(
+          '우리 친구가 움직일 수가 없어요ㅠㅠ',
+          ToastAndroid.LONG,
+        );
+        // handleGoComplete();
+      }
+    } catch (error) {
+      console.log('동화 애니메이션 실패', error);
+      setIsLoading(false);
+      ToastAndroid.show(
+        '우리 친구가 움직일 수가 없어요ㅠㅠ',
+        ToastAndroid.LONG,
+      );
+      // handleGoComplete();
+    }
+    setIsLoading(false);
+  }
+
+  // 캡쳐 함수
+  async function handleDrawCapture() {
+    try {
+      const uri = await drawCaptureRef.current.capture();
+      setCaptureImagePath(uri);
+    } catch (error) {
+      console.error('캡쳐 에러 발생: ', error);
+    }
+  }
+
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
-    const locationX = event.nativeEvent.locationX;
-    const locationY = event.nativeEvent.locationY;
-    const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    setCurrentPath(point);
-    setTmpPaths([]);
+    if (!isLoading) {
+      const locationX = event.nativeEvent.locationX;
+      const locationY = event.nativeEvent.locationY;
+      const point = `M${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+      setCurrentPath(point);
+      setTmpPaths([]);
+    }
   };
 
   const onTouchMove = (event: GestureResponderEvent) => {
-    const locationX = event.nativeEvent.locationX;
-    const locationY = event.nativeEvent.locationY;
-    const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
-    setCurrentPath(prevPath => prevPath + newPoint);
+    if (!isLoading) {
+      const locationX = event.nativeEvent.locationX;
+      const locationY = event.nativeEvent.locationY;
+      const newPoint = `L${locationX.toFixed(0)},${locationY.toFixed(0)}`;
+      setCurrentPath(prevPath => prevPath + newPoint);
+    }
   };
 
   const onTouchEnd = () => {
-    if (currentPath) {
+    if (currentPath && !isLoading) {
       setPaths([
         ...paths,
         {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
       ]);
     }
     setCurrentPath('');
-    setClearButtonClicked(false);
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
+    handleDrawCapture();
   };
 
   const handleClearButtonClick = () => {
     setTmpPaths([]);
     setPaths([]);
     setCurrentPath('');
-    setClearButtonClicked(true);
-    setClearButtonClicked(false);
-    setCaptureImagePath('');
+    // setCaptureImagePath('');
+    handleDrawCapture();
   };
 
   const handlePrevButtonClick = () => {
@@ -148,10 +211,7 @@ export default function FairytaleColoringScreen({
     if (tmpPosition) {
       setTmpPaths([...tmpPaths, tmpPosition]);
     }
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
+    handleDrawCapture();
   };
   const handleNextButtonClick = () => {
     const tmpPosition:
@@ -160,27 +220,23 @@ export default function FairytaleColoringScreen({
     if (tmpPosition) {
       setPaths([...paths, tmpPosition]);
     }
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
-    });
+    handleDrawCapture();
   };
 
   const handleGoComplete = () => {
-    dispatch(handleisDrawnFairytale(true));
-    navigation.navigate('ReadFairytaleScreen', {
-      title: '흥부놀부',
-      // title: '흥부놀부',
-    });
+    dispatch(handlePageNum(pageNum + 1));
+    navigation.pop(2);
   };
 
   useEffect(() => {
+    const randomNum = Math.floor(Math.random() * fastcolorData.length);
+    // console.log(fastcolorData[randomNum]);
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
       dispatch(handleLineThickness(25));
-      dispatch(handleDrawColorSelect('#05FF00'));
+      // dispatch(handleDrawColorSelect('#05FF00'));
+      dispatch(handleDrawColorSelect(fastcolorData[randomNum]));
     });
-
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
   }, [dispatch, navigation]);
 
@@ -192,7 +248,7 @@ export default function FairytaleColoringScreen({
         if (backHandleNum === 0) {
           setBackHandleNum(1);
           ToastAndroid.show(
-            '뒤로가기를 한 번 더 누르면 테두리 그리기 화면으로 돌아갑니다.',
+            '뒤로가기를 한 번 더 누르면 선택화면으로 돌아갑니다.',
             ToastAndroid.SHORT,
           );
           setTimeout(() => {
@@ -200,9 +256,8 @@ export default function FairytaleColoringScreen({
           }, 1000);
           return true; // 뒤로가기 이벤트 무시하지 않도록 설정
         } else if (backHandleNum === 1) {
-          dispatch(handleLineThickness(10));
-          dispatch(handleDrawColorSelect('#000000'));
-          navigation.goBack();
+          // navigation.navigate('SelectPictureScreen');
+          navigation.pop(2);
         }
         return true;
       }
@@ -215,12 +270,33 @@ export default function FairytaleColoringScreen({
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
+  // 화면 캡쳐 동작 useEffect
   useEffect(() => {
-    captureRef.current.capture().then((uri: string) => {
-      console.log('do something with ', uri);
-      setCaptureImagePath(uri);
+    handleDrawCapture();
+  }, [paths]);
+
+    ////// 로딩 애니메이션
+    const [rotation] = useState(new Animated.Value(0));
+    useEffect(() => {
+      const rotateImage = () => {
+        Animated.timing(rotation, {
+          toValue: 360,
+          duration: 2000, // 회전에 걸리는 시간 (밀리초)
+          easing: Easing.linear,
+          useNativeDriver: false, // 필요에 따라 변경
+        }).start(() => {
+          rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+          rotateImage();
+        });
+      };
+      rotateImage();
+    }, []);
+
+    const spin = rotation.interpolate({
+      inputRange: [0, 360],
+      outputRange: ['0deg', '360deg'],
     });
-  }, []);
+    ////////////
 
   return (
     <View style={styles.mainContainer}>
@@ -236,11 +312,11 @@ export default function FairytaleColoringScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
-                navigation.navigate('DrawCaptureScreen');
+                // navigation.navigate('');
               }}>
               <Image
                 style={styles.drawEquipImage}
-                source={require('../../../assets/images/pencil.png')}
+                source={require('../../assets/images/pencil.png')}
               />
             </Pressable>
             {/* 되돌리기 */}
@@ -290,7 +366,7 @@ export default function FairytaleColoringScreen({
               }}>
               <Image
                 style={styles.colorCircle}
-                source={require('../../../assets/images/colorSelect.png')}
+                source={require('../../assets/images/colorSelect.png')}
               />
             </TouchableOpacity>
           </View>
@@ -298,7 +374,7 @@ export default function FairytaleColoringScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('MainScreen');
+                navigation.pop(2);
               }}
               style={styles.xCircle}>
               <Text style={styles.xText}>
@@ -312,17 +388,16 @@ export default function FairytaleColoringScreen({
           </View>
         </View>
         {/* 중단 */}
-        {/* <View style={styles.middleContainer}> */}
         <ViewShot
-          style={[styles.middleContainer, {backgroundColor: 'white'}]}
-          ref={captureRef}
+          style={[styles.middleContainer]}
+          ref={drawCaptureRef}
           options={{
             fileName: 'drawAnimalCapture',
-            format: 'jpg',
+            format: 'png',
             quality: 0.9,
           }}>
           <View
-            style={styles.screenShotView}
+            style={styles.pathsView}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}>
@@ -331,7 +406,7 @@ export default function FairytaleColoringScreen({
                 <Path
                   key={`path-${index}`}
                   d={item.path}
-                  stroke={isClearButtonClicked ? 'transparent' : item.color}
+                  stroke={item.color}
                   fill={'transparent'}
                   strokeWidth={item.strokeWidth}
                   strokeLinejoin={'round'}
@@ -340,7 +415,7 @@ export default function FairytaleColoringScreen({
               ))}
               <Path
                 d={currentPath}
-                stroke={isClearButtonClicked ? 'transparent' : drawColorSelect}
+                stroke={drawColorSelect}
                 fill={'transparent'}
                 strokeWidth={LineThickness}
                 strokeLinejoin={'round'}
@@ -350,7 +425,7 @@ export default function FairytaleColoringScreen({
                 <Path
                   key={`path-${index}`}
                   d={item.path}
-                  stroke={isClearButtonClicked ? 'transparent' : item.color}
+                  stroke={item.color}
                   fill={'transparent'}
                   strokeWidth={item.strokeWidth}
                   strokeLinejoin={'round'}
@@ -359,7 +434,6 @@ export default function FairytaleColoringScreen({
               ))}
             </Svg>
           </View>
-          {/* </View> */}
         </ViewShot>
         {/* 하단 */}
         <View style={styles.bottomContainer}>
@@ -368,18 +442,11 @@ export default function FairytaleColoringScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
-                dispatch(handleisOriginCompareModalVisible(true));
+                dispatch(handleisOriginCharacterModalVisible(true));
               }}>
-              {/* {captureImagePath ? (
-                <Image
-                  style={styles.ideaLight}
-                  // source={require('../../../assets/images/ideaLight.png')}
-                  source={{uri: captureImagePath}}
-                />
-              ) : null} */}
               <Image
                 style={styles.ideaLight}
-                source={require('../../../assets/images/ideaLight.png')}
+                source={require('../../assets/images/ideaLight.png')}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -403,6 +470,7 @@ export default function FairytaleColoringScreen({
           <View style={styles.bottomContainerMiddle}>
             <TouchableOpacity
               style={styles.clearButton}
+              disabled={isLoading}
               onPress={() => {
                 handleClearButtonClick();
               }}>
@@ -412,9 +480,11 @@ export default function FairytaleColoringScreen({
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
-              style={[styles.doneButton]}
+              style={styles.doneButton}
+              disabled={isLoading}
               onPress={() => {
-                handleGoComplete();
+                // handleGoComplete();
+                handleTaleAnimations();
               }}>
               <Text style={styles.doneButtonText}>완성하기</Text>
             </TouchableOpacity>
@@ -424,10 +494,23 @@ export default function FairytaleColoringScreen({
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginCompareModalVisible ? <OriginCompareModal /> : null}
+      {isOriginCharacterModalVisible ? (
+        <OriginCharacterModal
+          characterName={characterName}
+          characterBorderURI={characterBorderURI}
+          characterOriginImageUri={characterOriginImageUri}
+          characterExplanation={characterExplanation}
+        />
+      ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
       {isDrawScreenshotModalVisible ? (
         <DrawScreenshotModal captureUri={captureImagePath} />
+      ) : null}
+      {isLoading ? (
+        <Animated.Image
+          style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+          source={require('../../assets/images/loading2.png')}
+        />
       ) : null}
     </View>
   );
@@ -509,10 +592,13 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
-    // borderWidth: 1,
+    height: '100%',
+    backgroundColor: 'white',
   },
-  screenShotView: {
+  pathsView: {
     justifyContent: 'flex-end',
+    width: '100%',
+    height: '100%',
   },
   bottomContainer: {
     borderTopWidth: 1,
@@ -570,6 +656,15 @@ const styles = StyleSheet.create({
   bottomContainerRight: {
     flex: 0.4,
   },
+  nextButton: {
+    backgroundColor: '#A8CEFF',
+    width: '60%',
+    height: '80%',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+    borderRadius: windowWidth * 0.2 * 0.07,
+  },
   doneButton: {
     backgroundColor: '#A8CEFF',
     width: '40%',
@@ -582,5 +677,12 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });

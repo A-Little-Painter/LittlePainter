@@ -331,14 +331,31 @@ export const taleSaveToMypage = async (taleId, talePageData) => {
 //   }
 // };
 // 동화 유사도 검사
-export const taleCheckSimilarity = async () => {
+export const taleCheckSimilarity = async (roomId, originBorderFileUri, compareBorderFileUri,) => {
   try {
-    const response = await axios.post(`${BASE_URL}/draws/tales/comm-similarity`, null);
+    const formData = new FormData();
+    // formData.append('roomId', roomId);
+    formData.append('roomId', roomId);
+
+    formData.append('originalFile', {
+      uri: originBorderFileUri,
+      type: 'image/png',
+      name: 'originalFile.png',
+    });
+
+    formData.append('newFile', {
+      uri: compareBorderFileUri,
+      type: 'image/png',
+      name: 'newFile.png',
+    });
+    const response = await axios.post(`${BASE_URL}/draws/tales/similarcheck`, formData, {headers: {'Content-Type': 'multipart/form-data'}},
+    );
     return response;
   } catch (error) {
-    console.log('동화 유사도 검사 실패:', error);
-    const response = error.response;
-    return response;
+    if (error.response.status !== 404){
+      console.error('동화 유사도 검사 실패:', error);
+      return error.response;
+    }
   }
 };
 
@@ -357,13 +374,19 @@ export const taleSaveEveryDrawn = async () => {
 
 //animations
 // 동물 애니메이션
-export const animalAnimations = async (animalType, drawCaptureImageURI) => {
+export const animalAnimations = async (roomId, animalType, captureBorderImagePath, drawCaptureImageURI) => {
   console.log(animalType, drawCaptureImageURI);
   try {
     const formData = new FormData();
-    formData.append('animalType ', animalType);
+    formData.append('roomId', roomId);
+    formData.append('animalType', animalType);
 
-    formData.append('image', {
+    formData.append('originalFile', {
+      uri: captureBorderImagePath,
+      type: 'image/png',
+      name: 'originalFile.png',
+    });
+    formData.append('newFile', {
       uri: drawCaptureImageURI,
       type: 'image/png',
       name: 'originalFile.png',
@@ -382,15 +405,27 @@ export const animalAnimations = async (animalType, drawCaptureImageURI) => {
   }
 };
 // 동화 애니메이션
-export const taleAnimations = async (taleTitle, pageNum, drawCaptureImageURI) => {
+export const taleAnimations = async (roomId, pageNum, fairytaleTitle, characterName, captureBorderImagePath, drawCaptureImageURI) => {
   try {
+    // console.log('######################################################')
+    // console.log(roomId, pageNum, fairytaleTitle, characterName);
+    // 띄어쓰기 제거함.
+    // fairytaleTitle = fairytaleTitle.replace(/\s/g, '');
+    // characterName = characterName.replace(/\s/g, '');
     const formData = new FormData();
-    formData.append('taleTitle ', taleTitle);
-    formData.append('pageNum ', pageNum);
+    formData.append('roomId', roomId);
+    formData.append('pageNumber', pageNum);
+    formData.append('title', fairytaleTitle);
+    formData.append('requestCharacter', characterName);
     formData.append('originalFile', {
-      uri: drawCaptureImageURI,
+      uri: captureBorderImagePath,
       type: 'image/png',
       name: 'originalFile.png',
+    });
+    formData.append('newFile', {
+      uri: drawCaptureImageURI,
+      type: 'image/png',
+      name: 'newFile.png',
     });
     const response = await axios.post(`${BASE_URL}/draws/animations/tales`, formData, {headers: {'Content-Type': 'multipart/form-data'}},);
     return response;

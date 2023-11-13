@@ -125,7 +125,7 @@ export default function DrawAnimalScreen({
         console.log(message.body);
         setSimilarityMessage(messageContent.message);
         setSimilarityValue(messageContent.similarValue);
-        setSimilarityState(messageContent.similarState)
+        setSimilarityState(messageContent.similarState);
       });
     }
   }, [client]);
@@ -139,6 +139,25 @@ export default function DrawAnimalScreen({
       console.log('유사도: 0');
     }
   }, [similarityMessage, similarityState]);
+  // useEffect(() => {
+  //   if (client) {
+  //     client.subscribe('/sub/room/a', (message) => {
+  //       const messageContent = JSON.parse(message.body);
+  //       console.log('되나',message.body);
+  //       // setSimilarityMessage(messageContent.message);
+  //       // setSimilarityState(messageContent.similarState);
+  //       // setSimilarityValue(messageContent.similarValue);
+  //       if (messageContent.message === '유사도 연결에 성공하셨습니다.') {
+  //         if (messageContent.similarState === 'END') {
+  //           console.log('유사도: ', messageContent.similarValue);
+  //           handleGoColoring();
+  //         }
+  //       } else if (messageContent.message === '유사도 측정에 실패했습니다.') {
+  //         console.log('유사도: 0');
+  //       }
+  //     });
+  //   }
+  // }, [client]);
 
   //////////////////////////////////////////////////////////////////////////////
   // 캡쳐 변수
@@ -362,6 +381,7 @@ export default function DrawAnimalScreen({
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
     navigation.navigate('ColoringAnimalScreen', {
+      captureBorderImagePath: captureBorderImagePath,
       animalId: animalId,
       completeLine: paths,
       animalType: animalType,

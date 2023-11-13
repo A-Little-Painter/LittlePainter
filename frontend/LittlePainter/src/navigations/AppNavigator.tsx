@@ -19,6 +19,7 @@ import CompleteDrawPictureScreen from '../screens/drawPicture/CompleteDrawPictur
 // 동화그리기
 import SelectFairytaleScreen from '../screens/fairytale/SelectFairytaleScreen';
 import DrawFairytaleScreen from '../screens/fairytale/DrawFairytaleScreen';
+import ColoringFairytaleScreen from '../screens/fairytale/ColoringFairytaleScreen';
 import FairytaleReadScreen from '../screens/fairytale/fairytaleRead/FairytaleReadScreen';
 
 // 동화그리기 이전. 안씀
@@ -51,6 +52,15 @@ import DetailScreen from '../screens/detail/DetailScreen';
 import NodetailScreen from '../screens/detail/NodetailScreen';
 import Detail2Screen from '../screens/detail/Detail2Screen';
 
+// 타입
+import {
+  DrawFairytaleScreenType,
+  // FairyTaleInfoType,
+  FairytaleReadScreenType,
+  ColoringFairytaleScreenType,
+  // CharactersInfoType,
+} from '../screens/fairytale/fairytaleType';
+
 export type RootStackParams = {
   InitialScreen: undefined;
   MainScreen: undefined;
@@ -63,6 +73,7 @@ export type RootStackParams = {
     originImage: string;
   };
   ColoringAnimalScreen: {
+    captureBorderImagePath: string;
     animalId: number;
     completeLine: {path: string; color: string; strokeWidth: number}[];
     animalType: string;
@@ -75,6 +86,7 @@ export type RootStackParams = {
     animalType: string;
     completeDrawUri: string;
     animatedGif: string;
+    originDrawUri: string;
   };
   SelectPictureScreen: undefined;
   DrawPictureScreen: {
@@ -102,11 +114,11 @@ export type RootStackParams = {
   };
   // 동화 그리기
   SelectFairytaleScreen: undefined;
-  DrawFairytaleScreen: undefined;
-  FairytaleReadScreen: {
-    title: string;
-    taleId: number;
+  DrawFairytaleScreen: DrawFairytaleScreenType;
+  ColoringFairytaleScreen: {
+    fairytaleDrawInfo: ColoringFairytaleScreenType;
   };
+  FairytaleReadScreen: FairytaleReadScreenType;
 
   // 이제 안쓰는 동화 그리기
   FairytaleDrawScreen: undefined;
@@ -192,6 +204,10 @@ export default function AppNavigator() {
       <RootStack.Screen
         name="DrawFairytaleScreen"
         component={DrawFairytaleScreen}
+      />
+      <RootStack.Screen
+        name="ColoringFairytaleScreen"
+        component={ColoringFairytaleScreen}
       />
       <RootStack.Screen
         name="FairytaleReadScreen"

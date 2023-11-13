@@ -60,6 +60,9 @@ export default function ColoringAnimalScreen({
   navigation,
 }: ColoringAnimalScreenProps) {
   const dispatch = useDispatch();
+  const [captureBorderImagePath] = useState<string>(
+    route.params.captureBorderImagePath,
+  );
   const [animalId] = useState<number>(route.params.animalId);
   const [animalType] = useState<string>(route.params.animalType);
   const [originImage] = useState<string>(route.params.originImage);
@@ -113,20 +116,26 @@ export default function ColoringAnimalScreen({
     setIsLoading(true);
     try {
       dispatch(handleHavingGifUrl(true));
-      const response = await animalAnimations(animalType, captureImagePath);
+      const response = await animalAnimations(
+        'a',
+        animalType,
+        captureBorderImagePath,
+        captureImagePath,
+      );
+      // const response = await animalAnimations(roomId, animalType, captureBorderImagePath, captureImagePath);
       if (response.status === 200) {
         console.log('동물 애니메이션 성공', response.data);
         setIsLoading(false);
         // setAnimatedGif(response.data.gifImageUrl);
-        console.log(response.data.gifImageUrl);
-        handleGoComplete(response.data.gifImageUrl);
+        console.log(response.data.gifUrl);
+        handleGoComplete(response.data.gifUrl, response.data.imageUrl);
       } else {
         console.log('동물 애니메이션 실패', response.status);
         ToastAndroid.show(
           '동물 친구가 움직일 수가 없어요ㅠㅠ',
           ToastAndroid.LONG,
         );
-        handleGoComplete('');
+        handleGoComplete('', '');
       }
     } catch (error) {
       console.log('동물 애니메이션 실패', error);
@@ -134,7 +143,7 @@ export default function ColoringAnimalScreen({
         '동물 친구가 움직일 수가 없어요ㅠㅠ',
         ToastAndroid.LONG,
       );
-      handleGoComplete('');
+      handleGoComplete('', '');
     }
     setIsLoading(false);
   }
@@ -207,12 +216,16 @@ export default function ColoringAnimalScreen({
     handleDrawCapture();
   };
 
-  const handleGoComplete = (receiveanimatedGif: string) => {
+  const handleGoComplete = (
+    receiveanimatedGif: string,
+    receiveDrawUri: string,
+  ) => {
     navigation.navigate('CompleteDrawAnimalScreen', {
       animalId: animalId,
       animalType: animalType,
-      completeDrawUri: captureImagePath,
+      completeDrawUri: receiveDrawUri,
       animatedGif: receiveanimatedGif,
+      originDrawUri: captureImagePath,
     });
   };
 

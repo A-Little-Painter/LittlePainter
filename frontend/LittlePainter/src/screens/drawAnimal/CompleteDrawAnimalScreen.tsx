@@ -39,6 +39,7 @@ export default function CompleteDrawAnimalScreen({
   // const [animalType] = useState<string>(route.params.animalType);
   const [completeDrawUri] = useState<string>(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
   const [animatedGif] = useState<string>(route.params.animatedGif);
+  const [originDrawUri] = useState<string>(route.params.originDrawUri);
   const [isSavedImage, setIsSavedImage] = useState<boolean>(false);
 
   const isLogin = useSelector((state: RootState) => state.user.isLogin);
@@ -69,8 +70,11 @@ export default function CompleteDrawAnimalScreen({
 
   const handleAnimalSaveToMypage = async () => {
     try {
-      // const response = await animalSaveToMypage(animalId, completeDrawUri);
-      const response = await animalSaveToMypage(animalId, completeDrawUri, animatedGif);
+      let sendUri = animatedGif;
+      if (animatedGif === ''){
+        sendUri = originDrawUri;
+      }
+      const response = await animalSaveToMypage(animalId, completeDrawUri, sendUri);
       if (response.status === 201) {
         console.log('완성된 동물 마이페이지에 저장 성공', response.data);
         ToastAndroid.show(
@@ -161,15 +165,9 @@ export default function CompleteDrawAnimalScreen({
             source={{
               uri:
                 (animatedGif === '' || animatedGif === undefined || animatedGif === null)
-                  ? completeDrawUri
+                  ? (completeDrawUri === '' || completeDrawUri === undefined || completeDrawUri === null) ? originDrawUri : completeDrawUri
                   : animatedGif,
             }}
-            // source={{
-            //   uri:
-            //     (animatedGif !== '' || animatedGif !== null || animatedGif !== undefined)
-            //       ? animatedGif
-            //       : completeDrawUri,
-            // }}
             resizeMode="contain">
             {/* <View style={{width: '100%', height: '100%'}} /> */}
           </ImageBackground>
