@@ -7,7 +7,7 @@ bvh_projection_bodypart_groups:
   - LeftArm
   - LeftForeArm
   - LeftHand
-  method: pca
+  method: sagittal
   name: Upper Limbs
 - bvh_joint_names:
   - RightThigh
@@ -18,7 +18,7 @@ bvh_projection_bodypart_groups:
   - LeftShin
   - LeftFoot
   - LeftToe
-  method: pca
+  method: sagittal
   name: Lower Limbs
 - bvh_joint_names:
   - Hips
