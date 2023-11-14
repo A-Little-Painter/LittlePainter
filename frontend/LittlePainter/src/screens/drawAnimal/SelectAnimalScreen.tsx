@@ -15,6 +15,8 @@ import {
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import {animalWholeData} from '../../apis/draw/draw';
+import {useAppDispatch} from '../../redux/hooks';
+import {handleBGMMusic} from '../../redux/slices/music/music';
 
 type SelectAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -52,6 +54,7 @@ export default function SelectAnimalScreen({
   // const name: NameType = '동물선택하기';
   const [wholeAnimal, setWholeAnimal] = useState<Animal[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
 
   const handleAnimalWholeData = async () => {
     setIsLoading(true);
@@ -70,6 +73,11 @@ export default function SelectAnimalScreen({
 
   useEffect(() => {
     handleAnimalWholeData();
+    dispatch(
+      handleBGMMusic(
+        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_animal_tale.mp3',
+      ),
+    );
   }, []);
 
   ////// 로딩 애니메이션
@@ -229,6 +237,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.05,
     fontWeight: '600',
     color: 'black',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   animalCard1: {
     marginVertical: windowWidth * 0.01,
@@ -249,6 +258,7 @@ const styles = StyleSheet.create({
     paddingTop: windowHeight * 0.01,
     fontSize: windowWidth * 0.018,
     fontWeight: '600',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loadingImage: {
     position: 'absolute',

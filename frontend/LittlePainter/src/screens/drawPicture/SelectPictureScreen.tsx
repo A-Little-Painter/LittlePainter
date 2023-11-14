@@ -21,6 +21,8 @@ import {
   friendsWholePicture,
   animalWholeNameInquiry,
 } from '../../apis/draw/draw';
+import {useAppDispatch} from '../../redux/hooks';
+import {handleBGMMusic} from '../../redux/slices/music/music';
 
 type SelectPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -74,6 +76,7 @@ export default function SelectPictureScreen({
   // const [selectAnimalTypeName, setSelectAnimalTypeName] = useState<string>('');
   const [selectPage, setSelectPage] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
 
   function handleGoDrawPictureScreen(
     friendsAnimalInformation: handleGoDrawPictureScreenType,
@@ -185,6 +188,11 @@ export default function SelectPictureScreen({
   useEffect(() => {
     handleAnimalWholeNameInquiry();
     // handleFriendsWholePicture();
+    dispatch(
+      handleBGMMusic(
+        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_my%2BfriendsAnimal.mp3',
+      ),
+    );
   }, []);
 
   useEffect(() => {
@@ -413,6 +421,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.05,
     fontWeight: '600',
     color: 'black',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   pictureCard1: {
     marginVertical: windowWidth * 0.01,
@@ -446,6 +455,7 @@ const styles = StyleSheet.create({
     paddingTop: windowHeight * 0.01,
     fontSize: windowWidth * 0.018,
     fontWeight: '600',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   friendsAnimalImage: {
     alignSelf: 'center',

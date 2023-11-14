@@ -77,7 +77,10 @@ export default function DrawAnimalScreen({
     let newClient: CompatClient;
 
     const connectAndSetupListeners = () => {
-      newClient = Stomp.over(() => new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'));
+      newClient = Stomp.over(
+        () =>
+          new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'),
+      );
 
       newClient.onConnect = frame => {
         console.log('연결됨');
@@ -122,7 +125,7 @@ export default function DrawAnimalScreen({
     if (client) {
       const randomInt = Math.floor(Math.random() * (10000000 - 1 + 1) + 1);
       setRoomId(`${randomInt}`);
-      client.subscribe(`/sub/room/${randomInt}`, (message) => {
+      client.subscribe(`/sub/room/${randomInt}`, message => {
         const messageContent = JSON.parse(message.body);
         console.log(message.body);
         setSimilarityMessage(messageContent.message);
@@ -527,7 +530,11 @@ export default function DrawAnimalScreen({
                   style={[
                     styles.pathViewShot,
                     // eslint-disable-next-line react-native/no-inline-styles
-                    {backgroundColor: canDrawCapture ? '#FFFFFF' : 'transparent'},
+                    {
+                      backgroundColor: canDrawCapture
+                        ? '#FFFFFF'
+                        : 'transparent',
+                    },
                   ]}>
                   <View
                     style={styles.pathView}
@@ -812,6 +819,7 @@ const styles = StyleSheet.create({
   clearButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.02,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   bottomContainerRight: {
     flex: 0.4,
@@ -828,6 +836,7 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loadingImage: {
     position: 'absolute',

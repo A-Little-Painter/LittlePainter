@@ -43,6 +43,7 @@ import {
   CharactersInfoType,
 } from '../fairytaleType';
 import Tts from 'react-native-tts';
+import {handleBGMVolume} from '../../../redux/slices/music/music';
 
 type FairytaleReadScreenProps = StackScreenProps<
   RootStackParams,
@@ -183,17 +184,20 @@ export default function FairytaleReadScreen({
     dispatch(handleIsDrawReadDone(false));
     dispatch(handleIsReReading(false));
     handleTalePageListInquiry();
+    dispatch(handleBGMVolume(0));
   }, []);
 
   useEffect(() => {
     if (fairytaleData.length !== 0) {
       console.log(fairytaleData[pageNum - 1].characters);
       setCharactersInfo(fairytaleData[pageNum - 1].characters);
+      Tts.stop();
       // 자막
       const lineChunks: string[] =
         fairytaleData[pageNum - 1].narration.split('\n');
       const initialLines: string[] = lineChunks.slice(0, 1);
       setContentLines(initialLines);
+      Tts.speak(initialLines[0]);
       let lineIndex: number = 1;
       let interval: NodeJS.Timeout | undefined;
       interval = setInterval(() => {

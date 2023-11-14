@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
   text: {
     marginTop: windowWidth * 0.03,
     fontSize: windowWidth * 0.03,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   bot: {
     flex: 0.2,
@@ -121,5 +122,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     textAlign: 'center',
     textAlignVertical: 'center',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
 });

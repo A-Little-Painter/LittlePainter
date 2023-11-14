@@ -267,15 +267,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     marginLeft: windowWidth * 0.02,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loginInputText: {
     fontSize: windowWidth * 0.017,
     width: windowWidth * 0.38,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loginInputText1: {
     fontSize: windowWidth * 0.017,
     width: windowWidth * 0.25,
     color: '#000000',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loginTextVector: {
     alignSelf: 'center',
@@ -298,6 +301,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.025,
     fontWeight: '300',
     color: '#0D0C0C',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   bottomContainer: {
     flex: 0.2,
@@ -306,6 +310,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.03,
     fontWeight: '600',
     color: '#000000',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   infoView: {
     marginBottom: windowHeight * 0.01,

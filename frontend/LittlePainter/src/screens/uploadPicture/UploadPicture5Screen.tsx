@@ -251,18 +251,21 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: windowWidth * 0.028,
     color: '#000000',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   text2: {
     width: '100%',
     fontSize: windowWidth * 0.02,
     marginTop: windowHeight * 0.02,
     color: '#000000',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   text3: {
     width: '100%',
     fontSize: windowWidth * 0.015,
     marginTop: windowHeight * 0.02,
     color: '#000000',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   bot: {
     flex: 0.5,
@@ -286,6 +289,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.02,
     textAlign: 'center',
     textAlignVertical: 'center',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   centeredView: {
     flex: 1,
@@ -304,9 +308,11 @@ const styles = StyleSheet.create({
   Mtexts: {
     alignItems: 'center',
     paddingTop: windowWidth * 0.02,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   modaltext: {
     fontSize: windowWidth * 0.02,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   modalbtns: {
     flexDirection: 'row',
@@ -334,6 +340,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.02,
     textAlign: 'center',
     textAlignVertical: 'center',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   topLeftContainer: {
     flexDirection: 'row',
@@ -350,6 +357,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.05,
     fontWeight: '600',
     color: 'black',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loadingImage: {
     position: 'absolute',

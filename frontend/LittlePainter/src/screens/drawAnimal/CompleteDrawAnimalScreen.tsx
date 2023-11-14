@@ -168,8 +168,14 @@ export default function CompleteDrawAnimalScreen({
             style={styles.imageBackgroundSize}
             source={{
               uri:
-                (animatedGif === '' || animatedGif === undefined || animatedGif === null)
-                  ? (completeDrawUri === '' || completeDrawUri === undefined || completeDrawUri === null) ? originDrawUri : completeDrawUri
+                animatedGif === '' ||
+                animatedGif === undefined ||
+                animatedGif === null
+                  ? completeDrawUri === '' ||
+                    completeDrawUri === undefined ||
+                    completeDrawUri === null
+                    ? originDrawUri
+                    : completeDrawUri
                   : animatedGif,
             }}
             resizeMode="contain">
@@ -349,5 +355,6 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
 });

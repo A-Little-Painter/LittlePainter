@@ -238,13 +238,14 @@ const styles = StyleSheet.create({
   ConfirmButtonText: {
     backgroundColor: '#dfecc2',
     color: '#383535',
-    fontSize: windowWidth * 0.016,
+    fontSize: windowWidth * 0.014,
     borderRadius: 1000,
     width: windowWidth * 0.12,
     height: windowHeight * 0.07,
     alignItems: 'center',
     textAlign: 'center',
     textAlignVertical: 'center',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loginTextBox2: {
     flexDirection: 'row',
@@ -259,10 +260,12 @@ const styles = StyleSheet.create({
   loginInputText1: {
     fontSize: windowWidth * 0.017,
     width: windowWidth * 0.25,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loginInputText2: {
     fontSize: windowWidth * 0.017,
     width: windowWidth * 0.4,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loginTextVector: {
     alignSelf: 'center',
@@ -284,6 +287,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.025,
     fontWeight: '600',
     color: '#FFFFFF',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   bottomContainer: {
     flex: 0.2,
@@ -292,6 +296,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.03,
     fontWeight: '600',
     color: '#000000',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   infoView: {
     marginBottom: windowWidth * 0.01,

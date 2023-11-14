@@ -127,8 +127,8 @@ export default function ColoringFriendScreen({
         console.log('애니메이션 성공', response.data);
         setIsLoading(false);
         // setAnimatedGif(response.data.gifImageUrl);
-        console.log(response.data.gifImageUrl);
-        handleGoComplete(response.data.gifImageUrl);
+        console.log(response.data.gifUrl);
+        handleGoComplete(response.data.gifUrl);
       } else {
         console.log('애니메이션 실패', response.status);
         ToastAndroid.show('친구가 움직일 수가 없어요ㅠㅠ', ToastAndroid.LONG);
@@ -217,6 +217,7 @@ export default function ColoringFriendScreen({
       animalType: animalType,
       completeDrawUri: captureImagePath,
       animatedGif: receiveanimatedGif,
+      originDrawUri: captureImagePath,
     });
   };
 
@@ -319,7 +320,7 @@ export default function ColoringFriendScreen({
                 <IconFontAwesome
                   name="reply"
                   size={windowWidth * 0.05}
-                  color={paths.length ? '#5E9FF9' : 'gray'}
+                  color={paths.length ? '#FE7F2280' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -334,7 +335,7 @@ export default function ColoringFriendScreen({
                 <IconFontAwesome
                   name="share"
                   size={windowWidth * 0.05}
-                  color={tmpPaths.length ? '#5E9FF9' : 'gray'}
+                  color={tmpPaths.length ? '#FE7F2280' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -640,6 +641,7 @@ const styles = StyleSheet.create({
   clearButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.02,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   bottomContainerRight: {
     flex: 0.4,
@@ -656,6 +658,7 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loadingImage: {
     position: 'absolute',

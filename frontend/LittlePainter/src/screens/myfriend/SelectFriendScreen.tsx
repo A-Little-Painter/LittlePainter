@@ -15,6 +15,8 @@ import {
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import {friendWholeData} from '../../apis/draw/draw';
+import {useAppDispatch} from '../../redux/hooks';
+import {handleBGMMusic} from '../../redux/slices/music/music';
 
 type SelectFriendScreenProps = StackScreenProps<
   RootStackParams,
@@ -52,6 +54,7 @@ export default function SelectFriendScreen({
   // const name: NameType = '동물선택하기';
   const [wholeFriend, setWholeFriend] = useState<Friend[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
 
   const handleFriendWholeData = async () => {
     setIsLoading(true);
@@ -71,6 +74,11 @@ export default function SelectFriendScreen({
 
   useEffect(() => {
     handleFriendWholeData();
+    dispatch(
+      handleBGMMusic(
+        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_my%2BfriendsAnimal.mp3',
+      ),
+    );
   }, []);
 
   ////// 로딩 애니메이션
@@ -245,6 +253,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.05,
     fontWeight: '600',
     color: 'black',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   animalCard1: {
     marginVertical: windowWidth * 0.01,
@@ -265,6 +274,7 @@ const styles = StyleSheet.create({
     paddingTop: windowHeight * 0.01,
     fontSize: windowWidth * 0.018,
     fontWeight: '600',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loadingImage: {
     position: 'absolute',
@@ -274,7 +284,7 @@ const styles = StyleSheet.create({
     left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
   goHomeArea: {
-    marginLeft: windowWidth * 0.447,
+    marginLeft: windowWidth * 0.5,
     marginTop: windowWidth * 0.03,
   },
   goHome: {

@@ -251,6 +251,8 @@ export default function DrawFriendScreen({
     try {
       const uri = await originCaptureRef.current.capture();
       setCaptureBorderImagePath(uri);
+      console.log('uri');
+      console.log(uri);
     } catch (error) {
       console.error('원본 이미지 캡쳐 에러 발생: ', error);
     }
@@ -433,7 +435,7 @@ export default function DrawFriendScreen({
                 <IconFontAwesome
                   name="reply"
                   size={windowWidth * 0.05}
-                  color={paths.length ? '#5E9FF9' : 'gray'}
+                  color={paths.length ? '#FE7F2280' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -448,7 +450,7 @@ export default function DrawFriendScreen({
                 <IconFontAwesome
                   name="share"
                   size={windowWidth * 0.05}
-                  color={tmpPaths.length ? '#5E9FF9' : 'gray'}
+                  color={tmpPaths.length ? '#FE7F2280' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -502,7 +504,7 @@ export default function DrawFriendScreen({
           ref={originCaptureRef}
           options={{
             fileName: 'originImageCapture',
-            format: 'png',
+            format: 'jpg',
             quality: 1,
           }}>
           {animalBorderURI === '' ? null : (
@@ -813,6 +815,7 @@ const styles = StyleSheet.create({
   clearButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.02,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   bottomContainerRight: {
     flex: 0.4,
@@ -829,6 +832,7 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loadingImage: {
     position: 'absolute',
