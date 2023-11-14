@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ImageBackground,
+  ToastAndroid,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -100,42 +101,46 @@ export default function SelectFairytaleScreen({
             </TouchableOpacity>
           </View>
           {/* 중단 */}
-          <View style={styles.middleContainer}>
-            <ScrollView
-              // ref={picturelistScrollViewRef}
-              style={styles.middleContainerFlatList}
-              // onScroll={handleScrollEnd}
-            >
-              <View style={styles.wrappingView}>
-                {fairytale.map((item, index) => (
-                  <View style={styles.pictureCard1} key={index}>
+        <View style={styles.middleContainer}>
+          <ScrollView
+            // ref={picturelistScrollViewRef}
+            style={styles.middleContainerFlatList}
+            // onScroll={handleScrollEnd}
+          >
+            <View style={styles.wrappingView}>
+              {fairytale.map((item, index) => (
+                <View style={styles.pictureCard1} key={index}>
                     <TouchableOpacity
                       onPress={() => {
-                        navigation.navigate('FairytaleReadScreen', {
-                          title: item.title,
-                          taleId: item.id,
-                        });
+                        if ( item.isAvailable ){
+                          navigation.navigate('FairytaleReadScreen', {
+                            title: item.title,
+                            taleId: item.id,
+                          });
+                        } else {
+                          ToastAndroid.show(
+                            `'${item.title}' 동화는 아직 준비중인 동화에요.`,
+                            ToastAndroid.SHORT,
+                          );
+                        }
                       }}
                       style={[
                         styles.pictureCard2,
-                        {
-                          backgroundColor:
-                            randomBackgroundColor[
-                              index >= randomBackgroundColor.length
-                                ? index % randomBackgroundColor.length
-                                : index
-                            ],
-                        },
                       ]}>
-                      <Image
+                      <ImageBackground
+                        source={{uri: item.urlCover}}
+                        resizeMode="cover"
+                        style={styles.taleImage}>
+                      {/* <Image
                         style={styles.cardFairytaleImage}
                         source={{uri: item.urlCover}}
-                      />
-                    </TouchableOpacity>
-                    <Text style={styles.fairytaleCardText}>{item.title}</Text>
-                  </View>
-                ))}
-              </View>
+                      /> */}
+                    </ImageBackground>
+                  </TouchableOpacity>
+                  <Text style={styles.fairytaleCardText}>{item.title}</Text>
+                </View>
+              ))}
+            </View>
             </ScrollView>
           </View>
         </View>
@@ -156,6 +161,10 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  taleImage: {
     width: '100%',
     height: '100%',
   },
@@ -192,31 +201,32 @@ const styles = StyleSheet.create({
   },
   pictureCard1: {
     marginVertical: windowWidth * 0.01,
-    marginHorizontal: ((windowWidth * 0.9 * 0.95) / 4) * 0.04999,
+    marginHorizontal: ((windowWidth * 0.9 * 0.95) / 3) * 0.04999,
   },
   pictureCard2: {
+    overflow: 'hidden',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: windowWidth * 0.015,
     borderColor: 'black',
     width:
-      (windowWidth * 0.9 * 0.95) / 4 - ((windowWidth * 0.9 * 0.95) / 4) * 0.1,
+      (windowWidth * 0.9 * 0.95) / 3 - ((windowWidth * 0.9 * 0.95) / 3) * 0.1,
     height:
-      ((windowWidth * 0.9 * 0.95) / 4 -
-        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
-      0.75,
+      ((windowWidth * 0.9 * 0.95) / 3 -
+        ((windowWidth * 0.9 * 0.95) / 3) * 0.1) *
+      0.5625,
   },
-  cardFairytaleImage: {
-    alignSelf: 'center',
-    resizeMode: 'contain',
-    width:
-      ((windowWidth * 0.9 * 0.95) / 4 -
-        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
-      0.55,
-    height:
-      ((windowWidth * 0.9 * 0.95) / 4 -
-        ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
-      0.55,
-  },
+  // cardFairytaleImage: {
+  //   alignSelf: 'center',
+  //   resizeMode: 'contain',
+  //   width:
+  //     ((windowWidth * 0.9 * 0.95) / 4 -
+  //       ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
+  //     0.55,
+  //   height:
+  //     ((windowWidth * 0.9 * 0.95) / 4 -
+  //       ((windowWidth * 0.9 * 0.95) / 4) * 0.1) *
+  //     0.55,
+  // },
   fairytaleCardText: {
     paddingLeft: windowWidth * 0.007,
     paddingTop: windowHeight * 0.01,

@@ -81,6 +81,7 @@ export default function ColoringAnimalScreen({
   const drawCaptureRef = useRef(null);
 
   // 그림 그리기 변수
+  const [isSelectColorFix, setIsSelectColorFix] = useState<boolean>(false);
   const [paths, setPaths] = useState<
     {path: string; color: string; strokeWidth: number}[]
   >([]);
@@ -129,7 +130,13 @@ export default function ColoringAnimalScreen({
         console.log('동물 애니메이션 성공', response.data);
         setIsLoading(false);
         // setAnimatedGif(response.data.gifImageUrl);
-        console.log(response.data.gifUrl);
+        // console.log(response.data.gifUrl);
+        console.log(
+          'gifUrl:',
+          response.data.gifUrl,
+          'imageUrl:',
+          response.data.imageUrl,
+        );
         handleGoComplete(response.data.gifUrl, response.data.imageUrl);
       } else {
         console.log('동물 애니메이션 실패', response.status);
@@ -161,6 +168,14 @@ export default function ColoringAnimalScreen({
   }
 
   // 그림 그리기 함수
+  function getRandomHexColor() {
+    let color = Math.floor(Math.random() * 16777216).toString(16);
+    while (color.length < 6) {
+      color = '0' + color;
+    }
+    color = '#' + color;
+    return color.toUpperCase();
+  }
   const onTouchStart = (event: GestureResponderEvent) => {
     if (!isLoading) {
       const locationX = event.nativeEvent.locationX;
@@ -189,6 +204,9 @@ export default function ColoringAnimalScreen({
     }
     setCurrentPath('');
     handleDrawCapture();
+    if (!isSelectColorFix) {
+      dispatch(handleDrawColorSelect(getRandomHexColor()));
+    }
   };
 
   const handleClearButtonClick = () => {
@@ -330,6 +348,7 @@ export default function ColoringAnimalScreen({
                 <IconFontAwesome
                   name="reply"
                   size={windowWidth * 0.05}
+                  // color={paths.length ? '#5E9FF9' : 'gray'}
                   color={paths.length ? '#5E9FF9' : 'gray'}
                 />
               </Text>
@@ -355,6 +374,7 @@ export default function ColoringAnimalScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
+                  setIsSelectColorFix(true);
                   dispatch(handleDrawColorSelect(color));
                 }}
               />

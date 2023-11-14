@@ -12,6 +12,8 @@ import {
   ToastAndroid, // 토스트안드로이드 잠깐 사용
   BackHandler,
   ImageBackground,
+  Animated,
+  Easing,
 } from 'react-native';
 import {GestureResponderEvent} from 'react-native';
 import ViewShot from 'react-native-view-shot';
@@ -85,6 +87,7 @@ export default function DrawPictureScreen({
 
       newClient.onConnect = frame => {
         console.log('연결됨');
+        console.log('Connected: ' + frame);
         // console.log('Connected: ' + frame);
         setClient(newClient); // 연결 후 client 상태 업데이트
         setSocketLinked(true);
@@ -124,7 +127,9 @@ export default function DrawPictureScreen({
   }, []);
   useEffect(() => {
     if (client) {
-      client.subscribe('/sub/room/a', message => {
+      const randomInt = Math.floor(Math.random() * (10000000 - 1 + 1) + 1);
+      setRoomId(`${randomInt}`);
+      client.subscribe(`/sub/room/${randomInt}`, (message) => {
         const messageContent = JSON.parse(message.body);
         console.log('되나', messageContent);
         setSimilarityMessage(messageContent.message);
@@ -146,6 +151,8 @@ export default function DrawPictureScreen({
 
   //////////////////////////////////////////////////////////////////////////////
   // 캡쳐 변수
+  const [isRendered, setIsRendered] = useState(false);
+  const [roomId, setRoomId] = useState<string>('');
   const drawCaptureRef = useRef(null); //테두리 그리기 캡쳐
   const originCaptureRef = useRef(null); //원본이미지 캡쳐
   // 임시 이미지 비교 변수
@@ -168,6 +175,8 @@ export default function DrawPictureScreen({
   const [captureBorderImagePath, setCaptureBorderImagePath] =
     useState<string>('');
   const [canDrawCapture, setCanDrawCapture] = useState<boolean>(false);
+  // 로딩 변수
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   // 뒤로가기 변수
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
 
@@ -201,6 +210,7 @@ export default function DrawPictureScreen({
 
   // 서버 통신
   const handleFriendsPictureBorder = async () => {
+    setIsLoading(true);
     try {
       const response = await friendsPictureBorder(pictureId);
       if (response.status === 200) {
@@ -208,6 +218,7 @@ export default function DrawPictureScreen({
           '다른 사람이 올린 사진 테두리 가져오기 성공',
           response.data,
         );
+        setIsLoading(false);
         setPictureBorderURI(response.data.urlTrace);
         setPictureExplanation(response.data.detail);
         handleOriginCapture();
@@ -226,7 +237,7 @@ export default function DrawPictureScreen({
     try {
       const response = await friendsPictureSimilarity(
         // `abc${randomInt}`,
-        'a',
+        roomId,
         captureBorderImagePath,
         compareImagePath,
       );
@@ -263,13 +274,18 @@ export default function DrawPictureScreen({
 
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
-    setTimeout(() => {
-      handleOriginCapture();
-    }, 500);
-  }, [pictureBorderURI]);
+    if (isRendered){
+      setTimeout(() => {
+        handleOriginCapture();
+        // setIsRendered(false);
+      }, 500);
+    }
+  }, [isRendered]);
 
   useEffect(() => {
     handleFriendsPictureBorder();
+    handleisTestDrawCompareModalVisible(false);
+    handleisOriginPictureModalVisible(false);
   }, []);
 
   // 그림 그리기 함수
@@ -339,7 +355,6 @@ export default function DrawPictureScreen({
       // dispatch(handleLineThickness(10));
       dispatch(handleLineThickness(10));
     });
-
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
   }, [dispatch, navigation]);
 
@@ -371,9 +386,33 @@ export default function DrawPictureScreen({
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
+    ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+
+    rotateImage();
+  }, []);
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+
   // 테두리 그리기 완료 후
   const handleGoColoring = () => {
     navigation.navigate('ColoringPictureScreen', {
+      roomId: roomId,
+      captureBorderImagePath: captureBorderImagePath,
       pictureId: pictureId,
       pictureTitle: pictureTitle,
       completeLine: paths,
@@ -483,19 +522,19 @@ export default function DrawPictureScreen({
           ref={originCaptureRef}
           options={{
             fileName: 'originImageCapture',
-            format: 'png',
+            format: 'jpg',
             quality: 1,
           }}>
           {pictureBorderURI === '' ? null : (
             <ImageBackground
+              onLayout={() => setIsRendered(true)}
               source={{uri: pictureBorderURI}}
               // source={{uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/bf8169aa1ed346d7b90eaa98767e2902_trace.png'}}
               // source={require('../../assets/images/animalImage/ovalTest.png')}
               style={styles.pictureBorderImageBackground}
               imageStyle={styles.backgroundImageOpacity}
               resizeMode="contain">
-              {/* <View style={{position:'absolute', width: 500, height: 500, backgroundColor:'red'}} /> */}
-              {captureBorderImagePath !== '' && socketLinked ? (
+              {(captureBorderImagePath !== '' && socketLinked) ? (
                 <ViewShot
                   ref={drawCaptureRef}
                   options={{
@@ -629,6 +668,14 @@ export default function DrawPictureScreen({
           originImageURI={captureBorderImagePath}
           compareImageURI={captureImagePath}
         />
+      ) : null}
+      {isLoading ? (
+        <View>
+          <Animated.Image
+            style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+            source={require('../../assets/images/loading2.png')}
+          />
+        </View>
       ) : null}
     </View>
   );
@@ -805,5 +852,12 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: windowHeight * 0.04,
     fontFamily: 'TmoneyRoundWindExtraBold',
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });

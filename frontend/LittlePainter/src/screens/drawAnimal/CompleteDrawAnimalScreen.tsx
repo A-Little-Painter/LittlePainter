@@ -73,15 +73,12 @@ export default function CompleteDrawAnimalScreen({
       console.log(completeDrawUri);
       console.log(animatedGif);
       console.log(originDrawUri);
-      let sendUri = animatedGif;
-      if (animatedGif === '') {
-        sendUri = originDrawUri;
-      }
-      const response = await animalSaveToMypage(
-        animalId,
-        completeDrawUri,
-        sendUri,
-      );
+      // let sendUri = animatedGif;
+      // if (animatedGif === ''){
+      //   sendUri = originDrawUri;
+      // }
+      // const response = await animalSaveToMypage(animalId, completeDrawUri, sendUri);
+      const response = await animalSaveToMypage(animalId, completeDrawUri, animatedGif);
       if (response.status === 201) {
         console.log('완성된 동물 마이페이지에 저장 성공', response.data);
         ToastAndroid.show(
@@ -197,7 +194,8 @@ export default function CompleteDrawAnimalScreen({
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
-              style={[styles.doneButton]}
+              style={[styles.doneButton, {backgroundColor : animatedGif === '' ? 'gray' : '#A8CEFF'}]}
+              disabled={animatedGif === ''}
               onPress={() => {
                 handlePressSaving();
               }}>

@@ -65,6 +65,7 @@ export default function ColoringFairytaleScreen({
   const [roomId] = useState<string>(route.params.fairytaleDrawInfo.roomId);
   const [captureBorderImagePath] = useState<string>(route.params.fairytaleDrawInfo.captureBorderImagePath);
   const [fairytaleTitle] = useState<string>(route.params.fairytaleDrawInfo.fairytaleTitle);
+  const [characterPageId] = useState<number>(route.params.fairytaleDrawInfo.characterPageId);
   // const [charactersInfo] = useState<CharactersInfoType[]>(route.params.fairytaleDrawInfo.charactersInfo);
   const [characterName] = useState<string>(route.params.fairytaleDrawInfo.characterName);
   // const [characterId] = useState<number>(route.params.fairytaleDrawInfo.characterId);
@@ -76,10 +77,6 @@ export default function ColoringFairytaleScreen({
   const pageNum = useSelector(
     (state: RootState) => state.tale.pageNum,
   );
-  // const taleDrawedImage = useSelector(
-  //   (state: RootState) => state.tale.taleDrawedImage,
-  // );
-  // const [animalType] = useState(route.params.fairytaleDrawInfo.animalType);
 
   // 로딩함수
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -89,6 +86,7 @@ export default function ColoringFairytaleScreen({
   const drawCaptureRef = useRef(null);
 
   // 그림 그리기 변수
+  const [isSelectColorFix, setIsSelectColorFix] = useState<boolean>(false);
   const [paths, setPaths] = useState<
     {path: string; color: string; strokeWidth: number}[]
   >([]);
@@ -131,26 +129,19 @@ export default function ColoringFairytaleScreen({
       if (response.status === 200) {
         console.log('동화 애니메이션 성공', response.data);
         setIsLoading(false);
-        // dispatch(handleTaleDrawedImage({pageNum: pageNum, gifUri: response.data.gifUrl, drawUri:captureImagePath}));
-        dispatch(handleTaleDrawedImage({characterName: characterName, pageNum: pageNum, gifUri: response.data.gifUrl, drawUri:response.data.imageUrl}));
+        dispatch(handleTaleDrawedImage({characterName: characterName, pageNum: pageNum, gifUri: response.data.gifUrl, drawUri:response.data.imageUrl, characterPageId:characterPageId}));
         // handleGoComplete();
+        ToastAndroid.show(
+          `우리가 그린 ${characterName}가 이제 움직일 수 있어요`,
+          ToastAndroid.LONG,
+        );
       } else {
         console.log('동화 애니메이션 실패', response.status);
         setIsLoading(false);
-        ToastAndroid.show(
-          '우리 친구가 움직일 수가 없어요ㅠㅠ',
-          ToastAndroid.LONG,
-        );
-        // handleGoComplete();
       }
     } catch (error) {
       console.log('동화 애니메이션 실패', error);
       setIsLoading(false);
-      ToastAndroid.show(
-        '우리 친구가 움직일 수가 없어요ㅠㅠ',
-        ToastAndroid.LONG,
-      );
-      // handleGoComplete();
     }
     setIsLoading(false);
   }
@@ -166,6 +157,14 @@ export default function ColoringFairytaleScreen({
   }
 
   // 그림 그리기 함수
+  function getRandomHexColor() {
+    let color = Math.floor(Math.random() * 16777216).toString(16);
+    while (color.length < 6) {
+      color = '0' + color;
+    }
+    color = '#' + color;
+    return color.toUpperCase();
+  }
   const onTouchStart = (event: GestureResponderEvent) => {
     if (!isLoading) {
       const locationX = event.nativeEvent.locationX;
@@ -194,6 +193,9 @@ export default function ColoringFairytaleScreen({
     }
     setCurrentPath('');
     handleDrawCapture();
+    if (!isSelectColorFix) {
+      dispatch(handleDrawColorSelect(getRandomHexColor()));
+    }
   };
 
   const handleClearButtonClick = () => {
@@ -355,6 +357,7 @@ export default function ColoringFairytaleScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
+                  setIsSelectColorFix(true);
                   dispatch(handleDrawColorSelect(color));
                 }}
               />
