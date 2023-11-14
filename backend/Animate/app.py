@@ -74,7 +74,7 @@ class Animals(Resource):
         logging.debug(result)
 
         # 임시로 저장한 이미지 삭제
-        os.remove(filename)
+        # os.remove(filename)
 
         # 임시값 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
