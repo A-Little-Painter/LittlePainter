@@ -1,8 +1,11 @@
 filepath: examples/bvh/rokoko/arm_wheel_rokoko.bvh
 start_frame_idx: 30
 end_frame_idx: 110
-groundplane_joint: RightHand
+groundplane_joint: LeftFoot
 forward_perp_joint_vectors:
   - - LeftShoulder
+    - RightShoulder
+  - - LeftThigh
+    - RightThigh
 scale: 0.025
 up: +y
