@@ -43,6 +43,5 @@ char_joint_bvh_joints_mapping:
   - RightForeArm
   - RightHand
 char_runtime_checks:
-  - - above
-    - neck
+  - - neck
     - right_shoulder
