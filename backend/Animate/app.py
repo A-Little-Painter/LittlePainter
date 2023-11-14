@@ -2,7 +2,7 @@
 import logging
 import os
 import subprocess
-import random
+import uuid
 from pathlib import Path
 from datetime import datetime
 
@@ -67,7 +67,10 @@ class Animals(Resource):
 
 
         # 이미지 저장
-        filename = secure_filename(f"{image.filename}{animal_type}{datetime.now().strftime('%m%d%H%M%S')}{random.random()*1000}")
+        original_filename, file_extension = os.path.splitext(image.filename)
+        file_uuid = uuid.uuid4()
+        filename = secure_filename(
+            f"{original_filename}{datetime.now().strftime('%m%d%H%M%S')}{str(file_uuid)}{file_extension}")
         image.save(f"{filename}")
 
         # 저장한 이미지로 애니메이션 생성
@@ -75,7 +78,7 @@ class Animals(Resource):
         logging.debug(result)
 
         # 임시로 저장한 이미지 삭제
-        os.remove(filename)
+        # os.remove(filename)
 
         # 임시값 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
@@ -97,7 +100,10 @@ class Tales(Resource):
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
         # 이미지 저장
-        filename = secure_filename(f"{image.filename}{character}{datetime.now().strftime('%m%d%H%M%S')}{random.random()*1000}")
+        original_filename, file_extension = os.path.splitext(image.filename)
+        file_uuid = uuid.uuid4()
+        filename = secure_filename(
+            f"{original_filename}{datetime.now().strftime('%m%d%H%M%S')}{str(file_uuid)}{file_extension}")
         image.save(filename)
 
         # 저장한 이미지로 애니메이션 생성
@@ -122,7 +128,10 @@ class Friends(Resource):
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
         # 이미지 저장
-        filename = secure_filename(f"{image.filename}{datetime.now().strftime('%m%d%H%M%S')}{random.random()*10000}")
+        original_filename, file_extension = os.path.splitext(image.filename)
+        file_uuid = uuid.uuid4()
+        filename = secure_filename(
+            f"{original_filename}{datetime.now().strftime('%m%d%H%M%S')}{str(file_uuid)}{file_extension}")
         image.save(filename)
 
         # 저장한 이미지로 애니메이션 생성
