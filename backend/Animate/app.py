@@ -2,6 +2,7 @@
 import logging
 import os
 import subprocess
+import random
 from pathlib import Path
 from datetime import datetime
 
@@ -66,15 +67,15 @@ class Animals(Resource):
 
 
         # 이미지 저장
-        filename = secure_filename(image.filename)
-        image.save(filename)
+        filename = secure_filename(f"{image.filename}{animal_type}{datetime.now().strftime('%m%d%H%M%S')}{random.random()*1000}")
+        image.save(f"{filename}")
 
         # 저장한 이미지로 애니메이션 생성
         result = shell_create_animation(filename, OUTPUT_FILE_PATH, animal_type, 'animals')
         logging.debug(result)
 
         # 임시로 저장한 이미지 삭제
-        # os.remove(filename)
+        os.remove(filename)
 
         # 임시값 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
@@ -96,7 +97,7 @@ class Tales(Resource):
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
         # 이미지 저장
-        filename = secure_filename(image.filename)
+        filename = secure_filename(f"{image.filename}{character}{datetime.now().strftime('%m%d%H%M%S')}{random.random()*1000}")
         image.save(filename)
 
         # 저장한 이미지로 애니메이션 생성
@@ -111,7 +112,7 @@ class Tales(Resource):
 
 
 @api.route('/animations/comm/friends')
-class Tales(Resource):
+class Friends(Resource):
     def post(self):
         # requestbody 수신
         image = request.files['image']
@@ -121,7 +122,7 @@ class Tales(Resource):
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
         # 이미지 저장
-        filename = secure_filename(image.filename)
+        filename = secure_filename(f"{image.filename}{datetime.now().strftime('%m%d%H%M%S')}{random.random()*10000}")
         image.save(filename)
 
         # 저장한 이미지로 애니메이션 생성
