@@ -1,15 +1,13 @@
 char_starting_location: [0.0, 0.0, -0.5]
 bvh_projection_bodypart_groups:
 - bvh_joint_names:
-  - RightShoulder
   - RightArm
   - RightForeArm
   - RightHand
-  - LeftShoulder
   - LeftArm
   - LeftForeArm
   - LeftHand
-  method: pca
+  method: frontal
   name: Upper Limbs
 - bvh_joint_names:
   - RightThigh
@@ -20,16 +18,15 @@ bvh_projection_bodypart_groups:
   - LeftShin
   - LeftFoot
   - LeftToe
-  method: pca
+  method: frontal
   name: Lower Limbs
 - bvh_joint_names:
   - Hips
   - Spine1
-  - Spine2
-  - Spine3
   - Spine4
-  - Neck
   - Head
+  - RightShoulder
+  - LeftShoulder
   method: frontal
   name: Trunk
 char_bodypart_groups:
@@ -97,7 +94,7 @@ char_joint_bvh_joints_mapping:
   - Spine4
   neck: !!python/tuple
   - Hips
-  - Neck
+  - Head
   right_elbow: !!python/tuple
   - RightArm
   - RightForeArm
