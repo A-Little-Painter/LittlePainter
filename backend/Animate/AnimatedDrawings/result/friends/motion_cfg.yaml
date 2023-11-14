@@ -1,6 +1,6 @@
-filepath: examples/bvh/rokoko/fart2_rokoko.bvh
+filepath: examples/bvh/rokoko/waving_hand_rokoko.bvh
 start_frame_idx: 0
-end_frame_idx: 188
+end_frame_idx: 100
 groundplane_joint: LeftFoot
 forward_perp_joint_vectors:
   - - LeftShoulder

@@ -84,8 +84,8 @@ if __name__ == '__main__':
         motion_cfg_fn = resource_filename(__name__, f'../result/tales/{title}/{character}/motion_cfg.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine.yaml')
     elif animation_type == 'friends':
-        motion_cfg_fn = resource_filename(__name__, 'config/motion/wave_hello.yaml')
-        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
+        motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg.yaml')
+        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
 
     # 골격종류 포함하여 config파일 생성 함수 실행
     image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn, animation_type, character)
