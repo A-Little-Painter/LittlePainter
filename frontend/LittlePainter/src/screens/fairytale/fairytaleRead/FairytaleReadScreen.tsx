@@ -204,7 +204,7 @@ export default function FairytaleReadScreen({
         } else {
           clearInterval(interval);
         }
-      }, 5000);
+      }, 3000);
       return () => {
         clearInterval(interval);
       };
@@ -228,7 +228,7 @@ export default function FairytaleReadScreen({
     // let moveX = new Animated.Value(startX);
     // let moveY = new Animated.Value(startY);
     let ySizeValue: number = 0.2;
-    if (characterName === '총각' || characterName === '아줌마' || characterName === '방망이'){
+    if (characterName === '총각' || characterName === '아줌마' || characterName === '방망이' || characterName === '새우1' || characterName === '새우2'){
       ySizeValue = 0.4;
     }
     const tmpstartX = 0 + windowWidth * startX;
@@ -239,6 +239,11 @@ export default function FairytaleReadScreen({
     let moveY = new Animated.Value(tmpstartY);
     let toEndDurationValue: number = 1000;
     let toStartDurationValue: number = 1000;
+
+    if (characterName === '방망이'){
+      toEndDurationValue = 2000;
+      toStartDurationValue = 2000;
+    }
     Animated.loop(
       Animated.sequence([
         Animated.timing(moveX, {
@@ -273,6 +278,23 @@ export default function FairytaleReadScreen({
       ]),
     ).start();
     return [moveX, moveY];
+  };
+  const fadeIn = (fadeAnim, fadeinDurationValue) => {
+    // Will change fadeAnim value to 1 in 5 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: fadeinDurationValue,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const fadeOut = (fadeAnim, fadeoutDurationValue) => {
+    // Will change fadeAnim value to 0 in 3 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: fadeoutDurationValue,
+      useNativeDriver: true,
+    }).start();
   };
 
   return (
@@ -346,13 +368,40 @@ export default function FairytaleReadScreen({
                     item.endX,
                     item.endY,
                   );
+                  let fadeinDurationValue = 500;
+                  let fadeoutDurationValue = 0;
+                  let fadeAnim = (pageNum === 7 && item.characterName === '방망이') || (pageNum === 9 && item.characterName === '새우2')  ? new Animated.Value(0) : new Animated.Value(1);
+                  if (isFairytaleEndingPageVisible){
+                    fadeinDurationValue = 0;
+                    fadeOut(fadeAnim, fadeoutDurationValue);
+                  } else if ((pageNum === 7 && item.characterName === '방망이') || (pageNum === 9 && item.characterName === '새우2')){
+                    fadeinDurationValue = 100;
+                    if ((pageNum === 9 && item.characterName === '새우2')){
+                      setTimeout(() => {
+                        fadeIn(fadeAnim, fadeinDurationValue);
+                      }, 2000);
+                    } else {
+                      fadeIn(fadeAnim, fadeinDurationValue);
+                    }
+                  } else if (pageNum === 9 && (item.characterName === '방망이' || item.characterName === '새우1')){
+                    fadeoutDurationValue = 0;
+                    setTimeout(() => {
+                      fadeOut(fadeAnim, fadeoutDurationValue);
+                    }, 2000);
+                  }
+
                   // const [moveX, moveY] = imageMoving(-windowWidth / 4, 0, windowWidth / 5, -windowHeight / 4);
                   return isDrawReadDone && matchedImage ? (
                     // 만약 isDrawReadDone이 true이고, 위에서 찾은 객체가 존재하면 그 객체의 gifUri를 사용한다.
                     <Animated.Image
                       key={index}
                       source={{uri: matchedImage.contentUri.gifUri}}
-                      style={styles.fairytaleImage}
+                      style={[
+                        (item.characterName === '총각' || item.characterName === '아줌마' || (item.characterName === '방망이' && pageNum !== 8)
+                        || item.characterName === '새우1' || item.characterName === '새우2'
+                        )  ? styles.fairytaleImage : styles.fairytaleImageLittle,
+                        {transform: [{translateX: moveX}, {translateY: moveY}], opacity: fadeAnim},
+                      ]}
                     />
                   ) : (
                     // 그렇지 않다면 기존의 로직을 따른다.
@@ -362,11 +411,25 @@ export default function FairytaleReadScreen({
                         uri: item.urlGif ? item.urlGif : item.urlOriginal,
                       }}
                       style={[
-                        (item.characterName === '총각' || item.characterName === '아줌마' || (item.characterName === '방망이' && pageNum !== 8))  ? styles.fairytaleImage : styles.fairytaleImageLittle,
-                        {transform: [{translateX: moveX}, {translateY: moveY}]},
+                        (item.characterName === '총각' || item.characterName === '아줌마' || (item.characterName === '방망이' && pageNum !== 8)
+                        || item.characterName === '새우1' || item.characterName === '새우2'
+                        )  ? styles.fairytaleImage : styles.fairytaleImageLittle,
+                        {transform: [{translateX: moveX}, {translateY: moveY}], opacity: fadeAnim},
                       ]}
                     />
                   );
+                  // return <Animated.Image
+                  //   key={index}
+                  //   source={{
+                  //     uri: isDrawReadDone && matchedImage ? matchedImage.contentUri.gifUri : (item.urlGif ? item.urlGif : item.urlOriginal),
+                  //   }}
+                  //   style={[
+                  //     (item.characterName === '총각' || item.characterName === '아줌마' || (item.characterName === '방망이' && pageNum !== 8)
+                  //     || item.characterName === '새우1' || item.characterName === '새우2'
+                  //     )  ? styles.fairytaleImage : styles.fairytaleImageLittle,
+                  //     {transform: [{translateX: moveX}, {translateY: moveY}], opacity: fadeAnim},
+                  //   ]}
+                  // />;
                 })}
               </View>
               {/* 중단 우측 */}
@@ -391,26 +454,26 @@ export default function FairytaleReadScreen({
                             dispatch(handlePageNum(1));
                           }
                       } else if (!isDrawReadDone && !isReReading){
-                          if (maxPage > pageNum){
-                            dispatch(handlePageNum(pageNum + 1));
-                          } else if (maxPage === pageNum){
-                            dispatch(handleIsDrawReadDone(true));
-                            dispatch(handleIsReReading(true));
-                            dispatch(handlePageNum(1));
-                          }
-                          // // 다 그리지도 않고, 읽기 중도 아니라면
-                          // if (fairytaleData[pageNum - 1].drawing) {
-                          //   const characterPageId = fairytaleData[pageNum - 1].talePageId;
-                          //   navigation.navigate(
-                          //     'DrawFairytaleScreen',
-                          //     {charactersInfo, fairytaleTitle: fairytaleTitle, characterPageId}
-                          //   );
-                          // } else if (maxPage > pageNum) {
+                          // if (maxPage > pageNum){
                           //   dispatch(handlePageNum(pageNum + 1));
-                          // } else if (maxPage === pageNum) {
+                          // } else if (maxPage === pageNum){
                           //   dispatch(handleIsDrawReadDone(true));
-                          //   dispatch(handleisFairytaleEndingPageVisible(true));
+                          //   dispatch(handleIsReReading(true));
+                          //   dispatch(handlePageNum(1));
                           // }
+                          // 다 그리지도 않고, 읽기 중도 아니라면
+                          if (fairytaleData[pageNum - 1].drawing) {
+                            const characterPageId = fairytaleData[pageNum - 1].talePageId;
+                            navigation.navigate(
+                              'DrawFairytaleScreen',
+                              {charactersInfo, fairytaleTitle: fairytaleTitle, characterPageId}
+                            );
+                          } else if (maxPage > pageNum) {
+                            dispatch(handlePageNum(pageNum + 1));
+                          } else if (maxPage === pageNum) {
+                            dispatch(handleIsDrawReadDone(true));
+                            dispatch(handleisFairytaleEndingPageVisible(true));
+                          }
                       }
                     }}
                     style={styles.xCircle}>
@@ -621,7 +684,8 @@ const styles = StyleSheet.create({
   subtitles1: {
     textAlign: 'center',
     paddingHorizontal: windowWidth * 1 * 0.95 * 0.005,
-    fontSize: windowHeight * 0.04,
+    // fontSize: windowHeight * 0.04,
+    fontSize: windowHeight * 0.06,
     color: '#000000',
   },
   subtitles2: {

@@ -124,7 +124,7 @@ export default function DrawPictureScreen({
   }, []);
   useEffect(() => {
     if (client) {
-      const randomInt = Math.floor(Math.random() * (100000 - 1 + 1) + 1);
+      const randomInt = Math.floor(Math.random() * (10000000 - 1 + 1) + 1);
       setRoomId(`${randomInt}`);
       client.subscribe(`/sub/room/${randomInt}`, (message) => {
         const messageContent = JSON.parse(message.body);
