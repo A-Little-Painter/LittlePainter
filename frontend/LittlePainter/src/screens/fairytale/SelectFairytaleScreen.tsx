@@ -16,6 +16,8 @@ import {RootStackParams} from '../../navigations/AppNavigator';
 import {taleListInquiry} from '../../apis/draw/draw';
 // 타입
 import {TaleListInquiryType} from './fairytaleType';
+import {useAppDispatch} from '../../redux/hooks';
+import {handleBGMMusic} from '../../redux/slices/music/music';
 
 type SelectFairytaleScreenProps = StackScreenProps<
   RootStackParams,
@@ -43,7 +45,10 @@ const randomBackgroundColor: string[] = [
 export default function SelectFairytaleScreen({
   navigation,
 }: SelectFairytaleScreenProps) {
-  const [fairytale, setFairytale] = useState<TaleListInquiryType['content']>([]);
+  const [fairytale, setFairytale] = useState<TaleListInquiryType['content']>(
+    [],
+  );
+  const dispatch = useAppDispatch();
 
   const handleTaleListInquiry = async () => {
     try {
@@ -61,6 +66,11 @@ export default function SelectFairytaleScreen({
   };
   useEffect(() => {
     handleTaleListInquiry();
+    dispatch(
+      handleBGMMusic(
+        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_animal_tale.mp3',
+      ),
+    );
     return () => {};
   }, []);
 
@@ -90,47 +100,46 @@ export default function SelectFairytaleScreen({
             </TouchableOpacity>
           </View>
           {/* 중단 */}
-        <View style={styles.middleContainer}>
-          <ScrollView
-            // ref={picturelistScrollViewRef}
-            style={styles.middleContainerFlatList}
-            // onScroll={handleScrollEnd}
-          >
-            <View style={styles.wrappingView}>
-              {fairytale.map((item, index) => (
-                <View style={styles.pictureCard1} key={index}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate('FairytaleReadScreen', {
-                        title: item.title,
-                        taleId: item.id,
-                      });
-                    }}
-                    style={[
-                      styles.pictureCard2,
-                      {
-                        backgroundColor:
-                          randomBackgroundColor[
-                            index >= randomBackgroundColor.length
-                              ? index % randomBackgroundColor.length
-                              : index
-                          ],
-                      },
-                    ]}>
-                    <Image
-                      style={styles.cardFairytaleImage}
-                      source={{uri: item.urlCover}}
-                    />
-                  </TouchableOpacity>
-                  <Text style={styles.fairytaleCardText}>{item.title}</Text>
-                </View>
-              ))}
-            </View>
+          <View style={styles.middleContainer}>
+            <ScrollView
+              // ref={picturelistScrollViewRef}
+              style={styles.middleContainerFlatList}
+              // onScroll={handleScrollEnd}
+            >
+              <View style={styles.wrappingView}>
+                {fairytale.map((item, index) => (
+                  <View style={styles.pictureCard1} key={index}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('FairytaleReadScreen', {
+                          title: item.title,
+                          taleId: item.id,
+                        });
+                      }}
+                      style={[
+                        styles.pictureCard2,
+                        {
+                          backgroundColor:
+                            randomBackgroundColor[
+                              index >= randomBackgroundColor.length
+                                ? index % randomBackgroundColor.length
+                                : index
+                            ],
+                        },
+                      ]}>
+                      <Image
+                        style={styles.cardFairytaleImage}
+                        source={{uri: item.urlCover}}
+                      />
+                    </TouchableOpacity>
+                    <Text style={styles.fairytaleCardText}>{item.title}</Text>
+                  </View>
+                ))}
+              </View>
             </ScrollView>
           </View>
         </View>
       </ImageBackground>
-        
     </View>
   );
 }
@@ -170,6 +179,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.05,
     fontWeight: '600',
     color: 'black',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   middleContainerFlatList: {
     width: '100%',
@@ -212,6 +222,7 @@ const styles = StyleSheet.create({
     paddingTop: windowHeight * 0.01,
     fontSize: windowWidth * 0.018,
     fontWeight: '600',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   goHomeArea: {
     marginLeft: windowWidth * 0.51,

@@ -21,7 +21,7 @@ import {
 } from '../../redux/slices/draw/draw';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
-import {animalSaveToMypage} from '../../apis/draw/draw';
+import {friendSaveToMypage} from '../../apis/draw/draw';
 import SaveDrawnToLoginModal from '../modals/SaveDrawnToLoginModal';
 type CompleteDrawFriendScreenProps = StackScreenProps<
   RootStackParams,
@@ -39,6 +39,7 @@ export default function CompleteDrawFriendScreen({
   // const [animalType] = useState<string>(route.params.animalType);
   const [completeDrawUri] = useState<string>(route.params.completeDrawUri); // 완성된 Uri(gif파일 아님)
   const [animatedGif] = useState<string>(route.params.animatedGif);
+  const [originDrawUri] = useState<string>(route.params.originDrawUri);
   const [isSavedImage, setIsSavedImage] = useState<boolean>(false);
 
   const isLogin = useSelector((state: RootState) => state.user.isLogin);
@@ -69,11 +70,19 @@ export default function CompleteDrawFriendScreen({
 
   const handleAnimalSaveToMypage = async () => {
     try {
-      // const response = await animalSaveToMypage(animalId, completeDrawUri);
-      const response = await animalSaveToMypage(
+      console.log('animalId');
+      console.log(animalId);
+      console.log(completeDrawUri);
+      console.log(originDrawUri);
+      let sendUri = animatedGif;
+      if (animatedGif === '') {
+        sendUri = originDrawUri;
+      }
+      console.log(sendUri);
+      const response = await friendSaveToMypage(
         animalId,
         completeDrawUri,
-        animatedGif,
+        sendUri,
       );
       if (response.status === 201) {
         console.log('완성된 동물 마이페이지에 저장 성공', response.data);
@@ -167,15 +176,13 @@ export default function CompleteDrawFriendScreen({
                 animatedGif === '' ||
                 animatedGif === undefined ||
                 animatedGif === null
-                  ? completeDrawUri
+                  ? completeDrawUri === '' ||
+                    completeDrawUri === undefined ||
+                    completeDrawUri === null
+                    ? originDrawUri
+                    : completeDrawUri
                   : animatedGif,
             }}
-            // source={{
-            //   uri:
-            //     (animatedGif !== '' || animatedGif !== null || animatedGif !== undefined)
-            //       ? animatedGif
-            //       : completeDrawUri,
-            // }}
             resizeMode="contain">
             {/* <View style={{width: '100%', height: '100%'}} /> */}
           </ImageBackground>
@@ -352,5 +359,6 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
 });

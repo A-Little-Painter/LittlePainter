@@ -124,6 +124,7 @@ export type RootStackParams = {
     animalType: string;
     completeDrawUri: string;
     animatedGif: string;
+    originDrawUri: string;
   };
 
   // 사진 그리기

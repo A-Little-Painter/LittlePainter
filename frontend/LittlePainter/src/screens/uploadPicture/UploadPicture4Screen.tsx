@@ -14,7 +14,7 @@ import {useAppSelector, useAppDispatch} from '../../redux/hooks';
 import {animalTypeListApi} from '../../apis/uploadPicture/uploadPicture';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {update3} from '../../redux/slices/uploadPicture/uploadPicture';
+import {update3, update4} from '../../redux/slices/uploadPicture/uploadPicture';
 
 type UploadPicture4ScreenProps = StackScreenProps<
   RootStackParams,
@@ -85,9 +85,10 @@ export default function UploadPicture4Screen({
     });
   };
 
-  const confirmType = (type: number, url: string) => {
+  const confirmType = (type: number, url: string, name: string) => {
     lore(url);
     dispatch(update3(type));
+    dispatch(update4(name));
     navigation.navigate('UploadPicture5Screen');
   };
 
@@ -116,7 +117,7 @@ export default function UploadPicture4Screen({
                   key={animal.id}
                   style={[styles.button, {backgroundColor: getRandomColor()}]}
                   onPress={() => {
-                    confirmType(animal.id, animal.urlSound);
+                    confirmType(animal.id, animal.urlSound, animal.name);
                   }}>
                   <Text style={styles.buttontext}>{animal.name}</Text>
                 </TouchableOpacity>
@@ -163,6 +164,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: windowWidth * 0.015,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   bot: {
     flex: 0.7,
@@ -181,5 +183,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     textAlign: 'center',
     textAlignVertical: 'center',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
 });

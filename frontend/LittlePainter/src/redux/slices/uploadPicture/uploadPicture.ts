@@ -84,13 +84,16 @@ export const uploadPictureSlice = createSlice({
     update3: (state, action: PayloadAction<number>) => {
       state.animal_type_num = action.payload;
     },
+    update4: (state, action: PayloadAction<string>) => {
+      state.animal_type = action.payload;
+    },
     destinationUpdate: (state, action: PayloadAction<string>) => {
       state.destination = action.payload;
     },
   },
 });
 
-export const {update0, update, update2, update3, destinationUpdate} =
+export const {update0, update, update2, update3, update4, destinationUpdate} =
   uploadPictureSlice.actions;
 export const title = (state: RootState) => state.uploadPicture.title;
 export const detail = (state: RootState) => state.uploadPicture.detail;

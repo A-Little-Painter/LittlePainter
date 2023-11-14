@@ -651,6 +651,7 @@ const styles = StyleSheet.create({
   clearButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.02,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   bottomContainerRight: {
     flex: 0.4,
@@ -667,6 +668,7 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loadingImage: {
     position: 'absolute',

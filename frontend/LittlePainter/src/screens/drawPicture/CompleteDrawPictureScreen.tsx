@@ -70,7 +70,11 @@ export default function CompleteDrawPictureScreen({
 
   const handlefriendsPictureSaveToMypage = async () => {
     try {
-      const response = await friendsPictureSaveToMypage(pictureId, completeDrawUri, animatedGif);
+      const response = await friendsPictureSaveToMypage(
+        pictureId,
+        completeDrawUri,
+        animatedGif,
+      );
       if (response.status === 201) {
         console.log('완성된 사진그리기 마이페이지에 저장 성공', response.data);
         ToastAndroid.show(
@@ -80,7 +84,10 @@ export default function CompleteDrawPictureScreen({
         setIsSavedImage(true);
         dispatch(handleHavingGifUrl(false));
       } else {
-        console.log('완성된 사진그리기 마이페이지에 저장 실패',response.status);
+        console.log(
+          '완성된 사진그리기 마이페이지에 저장 실패',
+          response.status,
+        );
       }
     } catch (error) {
       console.log('완성된 사진그리기 마이페이지에 저장 실패', error);
@@ -138,7 +145,7 @@ export default function CompleteDrawPictureScreen({
                 <IconFontAwesome6
                   name="x"
                   size={windowWidth * 0.03}
-                  color={'#5E9FF9'}
+                  color={'#FE7779'}
                 />
               </Text>
             </TouchableOpacity>
@@ -160,7 +167,9 @@ export default function CompleteDrawPictureScreen({
             style={styles.imageBackgroundSize}
             source={{
               uri:
-                (animatedGif === '' || animatedGif === undefined || animatedGif === null)
+                animatedGif === '' ||
+                animatedGif === undefined ||
+                animatedGif === null
                   ? completeDrawUri
                   : animatedGif,
             }}
@@ -262,7 +271,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
-    borderColor: '#5E9FF9',
+    borderColor: '#FE7779',
     borderWidth: 2,
   },
   xText: {
@@ -332,7 +341,7 @@ const styles = StyleSheet.create({
     flex: 0.4,
   },
   doneButton: {
-    backgroundColor: '#A8CEFF',
+    backgroundColor: '#FE7779',
     width: '40%',
     height: '80%',
     alignItems: 'center',
@@ -343,5 +352,6 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
 });

@@ -74,10 +74,14 @@ export default function CompleteDrawAnimalScreen({
       console.log(animatedGif);
       console.log(originDrawUri);
       let sendUri = animatedGif;
-      if (animatedGif === ''){
+      if (animatedGif === '') {
         sendUri = originDrawUri;
       }
-      const response = await animalSaveToMypage(animalId, completeDrawUri, sendUri);
+      const response = await animalSaveToMypage(
+        animalId,
+        completeDrawUri,
+        sendUri,
+      );
       if (response.status === 201) {
         console.log('완성된 동물 마이페이지에 저장 성공', response.data);
         ToastAndroid.show(
@@ -167,8 +171,14 @@ export default function CompleteDrawAnimalScreen({
             style={styles.imageBackgroundSize}
             source={{
               uri:
-                (animatedGif === '' || animatedGif === undefined || animatedGif === null)
-                  ? (completeDrawUri === '' || completeDrawUri === undefined || completeDrawUri === null) ? originDrawUri : completeDrawUri
+                animatedGif === '' ||
+                animatedGif === undefined ||
+                animatedGif === null
+                  ? completeDrawUri === '' ||
+                    completeDrawUri === undefined ||
+                    completeDrawUri === null
+                    ? originDrawUri
+                    : completeDrawUri
                   : animatedGif,
             }}
             resizeMode="contain">
@@ -347,5 +357,6 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
 });

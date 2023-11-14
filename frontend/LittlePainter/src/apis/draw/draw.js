@@ -395,7 +395,11 @@ export const taleSaveToMypage = async (taleId, talePageData) => {
 //   }
 // };
 // 동화 유사도 검사
-export const taleCheckSimilarity = async (roomId, originBorderFileUri, compareBorderFileUri,) => {
+export const taleCheckSimilarity = async (
+  roomId,
+  originBorderFileUri,
+  compareBorderFileUri,
+) => {
   try {
     const formData = new FormData();
     // formData.append('roomId', roomId);
@@ -412,11 +416,14 @@ export const taleCheckSimilarity = async (roomId, originBorderFileUri, compareBo
       type: 'image/png',
       name: 'newFile.png',
     });
-    const response = await axios.post(`${BASE_URL}/draws/tales/similarcheck`, formData, {headers: {'Content-Type': 'multipart/form-data'}},
+    const response = await axios.post(
+      `${BASE_URL}/draws/tales/similarcheck`,
+      formData,
+      {headers: {'Content-Type': 'multipart/form-data'}},
     );
     return response;
   } catch (error) {
-    if (error.response.status !== 404){
+    if (error.response.status !== 404) {
       console.error('동화 유사도 검사 실패:', error);
       return error.response;
     }
@@ -438,7 +445,12 @@ export const taleSaveEveryDrawn = async () => {
 
 //animations
 // 동물 애니메이션
-export const animalAnimations = async (roomId, animalType, captureBorderImagePath, drawCaptureImageURI) => {
+export const animalAnimations = async (
+  roomId,
+  animalType,
+  captureBorderImagePath,
+  drawCaptureImageURI,
+) => {
   try {
     const formData = new FormData();
     formData.append('roomId', roomId);
@@ -455,6 +467,8 @@ export const animalAnimations = async (roomId, animalType, captureBorderImagePat
       name: 'newFile.png',
     });
 
+    console.log(formData._parts);
+
     const response = await axios.post(
       `${BASE_URL}/draws/animations/animals`,
       formData,
@@ -468,7 +482,14 @@ export const animalAnimations = async (roomId, animalType, captureBorderImagePat
   }
 };
 // 동화 애니메이션
-export const taleAnimations = async (roomId, pageNum, fairytaleTitle, characterName, captureBorderImagePath, drawCaptureImageURI) => {
+export const taleAnimations = async (
+  roomId,
+  pageNum,
+  fairytaleTitle,
+  characterName,
+  captureBorderImagePath,
+  drawCaptureImageURI,
+) => {
   try {
     // console.log('######################################################')
     // console.log(roomId, pageNum, fairytaleTitle, characterName);
@@ -490,7 +511,11 @@ export const taleAnimations = async (roomId, pageNum, fairytaleTitle, characterN
       type: 'image/png',
       name: 'newFile.png',
     });
-    const response = await axios.post(`${BASE_URL}/draws/animations/tales`, formData, {headers: {'Content-Type': 'multipart/form-data'}},);
+    const response = await axios.post(
+      `${BASE_URL}/draws/animations/tales`,
+      formData,
+      {headers: {'Content-Type': 'multipart/form-data'}},
+    );
     return response;
   } catch (error) {
     console.log('동화 애니메이션 실패:', error);
@@ -676,10 +701,9 @@ export const friendSaveToMypage = async (workId, completeDrawUri, gifUrl) => {
       type: 'image/png',
       name: 'originalFile.png',
     });
-    if (gifUrl !== '' && gifUrl !== undefined) {
-      formData.append('gifUrl', JSON.stringify(gifUrl));
-    }
+    formData.append('gifUrl', JSON.stringify(gifUrl));
 
+    console.log(formData._parts);
     const response = await axios.post(
       `${BASE_URL}/draws/child_work/animal`,
       formData,
@@ -725,6 +749,7 @@ export const FriendAnimations = async (
       type: 'image/png',
       name: 'newFile.png',
     });
+    console.log('formData._parts');
     console.log(formData._parts);
     const response = await axios.post(
       `${BASE_URL}/draws/animations/friends`,

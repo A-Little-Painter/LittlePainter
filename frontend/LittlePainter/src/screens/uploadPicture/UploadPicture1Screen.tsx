@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,6 +8,8 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Animated,
+  Easing,
   ImageBackground,
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
@@ -16,9 +18,12 @@ import {useAppDispatch} from '../../redux/hooks';
 import {openImagePicker} from '../detail/ImagePicker';
 import {
   update,
+  update2,
   destinationUpdate,
 } from '../../redux/slices/uploadPicture/uploadPicture';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
+import {handleBGMMusic} from '../../redux/slices/music/music';
+import {uploadPictureApi} from '../../apis/uploadPicture/uploadPicture';
 
 type UploadPicture1ScreenProps = StackScreenProps<
   RootStackParams,
@@ -26,7 +31,7 @@ type UploadPicture1ScreenProps = StackScreenProps<
 >;
 
 const windowWidth = Dimensions.get('window').width;
-// const windowHeight = Dimensions.get('window').height;
+const windowHeight = Dimensions.get('window').height;
 
 export default function UploadPicture1Screen({
   navigation,
@@ -39,6 +44,8 @@ export default function UploadPicture1Screen({
     fileName: string;
     type: string;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const imagetemp = async () => {
     try {
       const selectedImage = await openImagePicker();
@@ -99,12 +106,82 @@ export default function UploadPicture1Screen({
       dispatch(update(data));
       dispatch(destinationUpdate('UploadPicture3Screen'));
       console.log(data);
-      navigation.navigate('UploadPicture2Screen');
+      unMoving();
     } else if (!srcText) {
       Alert.alert('잠깐!', '동물의 사진을 올려주세요');
     } else {
       Alert.alert('잠깐!', '동물의 이름과 소개를 적어주세요');
     }
+  };
+
+  useEffect(() => {
+    dispatch(
+      handleBGMMusic(
+        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_uploadAnimal.mp3',
+      ),
+    );
+  }, []);
+
+  function setIsLoadingAsync(value: boolean): Promise<void> {
+    return new Promise<void>(resolve => {
+      setIsLoading(value);
+      resolve(); // setIsLoading가 완료되면 프로미스를 해결합니다.
+    });
+  }
+
+  ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    dispatch(
+      handleBGMMusic(
+        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_uploadAnimal.mp3',
+      ),
+    );
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+
+    rotateImage();
+  }, []);
+
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+  ////////////
+
+  const unMoving = async () => {
+    setIsLoadingAsync(true);
+    const imageData = new FormData();
+    imageData.append('file', {
+      uri: srcText,
+      name: nameText,
+      type: typeText,
+    });
+    const temp = await uploadPictureApi(imageData);
+    const checkImage = temp.data;
+    const data: {
+      animal_type: string;
+      border_image: string;
+      trace_image: string;
+      moving: boolean;
+    } = {
+      animal_type: checkImage.animal_type,
+      border_image: checkImage.border_image,
+      trace_image: checkImage.trace_image,
+      moving: false,
+    };
+    dispatch(update2(data));
+    setIsLoadingAsync(false);
+    navigation.navigate('UploadPicture3Screen');
   };
 
   return (
@@ -113,6 +190,14 @@ export default function UploadPicture1Screen({
         source={require('../../assets/bgImage/upload.png')}
         resizeMode="cover"
         style={styles.backgroundImage}>
+        {isLoading ? (
+          <View style={{position: 'absolute', zIndex: 1}}>
+            <Animated.Image
+              style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
+              source={require('../../assets/images/loading2.png')}
+            />
+          </View>
+        ) : null}
         <View style={styles.subContainer}>
           {/* 상단 */}
           <View style={styles.topContainer}>
@@ -267,25 +352,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  searchbar: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: windowWidth * 0.05,
-    borderBottomLeftRadius: windowWidth * 0.05,
-    paddingHorizontal: windowWidth * 0.02,
-    height: windowWidth * 0.05,
-    width: '80%',
-    fontSize: windowWidth * 0.02,
-    marginTop: windowWidth * 0.015,
-  },
-  searchMark: {
-    backgroundColor: '#FFFFFF',
-    height: windowWidth * 0.05,
-    justifyContent: 'center',
-    borderTopRightRadius: windowWidth * 0.05,
-    borderBottomRightRadius: windowWidth * 0.05,
-    paddingHorizontal: windowWidth * 0.015,
-    marginTop: windowWidth * 0.015,
-  },
   logoImage: {
     alignSelf: 'center',
     width: windowWidth * 0.11,
@@ -296,16 +362,19 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.05,
     fontWeight: '600',
     color: 'black',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   text1: {
     borderBottomColor: '#000000',
     borderBottomWidth: 1,
     width: '100%',
     fontSize: windowWidth * 0.028,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   text2: {
     width: '100%',
     fontSize: windowWidth * 0.02,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   btnArea: {
     justifyContent: 'center',
@@ -324,6 +393,7 @@ const styles = StyleSheet.create({
   uploadText: {
     textAlign: 'center',
     fontSize: windowWidth * 0.018,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   middlecontentContainer: {
     flex: 4,
@@ -351,17 +421,25 @@ const styles = StyleSheet.create({
   fileSelectText: {
     paddingLeft: windowWidth * 0.003,
     color: 'black',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   originPart: {
     height: '100%',
     width: '40%',
   },
   goHomeArea: {
-    marginLeft: windowWidth * 0.29,
+    marginLeft: windowWidth * 0.2754,
     marginTop: windowWidth * 0.03,
   },
   goHome: {
     height: windowWidth * 0.05,
     width: windowWidth * 0.05,
+  },
+  loadingImage: {
+    position: 'absolute',
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
+    top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
+    left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
 });

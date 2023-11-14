@@ -78,7 +78,10 @@ export default function DrawPictureScreen({
     let newClient: CompatClient;
 
     const connectAndSetupListeners = () => {
-      newClient = Stomp.over(() => new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'));
+      newClient = Stomp.over(
+        () =>
+          new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'),
+      );
 
       newClient.onConnect = frame => {
         console.log('연결됨');
@@ -121,9 +124,9 @@ export default function DrawPictureScreen({
   }, []);
   useEffect(() => {
     if (client) {
-      client.subscribe('/sub/room/a', (message) => {
+      client.subscribe('/sub/room/a', message => {
         const messageContent = JSON.parse(message.body);
-        console.log('되나',messageContent);
+        console.log('되나', messageContent);
         setSimilarityMessage(messageContent.message);
         setSimilarityState(messageContent.similarState);
         setSimilarityValue(messageContent.similarValue);
@@ -156,7 +159,9 @@ export default function DrawPictureScreen({
     route.params.friendsAnimalInfo.originalImageUrl,
   );
   const [pictureTitle] = useState<string>(route.params.friendsAnimalInfo.title);
-  const [animalType] = useState<string>(route.params.friendsAnimalInfo.animalType);
+  const [animalType] = useState<string>(
+    route.params.friendsAnimalInfo.animalType,
+  );
   const [pictureBorderURI, setPictureBorderURI] = useState<string>('');
   const [pictureExplanation, setPictureExplanation] = useState<string>('');
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
@@ -409,7 +414,7 @@ export default function DrawPictureScreen({
                 <IconFontAwesome
                   name="reply"
                   size={windowWidth * 0.05}
-                  color={paths.length ? '#5E9FF9' : 'gray'}
+                  color={paths.length ? '#FE7779' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -424,7 +429,7 @@ export default function DrawPictureScreen({
                 <IconFontAwesome
                   name="share"
                   size={windowWidth * 0.05}
-                  color={tmpPaths.length ? '#5E9FF9' : 'gray'}
+                  color={tmpPaths.length ? '#FE7779' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -466,7 +471,7 @@ export default function DrawPictureScreen({
                 <IconFontAwesome6
                   name="x"
                   size={windowWidth * 0.03}
-                  color={'#5E9FF9'}
+                  color={'#FE7779'}
                 />
               </Text>
             </TouchableOpacity>
@@ -501,7 +506,11 @@ export default function DrawPictureScreen({
                   style={[
                     styles.pathViewShot,
                     // eslint-disable-next-line react-native/no-inline-styles
-                    {backgroundColor: canDrawCapture ? '#FFFFFF' : 'transparent'},
+                    {
+                      backgroundColor: canDrawCapture
+                        ? '#FFFFFF'
+                        : 'transparent',
+                    },
                   ]}>
                   <View
                     style={styles.pathView}
@@ -590,7 +599,7 @@ export default function DrawPictureScreen({
                   backgroundColor:
                     captureImagePath === '' || paths.length === 0
                       ? 'gray'
-                      : '#A8CEFF',
+                      : '#FE7779',
                 },
               ]}
               onPress={() => {
@@ -693,7 +702,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
-    borderColor: '#5E9FF9',
+    borderColor: '#FE7779',
     borderWidth: 2,
   },
   xText: {
@@ -778,12 +787,13 @@ const styles = StyleSheet.create({
   clearButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.02,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   bottomContainerRight: {
     flex: 0.4,
   },
   doneButton: {
-    backgroundColor: '#A8CEFF',
+    backgroundColor: '#FE7779',
     width: '40%',
     height: '80%',
     alignItems: 'center',
@@ -794,5 +804,6 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: 'black',
     fontSize: windowHeight * 0.04,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
 });

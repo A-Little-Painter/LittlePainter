@@ -24,6 +24,7 @@ import {uploadPictureApi} from '../../apis/uploadPicture/uploadPicture';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import {googleSearchApi} from '../../apis/uploadPicture/uploadPicture';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
+import {handleBGMMusic} from '../../redux/slices/music/music';
 
 type UploadPicture0ScreenProps = StackScreenProps<
   RootStackParams,
@@ -153,6 +154,11 @@ export default function UploadPicture0Screen({
   ////// 로딩 애니메이션
   const [rotation] = useState(new Animated.Value(0));
   useEffect(() => {
+    dispatch(
+      handleBGMMusic(
+        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_uploadAnimal.mp3',
+      ),
+    );
     const rotateImage = () => {
       Animated.timing(rotation, {
         toValue: 360,
@@ -357,6 +363,7 @@ const styles = StyleSheet.create({
     width: '80%',
     fontSize: windowWidth * 0.02,
     marginTop: windowWidth * 0.015,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   searchMark: {
     backgroundColor: '#FFFFFF',
@@ -377,16 +384,19 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.05,
     fontWeight: '600',
     color: 'black',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   text1: {
     borderBottomColor: '#000000',
     borderBottomWidth: 1,
     width: '100%',
     fontSize: windowWidth * 0.028,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   text2: {
     width: '100%',
     fontSize: windowWidth * 0.02,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   btnArea: {
     flex: 1,
@@ -405,9 +415,10 @@ const styles = StyleSheet.create({
   uploadText: {
     textAlign: 'center',
     fontSize: windowWidth * 0.018,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   goHomeArea: {
-    marginLeft: windowWidth * 0.35,
+    marginLeft: windowWidth * 0.34,
     marginTop: windowWidth * 0.03,
   },
   goHome: {

@@ -15,9 +15,15 @@ import {
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
-import {useAppSelector} from '../../redux/hooks';
+import {useAppSelector, useAppDispatch} from '../../redux/hooks';
 import IconSimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {
+  handleBGMVolume,
+  handleBGMMusic,
+  handleSoundEffect,
+} from '../../redux/slices/music/music';
+import {useIsFocused} from '@react-navigation/native';
 
 type MainScreenProps = StackScreenProps<RootStackParams, 'MainScreen'>;
 type ismuted = boolean;
@@ -27,17 +33,46 @@ const windowHeight = Dimensions.get('window').height;
 export default function MainScreen({navigation}: MainScreenProps) {
   const [ismuted, setIsmuted] = useState<ismuted>(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loginVisible, setLoginVisible] = useState(false);
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   const isLogin = useAppSelector(state => state.user.isLogin);
   const selectName = useAppSelector(state => state.user.selectName);
   const selectImage = useAppSelector(state => state.user.selectImage);
+  const music = useAppSelector(state => state.music.isMusic);
   let loginTF: string;
 
+  const dispatch = useAppDispatch();
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(
+        handleBGMMusic(
+          'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_main.mp3',
+        ),
+      );
+    }
+  }, [isFocused]);
   if (!isLogin) {
     loginTF = '로그인';
   } else {
     loginTF = selectName;
   }
+
+  const goSelcetFriend = () => {
+    if (isLogin) {
+      dispatch(handleSoundEffect('btn'));
+      navigation.navigate('SelectFriendScreen');
+    } else {
+      setLoginVisible(true);
+    }
+  };
+
+  const goLogin = () => {
+    dispatch(handleSoundEffect('btn'));
+    setLoginVisible(false);
+    navigation.navigate('LoginScreen');
+  };
 
   useEffect(() => {
     const backAction = () => {
@@ -68,13 +103,29 @@ export default function MainScreen({navigation}: MainScreenProps) {
   }, [backHandleNum, navigation]);
 
   const goSearch = () => {
+    dispatch(handleSoundEffect('btn'));
     setModalVisible(!modalVisible);
     navigation.navigate('UploadPicture0Screen');
   };
 
   const goUpload = () => {
+    dispatch(handleSoundEffect('btn'));
     setModalVisible(!modalVisible);
     navigation.navigate('UploadPicture1Screen');
+  };
+
+  const goMute = () => {
+    setIsmuted(!ismuted);
+    if (ismuted === false) {
+      dispatch(handleBGMVolume(0));
+    } else {
+      dispatch(handleBGMVolume(0.5));
+    }
+  };
+
+  const goScreen = (value: string) => {
+    dispatch(handleSoundEffect('btn'));
+    navigation.navigate(value);
   };
 
   return (
@@ -100,10 +151,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
               <TouchableOpacity
                 style={styles.circleBg2}
                 onPress={() => {
-                  setIsmuted(!ismuted);
-                  // 지울것
-                  // console.log(selectName);
-                  navigation.navigate('LoadScreen');
+                  goMute();
                 }}>
                 <Text>
                   {ismuted ? (
@@ -125,9 +173,9 @@ export default function MainScreen({navigation}: MainScreenProps) {
             <TouchableOpacity
               onPress={() => {
                 if (!isLogin) {
-                  navigation.navigate('LoginScreen');
+                  goScreen('LoginScreen');
                 } else {
-                  navigation.navigate('MypageProfileScreen');
+                  goScreen('MypageProfileScreen');
                 }
               }}
               style={styles.topRightView}>
@@ -152,7 +200,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
               <TouchableOpacity
                 style={[styles.cardFrame, {backgroundColor: '#5E9FF9'}]}
                 onPress={() => {
-                  navigation.navigate('SelectAnimalScreen');
+                  goScreen('SelectAnimalScreen');
                 }}>
                 <View style={styles.cardFrame1}>
                   <Text style={styles.cardText}>
@@ -162,7 +210,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <View style={styles.cardFrame2}>
                   <Image
                     style={styles.cardImage}
-                    source={require('../../assets/images/animalMain.png')}
+                    source={require('../../assets/images/main-animal.png')}
                   />
                 </View>
                 <TouchableOpacity style={styles.cardFrame3}>
@@ -180,7 +228,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
               <TouchableOpacity
                 style={[styles.cardFrame, {backgroundColor: '#A6D934'}]}
                 onPress={() => {
-                  navigation.navigate('SelectFairytaleScreen');
+                  goScreen('SelectFairytaleScreen');
                 }}>
                 <View style={styles.cardFrame1}>
                   <Text style={styles.cardText}>
@@ -190,7 +238,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <View style={styles.cardFrame2}>
                   <Image
                     style={styles.cardImage}
-                    source={require('../../assets/images/talesMain.png')}
+                    source={require('../../assets/images/main-fairy.png')}
                   />
                 </View>
                 <TouchableOpacity style={styles.cardFrame3}>
@@ -208,7 +256,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
               <TouchableOpacity
                 style={[styles.cardFrame, {backgroundColor: '#FE7F22'}]}
                 onPress={() => {
-                  navigation.navigate('SelectFriendScreen');
+                  goSelcetFriend();
                 }}>
                 <View style={styles.cardFrame1}>
                   <Text style={styles.cardText}>
@@ -218,7 +266,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <View style={styles.cardFrame2}>
                   <Image
                     style={styles.cardImage}
-                    source={require('../../assets/images/talesMain.png')}
+                    source={require('../../assets/images/main-picture.png')}
                   />
                 </View>
                 <TouchableOpacity style={styles.cardFrame3}>
@@ -232,11 +280,38 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   </View>
                 </TouchableOpacity>
               </TouchableOpacity>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={loginVisible}
+                onRequestClose={() => {
+                  setModalVisible(!loginVisible);
+                }}>
+                <Pressable
+                  style={styles.centeredView}
+                  onPress={() => setModalVisible(!loginVisible)}>
+                  <View style={styles.modalView}>
+                    <View style={styles.Mtexts}>
+                      <Text style={styles.modaltext}>
+                        내 사진 그리기를 하려면
+                      </Text>
+                      <Text style={styles.modaltext}>로그인을 해야해요.</Text>
+                    </View>
+                    <View style={styles.modalbtns}>
+                      <Pressable
+                        style={[styles.Mbutton2]}
+                        onPress={() => goLogin()}>
+                        <Text style={styles.Mbuttontext}>로그인 하기</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                </Pressable>
+              </Modal>
               {/* 사진따라그리기카드 */}
               <TouchableOpacity
                 style={[styles.cardFrame, {backgroundColor: '#FE7779'}]}
                 onPress={() => {
-                  navigation.navigate('SelectPictureScreen');
+                  goScreen('SelectPictureScreen');
                 }}>
                 <View style={styles.cardFrame1}>
                   <Text style={styles.cardText}>
@@ -249,7 +324,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <View style={styles.cardFrame2}>
                   <Image
                     style={styles.cardImage}
-                    source={require('../../assets/images/pictureMain.png')}
+                    source={require('../../assets/images/main-friend.png')}
                   />
                 </View>
                 <TouchableOpacity style={styles.cardFrame3}>
@@ -280,7 +355,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 <View style={styles.cardFrame2}>
                   <Image
                     style={styles.cardImage}
-                    source={require('../../assets/images/Group16.png')}
+                    source={require('../../assets/images/main-upload.png')}
                   />
                 </View>
                 <TouchableOpacity style={styles.cardFrame3}>
@@ -332,33 +407,22 @@ export default function MainScreen({navigation}: MainScreenProps) {
               <TouchableOpacity
                 style={[styles.cardFrame, {backgroundColor: '#FFBD3A'}]}
                 onPress={() => {
-                  navigation.navigate('ShowScreen');
+                  goScreen('ShowScreen');
                 }}>
                 <View style={styles.cardFrame1}>
                   {/* <View style={styles.space}> */}
                   <Text style={styles.cardText}>
-                    <Text style={styles.cardTextBold}>친구들의{'\n'}</Text>
-                    동물 보기
+                    <Text style={styles.cardTextBold}>놀이방</Text>
                   </Text>
                   {/* </View> */}
                 </View>
-                <View style={styles.cardFrame2}>
+                <View style={styles.cardFrame4}>
                   <Image
-                    style={styles.cardImage}
-                    source={require('../../assets/profile/monkey.png')}
+                    style={styles.cardImage2}
+                    source={require('../../assets/images/main-playroom.png')}
                     resizeMode="stretch"
                   />
                 </View>
-                <TouchableOpacity style={styles.cardFrame3}>
-                  <View style={styles.playButtonCircle}>
-                    <Text>
-                      <IconFontAwesome5
-                        name="question"
-                        size={windowWidth * 0.03}
-                      />
-                    </Text>
-                  </View>
-                </TouchableOpacity>
               </TouchableOpacity>
             </ScrollView>
           </View>
@@ -434,10 +498,17 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     // backgroundColor: 'red',
-    width: windowWidth * 0.3 * 0.75,
-    height: windowWidth * 0.3 * 0.75 * 0.75,
+    width: windowWidth * 0.3 * 0.85,
+    height: windowWidth * 0.3 * 0.75 * 0.85,
     borderRadius: windowWidth * 0.3 * 0.75 * 0.13,
     resizeMode: 'contain',
+  },
+  cardImage2: {
+    // backgroundColor: 'red',
+    width: windowWidth * 0.3 * 0.85,
+    height: windowWidth * 0.3,
+    borderRadius: windowWidth * 0.3 * 0.75 * 0.13,
+    // resizeMode: 'contain',
   },
   cardText: {
     // fontSize: windowWidth * 0.035,
@@ -446,6 +517,7 @@ const styles = StyleSheet.create({
     paddingTop: windowHeight * 0.03,
     paddingBottom: -windowHeight * 0.03,
     paddingLeft: windowWidth * 0.01,
+    fontFamily: 'TmoneyRoundWindRegular',
   },
   cardTextBold: {
     fontWeight: '600',
@@ -491,6 +563,7 @@ const styles = StyleSheet.create({
     flex: 0.3,
     // flexDirection: 'row',
     // justifyContent: 'center',
+    // backgroundColor: 'blue',
   },
   space: {
     paddingTop: windowHeight * 0.05,
@@ -504,6 +577,12 @@ const styles = StyleSheet.create({
     flex: 0.18,
     justifyContent: 'center',
     alignItems: 'flex-end',
+  },
+  cardFrame4: {
+    flex: 1.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'red',
   },
   sectionContainer: {
     marginTop: 32,
@@ -564,6 +643,14 @@ const styles = StyleSheet.create({
   },
   Mbutton: {
     backgroundColor: '#C68AEB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: windowWidth * 0.15,
+    height: windowWidth * 0.05,
+    borderRadius: windowWidth * 0.005,
+  },
+  Mbutton2: {
+    backgroundColor: '#FE7F22',
     justifyContent: 'center',
     alignItems: 'center',
     width: windowWidth * 0.15,

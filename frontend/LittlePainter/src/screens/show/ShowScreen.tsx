@@ -12,6 +12,8 @@ import {
 import {callShowListApi} from '../../apis/show/showApi';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
+import {useAppDispatch} from '../../redux/hooks';
+import {handleBGMMusic} from '../../redux/slices/music/music';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -23,20 +25,33 @@ export default function ShowScreen({navigation}: ShowScreenProps) {
   const [animatedValues, setAnimatedValues] = useState<AnimatedValue[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [moving, setMoving] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(
+      handleBGMMusic(
+        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_playground.mp3',
+      ),
+    );
     console.log('1');
     // 이미지 목록을 가져오는 비동기 함수
     const fetchImageUrls = async () => {
       try {
         // 이미지 URL 목록을 가져옴 (예: API 요청 또는 로컬 데이터베이스 조회)
         const response = await callShowListApi();
+
+        // 랜덤으로 10개의 이미지 선택
+        const randomImageUrls = response
+          .sort(() => Math.random() - 0.5) // 이미지 배열을 랜덤으로 섞음
+          .slice(0, 20); // 배열의 처음 10개의 요소 선택
+
         // 이미지 URL 목록을 설정
-        setImageUrls(response);
+        setImageUrls(randomImageUrls);
       } catch (error) {
         console.error('Error fetching image URLs: ', error);
       }
     };
+
     fetchImageUrls();
   }, []);
 
@@ -127,7 +142,7 @@ export default function ShowScreen({navigation}: ShowScreenProps) {
                 ]}>
                 {imageUrls[index] ? (
                   <Image
-                    style={{width: 100, height: 100}}
+                    style={{width: 300, height: 300}}
                     source={{uri: imageUrls[index]}}
                   />
                 ) : null}

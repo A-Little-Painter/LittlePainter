@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
   loginInputText: {
     fontSize: windowWidth * 0.017,
     width: windowWidth * 0.4,
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   loginTextVector: {
     alignSelf: 'center',
@@ -232,6 +233,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.025,
     fontWeight: '600',
     color: '#FFFFFF',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   subLoginView: {
     flexDirection: 'row',
@@ -249,6 +251,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.03,
     fontWeight: '600',
     color: '#000000',
+    fontFamily: 'TmoneyRoundWindExtraBold',
   },
   infoView: {
     marginVertical: windowWidth * 0.025,
