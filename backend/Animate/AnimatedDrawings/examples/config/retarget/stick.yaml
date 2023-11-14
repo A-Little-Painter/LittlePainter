@@ -42,6 +42,4 @@ char_joint_bvh_joints_mapping:
   right_hand: !!python/tuple
   - RightForeArm
   - RightHand
-char_runtime_checks:
-  - - neck
-    - right_shoulder
+char_runtime_checks: []
