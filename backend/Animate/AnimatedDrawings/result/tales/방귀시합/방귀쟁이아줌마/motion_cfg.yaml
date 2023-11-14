@@ -1,4 +1,4 @@
-filepath: examples/bvh/rokoko/fart2.bvh
+filepath: examples/bvh/rokoko/fart2_rokoko.bvh
 start_frame_idx: 0
 end_frame_idx: 188
 groundplane_joint: LeftFoot
