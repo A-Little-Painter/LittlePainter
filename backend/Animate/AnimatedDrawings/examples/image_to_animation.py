@@ -82,7 +82,7 @@ if __name__ == '__main__':
         title = sys.argv[5]
         page_no = sys.argv[6]
         motion_cfg_fn = resource_filename(__name__, f'../result/tales/{title}/{character}/motion_cfg.yaml')
-        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/mixamo_fff.yaml')
+        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
     elif animation_type == 'friends':
         motion_cfg_fn = resource_filename(__name__, 'config/motion/wave_hello.yaml')
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
