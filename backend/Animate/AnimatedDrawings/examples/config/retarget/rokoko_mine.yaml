@@ -1,15 +1,13 @@
 char_starting_location: [0.0, 0.0, -0.5]
 bvh_projection_bodypart_groups:
 - bvh_joint_names:
-  - RightShoulder
   - RightArm
   - RightForeArm
   - RightHand
-  - LeftShoulder
   - LeftArm
   - LeftForeArm
   - LeftHand
-  method: pca
+  method: frontal
   name: Upper Limbs
 - bvh_joint_names:
   - RightThigh
@@ -20,7 +18,7 @@ bvh_projection_bodypart_groups:
   - LeftShin
   - LeftFoot
   - LeftToe
-  method: pca
+  method: frontal
   name: Lower Limbs
 - bvh_joint_names:
   - Hips
