@@ -24,11 +24,12 @@ import java.io.IOException;
 public class AnimationController {
 
     private final ImageAndGifProcessor imageAndGifProcessor;
-    private byte[] imageFile, gifFile;
 
     // NOTE : animals와 friendsAnimal 모두 받아온다.
     @PostMapping("/animals")
     public ResponseEntity<AnimationResDto> sendAnimatedAnimal(@ModelAttribute AnimationAnimalReqDto animationAnimalReqDto) throws IOException {
+        byte[] imageFile, gifFile;
+
         // 1. 테두리의 영역 안에 있는 이미지만 추출하기
         imageFile = imageAndGifProcessor.extractBorderImage(animationAnimalReqDto.getRoomId(), animationAnimalReqDto.getOriginalFile(),
                 animationAnimalReqDto.getNewFile());
@@ -40,6 +41,8 @@ public class AnimationController {
 
     @PostMapping("/tales")
     public ResponseEntity<AnimationResDto> sendAnimatedTale(@ModelAttribute AnimationTaleReqDto animationTaleReqDto) throws JsonMappingException {
+        byte[] imageFile, gifFile;
+
         imageFile = imageAndGifProcessor.extractBorderImage(animationTaleReqDto.getRoomId(), animationTaleReqDto.getOriginalFile(),
                 animationTaleReqDto.getNewFile());
         gifFile = imageAndGifProcessor.taleConvertToGif(animationTaleReqDto.getPageNumber(), animationTaleReqDto.getTitle(),
@@ -49,6 +52,8 @@ public class AnimationController {
 
     @PostMapping("/friends")
     public ResponseEntity<AnimationResDto> sendAnimatedFriends(@ModelAttribute AnimationFriendReqDto animationFriendReqDto) throws JsonMappingException {
+        byte[] imageFile, gifFile;
+
         imageFile = imageAndGifProcessor.extractBorderImage(animationFriendReqDto.getRoomId(), animationFriendReqDto.getOriginalFile(),
                 animationFriendReqDto.getNewFile());
         gifFile = imageAndGifProcessor.friendConvertToGif(imageFile);

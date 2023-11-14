@@ -30,16 +30,18 @@ public class ImageAndGifProcessor {
     private String imagePath;
 
     private final CommunicationProcessor communicationProcessor;
-    private MultiValueMap<String, Object> bodyData;
-
-    @PostConstruct
-    public void initialize(){
-        bodyData = new LinkedMultiValueMap<>();
-    }
+//    private MultiValueMap<String, Object> bodyData;
+//
+//    @PostConstruct
+//    public void initialize(){
+//        bodyData = new LinkedMultiValueMap<>();
+//    }
 
     // 1. 테두리의 영역 안에 있는 이미지만 추출하기
     public byte[] extractBorderImage(String roomId, MultipartFile originalFile, MultipartFile newFile){
-        bodyData.clear();
+        MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
+
+        // bodyData.clear();
         bodyData.add("roomId", roomId);
         bodyData.add("originalFile", originalFile.getResource());
         bodyData.add("newFile", newFile.getResource());
@@ -51,7 +53,9 @@ public class ImageAndGifProcessor {
     }
 
     public byte[] animalConvertToGif(String animalType, byte[] imageFile){
-        bodyData.clear();
+        MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
+
+        //bodyData.clear();
         bodyData.add("animalType", animalType);
         bodyData.add("image", new ByteArrayResource(imageFile){
             @Override
@@ -68,7 +72,9 @@ public class ImageAndGifProcessor {
     }
 
     public byte[] taleConvertToGif(int pageNo, String taleTitle, String character, byte[] image){
-        bodyData.clear();
+        MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
+
+        // bodyData.clear();
         bodyData.add("pageNo", pageNo);
         bodyData.add("taleTitle", taleTitle.replace(" ", ""));
         bodyData.add("character", character.replace(" ", ""));
@@ -88,7 +94,9 @@ public class ImageAndGifProcessor {
     }
 
     public byte[] friendConvertToGif(byte[] image){
-        bodyData.clear();
+        MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
+
+        //bodyData.clear();
         bodyData.add("image", new ByteArrayResource(image){
             @Override
             public String getFilename() throws IllegalStateException{
@@ -105,7 +113,9 @@ public class ImageAndGifProcessor {
     }
 
     public AnimationResDto uploadsImageAndGif(byte[] imageFile, byte[] gifFile) throws JsonMappingException {
-        bodyData.clear();
+        MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
+
+        //bodyData.clear();
         bodyData.add("imageFile", new ByteArrayResource(imageFile){
             @Override
             public String getFilename() throws IllegalStateException {
