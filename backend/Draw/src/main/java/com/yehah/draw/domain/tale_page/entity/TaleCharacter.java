@@ -1,5 +1,7 @@
 package com.yehah.draw.domain.tale_page.entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -44,16 +46,16 @@ public class TaleCharacter {
 	@Column(name = "movement", length = 50, nullable = true)
 	private String movement;
 
-	@Column(name = "start_x", nullable = false)
-	private Integer startX;
+	@Column(name = "start_x", precision = 4, scale = 3, nullable = false)
+	private BigDecimal startX;
 
-	@Column(name = "start_y", nullable = false)
-	private Integer startY;
+	@Column(name = "start_y", precision = 4, scale = 3, nullable = false)
+	private BigDecimal startY;
 
-	@Column(name = "end_x", nullable = false)
-	private Integer endX;
+	@Column(name = "end_x", precision = 4, scale = 3, nullable = false)
+	private BigDecimal endX;
 
-	@Column(name = "end_y", nullable = false)
-	private Integer endY;
+	@Column(name = "end_y", precision = 4, scale = 3, nullable = false)
+	private BigDecimal endY;
 
 }

@@ -10,12 +10,14 @@ import com.yehah.draw.domain.child_work_tale.entity.ChildWorkTale;
 import com.yehah.draw.domain.child_work_tale.exception.NullPointerException;
 import com.yehah.draw.domain.child_work_tale.exception.*;
 import com.yehah.draw.domain.child_work_tale.repository.ChildWorkTaleRepository;
+import com.yehah.draw.domain.user.response.ChildResponseDTO;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.TransactionalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,14 +38,14 @@ public class ChildWorkTaleServiceImpl implements ChildWorkTaleService{
     public void saveChildWorkTale(Long taleId, List<AddChildWorkTaleReqDto> addChildWorkTaleReqDtoList){
         try{
             // TODO : childId 변경
-//        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             LocalDateTime createDateTime = LocalDateTime.now();
             List<UploadS3MypageTaleResDto> resDtos = childWorkTaleCommService.postS3MyPage(addChildWorkTaleReqDtoList).block();
 
             for(UploadS3MypageTaleResDto resDto : resDtos) {
                 childWorkTaleRepository.save(ChildWorkTale.builder()
-                    .childId(1L)
+                    .childId(child.getChildId())
                     .taleId(taleId)
                     .pageId(resDto.getTalePageId())
                     .urlWork(resDto.getImageFileUrl())
@@ -79,9 +81,9 @@ public class ChildWorkTaleServiceImpl implements ChildWorkTaleService{
     }
 
    public List<GetMyTalesResponseDTO> getMyTales(){
-//        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        List<GetMyTalesResponseDTO> list = childWorkTaleRepository.findDistinctTalesByChildId(1L);
+        List<GetMyTalesResponseDTO> list = childWorkTaleRepository.findDistinctTalesByChildId(child.getChildId());
 
         return list;
     }
@@ -89,9 +91,9 @@ public class ChildWorkTaleServiceImpl implements ChildWorkTaleService{
     @Transactional
     public List<GetMyTaleDetailResponseDTO> getMyTaleDetail(Long taleId) {
         // TODO : childId 변경
-//        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ChildResponseDTO child = (ChildResponseDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        List<ChildWorkTale> childWorkTaleList =  childWorkTaleRepository.findChildWorkTalesByChildIdAndAndTaleId(1L, taleId);
+        List<ChildWorkTale> childWorkTaleList =  childWorkTaleRepository.findChildWorkTalesByChildIdAndAndTaleId(child.getChildId(), taleId);
         return childWorkTaleList.stream()
             .map(childWorkTale -> GetMyTaleDetailResponseDTO.builder()
                 .taleId(childWorkTale.getTaleId())
