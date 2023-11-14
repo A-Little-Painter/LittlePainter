@@ -26,6 +26,12 @@ char_bodypart_groups:
   - right_hand
 char_bvh_root_offset:
   bvh_projection_bodypart_group_for_offset: Trunk
+  bvh_joints:
+  - - Hips
+    - RightShoulder
+  char_joints:
+  - - hip
+    - right_shoulder
 char_joint_bvh_joints_mapping:
   torso: !!python/tuple
   - Hips
