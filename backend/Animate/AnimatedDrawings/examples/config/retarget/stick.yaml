@@ -1,0 +1,42 @@
+char_starting_location: [0.0, 0.0, -0.5]
+bvh_projection_bodypart_groups:
+- bvh_joint_names:
+  - RightArm
+  - RightForeArm
+  - RightHand
+  - RightInHandIndex
+  method: frontal
+  name: Upper Limbs
+- bvh_joint_names:
+  - Hips
+  - RightShoulder
+  method: frontal
+  name: Trunk
+char_bodypart_groups:
+- bvh_depth_drivers:
+  - Hips
+  char_joints:
+  - right_shoulder
+  - hip
+  - torso
+  - neck
+- bvh_depth_drivers:
+  - RightHand
+  char_joints:
+  - right_hand
+char_bvh_root_offset:
+  bvh_projection_bodypart_group_for_offset: Trunk
+char_joint_bvh_joints_mapping:
+  torso: !!python/tuple
+  - Hips
+  - Spine2
+  neck: !!python/tuple
+  - Hips
+  - Head
+  right_hand: !!python/tuple
+  - RightForeArm
+  - RightHand
+char_runtime_checks:
+  - - above
+    - neck
+    - right_shoulder
