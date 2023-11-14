@@ -243,7 +243,7 @@ export default function SelectPictureScreen({
               />
               <Text style={styles.titleText}>친구의 동물 그리기</Text>
             </View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 navigation.navigate('MainScreen');
               }}
@@ -252,17 +252,27 @@ export default function SelectPictureScreen({
                 source={require('../../assets/images/PVector.png')}
                 style={styles.goHome}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {/* 상단 우측 */}
             <View
               style={[
                 styles.topRightContainer,
-                {
-                  transform: [{translateX: -windowHeight * 0.25}],
-                },
+                // {
+                //   transform: [{translateX: -windowHeight * 0.25}],
+                // },
               ]}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('MainScreen');
+                }}
+                style={styles.goHomeArea}>
+                <Image
+                  source={require('../../assets/images/PVector.png')}
+                  style={styles.goHome}
+                />
+              </TouchableOpacity>
               {/* <Text>검색</Text> */}
-              <View style={styles.dropdownView}>
+              {/* <View style={styles.dropdownView}>
                 <DropDownPicker
                   searchPlaceholder="동물을 찾아볼까요?"
                   searchable={true}
@@ -275,10 +285,24 @@ export default function SelectPictureScreen({
                   setValue={setValue}
                   setItems={setItems}
                 />
-              </View>
+              </View> */}
             </View>
           </View>
           <View style={styles.middleContainer}>
+            <View style={styles.dropdownView}>
+              <DropDownPicker
+                searchPlaceholder="동물을 찾아볼까요?"
+                searchable={true}
+                showTickIcon={false}
+                placeholder="전체"
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+              />
+            </View>
             <ScrollView
               ref={picturelistScrollViewRef}
               style={styles.middleContainerFlatList}
@@ -354,9 +378,14 @@ const styles = StyleSheet.create({
   },
   topRightContainer: {
     flexDirection: 'row',
+    // alignSelf: 'flex-end',
+    // marginRight: windowWidth * 0.04,
+    // paddingBottom: windowWidth * 0.03,
+  },
+  dropdownView: {
+    marginHorizontal: ((windowWidth * 0.9 * 0.95) / 4) * 0.04999,
     alignSelf: 'flex-end',
-    marginRight: windowWidth * 0.04,
-    paddingBottom: windowWidth * 0.03,
+    width: '15%',
   },
   middleContainer: {
     flex: 0.7,
@@ -426,9 +455,6 @@ const styles = StyleSheet.create({
   pictureCardPainterText: {
     fontSize: windowWidth * 0.013,
   },
-  dropdownView: {
-    width: '33%',
-  },
   loadingImage: {
     position: 'absolute',
     width: windowHeight * 0.3,
@@ -437,8 +463,10 @@ const styles = StyleSheet.create({
     left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
   goHomeArea: {
-    marginLeft: windowWidth * 0.35,
-    marginTop: windowWidth * 0.03,
+    justifyContent: 'center',
+    marginRight: windowWidth * 0.05,
+    // marginLeft: windowWidth * 0.35,
+    // marginTop: windowWidth * 0.03,
   },
   goHome: {
     height: windowWidth * 0.05,

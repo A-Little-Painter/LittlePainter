@@ -120,7 +120,7 @@ export default function DrawAnimalScreen({
   }, []);
   useEffect(() => {
     if (client) {
-      const randomInt = Math.floor(Math.random() * (100000 - 1 + 1) + 1);
+      const randomInt = Math.floor(Math.random() * (10000000 - 1 + 1) + 1);
       setRoomId(`${randomInt}`);
       client.subscribe(`/sub/room/${randomInt}`, (message) => {
         const messageContent = JSON.parse(message.body);
@@ -144,6 +144,7 @@ export default function DrawAnimalScreen({
 
   //////////////////////////////////////////////////////////////////////////////
   // 캡쳐 변수
+  const [isRendered, setIsRendered] = useState(false);
   const drawCaptureRef = useRef(null); //테두리 그리기 캡쳐
   const originCaptureRef = useRef(null); //원본이미지 캡쳐
   // 임시 이미지 비교 변수
@@ -254,13 +255,18 @@ export default function DrawAnimalScreen({
   }
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
-    setTimeout(() => {
-      handleOriginCapture();
-    }, 500);
-  }, [animalBorderURI]);
+    if (isRendered){
+      setTimeout(() => {
+        handleOriginCapture();
+        setIsRendered(false);
+      }, 1000);
+    }
+  }, [isRendered]);
   // 초기 테두리 원본 가져오기
   useEffect(() => {
     handleAnimalBorder();
+    handleisTestDrawCompareModalVisible(false);
+    handleisOriginCompareModalVisible(false);
   }, []);
 
   // 그림 그리기 함수
@@ -330,7 +336,6 @@ export default function DrawAnimalScreen({
       // dispatch(handleLineThickness(10));
       dispatch(handleLineThickness(10));
     });
-
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
   }, [dispatch, navigation]);
 
@@ -504,6 +509,7 @@ export default function DrawAnimalScreen({
           }}>
           {animalBorderURI === '' ? null : (
             <ImageBackground
+              onLayout={() => setIsRendered(true)}
               source={{uri: animalBorderURI}}
               // source={require('../../assets/images/animalImage/ovalTest.png')}
               // source={require('../../assets/images/animalImage/test1.jpg')}
