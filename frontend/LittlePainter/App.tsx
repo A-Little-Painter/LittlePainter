@@ -10,7 +10,7 @@ import AppNavigator from './src/navigations/AppNavigator';
 import {setCustomText} from 'react-native-global-props';
 import {TextEncoder, TextDecoder} from 'text-encoding';
 import Tts from 'react-native-tts';
-import {LogBox, AppState, useEffect} from 'react-native';
+import {LogBox} from 'react-native';
 import BackGroundMusic from './src/screens/backgroundmusic/BackGroundMusiccomponent';
 import SoundEffect from './src/screens/backgroundmusic/SpundEffect';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
@@ -45,7 +45,7 @@ function App(): JSX.Element {
       SplashScreen.hide();
     }, 1000); //스플래시 활성화 시간
   });
-  
+
   const customTextProps = {
     style: {
       fontFamily: 'TmoneyRoundWindRegular',
