@@ -2,6 +2,7 @@ import {Provider} from 'react-redux';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect} from 'react';
+import SplashScreen from 'react-native-splash-screen';
 import store from './src/redux/store';
 import axios from 'axios';
 import {refreshAccessToken} from './src/apis/baseUrl';
@@ -36,6 +37,12 @@ var Sound = require('react-native-sound');
 Sound.setCategory('Playback');
 
 function App(): JSX.Element {
+  // 스플래쉬스크린 추가를 위한 코드
+  useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 1000); //스플래시 활성화 시간
+  });
   useEffect(() => {
     var whoosh = new Sound(
       'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_main.mp3',

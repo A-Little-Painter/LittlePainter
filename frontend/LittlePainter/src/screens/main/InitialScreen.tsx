@@ -5,6 +5,7 @@ import {
   View,
   ImageBackground,
   Image,
+  Text,
   // TouchableOpacity,
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
@@ -34,22 +35,36 @@ export default function InitialScreen({navigation}: InitialScreenProps) {
           },
         ],
       });
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(timeout);
   }, [navigation]);
 
   return (
     <View style={styles.mainContainer}>
-      <ImageBackground
+      {/* <ImageBackground
         source={require('../../assets/bgImage/initialBg.png')}
         resizeMode="cover"
-        style={styles.backgroundImage}>
+        style={styles.backgroundImage}> */}
+      <View style={styles.backgroundImage}>
         {/* 상단 */}
         <View />
         {/* 중단 */}
         <View style={styles.middleContainer}>
-          <Image
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'black',
+              justifyContent: 'center',
+              // alignItems: 'center',
+            }}>
+            <Text
+              style={{textAlign: 'center', fontWeight: '700', fontSize: 24, color:'white'}}>
+              해당 앱은 인터넷 연결이 필수입니다.
+            </Text>
+          </View>
+          {/* <Image
             resizeMode="contain"
             style={styles.logoRabbitImage}
             source={require('../../assets/logo/littlePainterRabbit.png')}
@@ -58,11 +73,12 @@ export default function InitialScreen({navigation}: InitialScreenProps) {
             resizeMode="contain"
             style={styles.logoTextImage}
             source={require('../../assets/logo/littlePainterTextLogo.png')}
-          />
+          /> */}
         </View>
         {/* 하단 */}
         <View />
-      </ImageBackground>
+      </View>
+      {/* </ImageBackground> */}
     </View>
   );
 }
@@ -80,8 +96,10 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 1,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
-    alignSelf: 'center',
+    // alignSelf: 'center',
   },
   logoRabbitImage: {
     justifyContent: 'center',

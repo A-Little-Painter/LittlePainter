@@ -187,6 +187,7 @@ export default function FairytaleReadScreen({
 
   useEffect(() => {
     if (fairytaleData.length !== 0) {
+      console.log(fairytaleData[pageNum - 1].characters);
       setCharactersInfo(fairytaleData[pageNum - 1].characters);
       // 자막
       const lineChunks: string[] =
@@ -218,6 +219,7 @@ export default function FairytaleReadScreen({
 
   // 움직이게 하기
   const imageMoving = (
+    characterName: string,
     startX: number,
     startY: number,
     endX: number,
@@ -225,22 +227,30 @@ export default function FairytaleReadScreen({
   ) => {
     // let moveX = new Animated.Value(startX);
     // let moveY = new Animated.Value(startY);
-    const tmpstartX = 0;
-    const tmpstartY = -windowHeight * 0.65 * 0.25;
+    let ySizeValue: number = 0.2;
+    if (characterName === '총각' || characterName === '아줌마' || characterName === '방망이'){
+      ySizeValue = 0.4;
+    }
+    const tmpstartX = 0 + windowWidth * startX;
+    const tmpstartY = -windowHeight * 0.65 * ySizeValue + windowHeight * startY;
+    const tmpendX = 0 + windowWidth * endX;
+    const tmpendY = -windowHeight * 0.65 * ySizeValue + windowHeight * endY;
     let moveX = new Animated.Value(tmpstartX);
     let moveY = new Animated.Value(tmpstartY);
+    let toEndDurationValue: number = 1000;
+    let toStartDurationValue: number = 1000;
     Animated.loop(
       Animated.sequence([
         Animated.timing(moveX, {
           // toValue: endX,
-          toValue: tmpstartX,
-          duration: 1000,
+          toValue: tmpendX,
+          duration: toEndDurationValue,
           useNativeDriver: true,
         }),
         Animated.timing(moveX, {
           // toValue: startX,
           toValue: tmpstartX,
-          duration: 1000,
+          duration: toStartDurationValue,
           useNativeDriver: true,
         }),
       ]),
@@ -250,14 +260,14 @@ export default function FairytaleReadScreen({
       Animated.sequence([
         Animated.timing(moveY, {
           // toValue: endY,
-          toValue: tmpstartY,
-          duration: 1000,
+          toValue: tmpendY,
+          duration: toEndDurationValue,
           useNativeDriver: true,
         }),
         Animated.timing(moveY, {
           // toValue: startY,
           toValue: tmpstartY,
-          duration: 1000,
+          duration: toStartDurationValue,
           useNativeDriver: true,
         }),
       ]),
@@ -330,6 +340,7 @@ export default function FairytaleReadScreen({
                     drawnItem => drawnItem.characterName === item.characterName,
                   );
                   const [moveX, moveY] = imageMoving(
+                    item.characterName,
                     item.startX,
                     item.startY,
                     item.endX,
@@ -351,7 +362,7 @@ export default function FairytaleReadScreen({
                         uri: item.urlGif ? item.urlGif : item.urlOriginal,
                       }}
                       style={[
-                        styles.fairytaleImage,
+                        (item.characterName === '총각' || item.characterName === '아줌마' || (item.characterName === '방망이' && pageNum !== 8))  ? styles.fairytaleImage : styles.fairytaleImageLittle,
                         {transform: [{translateX: moveX}, {translateY: moveY}]},
                       ]}
                     />
@@ -525,7 +536,7 @@ const styles = StyleSheet.create({
   },
   middleLeftContainer: {
     flex: 0.1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   middleCenterContainer: {
     flex: 0.8,
@@ -534,8 +545,15 @@ const styles = StyleSheet.create({
   fairytaleImage: {
     // backgroundColor: 'red',
     position: 'absolute',
-    height: windowHeight * 0.65 * 0.5,
-    width: windowHeight * 0.65 * 0.5,
+    height: windowHeight * 0.65 * 0.8,
+    width: windowHeight * 0.65 * 0.8,
+    resizeMode: 'contain',
+  },
+  fairytaleImageLittle: {
+    // backgroundColor: 'red',
+    position: 'absolute',
+    height: windowHeight * 0.65 * 0.3,
+    width: windowHeight * 0.65 * 0.3,
     resizeMode: 'contain',
   },
   // fairytaleImage: {
@@ -545,7 +563,7 @@ const styles = StyleSheet.create({
   // },
   middleRightContainer: {
     flex: 0.1,
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
   bottomContainer: {
     flex: 0.2,

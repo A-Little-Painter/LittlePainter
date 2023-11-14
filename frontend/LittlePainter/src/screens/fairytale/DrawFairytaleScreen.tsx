@@ -147,6 +147,7 @@ export default function DrawFairytaleScreen({
 
   //////////////////////////////////////////////////////////////////////////////
   // 캡쳐 변수
+  const [isRendered, setIsRendered] = useState(false);
   const drawCaptureRef = useRef(null); //테두리 그리기 캡쳐
   const originCaptureRef = useRef(null); //원본이미지 캡쳐
   // 임시 이미지 비교 변수
@@ -156,7 +157,7 @@ export default function DrawFairytaleScreen({
   // 동화 그리기 변수
   const [roomId, setRoomId] = useState<string>('');
   const [fairytaleTitle, setFairytaleTitle] = useState<string>(route.params.fairytaleTitle);
-  const [characterPageId, setCharacterPageId] = useState<number>(route.params.characterPageId);
+  const [characterPageId] = useState<number>(route.params.characterPageId);
   const [charactersInfo, setCharactersInfo] = useState<CharactersInfoType[]>(route.params.charactersInfo);
   const [characterId, setCharacterId] = useState<CharactersInfoType['taleCharacterid']>(route.params.charactersInfo[0].taleCharacterid);
   const [characterOriginImageUri, setCharacterOriginImageUri] = useState<CharactersInfoType['urlOriginal']>(
@@ -254,11 +255,13 @@ export default function DrawFairytaleScreen({
 
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
-    setTimeout(() => {
+    if (isRendered){
       handleOriginCapture();
-    }, 500);
-  }, [characterBorderURI]);
-
+      setIsRendered(false);
+      // setTimeout(() => {
+      // }, 500);
+    }
+  }, [isRendered]);
 
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
@@ -318,10 +321,10 @@ export default function DrawFairytaleScreen({
     }
   }, [paths]);
 
-  // useEffect(() => {
-  //   // handleOriginCapture();
-  //   dispatch(handleDrawColorSelect('#000000'));
-  // }, []);
+  useEffect(() => {
+    handleisTestDrawCompareModalVisible(false);
+    handleisOriginCharacterModalVisible(false);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -329,9 +332,8 @@ export default function DrawFairytaleScreen({
       // dispatch(handleLineThickness(10));
       setPaths([]);
       dispatch(handleDrawColorSelect('#000000'));
-      dispatch(handleLineThickness(10));
+      dispatch(handleLineThickness(7));
     });
-
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
   }, [dispatch, navigation]);
 
@@ -486,6 +488,7 @@ export default function DrawFairytaleScreen({
           }}>
           {characterBorderURI === '' ? null : (
             <ImageBackground
+              onLayout={() => setIsRendered(true)}
               source={{uri: characterBorderURI}}
               // source={{uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/bf8169aa1ed346d7b90eaa98767e2902_trace.png'}}
               // source={require('../../assets/images/animalImage/ovalTest.png')}
@@ -493,7 +496,7 @@ export default function DrawFairytaleScreen({
               imageStyle={styles.backgroundImageOpacity}
               resizeMode="contain">
               {/* <View style={{position:'absolute', width: 500, height: 500, backgroundColor:'red'}} /> */}
-              {captureBorderImagePath !== '' && socketLinked ? (
+              {(captureBorderImagePath !== '' && socketLinked) ? (
                 <ViewShot
                   ref={drawCaptureRef}
                   options={{

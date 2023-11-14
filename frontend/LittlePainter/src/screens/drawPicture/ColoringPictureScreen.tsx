@@ -80,6 +80,7 @@ export default function ColoringPictureScreen({
   const drawCaptureRef = useRef(null);
 
   // 그림 그리기 변수
+  const [isSelectColorFix, setIsSelectColorFix] = useState<boolean>(false);
   const [paths, setPaths] = useState<
     {path: string; color: string; strokeWidth: number}[]
   >([]);
@@ -155,6 +156,14 @@ export default function ColoringPictureScreen({
   }
 
   // 그림 그리기 함수
+  function getRandomHexColor() {
+    let color = Math.floor(Math.random() * 16777216).toString(16);
+    while (color.length < 6) {
+      color = '0' + color;
+    }
+    color = '#' + color;
+    return color.toUpperCase();
+  }
   const onTouchStart = (event: GestureResponderEvent) => {
     if (!isLoading) {
       const locationX = event.nativeEvent.locationX;
@@ -183,6 +192,9 @@ export default function ColoringPictureScreen({
     }
     setCurrentPath('');
     handleDrawCapture();
+    if (!isSelectColorFix) {
+      dispatch(handleDrawColorSelect(getRandomHexColor()));
+    }
   };
 
   const handleClearButtonClick = () => {
@@ -348,6 +360,7 @@ export default function ColoringPictureScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
+                  setIsSelectColorFix(true);
                   dispatch(handleDrawColorSelect(color));
                 }}
               />
