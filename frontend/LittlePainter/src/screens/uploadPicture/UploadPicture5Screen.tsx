@@ -13,9 +13,10 @@ import {
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
-import {useAppSelector} from '../../redux/hooks';
+import {useAppSelector, useAppDispatch} from '../../redux/hooks';
 import {uploadAnimalImageApi} from '../../apis/uploadPicture/uploadPicture';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type UploadPicture5ScreenProps = StackScreenProps<
   RootStackParams,
@@ -41,6 +42,7 @@ export default function UploadPicture5Screen({
   );
   const moving = useAppSelector(state => state.uploadPicture.moving);
   const animal_type = useAppSelector(state => state.uploadPicture.animal_type);
+  const dispatch = useAppDispatch();
 
   const addFriendsAnimalReqDto: {
     title: string;
@@ -139,6 +141,7 @@ export default function UploadPicture5Screen({
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 setModalVisible(true);
               }}>
               <Text style={styles.buttontext}>업로드하기</Text>
@@ -152,7 +155,10 @@ export default function UploadPicture5Screen({
               }}>
               <Pressable
                 style={styles.centeredView}
-                onPress={() => setModalVisible(!modalVisible)}>
+                onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
+                  setModalVisible(!modalVisible);
+                }}>
                 <View style={styles.modalView}>
                   <View style={styles.Mtexts}>
                     <Text style={styles.modaltext}>등록한 사진은</Text>
@@ -163,12 +169,18 @@ export default function UploadPicture5Screen({
                   <View style={styles.modalbtns}>
                     <Pressable
                       style={[styles.Mbutton1]}
-                      onPress={() => setModalVisible(!modalVisible)}>
+                      onPress={() => {
+                        dispatch(handleSoundEffect('btn'));
+                        setModalVisible(!modalVisible);
+                      }}>
                       <Text style={styles.Mbuttontext}>취소</Text>
                     </Pressable>
                     <Pressable
                       style={[styles.Mbutton2]}
-                      onPress={() => goUpload()}>
+                      onPress={() => {
+                        dispatch(handleSoundEffect('btn'));
+                        goUpload();
+                      }}>
                       <Text style={styles.Mbuttontext}>등록</Text>
                     </Pressable>
                   </View>

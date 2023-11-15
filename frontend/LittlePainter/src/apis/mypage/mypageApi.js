@@ -187,9 +187,12 @@ export const myFairy = async () => {
     const headers = {
       Authorization: `Bearer ${token}`,
     };
-    const response = await axios.get(`${BASE_URL}/draws/child_work/my_tales`, {
-      headers,
-    });
+    const response = await axios.get(
+      `${BASE_URL}/draws/child_work_tale/my_tales`,
+      {
+        headers,
+      },
+    );
     const data = response.data;
     return data;
   } catch (error) {

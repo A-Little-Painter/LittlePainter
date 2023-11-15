@@ -205,7 +205,11 @@ export const friendsPictureSimilarity = async (
   }
 };
 // 완성된 사진그리기 마이페이지에 저장
-export const friendsPictureSaveToMypage = async (workId, completeDrawUri,gifUrl) => {
+export const friendsPictureSaveToMypage = async (
+  workId,
+  completeDrawUri,
+  gifUrl,
+) => {
   try {
     const accessToken = await loadATokenFromKeychain();
     console.log(workId);
@@ -349,13 +353,11 @@ export const taleSaveToMypage = async (taleId, taleDrawedImage) => {
     const accessToken = await loadATokenFromKeychain();
     const formData = [];
     taleDrawedImage.forEach((data, index) => {
-      formData.push(
-        {
-          'talePageId': data.talePageId,
-          'urlGif': data.contentUri.gifUri,
-          'urlImage': data.contentUri.drawUri,
-        }
-      );
+      formData.push({
+        talePageId: data.talePageId,
+        urlGif: data.contentUri.gifUri,
+        urlImage: data.contentUri.drawUri,
+      });
     });
     console.log(formData);
 

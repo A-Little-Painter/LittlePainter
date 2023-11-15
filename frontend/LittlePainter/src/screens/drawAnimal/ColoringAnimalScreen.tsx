@@ -33,8 +33,10 @@ import {
   handleisDrawColorPaletteModalVisible,
   handleDrawColorSelect,
   handleHavingGifUrl,
+  handleLoreUrl,
 } from '../../redux/slices/draw/draw';
 import {animalAnimations} from '../../apis/draw/draw';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 import LottieView from 'lottie-react-native';
 import LoadScreen from '../load/LoadScreen';
 
@@ -133,13 +135,9 @@ export default function ColoringAnimalScreen({
         console.log('동물 애니메이션 성공', response.data);
         setIsLoading(false);
         // setAnimatedGif(response.data.gifImageUrl);
-        // console.log(response.data.gifUrl);
-        console.log(
-          'gifUrl:',
-          response.data.gifUrl,
-          'imageUrl:',
-          response.data.imageUrl,
-        );
+        console.log(response.data.gifUrl);
+        console.log(response.data.urlSound);
+        dispatch(handleLoreUrl(response.data.urlSound));
         handleGoComplete(response.data.gifUrl, response.data.imageUrl);
       } else {
         console.log('동물 애니메이션 실패', response.status);
@@ -222,7 +220,11 @@ export default function ColoringAnimalScreen({
     if (currentPath && !isLoading) {
       setPaths([
         ...paths,
-        {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
+        {
+          path: currentPath,
+          color: drawColorSelect,
+          strokeWidth: LineThickness,
+        },
       ]);
     }
     setCurrentPath('');
@@ -368,13 +370,13 @@ export default function ColoringAnimalScreen({
               style={styles.eraserImageCircle}
               disabled={!paths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handlePrevButtonClick();
               }}>
               <Text>
                 <IconFontAwesome
                   name="reply"
                   size={windowWidth * 0.05}
-                  // color={paths.length ? '#5E9FF9' : 'gray'}
                   color={paths.length ? '#5E9FF9' : 'gray'}
                 />
               </Text>
@@ -384,6 +386,7 @@ export default function ColoringAnimalScreen({
               style={styles.eraserImageCircle}
               disabled={!tmpPaths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleNextButtonClick();
               }}>
               <Text>
@@ -400,6 +403,7 @@ export default function ColoringAnimalScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   setIsSelectColorFix(true);
                   dispatch(handleDrawColorSelect(color));
                 }}
@@ -408,6 +412,7 @@ export default function ColoringAnimalScreen({
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image
@@ -420,6 +425,7 @@ export default function ColoringAnimalScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.xCircle}>
@@ -488,6 +494,7 @@ export default function ColoringAnimalScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisOriginCompareModalVisible(true));
               }}>
               <Image
@@ -498,6 +505,7 @@ export default function ColoringAnimalScreen({
             <TouchableOpacity
               style={styles.lineThicknessView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisDrawLineThicknessModalVisible(true));
               }}>
               <View
@@ -518,6 +526,7 @@ export default function ColoringAnimalScreen({
               style={styles.clearButton}
               disabled={isLoading}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleClearButtonClick();
               }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
@@ -529,6 +538,7 @@ export default function ColoringAnimalScreen({
               style={[styles.doneButton]}
               disabled={isLoading}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleAnimalAnimations();
               }}>
               <Text style={styles.doneButtonText}>완성하기</Text>

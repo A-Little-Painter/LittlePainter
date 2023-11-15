@@ -15,6 +15,7 @@ import {animalTypeListApi} from '../../apis/uploadPicture/uploadPicture';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {update3, update4} from '../../redux/slices/uploadPicture/uploadPicture';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type UploadPicture4ScreenProps = StackScreenProps<
   RootStackParams,
@@ -117,6 +118,7 @@ export default function UploadPicture4Screen({
                   key={animal.id}
                   style={[styles.button, {backgroundColor: getRandomColor()}]}
                   onPress={() => {
+                    dispatch(handleSoundEffect('btn'));
                     confirmType(animal.id, animal.urlSound, animal.name);
                   }}>
                   <Text style={styles.buttontext}>{animal.name}</Text>

@@ -1,6 +1,12 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState, useRef} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -9,7 +15,7 @@ import {
   TouchableOpacity,
   Image,
   Pressable,
-  ToastAndroid, // 토스트안드로이드 잠깐 사용
+  ToastAndroid,
   BackHandler,
   ImageBackground,
   Animated,
@@ -25,27 +31,23 @@ import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import DrawLineThicknessModal from '../modals/DrawLineThicknessModal';
-import OriginPictureModal from '../modals/OriginPictureModal';
+import OriginCompareModal from '../modals/OriginCompareModal';
 import DrawColorPaletteModal from '../modals/DrawColorPaletteModal';
 import {
   handleLineThickness,
-  handleisOriginPictureModalVisible,
+  handleisOriginCompareModalVisible,
   handleDrawColorSelect,
   handleisTestDrawCompareModalVisible, // 그림 임시 비교 모달
 } from '../../redux/slices/draw/draw';
-import {
-  friendsPictureBorder,
-  friendsPictureSimilarity,
-} from '../../apis/draw/draw';
+import {animalBorder, animalCheckSimilarity} from '../../apis/draw/draw';
 import TestDrawCompareModal from '../modals/TestDrawCompareModal';
 // 웹소켓 연결하기
 import SockJS from 'sockjs-client';
 import {CompatClient, Stomp} from '@stomp/stompjs';
-import {handleSoundEffect} from '../../redux/slices/music/music';
 
-type DrawPictureScreenProps = StackScreenProps<
+type DrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
-  'DrawPictureScreen'
+  'DrawAnimalScreen'
 >;
 
 const windowWidth = Dimensions.get('window').width;
@@ -62,10 +64,10 @@ const fastcolorData = [
   '#000000',
 ];
 
-export default function DrawPictureScreen({
+export default function DrawAnimalScreen({
   route,
   navigation,
-}: DrawPictureScreenProps) {
+}: DrawAnimalScreenProps) {
   //웹소켓
   ////////////////////////////
   // WebSocket 및 STOMP 클라이언트 설정
@@ -89,7 +91,6 @@ export default function DrawPictureScreen({
       newClient.onConnect = frame => {
         console.log('연결됨');
         console.log('Connected: ' + frame);
-        // console.log('Connected: ' + frame);
         setClient(newClient); // 연결 후 client 상태 업데이트
         setSocketLinked(true);
       };
@@ -132,10 +133,10 @@ export default function DrawPictureScreen({
       setRoomId(`${randomInt}`);
       client.subscribe(`/sub/room/${randomInt}`, message => {
         const messageContent = JSON.parse(message.body);
-        console.log('되나', messageContent);
+        console.log(message.body);
         setSimilarityMessage(messageContent.message);
-        setSimilarityState(messageContent.similarState);
         setSimilarityValue(messageContent.similarValue);
+        setSimilarityState(messageContent.similarState);
       });
     }
   }, [client]);
@@ -143,7 +144,7 @@ export default function DrawPictureScreen({
     if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
       if (similarityState === 'END') {
         console.log('유사도: ', similarityValue);
-        // handleGoColoring();
+        handleGoColoring();
       }
     } else if (similarityMessage === '유사도 측정에 실패했습니다.') {
       console.log('유사도: 0');
@@ -153,25 +154,19 @@ export default function DrawPictureScreen({
   //////////////////////////////////////////////////////////////////////////////
   // 캡쳐 변수
   const [isRendered, setIsRendered] = useState(false);
-  const [roomId, setRoomId] = useState<string>('');
   const drawCaptureRef = useRef(null); //테두리 그리기 캡쳐
   const originCaptureRef = useRef(null); //원본이미지 캡쳐
   // 임시 이미지 비교 변수
   const isTestDrawCompareModalVisible = useSelector(
     (state: RootState) => state.draw.isTestDrawCompareModalVisible,
   );
-  const [pictureId] = useState<number>(
-    route.params.friendsAnimalInfo.friendsAnimalId,
-  );
-  const [pictureOriginImageUri] = useState<string>(
-    route.params.friendsAnimalInfo.originalImageUrl,
-  );
-  const [pictureTitle] = useState<string>(route.params.friendsAnimalInfo.title);
-  const [animalType] = useState<string>(
-    route.params.friendsAnimalInfo.animalType,
-  );
-  const [pictureBorderURI, setPictureBorderURI] = useState<string>('');
-  const [pictureExplanation, setPictureExplanation] = useState<string>('');
+
+  const [roomId, setRoomId] = useState<string>('');
+  const [animalId] = useState<number>(route.params.animalId);
+  const [animalType] = useState<string>(route.params.animalType);
+  const [originImage] = useState<string>(route.params.originImage);
+  const [animalBorderURI, setAnimalBorderURI] = useState<string>('');
+  const [animalExplanation, setAnimalExplanation] = useState<string>('');
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
   const [captureBorderImagePath, setCaptureBorderImagePath] =
     useState<string>('');
@@ -198,8 +193,8 @@ export default function DrawPictureScreen({
   const isDrawLineThicknessModalVisible = useSelector(
     (state: RootState) => state.draw.isDrawLineThicknessModalVisible,
   );
-  const isOriginPictureModalVisible = useSelector(
-    (state: RootState) => state.draw.isOriginPictureModalVisible,
+  const isOriginCompareModalVisible = useSelector(
+    (state: RootState) => state.draw.isOriginCompareModalVisible,
   );
   // 선 색깔 및 모달
   const isDrawColorPaletteModalVisible = useSelector(
@@ -210,45 +205,40 @@ export default function DrawPictureScreen({
   );
 
   // 서버 통신
-  const handleFriendsPictureBorder = async () => {
+  const handleAnimalBorder = async () => {
     setIsLoading(true);
     try {
-      const response = await friendsPictureBorder(pictureId);
+      const response = await animalBorder(animalId);
       if (response.status === 200) {
-        console.log(
-          '다른 사람이 올린 사진 테두리 가져오기 성공',
-          response.data,
-        );
+        console.log('선택 동물 테두리 가져오기 성공', response.data);
         setIsLoading(false);
-        setPictureBorderURI(response.data.urlTrace);
-        setPictureExplanation(response.data.detail);
-        handleOriginCapture();
+        setAnimalBorderURI(response.data.urlTrace);
+        setAnimalExplanation(response.data.detail);
+        // await handleOriginCapture();
       } else {
-        console.log(
-          '다른 사람이 올린 사진 테두리 가져오기 실패',
-          response.status,
-        );
+        console.log('선택 동물 테두리 가져오기 실패', response.status);
       }
     } catch (error) {
-      console.log('다른 사람이 올린 사진 테두리 가져오기 실패', error);
+      console.log('선택 동물 테두리 가져오기 실패', error);
     }
   };
-  const handlefriendsPictureSimilarity = async (compareImagePath: string) => {
+
+  const handleAnimalCheckSimilarity = async (compareImagePath: string) => {
     // const randomInt = Math.floor(Math.random() * (100 - 1 + 1) + 1);
     try {
-      const response = await friendsPictureSimilarity(
+      const response = await animalCheckSimilarity(
         // `abc${randomInt}`,
         roomId,
         captureBorderImagePath,
         compareImagePath,
       );
       if (response.status === 200 || response.status === 404) {
-        console.log('유사도 검사 성공', response.data);
+        console.log('동물 그리기 유사도 체크 성공', response.data);
       } else {
-        console.log('유사도 검사 실패', response.status);
+        console.log('동물 그리기 유사도 체크 실패', response.status);
       }
     } catch (error) {
-      console.log('유사도 검사 체크 실패', error);
+      console.log('동물 그리기 유사도 체크 실패', error);
     }
   };
 
@@ -258,7 +248,7 @@ export default function DrawPictureScreen({
       const uri = await drawCaptureRef.current.capture();
       setCaptureImagePath(uri);
       setCanDrawCapture(false);
-      await handlefriendsPictureSimilarity(uri);
+      await handleAnimalCheckSimilarity(uri);
     } catch (error) {
       setCanDrawCapture(false);
       console.error('캡쳐 에러 발생: ', error);
@@ -272,24 +262,23 @@ export default function DrawPictureScreen({
       console.error('원본 이미지 캡쳐 에러 발생: ', error);
     }
   }
-
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
     if (isRendered) {
       let timer = setTimeout(() => {
         handleOriginCapture();
-        // setIsRendered(false);
+        setIsRendered(false);
       }, 1000);
       return () => {
         clearTimeout(timer);
       };
     }
   }, [isRendered]);
-
+  // 초기 테두리 원본 가져오기
   useEffect(() => {
-    handleFriendsPictureBorder();
+    handleAnimalBorder();
     handleisTestDrawCompareModalVisible(false);
-    handleisOriginPictureModalVisible(false);
+    handleisOriginCompareModalVisible(false);
   }, []);
 
   // 그림 그리기 함수
@@ -361,7 +350,7 @@ export default function DrawPictureScreen({
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
       // dispatch(handleLineThickness(10));
-      dispatch(handleLineThickness(10));
+      dispatch(handleLineThickness(15));
     });
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
   }, [dispatch, navigation]);
@@ -394,6 +383,20 @@ export default function DrawPictureScreen({
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
+  // 테두리 그리기 완료 후
+  const handleGoColoring = () => {
+    navigation.navigate('ColoringAnimalScreen', {
+      roomId: roomId,
+      captureBorderImagePath: captureBorderImagePath,
+      animalId: animalId,
+      completeLine: paths,
+      animalType: animalType,
+      originImage: originImage,
+      animalBorderURI: animalBorderURI,
+      animalExplanation: animalExplanation,
+    });
+  };
+
   ////// 로딩 애니메이션
   const [rotation] = useState(new Animated.Value(0));
   useEffect(() => {
@@ -411,25 +414,12 @@ export default function DrawPictureScreen({
 
     rotateImage();
   }, []);
+
   const spin = rotation.interpolate({
     inputRange: [0, 360],
     outputRange: ['0deg', '360deg'],
   });
-
-  // 테두리 그리기 완료 후
-  const handleGoColoring = () => {
-    navigation.navigate('ColoringPictureScreen', {
-      roomId: roomId,
-      captureBorderImagePath: captureBorderImagePath,
-      pictureId: pictureId,
-      pictureTitle: pictureTitle,
-      completeLine: paths,
-      pictureBorderURI: pictureBorderURI,
-      pictureExplanation: pictureExplanation,
-      pictureOriginImageUri: pictureOriginImageUri,
-      animalType: animalType,
-    });
-  };
+  ////////////
   return (
     <View style={styles.mainContainer}>
       <View style={styles.subContainer}>
@@ -443,7 +433,6 @@ export default function DrawPictureScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
-                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisTestDrawCompareModalVisible(true));
               }}>
               <Image
@@ -456,14 +445,13 @@ export default function DrawPictureScreen({
               style={styles.eraserImageCircle}
               disabled={!paths.length}
               onPress={() => {
-                dispatch(handleSoundEffect('btn'));
                 handlePrevButtonClick();
               }}>
               <Text>
                 <IconFontAwesome
                   name="reply"
                   size={windowWidth * 0.05}
-                  color={paths.length ? '#FE7779' : 'gray'}
+                  color={paths.length ? '#5E9FF9' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -472,14 +460,13 @@ export default function DrawPictureScreen({
               style={styles.eraserImageCircle}
               disabled={!tmpPaths.length}
               onPress={() => {
-                dispatch(handleSoundEffect('btn'));
                 handleNextButtonClick();
               }}>
               <Text>
                 <IconFontAwesome
                   name="share"
                   size={windowWidth * 0.05}
-                  color={tmpPaths.length ? '#FE7779' : 'gray'}
+                  color={tmpPaths.length ? '#5E9FF9' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -489,7 +476,6 @@ export default function DrawPictureScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
-                  dispatch(handleSoundEffect('btn'));
                   ToastAndroid.show(
                     '테두리 그리기에서는 색을 고를 수 없어요.',
                     ToastAndroid.SHORT,
@@ -500,7 +486,6 @@ export default function DrawPictureScreen({
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
-                dispatch(handleSoundEffect('btn'));
                 ToastAndroid.show(
                   '테두리 그리기에서는 색을 고를 수 없어요.',
                   ToastAndroid.SHORT,
@@ -516,7 +501,6 @@ export default function DrawPictureScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
-                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.xCircle}>
@@ -524,7 +508,7 @@ export default function DrawPictureScreen({
                 <IconFontAwesome6
                   name="x"
                   size={windowWidth * 0.03}
-                  color={'#FE7779'}
+                  color={'#5E9FF9'}
                 />
               </Text>
             </TouchableOpacity>
@@ -539,13 +523,13 @@ export default function DrawPictureScreen({
             format: 'jpg',
             quality: 1,
           }}>
-          {pictureBorderURI === '' ? null : (
+          {animalBorderURI === '' ? null : (
             <ImageBackground
               onLayout={() => setIsRendered(true)}
-              source={{uri: pictureBorderURI}}
-              // source={{uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/bf8169aa1ed346d7b90eaa98767e2902_trace.png'}}
+              source={{uri: animalBorderURI}}
               // source={require('../../assets/images/animalImage/ovalTest.png')}
-              style={styles.pictureBorderImageBackground}
+              // source={require('../../assets/images/animalImage/test1.jpg')}
+              style={styles.animalBorderImageBackground}
               imageStyle={styles.backgroundImageOpacity}
               resizeMode="contain">
               {captureBorderImagePath !== '' && socketLinked ? (
@@ -605,8 +589,7 @@ export default function DrawPictureScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
-                dispatch(handleSoundEffect('btn'));
-                dispatch(handleisOriginPictureModalVisible(true));
+                dispatch(handleisOriginCompareModalVisible(true));
               }}>
               <Image
                 style={styles.ideaLight}
@@ -616,7 +599,6 @@ export default function DrawPictureScreen({
             <TouchableOpacity
               style={styles.lineThicknessView}
               onPress={() => {
-                dispatch(handleSoundEffect('btn'));
                 ToastAndroid.show(
                   '테두리 그리기에서는 선의 굵기를 바꿀 수 없어요.',
                   ToastAndroid.SHORT,
@@ -639,7 +621,6 @@ export default function DrawPictureScreen({
             <TouchableOpacity
               style={styles.clearButton}
               onPress={() => {
-                dispatch(handleSoundEffect('btn'));
                 handleClearButtonClick();
               }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
@@ -655,11 +636,10 @@ export default function DrawPictureScreen({
                   backgroundColor:
                     captureImagePath === '' || paths.length === 0
                       ? 'gray'
-                      : '#FE7779',
+                      : '#A8CEFF',
                 },
               ]}
               onPress={() => {
-                dispatch(handleSoundEffect('btn'));
                 handleGoColoring();
               }}
               disabled={captureImagePath === '' || paths.length === 0}>
@@ -671,12 +651,12 @@ export default function DrawPictureScreen({
       {isDrawLineThicknessModalVisible ? (
         <DrawLineThicknessModal selectColor={drawColorSelect} />
       ) : null}
-      {isOriginPictureModalVisible ? (
-        <OriginPictureModal
-          pictureTitle={pictureTitle}
-          pictureBorderURI={pictureBorderURI}
-          pictureOriginImageUri={pictureOriginImageUri}
-          pictureExplanation={pictureExplanation}
+      {isOriginCompareModalVisible ? (
+        <OriginCompareModal
+          animalBorderURI={animalBorderURI}
+          animalExplanation={animalExplanation}
+          animalType={animalType}
+          originImage={originImage}
         />
       ) : null}
       {isDrawColorPaletteModalVisible ? <DrawColorPaletteModal /> : null}
@@ -702,7 +682,7 @@ export default function DrawPictureScreen({
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
   },
   subContainer: {
     alignSelf: 'center',
@@ -764,10 +744,10 @@ const styles = StyleSheet.create({
   xCircle: {
     justifyContent: 'center',
     borderRadius: windowWidth * 0.05 * 0.5,
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
-    borderColor: '#FE7779',
+    borderColor: '#5E9FF9',
     borderWidth: 2,
   },
   xText: {
@@ -776,9 +756,9 @@ const styles = StyleSheet.create({
   middleContainer: {
     flex: 0.8,
     width: '100%',
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
   },
-  pictureBorderImageBackground: {
+  animalBorderImageBackground: {
     width: '100%',
     height: '100%',
   },
@@ -858,7 +838,7 @@ const styles = StyleSheet.create({
     flex: 0.4,
   },
   doneButton: {
-    backgroundColor: '#FE7779',
+    backgroundColor: '#A8CEFF',
     width: '40%',
     height: '80%',
     alignItems: 'center',

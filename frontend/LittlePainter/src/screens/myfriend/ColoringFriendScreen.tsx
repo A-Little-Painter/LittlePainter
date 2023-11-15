@@ -35,6 +35,7 @@ import {
   handleHavingGifUrl,
 } from '../../redux/slices/draw/draw';
 import {FriendAnimations} from '../../apis/draw/draw';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type ColoringFriendScreenProps = StackScreenProps<
   RootStackParams,
@@ -205,7 +206,11 @@ export default function ColoringFriendScreen({
     if (currentPath && !isLoading) {
       setPaths([
         ...paths,
-        {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
+        {
+          path: currentPath,
+          color: drawColorSelect,
+          strokeWidth: LineThickness,
+        },
       ]);
     }
     setCurrentPath('');
@@ -333,6 +338,7 @@ export default function ColoringFriendScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 // navigation.navigate('');
               }}>
               <Image
@@ -345,6 +351,7 @@ export default function ColoringFriendScreen({
               style={styles.eraserImageCircle}
               disabled={!paths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handlePrevButtonClick();
               }}>
               <Text>
@@ -360,6 +367,7 @@ export default function ColoringFriendScreen({
               style={styles.eraserImageCircle}
               disabled={!tmpPaths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleNextButtonClick();
               }}>
               <Text>
@@ -376,6 +384,7 @@ export default function ColoringFriendScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   setIsSelectColorFix(true);
                   dispatch(handleDrawColorSelect(color));
                 }}
@@ -384,6 +393,7 @@ export default function ColoringFriendScreen({
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image
@@ -396,6 +406,7 @@ export default function ColoringFriendScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.xCircle}>
@@ -464,6 +475,7 @@ export default function ColoringFriendScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisOriginCompareModalVisible(true));
               }}>
               <Image
@@ -474,6 +486,7 @@ export default function ColoringFriendScreen({
             <TouchableOpacity
               style={styles.lineThicknessView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisDrawLineThicknessModalVisible(true));
               }}>
               <View
@@ -494,6 +507,7 @@ export default function ColoringFriendScreen({
               style={styles.clearButton}
               disabled={isLoading}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleClearButtonClick();
               }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
@@ -505,6 +519,7 @@ export default function ColoringFriendScreen({
               style={[styles.doneButton]}
               disabled={isLoading}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleFriendAnimations();
               }}>
               <Text style={styles.doneButtonText}>완성하기</Text>

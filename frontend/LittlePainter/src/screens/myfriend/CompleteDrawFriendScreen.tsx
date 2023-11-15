@@ -23,6 +23,7 @@ import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {friendSaveToMypage} from '../../apis/draw/draw';
 import SaveDrawnToLoginModal from '../modals/SaveDrawnToLoginModal';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 type CompleteDrawFriendScreenProps = StackScreenProps<
   RootStackParams,
   'CompleteDrawFriendScreen'
@@ -145,6 +146,7 @@ export default function CompleteDrawFriendScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.xCircle}>
@@ -201,6 +203,7 @@ export default function CompleteDrawFriendScreen({
             <TouchableOpacity
               style={[styles.doneButton]}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handlePressSaving();
               }}>
               <Text style={styles.doneButtonText}>저장하기</Text>

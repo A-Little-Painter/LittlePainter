@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ToastAndroid, // 토스트안드로이드 잠깐 사용
   BackHandler,
+  Image,
   ImageBackground,
 } from 'react-native';
 import ViewShot from 'react-native-view-shot';
@@ -23,6 +24,8 @@ import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {animalSaveToMypage} from '../../apis/draw/draw';
 import SaveDrawnToLoginModal from '../modals/SaveDrawnToLoginModal';
+import {handleSoundEffect} from '../../redux/slices/music/music';
+import {handleLoreUrl} from '../../redux/slices/draw/draw';
 type CompleteDrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
   'CompleteDrawAnimalScreen'
@@ -30,6 +33,9 @@ type CompleteDrawAnimalScreenProps = StackScreenProps<
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
+var Sound = require('react-native-sound');
+Sound.setCategory('Playback');
 
 export default function CompleteDrawAnimalScreen({
   route,
@@ -41,10 +47,12 @@ export default function CompleteDrawAnimalScreen({
   const [animatedGif] = useState<string>(route.params.animatedGif);
   const [originDrawUri] = useState<string>(route.params.originDrawUri);
   const [isSavedImage, setIsSavedImage] = useState<boolean>(false);
+  const [translateX, setTranslateX] = useState(0); // 초기값은 0
 
   const isLogin = useSelector((state: RootState) => state.user.isLogin);
   // const selectName = useSelector((state: RootState) => state.user.selectName);
   // const selectImage = useSelector((state: RootState) => state.user.selectImage);
+  const isLore = useSelector((state: RootState) => state.draw.lore);
   const dispatch = useDispatch();
   const isSaveDrawnToLoginModalVisible = useSelector(
     (state: RootState) => state.draw.isSaveDrawnToLoginModalVisible,
@@ -78,7 +86,11 @@ export default function CompleteDrawAnimalScreen({
       //   sendUri = originDrawUri;
       // }
       // const response = await animalSaveToMypage(animalId, completeDrawUri, sendUri);
-      const response = await animalSaveToMypage(animalId, completeDrawUri, animatedGif);
+      const response = await animalSaveToMypage(
+        animalId,
+        completeDrawUri,
+        animatedGif,
+      );
       if (response.status === 201) {
         console.log('완성된 동물 마이페이지에 저장 성공', response.data);
         ToastAndroid.show(
@@ -129,6 +141,52 @@ export default function CompleteDrawAnimalScreen({
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
+  useEffect(() => {
+    console.log('moving', translateX);
+    // 타이머를 이용하여 일정 간격마다 이미지를 오른쪽으로 이동
+    const intervalId = setInterval(() => {
+      if (translateX >= 1100) {
+        setTranslateX(-100);
+      } else {
+        // console.log('go');
+        // setTranslateX(prevTranslateX => prevTranslateX + 100); // 10포인트씩 이동
+      }
+    }, 1865); // 1000밀리초(1초) 간격으로 실행
+
+    return () => {
+      // 컴포넌트가 언마운트될 때 타이머 해제
+      clearInterval(intervalId);
+    };
+  }, [translateX]);
+
+  const lore = () => {
+    console.log(isLore);
+    var whoosh = new Sound(isLore, null, (error: any) => {
+      if (error) {
+        console.log('failed to load the sound', error);
+        return;
+      }
+      // loaded successfully
+      console.log(
+        'duration in seconds: ' +
+          whoosh.getDuration() +
+          'number of channels: ' +
+          whoosh.getNumberOfChannels(),
+      );
+
+      // 무한 루프 설정
+      whoosh.setNumberOfLoops(0);
+
+      whoosh.play((success: any) => {
+        if (success) {
+          console.log('successfully finished playing');
+        } else {
+          console.log('playback failed due to audio decoding errors');
+        }
+      });
+    });
+  };
+
   return (
     <View style={styles.mainContainer}>
       {/* <View style={styles.subContainer}> */}
@@ -140,6 +198,8 @@ export default function CompleteDrawAnimalScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
+                dispatch(handleLoreUrl('grr'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.xCircle}>
@@ -155,34 +215,63 @@ export default function CompleteDrawAnimalScreen({
         </View>
         {/* 중단 */}
         {/* <View style={styles.middleContainer}> */}
-        <ViewShot
-          // style={[styles.middleContainer, {backgroundColor: 'white'}]}
+        <TouchableOpacity
           style={[styles.middleContainer]}
-          ref={captureRef}
-          options={{
-            fileName: 'drawAnimalCapture',
-            format: 'jpg',
-            quality: 0.9,
+          onPress={() => {
+            lore();
           }}>
-          <ImageBackground
-            style={styles.imageBackgroundSize}
-            source={{
-              uri:
-                animatedGif === '' ||
-                animatedGif === undefined ||
-                animatedGif === null
-                  ? completeDrawUri === '' ||
-                    completeDrawUri === undefined ||
-                    completeDrawUri === null
-                    ? originDrawUri
-                    : completeDrawUri
-                  : animatedGif,
-            }}
-            resizeMode="contain">
-            {/* <View style={{width: '100%', height: '100%'}} /> */}
-          </ImageBackground>
-          {/* </View> */}
-        </ViewShot>
+          <ViewShot
+            // style={[styles.middleContainer, {backgroundColor: 'white'}]}
+            ref={captureRef}
+            options={{
+              fileName: 'drawAnimalCapture',
+              format: 'jpg',
+              quality: 0.9,
+            }}>
+            {animatedGif === '' ||
+            animatedGif === undefined ||
+            animatedGif === null ? (
+              <ImageBackground
+                style={styles.imageBackgroundSize}
+                source={{
+                  uri:
+                    animatedGif === '' ||
+                    animatedGif === undefined ||
+                    animatedGif === null
+                      ? completeDrawUri === '' ||
+                        completeDrawUri === undefined ||
+                        completeDrawUri === null
+                        ? originDrawUri
+                        : completeDrawUri
+                      : animatedGif,
+                }}
+                resizeMode="contain">
+                {/* <View style={{width: '100%', height: '100%'}} /> */}
+              </ImageBackground>
+            ) : (
+              <View style={{transform: [{translateX}]}}>
+                <Image
+                  style={styles.imageSize}
+                  source={{
+                    uri:
+                      animatedGif === '' ||
+                      animatedGif === undefined ||
+                      animatedGif === null
+                        ? completeDrawUri === '' ||
+                          completeDrawUri === undefined ||
+                          completeDrawUri === null
+                          ? originDrawUri
+                          : completeDrawUri
+                        : animatedGif,
+                  }}
+                  resizeMode="contain">
+                  {/* <View style={{width: '100%', height: '100%'}} /> */}
+                </Image>
+              </View>
+            )}
+            {/* </View> */}
+          </ViewShot>
+        </TouchableOpacity>
         {/* 하단 */}
         <View style={styles.bottomContainer}>
           {/* 하단 좌측 */}
@@ -194,9 +283,14 @@ export default function CompleteDrawAnimalScreen({
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
-              style={[styles.doneButton, {backgroundColor : animatedGif === '' ? 'gray' : '#A8CEFF'}]}
+              style={[
+                styles.doneButton,
+                {backgroundColor: animatedGif === '' ? 'gray' : '#A8CEFF'},
+              ]}
               disabled={animatedGif === ''}
               onPress={() => {
+                dispatch(handleLoreUrl('grr'));
+                dispatch(handleSoundEffect('btn'));
                 handlePressSaving();
               }}>
               <Text style={styles.doneButtonText}>저장하기</Text>
@@ -284,6 +378,10 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     flex: 0.8,
+  },
+  imageSize: {
+    width: windowHeight * 0.5,
+    height: '100%',
   },
   imageBackgroundSize: {
     width: '100%',

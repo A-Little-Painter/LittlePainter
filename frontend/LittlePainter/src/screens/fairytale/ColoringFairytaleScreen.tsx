@@ -35,8 +35,12 @@ import {
   handleDrawColorSelect,
   handleHavingGifUrl,
 } from '../../redux/slices/draw/draw';
-import {handlePageNum, handleTaleDrawedImage,} from '../../redux/slices/tale/tale';
+import {
+  handlePageNum,
+  handleTaleDrawedImage,
+} from '../../redux/slices/tale/tale';
 import {taleAnimations} from '../../apis/draw/draw';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 // import {CharactersInfoType} from './fairytaleType';
 
 type ColoringFairytaleScreenProps = StackScreenProps<
@@ -63,20 +67,32 @@ export default function ColoringFairytaleScreen({
   navigation,
 }: ColoringFairytaleScreenProps) {
   const [roomId] = useState<string>(route.params.fairytaleDrawInfo.roomId);
-  const [captureBorderImagePath] = useState<string>(route.params.fairytaleDrawInfo.captureBorderImagePath);
-  const [fairytaleTitle] = useState<string>(route.params.fairytaleDrawInfo.fairytaleTitle);
-  const [characterPageId] = useState<number>(route.params.fairytaleDrawInfo.characterPageId);
+  const [captureBorderImagePath] = useState<string>(
+    route.params.fairytaleDrawInfo.captureBorderImagePath,
+  );
+  const [fairytaleTitle] = useState<string>(
+    route.params.fairytaleDrawInfo.fairytaleTitle,
+  );
+  const [characterPageId] = useState<number>(
+    route.params.fairytaleDrawInfo.characterPageId,
+  );
   // const [charactersInfo] = useState<CharactersInfoType[]>(route.params.fairytaleDrawInfo.charactersInfo);
-  const [characterName] = useState<string>(route.params.fairytaleDrawInfo.characterName);
+  const [characterName] = useState<string>(
+    route.params.fairytaleDrawInfo.characterName,
+  );
   // const [characterId] = useState<number>(route.params.fairytaleDrawInfo.characterId);
-  const [characterBorderURI] = useState<string>(route.params.fairytaleDrawInfo.characterBorderURI);
-  const [characterExplanation] = useState<string>(route.params.fairytaleDrawInfo.characterExplanation);
-  const [characterOriginImageUri] = useState<string>(route.params.fairytaleDrawInfo.characterOriginImageUri);
+  const [characterBorderURI] = useState<string>(
+    route.params.fairytaleDrawInfo.characterBorderURI,
+  );
+  const [characterExplanation] = useState<string>(
+    route.params.fairytaleDrawInfo.characterExplanation,
+  );
+  const [characterOriginImageUri] = useState<string>(
+    route.params.fairytaleDrawInfo.characterOriginImageUri,
+  );
   const [completeLine] = useState(route.params.fairytaleDrawInfo.completeLine);
 
-  const pageNum = useSelector(
-    (state: RootState) => state.tale.pageNum,
-  );
+  const pageNum = useSelector((state: RootState) => state.tale.pageNum);
 
   // 로딩함수
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -125,11 +141,26 @@ export default function ColoringFairytaleScreen({
     try {
       dispatch(handleHavingGifUrl(true));
       handleGoComplete();
-      const response = await taleAnimations(roomId, pageNum, fairytaleTitle, characterName, captureBorderImagePath, captureImagePath);
+      const response = await taleAnimations(
+        roomId,
+        pageNum,
+        fairytaleTitle,
+        characterName,
+        captureBorderImagePath,
+        captureImagePath,
+      );
       if (response.status === 200) {
         console.log('동화 애니메이션 성공', response.data);
         setIsLoading(false);
-        dispatch(handleTaleDrawedImage({characterName: characterName, pageNum: pageNum, gifUri: response.data.gifUrl, drawUri:response.data.imageUrl, characterPageId:characterPageId}));
+        dispatch(
+          handleTaleDrawedImage({
+            characterName: characterName,
+            pageNum: pageNum,
+            gifUri: response.data.gifUrl,
+            drawUri: response.data.imageUrl,
+            characterPageId: characterPageId,
+          }),
+        );
         // handleGoComplete();
         ToastAndroid.show(
           `우리가 그린 ${characterName}가 이제 움직일 수 있어요`,
@@ -208,7 +239,11 @@ export default function ColoringFairytaleScreen({
     if (currentPath && !isLoading) {
       setPaths([
         ...paths,
-        {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
+        {
+          path: currentPath,
+          color: drawColorSelect,
+          strokeWidth: LineThickness,
+        },
       ]);
     }
     setCurrentPath('');
@@ -297,28 +332,28 @@ export default function ColoringFairytaleScreen({
     handleDrawCapture();
   }, [paths]);
 
-    ////// 로딩 애니메이션
-    const [rotation] = useState(new Animated.Value(0));
-    useEffect(() => {
-      const rotateImage = () => {
-        Animated.timing(rotation, {
-          toValue: 360,
-          duration: 2000, // 회전에 걸리는 시간 (밀리초)
-          easing: Easing.linear,
-          useNativeDriver: false, // 필요에 따라 변경
-        }).start(() => {
-          rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
-          rotateImage();
-        });
-      };
-      rotateImage();
-    }, []);
+  ////// 로딩 애니메이션
+  const [rotation] = useState(new Animated.Value(0));
+  useEffect(() => {
+    const rotateImage = () => {
+      Animated.timing(rotation, {
+        toValue: 360,
+        duration: 2000, // 회전에 걸리는 시간 (밀리초)
+        easing: Easing.linear,
+        useNativeDriver: false, // 필요에 따라 변경
+      }).start(() => {
+        rotation.setValue(0); // 애니메이션이 끝나면 초기 각도로 돌아감
+        rotateImage();
+      });
+    };
+    rotateImage();
+  }, []);
 
-    const spin = rotation.interpolate({
-      inputRange: [0, 360],
-      outputRange: ['0deg', '360deg'],
-    });
-    ////////////
+  const spin = rotation.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg'],
+  });
+  ////////////
 
   return (
     <View style={styles.mainContainer}>
@@ -334,6 +369,7 @@ export default function ColoringFairytaleScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 // navigation.navigate('');
               }}>
               <Image
@@ -346,6 +382,7 @@ export default function ColoringFairytaleScreen({
               style={styles.eraserImageCircle}
               disabled={!paths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handlePrevButtonClick();
               }}>
               <Text>
@@ -361,6 +398,7 @@ export default function ColoringFairytaleScreen({
               style={styles.eraserImageCircle}
               disabled={!tmpPaths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleNextButtonClick();
               }}>
               <Text>
@@ -377,6 +415,7 @@ export default function ColoringFairytaleScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   setIsSelectColorFix(true);
                   dispatch(handleDrawColorSelect(color));
                 }}
@@ -385,6 +424,7 @@ export default function ColoringFairytaleScreen({
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image
@@ -397,6 +437,7 @@ export default function ColoringFairytaleScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.pop(2);
               }}
               style={styles.xCircle}>
@@ -465,6 +506,7 @@ export default function ColoringFairytaleScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisOriginCharacterModalVisible(true));
               }}>
               <Image
@@ -475,6 +517,7 @@ export default function ColoringFairytaleScreen({
             <TouchableOpacity
               style={styles.lineThicknessView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisDrawLineThicknessModalVisible(true));
               }}>
               <View
@@ -495,6 +538,7 @@ export default function ColoringFairytaleScreen({
               style={styles.clearButton}
               disabled={isLoading}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleClearButtonClick();
               }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
@@ -506,6 +550,7 @@ export default function ColoringFairytaleScreen({
               style={styles.doneButton}
               disabled={isLoading}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 // handleGoComplete();
                 handleTaleAnimations();
               }}>

@@ -23,6 +23,7 @@ import {
 } from '../../redux/slices/uploadPicture/uploadPicture';
 import {uploadPictureApi} from '../../apis/uploadPicture/uploadPicture';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type FriendUploadPicture1ScreenProps = StackScreenProps<
   RootStackParams,
@@ -212,6 +213,7 @@ export default function FriendUploadPicture1Screen({
             </View>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.goHomeArea}>
@@ -259,6 +261,7 @@ export default function FriendUploadPicture1Screen({
                   <TouchableOpacity
                     style={styles.fileSelectView}
                     onPress={() => {
+                      dispatch(handleSoundEffect('btn'));
                       imagetemp();
                     }}>
                     <Image
@@ -275,6 +278,7 @@ export default function FriendUploadPicture1Screen({
               <TouchableOpacity
                 style={styles.uploadButton}
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   uploadPicture1();
                 }}>
                 <Text style={styles.uploadText}>올리기</Text>

@@ -38,6 +38,7 @@ import TestDrawCompareModal from '../modals/TestDrawCompareModal';
 // 웹소켓 연결하기
 import SockJS from 'sockjs-client';
 import {CompatClient, Stomp} from '@stomp/stompjs';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type DrawFriendScreenProps = StackScreenProps<
   RootStackParams,
@@ -288,7 +289,11 @@ export default function DrawFriendScreen({
     if (currentPath) {
       setPaths([
         ...paths,
-        {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
+        {
+          path: currentPath,
+          color: drawColorSelect,
+          strokeWidth: LineThickness,
+        },
       ]);
     }
     setCurrentPath('');
@@ -417,6 +422,7 @@ export default function DrawFriendScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisTestDrawCompareModalVisible(true));
               }}>
               <Image
@@ -429,6 +435,7 @@ export default function DrawFriendScreen({
               style={styles.eraserImageCircle}
               disabled={!paths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handlePrevButtonClick();
               }}>
               <Text>
@@ -444,6 +451,7 @@ export default function DrawFriendScreen({
               style={styles.eraserImageCircle}
               disabled={!tmpPaths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleNextButtonClick();
               }}>
               <Text>
@@ -460,6 +468,7 @@ export default function DrawFriendScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   ToastAndroid.show(
                     '테두리 그리기에서는 색을 고를 수 없어요.',
                     ToastAndroid.SHORT,
@@ -470,6 +479,7 @@ export default function DrawFriendScreen({
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 ToastAndroid.show(
                   '테두리 그리기에서는 색을 고를 수 없어요.',
                   ToastAndroid.SHORT,
@@ -485,6 +495,7 @@ export default function DrawFriendScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.xCircle}>
@@ -572,6 +583,7 @@ export default function DrawFriendScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisOriginCompareModalVisible(true));
               }}>
               <Image
@@ -582,6 +594,7 @@ export default function DrawFriendScreen({
             <TouchableOpacity
               style={styles.lineThicknessView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 ToastAndroid.show(
                   '테두리 그리기에서는 선의 굵기를 바꿀 수 없어요.',
                   ToastAndroid.SHORT,
@@ -604,6 +617,7 @@ export default function DrawFriendScreen({
             <TouchableOpacity
               style={styles.clearButton}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleClearButtonClick();
               }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
@@ -623,6 +637,7 @@ export default function DrawFriendScreen({
                 },
               ]}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleGoColoring();
               }}
               disabled={captureImagePath === '' || paths.length === 0}>

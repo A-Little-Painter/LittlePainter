@@ -19,6 +19,7 @@ import {taleListInquiry} from '../../apis/draw/draw';
 import {TaleListInquiryType} from './fairytaleType';
 import {useAppDispatch} from '../../redux/hooks';
 import {handleBGMMusic} from '../../redux/slices/music/music';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type SelectFairytaleScreenProps = StackScreenProps<
   RootStackParams,
@@ -91,6 +92,7 @@ export default function SelectFairytaleScreen({
             <Text style={styles.titleText}>동화 그리기</Text>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.goHomeArea}>
@@ -101,18 +103,19 @@ export default function SelectFairytaleScreen({
             </TouchableOpacity>
           </View>
           {/* 중단 */}
-        <View style={styles.middleContainer}>
-          <ScrollView
-            // ref={picturelistScrollViewRef}
-            style={styles.middleContainerFlatList}
-            // onScroll={handleScrollEnd}
-          >
-            <View style={styles.wrappingView}>
-              {fairytale.map((item, index) => (
-                <View style={styles.pictureCard1} key={index}>
+          <View style={styles.middleContainer}>
+            <ScrollView
+              // ref={picturelistScrollViewRef}
+              style={styles.middleContainerFlatList}
+              // onScroll={handleScrollEnd}
+            >
+              <View style={styles.wrappingView}>
+                {fairytale.map((item, index) => (
+                  <View style={styles.pictureCard1} key={index}>
                     <TouchableOpacity
                       onPress={() => {
-                        if ( item.isAvailable ){
+                        dispatch(handleSoundEffect('btn'));
+                        if (item.isAvailable) {
                           navigation.navigate('FairytaleReadScreen', {
                             title: item.title,
                             taleId: item.id,
@@ -124,23 +127,21 @@ export default function SelectFairytaleScreen({
                           );
                         }
                       }}
-                      style={[
-                        styles.pictureCard2,
-                      ]}>
+                      style={[styles.pictureCard2]}>
                       <ImageBackground
                         source={{uri: item.urlCover}}
                         resizeMode="cover"
                         style={styles.taleImage}>
-                      {/* <Image
+                        {/* <Image
                         style={styles.cardFairytaleImage}
                         source={{uri: item.urlCover}}
                       /> */}
-                    </ImageBackground>
-                  </TouchableOpacity>
-                  <Text style={styles.fairytaleCardText}>{item.title}</Text>
-                </View>
-              ))}
-            </View>
+                      </ImageBackground>
+                    </TouchableOpacity>
+                    <Text style={styles.fairytaleCardText}>{item.title}</Text>
+                  </View>
+                ))}
+              </View>
             </ScrollView>
           </View>
         </View>
