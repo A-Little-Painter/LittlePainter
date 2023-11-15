@@ -18,10 +18,10 @@ api = Api(app)
 class Hello(Resource):
     def get(self):
         key = "hello"
-        value = "d106!@##"
+        value = "d106"
         return {
             key: value
-        }, 989, None
+        }, 777, None
 
 
 def shell_create_animation(input_filename, char_anno_dir, character, animation_type, title=None, no=None):
@@ -79,7 +79,7 @@ class Animals(Resource):
         logging.debug(result)
 
         # 임시로 저장한 이미지 삭제
-        # os.remove(filename)
+        os.remove(filename)
 
         # 임시값 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
@@ -113,7 +113,7 @@ class Tales(Resource):
         logging.debug(result)
 
         # 임시로 저장한 이미지 삭제
-        # os.remove(filename)
+        os.remove(filename)
 
         # 임시애니메이션 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
@@ -142,7 +142,7 @@ class Friends(Resource):
         logging.debug(result)
 
         # 임시로 저장한 이미지 삭제
-        # os.remove(filename)
+        os.remove(filename)
 
         # 임시애니메이션 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
