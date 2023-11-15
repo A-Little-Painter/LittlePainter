@@ -413,6 +413,7 @@ export default function ColoringAnimalScreen({
               style={[styles.colorCircle]}
               onPress={() => {
                 dispatch(handleSoundEffect('btn'));
+                setIsSelectColorFix(true);
                 dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image

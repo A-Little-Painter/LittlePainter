@@ -8,6 +8,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
@@ -77,7 +78,11 @@ const OriginPictureModal = (props: OriginPictureModalProps) => {
             </View>
             {/* 하단 */}
             <View style={styles.modalBottom}>
-              <Text style={styles.contentText}>{pictureExplanation}</Text>
+              <ScrollView>
+                <View onStartShouldSetResponder={() => true}>
+                  <Text style={styles.contentText}>{pictureExplanation}</Text>
+                </View>
+              </ScrollView>
             </View>
           </Pressable>
         </Pressable>

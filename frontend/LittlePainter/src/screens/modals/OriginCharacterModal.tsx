@@ -8,6 +8,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
@@ -79,7 +80,11 @@ const OriginCharacterModal = (props: OriginCharacterModalProps) => {
             </View>
             {/* 하단 */}
             <View style={styles.modalBottom}>
-              <Text style={styles.contentText}>{characterExplanation}</Text>
+              <ScrollView>
+                <View onStartShouldSetResponder={() => true}>
+                  <Text style={styles.contentText}>{characterExplanation}</Text>
+                </View>
+              </ScrollView>
             </View>
           </Pressable>
         </Pressable>

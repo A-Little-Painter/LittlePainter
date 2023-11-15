@@ -37,6 +37,8 @@ import {
 } from '../../redux/slices/draw/draw';
 import {animalAnimations} from '../../apis/draw/draw';
 import {handleSoundEffect} from '../../redux/slices/music/music';
+import LottieView from 'lottie-react-native';
+import LoadScreen from '../load/LoadScreen';
 
 type ColoringPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -117,6 +119,7 @@ export default function ColoringPictureScreen({
     (state: RootState) => state.draw.isDrawScreenshotModalVisible,
   );
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
+  const [animationPlayed, setAnimationPlayed] = useState(false);
 
   // 친구 사진 애니메이션
   async function handlePictureAnimations() {
@@ -339,6 +342,9 @@ export default function ColoringPictureScreen({
     outputRange: ['0deg', '360deg'],
   });
   ////////////
+  if (isLoading) {
+    return <LoadScreen></LoadScreen>;
+  }
 
   return (
     <View style={styles.mainContainer}>
@@ -410,6 +416,7 @@ export default function ColoringPictureScreen({
               style={[styles.colorCircle]}
               onPress={() => {
                 dispatch(handleSoundEffect('btn'));
+                setIsSelectColorFix(true);
                 dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image
@@ -559,12 +566,25 @@ export default function ColoringPictureScreen({
       {isDrawScreenshotModalVisible ? (
         <DrawScreenshotModal captureUri={captureImagePath} />
       ) : null}
-      {isLoading ? (
+      {!animationPlayed && (
+        <View style={styles.overlay}>
+          <LottieView
+            style={styles.animationView}
+            source={require('../../assets/lottie/draw_complete.json')}
+            autoPlay
+            loop={false}
+            onAnimationFinish={() => {
+              setAnimationPlayed(true); // 애니메이션이 끝나면 이 상태를 true로 설정
+            }}
+          />
+        </View>
+      )}
+      {/* {isLoading ? (
         <Animated.Image
           style={[styles.loadingImage, {transform: [{rotate: spin}]}]}
           source={require('../../assets/images/loading2.png')}
         />
-      ) : null}
+      ) : null} */}
     </View>
   );
 }
@@ -730,5 +750,19 @@ const styles = StyleSheet.create({
     height: windowHeight * 0.3,
     top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
     left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
+  },
+  animationView: {
+    height: windowHeight * 0.5,
+    width: windowWidth * 0.5,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
   },
 });
