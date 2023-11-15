@@ -38,6 +38,7 @@ import TestDrawCompareModal from '../modals/TestDrawCompareModal';
 // 웹소켓 연결하기
 import SockJS from 'sockjs-client';
 import {CompatClient, Stomp} from '@stomp/stompjs';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type DrawAnimalScreenProps = StackScreenProps<
   RootStackParams,
@@ -258,12 +259,14 @@ export default function DrawAnimalScreen({
   }
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
-    if (isRendered){
+    if (isRendered) {
       let timer = setTimeout(() => {
         handleOriginCapture();
         setIsRendered(false);
       }, 1000);
-      return ()=>{ clearTimeout(timer); };
+      return () => {
+        clearTimeout(timer);
+      };
     }
   }, [isRendered]);
   // 초기 테두리 원본 가져오기
@@ -293,7 +296,11 @@ export default function DrawAnimalScreen({
     if (currentPath) {
       setPaths([
         ...paths,
-        {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
+        {
+          path: currentPath,
+          color: drawColorSelect,
+          strokeWidth: LineThickness,
+        },
       ]);
     }
     setCurrentPath('');
@@ -433,6 +440,7 @@ export default function DrawAnimalScreen({
               style={styles.eraserImageCircle}
               disabled={!paths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handlePrevButtonClick();
               }}>
               <Text>
@@ -448,6 +456,7 @@ export default function DrawAnimalScreen({
               style={styles.eraserImageCircle}
               disabled={!tmpPaths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleNextButtonClick();
               }}>
               <Text>
@@ -489,6 +498,7 @@ export default function DrawAnimalScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.xCircle}>
@@ -577,6 +587,7 @@ export default function DrawAnimalScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisOriginCompareModalVisible(true));
               }}>
               <Image
@@ -609,6 +620,7 @@ export default function DrawAnimalScreen({
             <TouchableOpacity
               style={styles.clearButton}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleClearButtonClick();
               }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
@@ -628,6 +640,7 @@ export default function DrawAnimalScreen({
                 },
               ]}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleGoColoring();
               }}
               disabled={captureImagePath === '' || paths.length === 0}>

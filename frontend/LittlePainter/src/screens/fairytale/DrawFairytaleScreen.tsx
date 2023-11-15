@@ -31,11 +31,10 @@ import {
   handleDrawColorSelect,
   handleisTestDrawCompareModalVisible, // 그림 임시 비교 모달
 } from '../../redux/slices/draw/draw';
-import {
-  taleCheckSimilarity,
-} from '../../apis/draw/draw';
+import {taleCheckSimilarity} from '../../apis/draw/draw';
 import TestDrawCompareModal from '../modals/TestDrawCompareModal';
 import {CharactersInfoType} from './fairytaleType';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 import {handleBGMMusic, handleIsLoop} from '../../redux/slices/music/music';
 
 // 웹소켓 연결하기
@@ -80,10 +79,13 @@ export default function DrawFairytaleScreen({
     let newClient: CompatClient;
 
     const connectAndSetupListeners = () => {
-      newClient = Stomp.over(() => new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'));
+      newClient = Stomp.over(
+        () =>
+          new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'),
+      );
 
       // newClient.onConnect = (frame) => {
-      newClient.onConnect = (frame) => {
+      newClient.onConnect = frame => {
         console.log('연결됨');
         console.log('Connected: ' + frame);
         setClient(newClient); // 연결 후 client 상태 업데이트
@@ -126,7 +128,7 @@ export default function DrawFairytaleScreen({
     if (client) {
       const randomInt = Math.floor(Math.random() * (10000000 - 1 + 1) + 1);
       setRoomId(`${randomInt}`);
-      client.subscribe(`/sub/room/${randomInt}`, (message) => {
+      client.subscribe(`/sub/room/${randomInt}`, message => {
         const messageContent = JSON.parse(message.body);
         console.log(message.body);
         setSimilarityMessage(messageContent.message);
@@ -157,23 +159,31 @@ export default function DrawFairytaleScreen({
   );
   // 동화 그리기 변수
   const [roomId, setRoomId] = useState<string>('');
-  const [fairytaleTitle, setFairytaleTitle] = useState<string>(route.params.fairytaleTitle);
-  const [characterPageId] = useState<number>(route.params.characterPageId);
-  const [charactersInfo, setCharactersInfo] = useState<CharactersInfoType[]>(route.params.charactersInfo);
-  const [characterId, setCharacterId] = useState<CharactersInfoType['taleCharacterid']>(route.params.charactersInfo[0].taleCharacterid);
-  const [characterOriginImageUri, setCharacterOriginImageUri] = useState<CharactersInfoType['urlOriginal']>(
-    route.params.charactersInfo[0].urlOriginal,
+  const [fairytaleTitle, setFairytaleTitle] = useState<string>(
+    route.params.fairytaleTitle,
   );
-  const [characterName, setCharacterName] = useState<CharactersInfoType['characterName']>(route.params.charactersInfo[0].characterName);
-  const [characterBorderURI, setCharacterBorderURI] = useState<CharactersInfoType['urlTrace']>(route.params.charactersInfo[0].urlTrace);
+  const [characterPageId] = useState<number>(route.params.characterPageId);
+  const [charactersInfo, setCharactersInfo] = useState<CharactersInfoType[]>(
+    route.params.charactersInfo,
+  );
+  const [characterId, setCharacterId] = useState<
+    CharactersInfoType['taleCharacterid']
+  >(route.params.charactersInfo[0].taleCharacterid);
+  const [characterOriginImageUri, setCharacterOriginImageUri] = useState<
+    CharactersInfoType['urlOriginal']
+  >(route.params.charactersInfo[0].urlOriginal);
+  const [characterName, setCharacterName] = useState<
+    CharactersInfoType['characterName']
+  >(route.params.charactersInfo[0].characterName);
+  const [characterBorderURI, setCharacterBorderURI] = useState<
+    CharactersInfoType['urlTrace']
+  >(route.params.charactersInfo[0].urlTrace);
   const [characterExplanation] = useState<string>(''); // 우선 비워두자.
   useEffect(() => {
     setFairytaleTitle(route.params.fairytaleTitle);
     setCharactersInfo(route.params.charactersInfo);
     setCharacterId(route.params.charactersInfo[0].taleCharacterid);
-    setCharacterOriginImageUri(
-      route.params.charactersInfo[0].urlOriginal,
-    );
+    setCharacterOriginImageUri(route.params.charactersInfo[0].urlOriginal);
     setCharacterName(route.params.charactersInfo[0].characterName);
     setCharacterBorderURI(route.params.charactersInfo[0].urlTrace);
   }, [route.params]);
@@ -256,12 +266,14 @@ export default function DrawFairytaleScreen({
 
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
-    if (isRendered){
+    if (isRendered) {
       let timer = setTimeout(() => {
         handleOriginCapture();
         setIsRendered(false);
       }, 1000);
-      return () => {clearTimeout(timer)};
+      return () => {
+        clearTimeout(timer);
+      };
     }
   }, [isRendered]);
 
@@ -285,7 +297,11 @@ export default function DrawFairytaleScreen({
     if (currentPath) {
       setPaths([
         ...paths,
-        {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
+        {
+          path: currentPath,
+          color: drawColorSelect,
+          strokeWidth: LineThickness,
+        },
       ]);
     }
     setCurrentPath('');
@@ -405,6 +421,7 @@ export default function DrawFairytaleScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisTestDrawCompareModalVisible(true));
               }}>
               <Image
@@ -417,6 +434,7 @@ export default function DrawFairytaleScreen({
               style={styles.eraserImageCircle}
               disabled={!paths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handlePrevButtonClick();
               }}>
               <Text>
@@ -432,6 +450,7 @@ export default function DrawFairytaleScreen({
               style={styles.eraserImageCircle}
               disabled={!tmpPaths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleNextButtonClick();
               }}>
               <Text>
@@ -448,6 +467,7 @@ export default function DrawFairytaleScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   ToastAndroid.show(
                     '테두리 그리기에서는 색을 고를 수 없어요.',
                     ToastAndroid.SHORT,
@@ -458,6 +478,7 @@ export default function DrawFairytaleScreen({
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 ToastAndroid.show(
                   '테두리 그리기에서는 색을 고를 수 없어요.',
                   ToastAndroid.SHORT,
@@ -473,6 +494,7 @@ export default function DrawFairytaleScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.goBack();
               }}
               style={styles.xCircle}>
@@ -505,7 +527,7 @@ export default function DrawFairytaleScreen({
               imageStyle={styles.backgroundImageOpacity}
               resizeMode="contain">
               {/* <View style={{position:'absolute', width: 500, height: 500, backgroundColor:'red'}} /> */}
-              {(captureBorderImagePath !== '' && socketLinked) ? (
+              {captureBorderImagePath !== '' && socketLinked ? (
                 <ViewShot
                   ref={drawCaptureRef}
                   options={{
@@ -516,7 +538,11 @@ export default function DrawFairytaleScreen({
                   style={[
                     styles.pathViewShot,
                     // eslint-disable-next-line react-native/no-inline-styles
-                    {backgroundColor: canDrawCapture ? '#FFFFFF' : 'transparent'},
+                    {
+                      backgroundColor: canDrawCapture
+                        ? '#FFFFFF'
+                        : 'transparent',
+                    },
                   ]}>
                   <View
                     style={styles.pathView}
@@ -558,6 +584,7 @@ export default function DrawFairytaleScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisOriginCharacterModalVisible(true));
               }}>
               <Image
@@ -568,6 +595,7 @@ export default function DrawFairytaleScreen({
             <TouchableOpacity
               style={styles.lineThicknessView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 ToastAndroid.show(
                   '테두리 그리기에서는 선의 굵기를 바꿀 수 없어요.',
                   ToastAndroid.SHORT,
@@ -590,6 +618,7 @@ export default function DrawFairytaleScreen({
             <TouchableOpacity
               style={styles.clearButton}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleClearButtonClick();
               }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
@@ -609,6 +638,7 @@ export default function DrawFairytaleScreen({
                 },
               ]}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleGoColoring();
               }}
               disabled={captureImagePath === '' || paths.length === 0}>

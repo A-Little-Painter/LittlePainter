@@ -23,6 +23,7 @@ import {
 } from '../../apis/draw/draw';
 import {useAppDispatch} from '../../redux/hooks';
 import {handleBGMMusic} from '../../redux/slices/music/music';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type SelectPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -253,6 +254,7 @@ export default function SelectPictureScreen({
             </View>
             {/* <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.goHomeArea}>
@@ -320,6 +322,7 @@ export default function SelectPictureScreen({
                   <View style={styles.pictureCard1} key={index}>
                     <TouchableOpacity
                       onPress={() => {
+                        dispatch(handleSoundEffect('btn'));
                         handleGoDrawPictureScreen({
                           friendsAnimalId: item.friendsAnimalId,
                           userEmail: item.userEmail,

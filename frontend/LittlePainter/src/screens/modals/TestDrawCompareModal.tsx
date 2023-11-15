@@ -51,7 +51,7 @@ const TestDrawCompareModal = (props: TestDrawCompareModalProps) => {
             <View style={styles.modalTop}>
               <View style={styles.modalTopLeft} />
               <View style={styles.modalTopMiddle}>
-                <Text style={styles.modalTitleText}> 원본 테두리와 비교</Text>
+                <Text style={styles.modalTitleText}>메롱</Text>
               </View>
               <TouchableOpacity
                 style={styles.modalTopRight}

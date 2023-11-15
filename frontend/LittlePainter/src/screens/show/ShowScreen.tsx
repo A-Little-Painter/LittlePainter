@@ -14,6 +14,7 @@ import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {useAppDispatch} from '../../redux/hooks';
 import {handleBGMMusic} from '../../redux/slices/music/music';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -43,7 +44,7 @@ export default function ShowScreen({navigation}: ShowScreenProps) {
         // 랜덤으로 10개의 이미지 선택
         const randomImageUrls = response
           .sort(() => Math.random() - 0.5) // 이미지 배열을 랜덤으로 섞음
-          .slice(0, 20); // 배열의 처음 10개의 요소 선택
+          .slice(0, 9); // 배열의 처음 10개의 요소 선택
 
         // 이미지 URL 목록을 설정
         setImageUrls(randomImageUrls);
@@ -116,6 +117,7 @@ export default function ShowScreen({navigation}: ShowScreenProps) {
         style={styles.backgroundImage}>
         <TouchableOpacity
           onPress={() => {
+            dispatch(handleSoundEffect('btn'));
             navigation.navigate('MainScreen');
           }}
           style={styles.goHomeArea}>

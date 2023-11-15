@@ -23,6 +23,7 @@ import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {friendsPictureSaveToMypage} from '../../apis/draw/draw';
 import SaveDrawnToLoginModal from '../modals/SaveDrawnToLoginModal';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type CompleteDrawPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -139,6 +140,7 @@ export default function CompleteDrawPictureScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.xCircle}>
@@ -174,8 +176,14 @@ export default function CompleteDrawPictureScreen({
             // }}
             source={{
               uri:
-                (animatedGif === '' || animatedGif === undefined || animatedGif === null)
-                  ? (completeDrawUri === '' || completeDrawUri === undefined || completeDrawUri === null) ? originDrawUri : completeDrawUri
+                animatedGif === '' ||
+                animatedGif === undefined ||
+                animatedGif === null
+                  ? completeDrawUri === '' ||
+                    completeDrawUri === undefined ||
+                    completeDrawUri === null
+                    ? originDrawUri
+                    : completeDrawUri
                   : animatedGif,
             }}
             // style={{backgroundColor: 'white'}}
@@ -195,9 +203,13 @@ export default function CompleteDrawPictureScreen({
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
-              style={[styles.doneButton, {backgroundColor : animatedGif === '' ? 'gray' : '#A8CEFF'}]}
+              style={[
+                styles.doneButton,
+                {backgroundColor: animatedGif === '' ? 'gray' : '#A8CEFF'},
+              ]}
               disabled={animatedGif === ''}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handlePressSaving();
               }}>
               <Text style={styles.doneButtonText}>저장하기</Text>

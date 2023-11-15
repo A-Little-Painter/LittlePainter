@@ -36,6 +36,7 @@ import {
   handleHavingGifUrl,
 } from '../../redux/slices/draw/draw';
 import {animalAnimations} from '../../apis/draw/draw';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type ColoringPictureScreenProps = StackScreenProps<
   RootStackParams,
@@ -122,7 +123,12 @@ export default function ColoringPictureScreen({
     setIsLoading(true);
     try {
       dispatch(handleHavingGifUrl(true));
-      const response = await animalAnimations(roomId, animalType, captureBorderImagePath, captureImagePath);
+      const response = await animalAnimations(
+        roomId,
+        animalType,
+        captureBorderImagePath,
+        captureImagePath,
+      );
       if (response.status === 200) {
         console.log('친구 사진 애니메이션 성공', response.data);
         setIsLoading(false);
@@ -135,7 +141,7 @@ export default function ColoringPictureScreen({
           '우리 친구가 움직일 수가 없어요ㅠㅠ',
           ToastAndroid.LONG,
         );
-        handleGoComplete('','');
+        handleGoComplete('', '');
       }
     } catch (error) {
       console.log('친구 사진 애니메이션 실패', error);
@@ -211,7 +217,11 @@ export default function ColoringPictureScreen({
     if (currentPath && !isLoading) {
       setPaths([
         ...paths,
-        {path: currentPath, color: drawColorSelect, strokeWidth: LineThickness},
+        {
+          path: currentPath,
+          color: drawColorSelect,
+          strokeWidth: LineThickness,
+        },
       ]);
     }
     setCurrentPath('');
@@ -248,7 +258,10 @@ export default function ColoringPictureScreen({
     handleDrawCapture();
   };
 
-  const handleGoComplete = (receiveanimatedGif: string, receiveDrawUri: string,) => {
+  const handleGoComplete = (
+    receiveanimatedGif: string,
+    receiveDrawUri: string,
+  ) => {
     navigation.navigate('CompleteDrawPictureScreen', {
       pictureId: pictureId,
       completeDrawUri: receiveDrawUri,
@@ -341,6 +354,7 @@ export default function ColoringPictureScreen({
             <Pressable
               style={styles.pencilImageCircle}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 // navigation.navigate('');
               }}>
               <Image
@@ -353,6 +367,7 @@ export default function ColoringPictureScreen({
               style={styles.eraserImageCircle}
               disabled={!paths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handlePrevButtonClick();
               }}>
               <Text>
@@ -368,6 +383,7 @@ export default function ColoringPictureScreen({
               style={styles.eraserImageCircle}
               disabled={!tmpPaths.length}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleNextButtonClick();
               }}>
               <Text>
@@ -384,6 +400,7 @@ export default function ColoringPictureScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   setIsSelectColorFix(true);
                   dispatch(handleDrawColorSelect(color));
                 }}
@@ -392,6 +409,7 @@ export default function ColoringPictureScreen({
             <TouchableOpacity
               style={[styles.colorCircle]}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image
@@ -404,6 +422,7 @@ export default function ColoringPictureScreen({
           <View style={styles.topRight}>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.xCircle}>
@@ -472,6 +491,7 @@ export default function ColoringPictureScreen({
             <TouchableOpacity
               style={styles.ideaLightView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisOriginPictureModalVisible(true));
               }}>
               <Image
@@ -482,6 +502,7 @@ export default function ColoringPictureScreen({
             <TouchableOpacity
               style={styles.lineThicknessView}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 dispatch(handleisDrawLineThicknessModalVisible(true));
               }}>
               <View
@@ -502,6 +523,7 @@ export default function ColoringPictureScreen({
               style={styles.clearButton}
               disabled={isLoading}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handleClearButtonClick();
               }}>
               <Text style={styles.clearButtonText}>모두 지우기</Text>
@@ -513,6 +535,7 @@ export default function ColoringPictureScreen({
               style={[styles.doneButton]}
               disabled={isLoading}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 handlePictureAnimations();
                 // handleGoComplete();
               }}>

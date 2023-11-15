@@ -26,6 +26,7 @@ import {
   handleIsLoop,
 } from '../../redux/slices/music/music';
 import {useIsFocused} from '@react-navigation/native';
+import Video from 'react-native-video';
 import LottieView from 'lottie-react-native';
 
 type MainScreenProps = StackScreenProps<RootStackParams, 'MainScreen'>;
@@ -37,6 +38,11 @@ export default function MainScreen({navigation}: MainScreenProps) {
   const [ismuted, setIsmuted] = useState<ismuted>(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
+  const [animalVisible, setAnimalVisible] = useState(false);
+  const [fairyVisible, setFairyVisible] = useState(false);
+  const [friendVisible, setFriendVisible] = useState(false);
+  const [pictureVisible, setPictureVisible] = useState(false);
+  const [uploadVisible, setUploadVisible] = useState(false);
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
   const isLogin = useAppSelector(state => state.user.isLogin);
   const selectName = useAppSelector(state => state.user.selectName);
@@ -170,7 +176,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
     if (ismuted === false) {
       dispatch(handleBGMVolume(0));
     } else {
-      dispatch(handleBGMVolume(0.5));
+      dispatch(handleBGMVolume(1));
     }
   };
 
@@ -264,7 +270,11 @@ export default function MainScreen({navigation}: MainScreenProps) {
                     source={require('../../assets/images/main-animal.png')}
                   />
                 </View>
-                <TouchableOpacity style={styles.cardFrame3}>
+                <TouchableOpacity
+                  style={styles.cardFrame3}
+                  onPress={() => {
+                    setAnimalVisible(true);
+                  }}>
                   <View style={styles.playButtonCircle}>
                     <Text>
                       <IconFontAwesome5
@@ -275,6 +285,39 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   </View>
                 </TouchableOpacity>
               </TouchableOpacity>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={animalVisible}
+                onRequestClose={() => {
+                  setAnimalVisible(!animalVisible);
+                }}>
+                <Pressable
+                  style={styles.centeredView}
+                  onPress={() => setAnimalVisible(!animalVisible)}>
+                  <View style={styles.modalView1}>
+                    <Video
+                      style={{
+                        height: windowHeight * 0.09 * 5,
+                        width: windowHeight * 0.16 * 5,
+                      }}
+                      source={{
+                        uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/tutorial/animal-tutorial.mp4',
+                      }}
+                      controls={false}
+                      resizeMode="cover"
+                      repeat={true}
+                    />
+                    <View style={styles.modalbtns}>
+                      <Pressable
+                        style={[styles.Mbutton2]}
+                        onPress={() => goScreen('SelectAnimalScreen')}>
+                        <Text style={styles.Mbuttontext}>해보기</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                </Pressable>
+              </Modal>
               {/* 동화선택카드 */}
               <TouchableOpacity
                 style={[styles.cardFrame, {backgroundColor: '#A6D934'}]}
@@ -336,11 +379,11 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 transparent={true}
                 visible={loginVisible}
                 onRequestClose={() => {
-                  setModalVisible(!loginVisible);
+                  setLoginVisible(!loginVisible);
                 }}>
                 <Pressable
                   style={styles.centeredView}
-                  onPress={() => setModalVisible(!loginVisible)}>
+                  onPress={() => setLoginVisible(!loginVisible)}>
                   <View style={styles.modalView}>
                     <View style={styles.Mtexts}>
                       <Text style={styles.modaltext}>
@@ -702,6 +745,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 5,
     height: windowHeight * 0.4,
+  },
+  modalView1: {
+    backgroundColor: 'white',
+    borderRadius: windowWidth * 0.137 * 0.1,
+    paddingVertical: windowHeight * 0.025,
+    alignItems: 'center',
+    elevation: 5,
+    height: windowHeight * 0.09 * 7,
+    width: windowHeight * 0.16 * 7,
   },
   Mtexts: {
     alignItems: 'center',

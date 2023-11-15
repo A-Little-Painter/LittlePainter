@@ -60,7 +60,12 @@ export default function InitialScreen({navigation}: InitialScreenProps) {
               // alignItems: 'center',
             }}>
             <Text
-              style={{textAlign: 'center', fontWeight: '700', fontSize: 24, color:'white'}}>
+              style={{
+                textAlign: 'center',
+                fontWeight: '700',
+                fontSize: 24,
+                color: 'white',
+              }}>
               해당 앱은 인터넷 연결이 필수입니다.
             </Text>
           </View>

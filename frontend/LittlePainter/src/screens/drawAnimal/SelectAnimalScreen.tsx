@@ -16,8 +16,10 @@ import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import {animalWholeData} from '../../apis/draw/draw';
 import {useAppDispatch} from '../../redux/hooks';
-import {handleBGMMusic} from '../../redux/slices/music/music';
-
+import {
+  handleBGMMusic,
+  handleSoundEffect,
+} from '../../redux/slices/music/music';
 type SelectAnimalScreenProps = StackScreenProps<
   RootStackParams,
   'SelectAnimalScreen'
@@ -121,6 +123,7 @@ export default function SelectAnimalScreen({
             <Text style={styles.titleText}>동물 그리기</Text>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.goHomeArea}>
@@ -139,6 +142,7 @@ export default function SelectAnimalScreen({
                   <View style={styles.animalCard1} key={index}>
                     <TouchableOpacity
                       onPress={() => {
+                        dispatch(handleSoundEffect('btn'));
                         navigation.navigate('DrawAnimalScreen', {
                           animalId: item.animalId,
                           animalType: item.animalType,

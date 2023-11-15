@@ -17,6 +17,7 @@ import {RootStackParams} from '../../navigations/AppNavigator';
 import {friendWholeData} from '../../apis/draw/draw';
 import {useAppDispatch} from '../../redux/hooks';
 import {handleBGMMusic} from '../../redux/slices/music/music';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type SelectFriendScreenProps = StackScreenProps<
   RootStackParams,
@@ -122,6 +123,7 @@ export default function SelectFriendScreen({
             <Text style={styles.titleText}>내 친구 그리기</Text>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.goHomeArea}>
@@ -140,6 +142,7 @@ export default function SelectFriendScreen({
                   <View style={styles.animalCard1} key={index}>
                     <TouchableOpacity
                       onPress={() => {
+                        dispatch(handleSoundEffect('btn'));
                         navigation.navigate('DrawFriendScreen', {
                           personId: item.personId,
                           title: item.title,
@@ -169,6 +172,7 @@ export default function SelectFriendScreen({
                 <View style={styles.animalCard1}>
                   <TouchableOpacity
                     onPress={() => {
+                      dispatch(handleSoundEffect('btn'));
                       navigation.navigate('FriendUploadPicture1Screen');
                     }}
                     style={[

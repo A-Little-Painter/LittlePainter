@@ -25,6 +25,7 @@ import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import {googleSearchApi} from '../../apis/uploadPicture/uploadPicture';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
 import {handleBGMMusic} from '../../redux/slices/music/music';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type UploadPicture0ScreenProps = StackScreenProps<
   RootStackParams,
@@ -207,6 +208,7 @@ export default function UploadPicture0Screen({
             </View>
             <TouchableOpacity
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('MainScreen');
               }}
               style={styles.goHomeArea}>
@@ -267,6 +269,7 @@ export default function UploadPicture0Screen({
                 activeOpacity={1}
                 style={styles.searchMark}
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   goSearch(inputValue);
                 }}>
                 <IconFontAwesome name="search" size={windowWidth * 0.03} />
@@ -276,6 +279,7 @@ export default function UploadPicture0Screen({
               <TouchableOpacity
                 style={styles.uploadButton}
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   uploadPicture1();
                 }}>
                 <Text style={styles.uploadText}>올리기</Text>

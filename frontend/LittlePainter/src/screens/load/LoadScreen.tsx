@@ -25,7 +25,6 @@ export default function LoadScreen({navigation}: LoadScreenProp) {
 
   const animationRef = useRef<LottieView>(null);
 
-
   const dataList = [
     require('../../assets/lottie/Loading_cat.json'),
     require('../../assets/lottie/Loading_dog.json'),

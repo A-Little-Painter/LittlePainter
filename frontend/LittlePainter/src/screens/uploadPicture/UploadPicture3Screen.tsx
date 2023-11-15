@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../../navigations/AppNavigator';
-import {useAppSelector} from '../../redux/hooks';
+import {useAppSelector, useAppDispatch} from '../../redux/hooks';
+import {handleSoundEffect} from '../../redux/slices/music/music';
 
 type UploadPicture3ScreenProps = StackScreenProps<
   RootStackParams,
@@ -27,6 +28,7 @@ export default function UploadPicture3Screen({
   const border_image = useAppSelector(
     state => state.uploadPicture.border_image,
   );
+  const dispatch = useAppDispatch();
   console.log(animal_type);
   console.log(border_image);
 
@@ -46,6 +48,7 @@ export default function UploadPicture3Screen({
             <TouchableOpacity
               style={styles.button1}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('UploadPicture5Screen');
               }}>
               <Text style={styles.buttontext}>네</Text>
@@ -53,6 +56,7 @@ export default function UploadPicture3Screen({
             <TouchableOpacity
               style={styles.button2}
               onPress={() => {
+                dispatch(handleSoundEffect('btn'));
                 navigation.navigate('UploadPicture4Screen');
               }}>
               <Text style={styles.buttontext}>아니오</Text>
