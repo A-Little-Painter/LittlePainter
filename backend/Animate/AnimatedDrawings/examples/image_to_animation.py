@@ -1,6 +1,7 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
+import random
 import shutil
 
 import yaml
@@ -87,8 +88,35 @@ if __name__ == '__main__':
         else :
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
     elif animation_type == 'friends':
-        motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg.yaml')
-        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
+        # ran_num = random.random()
+        ran_num = 6
+        if ran_num < 0.1111:
+            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_waving.yaml')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
+        elif ran_num < 0.2222:
+            motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+        elif ran_num < 0.3333:
+            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg.yaml')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
+        elif ran_num < 0.4444:
+            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref1.yaml')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+        elif ran_num < 0.5555:
+            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref2.yaml')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+        elif ran_num < 0.6666:
+            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref3.yaml')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+        elif ran_num < 0.7777:
+            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref4.yaml')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+        elif ran_num < 0.8888:
+            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref5.yaml')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+        else:
+            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref6.yaml')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
 
     # 골격종류 포함하여 config파일 생성 함수 실행
     image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn, animation_type, character)
