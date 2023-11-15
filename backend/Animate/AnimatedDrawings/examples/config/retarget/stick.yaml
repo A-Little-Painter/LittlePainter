@@ -6,10 +6,11 @@ bvh_projection_bodypart_groups:
   - RightShoulder
   - RightArm
   - RightForeArm
+  - Hips
   method: frontal
   name: Upper Limbs
 - bvh_joint_names:
-  - Hips
+  - RightHand
   method: frontal
   name: Trunk
 char_bodypart_groups:
