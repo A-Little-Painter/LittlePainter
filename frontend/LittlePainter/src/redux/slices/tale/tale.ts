@@ -37,7 +37,7 @@ export const taleSlice = createSlice({
       state.isFairytaleEndingPageVisible = action.payload;
     },
     handlePageNum: (state, action: PayloadAction<number>) => {
-      console.log('페이지값:', action.payload);
+      // console.log('페이지값:', action.payload);
       state.pageNum = action.payload;
     },
     handleTaleDrawedImageInitial: (state, action: PayloadAction<[]>) => {
@@ -97,11 +97,11 @@ export const taleSlice = createSlice({
       console.log('저장한 그림들', state.taleDrawedImage);
     },
     handleIsDrawReadDone: (state, action: PayloadAction<boolean>) => {
-      console.log('값 isDrawReadDone:', action.payload);
+      // console.log('값 isDrawReadDone:', action.payload);
       state.isDrawReadDone = action.payload;
     },
     handleIsReReading: (state, action: PayloadAction<boolean>) => {
-      console.log('값 isReReading:', action.payload);
+      // console.log('값 isReReading:', action.payload);
       state.isReReading = action.payload;
     },
   },

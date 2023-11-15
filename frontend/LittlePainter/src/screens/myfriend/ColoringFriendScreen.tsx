@@ -81,6 +81,7 @@ export default function ColoringFriendScreen({
   const drawCaptureRef = useRef(null);
 
   // 그림 그리기 변수
+  const [isSelectColorFix, setIsSelectColorFix] = useState<boolean>(false);
   const [paths, setPaths] = useState<
     {path: string; color: string; strokeWidth: number}[]
   >([]);
@@ -152,6 +153,33 @@ export default function ColoringFriendScreen({
       console.error('캡쳐 에러 발생: ', error);
     }
   }
+  function getRandomHexColor() {
+    let red: number | string = Math.floor(Math.random() * 256);
+    let green: number | string = Math.floor(Math.random() * 256);
+    let blue: number | string = Math.floor(Math.random() * 256);
+    if (red < 50 && green < 50 && blue < 50) {
+      while (red < 50 && green < 50 && blue < 50) {
+        red = Math.floor(Math.random() * 256);
+        green = Math.floor(Math.random() * 256);
+        blue = Math.floor(Math.random() * 256);
+      }
+    }
+    red = red.toString(16);
+    green = green.toString(16);
+    blue = blue.toString(16);
+    if (red.length === 1) {
+      red = '0' + red;
+    }
+    if (green.length === 1) {
+      green = '0' + green;
+    }
+    if (blue.length === 1) {
+      blue = '0' + blue;
+    }
+    let color = `${red}${green}${blue}`;
+    color = '#' + color;
+    return color.toUpperCase();
+  }
 
   // 그림 그리기 함수
   const onTouchStart = (event: GestureResponderEvent) => {
@@ -182,6 +210,9 @@ export default function ColoringFriendScreen({
     }
     setCurrentPath('');
     handleDrawCapture();
+    if (!isSelectColorFix) {
+      dispatch(handleDrawColorSelect(getRandomHexColor()));
+    }
   };
 
   const handleClearButtonClick = () => {
@@ -345,6 +376,7 @@ export default function ColoringFriendScreen({
                 key={index}
                 style={[styles.colorCircle, {backgroundColor: color}]}
                 onPress={() => {
+                  setIsSelectColorFix(true);
                   dispatch(handleDrawColorSelect(color));
                 }}
               />

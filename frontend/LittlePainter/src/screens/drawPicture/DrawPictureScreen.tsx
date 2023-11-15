@@ -142,7 +142,7 @@ export default function DrawPictureScreen({
     if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
       if (similarityState === 'END') {
         console.log('유사도: ', similarityValue);
-        handleGoColoring();
+        // handleGoColoring();
       }
     } else if (similarityMessage === '유사도 측정에 실패했습니다.') {
       console.log('유사도: 0');
@@ -275,10 +275,11 @@ export default function DrawPictureScreen({
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
     if (isRendered){
-      setTimeout(() => {
+      let timer = setTimeout(() => {
         handleOriginCapture();
         // setIsRendered(false);
-      }, 500);
+      }, 1000);
+      return ()=>{ clearTimeout(timer); };
     }
   }, [isRendered]);
 

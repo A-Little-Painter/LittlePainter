@@ -36,6 +36,7 @@ import {
 } from '../../apis/draw/draw';
 import TestDrawCompareModal from '../modals/TestDrawCompareModal';
 import {CharactersInfoType} from './fairytaleType';
+import {handleBGMMusic, handleIsLoop} from '../../redux/slices/music/music';
 
 // 웹소켓 연결하기
 import SockJS from 'sockjs-client';
@@ -256,10 +257,11 @@ export default function DrawFairytaleScreen({
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
     if (isRendered){
-      handleOriginCapture();
-      setIsRendered(false);
-      // setTimeout(() => {
-      // }, 500);
+      let timer = setTimeout(() => {
+        handleOriginCapture();
+        setIsRendered(false);
+      }, 1000);
+      return () => {clearTimeout(timer)};
     }
   }, [isRendered]);
 
@@ -324,6 +326,13 @@ export default function DrawFairytaleScreen({
   useEffect(() => {
     handleisTestDrawCompareModalVisible(false);
     handleisOriginCharacterModalVisible(false);
+    dispatch(handleIsLoop(-1));
+    dispatch(
+      handleBGMMusic(
+        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_animal_tale.mp3',
+      ),
+    );
+    return () => {};
   }, []);
 
   useEffect(() => {

@@ -158,13 +158,33 @@ export default function ColoringFairytaleScreen({
 
   // 그림 그리기 함수
   function getRandomHexColor() {
-    let color = Math.floor(Math.random() * 16777216).toString(16);
-    while (color.length < 6) {
-      color = '0' + color;
+    let red: number | string = Math.floor(Math.random() * 256);
+    let green: number | string = Math.floor(Math.random() * 256);
+    let blue: number | string = Math.floor(Math.random() * 256);
+    if (red < 50 && green < 50 && blue < 50) {
+      while (red < 50 && green < 50 && blue < 50) {
+        red = Math.floor(Math.random() * 256);
+        green = Math.floor(Math.random() * 256);
+        blue = Math.floor(Math.random() * 256);
+      }
     }
+    red = red.toString(16);
+    green = green.toString(16);
+    blue = blue.toString(16);
+    if (red.length === 1) {
+      red = '0' + red;
+    }
+    if (green.length === 1) {
+      green = '0' + green;
+    }
+    if (blue.length === 1) {
+      blue = '0' + blue;
+    }
+    let color = `${red}${green}${blue}`;
     color = '#' + color;
     return color.toUpperCase();
   }
+
   const onTouchStart = (event: GestureResponderEvent) => {
     if (!isLoading) {
       const locationX = event.nativeEvent.locationX;

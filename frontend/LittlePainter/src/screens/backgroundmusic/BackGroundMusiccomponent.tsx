@@ -7,8 +7,12 @@ Sound.setCategory('Playback');
 const BackgroundMusic = () => {
   const volume = useAppSelector(state => state.music.isVolume);
   const music = useAppSelector(state => state.music.isMusic);
+  const isLoop = useAppSelector(state => state.music.isLoop);
   console.log(music);
 
+  useEffect(() => {
+    console.log('바뀌었나', isLoop);
+  }, [isLoop]);
   // useRef를 사용하여 whoosh를 참조
   const whooshRef = useRef(null);
 
@@ -36,9 +40,9 @@ const BackgroundMusic = () => {
       );
 
       // 무한 루프 설정
-      whooshRef.current.setNumberOfLoops(-1);
+      whooshRef.current.setNumberOfLoops(isLoop);
 
-      // 1초 후에 새로운 음악을 재생
+      // 0.01초 후에 새로운 음악을 재생
       setTimeout(() => {
         whooshRef.current.play((success: any) => {
           if (success) {
@@ -47,7 +51,7 @@ const BackgroundMusic = () => {
             console.log('playback failed due to audio decoding errors');
           }
         });
-      }, 1000);
+      }, 100);
     });
   }, [music]);
 

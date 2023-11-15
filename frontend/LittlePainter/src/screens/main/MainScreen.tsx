@@ -22,6 +22,7 @@ import {
   handleBGMVolume,
   handleBGMMusic,
   handleSoundEffect,
+  handleIsLoop,
 } from '../../redux/slices/music/music';
 import {useIsFocused} from '@react-navigation/native';
 
@@ -46,6 +47,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
+      dispatch(handleIsLoop(-1));
       dispatch(
         handleBGMMusic(
           'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_main.mp3',
@@ -260,7 +262,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                 }}>
                 <View style={styles.cardFrame1}>
                   <Text style={styles.cardText}>
-                    <Text style={styles.cardTextBold}>내 사진</Text> 그리기
+                    <Text style={styles.cardTextBold}>내 친구</Text> 그리기
                   </Text>
                 </View>
                 <View style={styles.cardFrame2}>

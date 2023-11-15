@@ -138,7 +138,7 @@ export default function DrawAnimalScreen({
     if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
       if (similarityState === 'END') {
         console.log('유사도: ', similarityValue);
-        // handleGoColoring();
+        handleGoColoring();
       }
     } else if (similarityMessage === '유사도 측정에 실패했습니다.') {
       console.log('유사도: 0');
@@ -259,10 +259,11 @@ export default function DrawAnimalScreen({
   // 초기 테두리 원본 캡쳐
   useEffect(() => {
     if (isRendered){
-      setTimeout(() => {
+      let timer = setTimeout(() => {
         handleOriginCapture();
         setIsRendered(false);
       }, 1000);
+      return ()=>{ clearTimeout(timer); };
     }
   }, [isRendered]);
   // 초기 테두리 원본 가져오기
@@ -337,7 +338,7 @@ export default function DrawAnimalScreen({
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
       // dispatch(handleLineThickness(10));
-      dispatch(handleLineThickness(10));
+      dispatch(handleLineThickness(15));
     });
     return unsubscribe; // 컴포넌트가 언마운트 될 때 이벤트 리스너 해제
   }, [dispatch, navigation]);
