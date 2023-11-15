@@ -1,6 +1,6 @@
-filepath: examples/bvh/rokoko/refer1.bvh
+filepath: examples/bvh/rokoko/leg_dance.bvh
 start_frame_idx: 1
-end_frame_idx: 380
+end_frame_idx: 379
 groundplane_joint: LeftFoot
 forward_perp_joint_vectors:
   - - LeftShoulder
