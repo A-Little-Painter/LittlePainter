@@ -65,7 +65,7 @@ def borderExtractionTest(roomId, originalPath, newPath):
     # cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
 
     # 팽창을 위한 커널 생성
-    kernel = np.ones((15, 15), np.uint8)  # 팽창을 위한 5x5 크기의 커널, 크기는 상황에 따라 조절 가능
+    kernel = np.ones((25, 25), np.uint8)  # 팽창을 위한 5x5 크기의 커널, 크기는 상황에 따라 조절 가능
 
     # contour 기반으로 마스크 생성 후 팽창 적용
     mask = np.zeros(newImage.shape, dtype=np.uint8)
