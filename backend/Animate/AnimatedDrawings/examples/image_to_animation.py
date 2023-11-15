@@ -88,34 +88,30 @@ if __name__ == '__main__':
         else :
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
     elif animation_type == 'friends':
-        # ran_num = random.random()
-        ran_num = 6
-        if ran_num < 0.1111:
+        ran_num = random.random()
+        if ran_num < 0.125:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_waving.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
-        elif ran_num < 0.2222:
+        elif ran_num < 0.250:
             motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
-        elif ran_num < 0.3333:
+        elif ran_num < 0.375:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
-        elif ran_num < 0.4444:
+        elif ran_num < 0.500:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref1.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine.yaml')
-        elif ran_num < 0.5555:
+        elif ran_num < 0.625:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref2.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine.yaml')
-        elif ran_num < 0.6666:
+        elif ran_num < 0.750:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref3.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine.yaml')
-        elif ran_num < 0.7777:
+        elif ran_num < 0.875:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref4.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine.yaml')
-        elif ran_num < 0.8888:
-            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref5.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine.yaml')
         else:
-            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref6.yaml')
+            motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref5.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine.yaml')
 
     # 골격종류 포함하여 config파일 생성 함수 실행
