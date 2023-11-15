@@ -1,83 +1,83 @@
-height: 243
+height: 879
 skeleton:
   - loc:
-      - 134
-      - 203
+      - 436
+      - 418
     name: root
     parent: null
   - loc:
-      - 134
-      - 203
+      - 436
+      - 418
     name: hip
     parent: root
   - loc:
-      - 234
-      - 174
+      - 663
+      - 324
     name: torso
     parent: hip
   - loc:
-      - 234
-      - 66
+      - 663
+      - 188
     name: neck
     parent: torso
   - loc:
-      - 178
-      - 202
+      - 533
+      - 441
     name: right_hip_f
     parent: root
   - loc:
-      - 179
-      - 213
+      - 539
+      - 519
     name: right_knee_f
     parent: right_hip_f
   - loc:
-      - 182
-      - 229
+      - 560
+      - 609
     name: right_foot_f
     parent: right_knee_f
   - loc:
-      - 235
-      - 190
+      - 687
+      - 436
     name: left_hip_f
     parent: root
   - loc:
-      - 243
-      - 205
+      - 699
+      - 511
     name: left_knee_f
     parent: left_hip_f
   - loc:
-      - 243
-      - 222
+      - 729
+      - 589
     name: left_foot_f
     parent: left_knee_f
   - loc:
-      - 59
-      - 184
+      - 241
+      - 364
     name: right_hip_b
     parent: root
   - loc:
-      - 66
-      - 230
+      - 204
+      - 457
     name: right_knee_b
     parent: right_hip_b
   - loc:
-      - 81
-      - 225
+      - 257
+      - 578
     name: right_foot_b
     parent: right_knee_b
   - loc:
-      - 93
-      - 205
+      - 325
+      - 439
     name: left_hip_b
     parent: root
   - loc:
-      - 95
-      - 214
+      - 349
+      - 491
     name: left_knee_b
     parent: left_hip_b
   - loc:
-      - 98
-      - 226
+      - 397
+      - 570
     name: left_foot_b
     parent: left_knee_b
-width: 313
+width: 621
