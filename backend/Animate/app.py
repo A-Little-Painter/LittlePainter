@@ -55,7 +55,7 @@ class Animals(Resource):
         image = request.files['image']
 
         # requestbody 확인되면 요청별 전용 경로 생성
-        animal_list = ['곰', '낙타', '돼지', '얼룩말', '원숭이', '코뿔소', '판다', '하마', '호랑이']
+        animal_list = ['곰', '낙타', '돼지', '원숭이', '코뿔소', '판다', '하마', '호랑이', '사슴', '강아지', '기린', '사자']
         if animal_type in animal_list:
             # 월일시분초에 따른 전용폴더에서 작업
             folder_uuid = uuid.uuid4()
@@ -65,7 +65,6 @@ class Animals(Resource):
             return {
                 "message": "동물 이름(animalType) 잘못됨"
             }, 400
-
 
         # 이미지 저장
         original_filename, file_extension = os.path.splitext(image.filename)
