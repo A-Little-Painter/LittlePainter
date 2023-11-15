@@ -55,7 +55,7 @@ public class PersonController {
     //TODO 이거 유사도랑 AnimalType을 확인해야함
     public ResponseEntity<Void> personSimilarityCheck(@ModelAttribute PersonSimilarRequestDTO personSimilarRequestDTO) throws IOException {
         similarCheckProcessor.similarCheck(personSimilarRequestDTO.getRoomId(), personSimilarRequestDTO.getOriginalFile(), personSimilarRequestDTO.getNewFile()
-        ,0.19, AnimalType.friendsAnimal);
+        ,1, AnimalType.friendsAnimal);
 
         return ResponseEntity.ok().build();
     }
