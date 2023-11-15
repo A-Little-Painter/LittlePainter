@@ -95,28 +95,28 @@ if __name__ == '__main__':
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
         elif ran_num < 0.2222:
             motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
         elif ran_num < 0.3333:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine_copymixamor.yaml')
         elif ran_num < 0.4444:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref1.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
         elif ran_num < 0.5555:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref2.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
         elif ran_num < 0.6666:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref3.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
         elif ran_num < 0.7777:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref4.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
         elif ran_num < 0.8888:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref5.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
         else:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref6.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
 
     # 골격종류 포함하여 config파일 생성 함수 실행
     image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn, animation_type, character)
