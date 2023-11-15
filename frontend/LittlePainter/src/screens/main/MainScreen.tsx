@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -12,6 +12,7 @@ import {
   ToastAndroid,
   Pressable,
   Modal,
+  Animated,
 } from 'react-native';
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
@@ -25,6 +26,7 @@ import {
   handleIsLoop,
 } from '../../redux/slices/music/music';
 import {useIsFocused} from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
 
 type MainScreenProps = StackScreenProps<RootStackParams, 'MainScreen'>;
 type ismuted = boolean;
@@ -40,6 +42,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
   const selectName = useAppSelector(state => state.user.selectName);
   const selectImage = useAppSelector(state => state.user.selectImage);
   const music = useAppSelector(state => state.music.isMusic);
+  const moveAnimation = useRef(new Animated.Value(0)).current;
+  const moveAnimation2 = useRef(new Animated.Value(0)).current;
+  const animationRef = useRef<LottieView>(null);
+  const secondAnimationRef = useRef<LottieView>(null);
   let loginTF: string;
 
   const dispatch = useAppDispatch();
@@ -75,6 +81,49 @@ export default function MainScreen({navigation}: MainScreenProps) {
     setLoginVisible(false);
     navigation.navigate('LoginScreen');
   };
+
+  useEffect(() => {
+    Animated.loop(
+      // 애니메이션 시퀀스 정의
+      Animated.sequence([
+        // 오른쪽 끝까지 이동
+        Animated.timing(moveAnimation, {
+          toValue: windowWidth,
+          duration: 8000,
+          useNativeDriver: true,
+        }),
+        // moveAnimation 값을 0으로 즉시 변경 (애니메이션 없이)
+        Animated.timing(moveAnimation, {
+          toValue: 0,
+          duration: 0,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+
+    Animated.loop(
+      // 애니메이션 시퀀스 정의
+      Animated.sequence([
+        // 오른쪽 끝까지 이동
+        Animated.timing(moveAnimation2, {
+          toValue: windowWidth,
+          duration: 15000,
+          useNativeDriver: true,
+        }),
+        // moveAnimation 값을 0으로 즉시 변경 (애니메이션 없이)
+        Animated.timing(moveAnimation2, {
+          toValue: 0,
+          duration: 0,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+
+    // animationRef.current?.play();
+
+    animationRef.current?.play(30, 110);
+    secondAnimationRef.current?.play();
+  }, [moveAnimation, moveAnimation2]);
 
   useEffect(() => {
     const backAction = () => {
@@ -429,7 +478,32 @@ export default function MainScreen({navigation}: MainScreenProps) {
             </ScrollView>
           </View>
           {/* 하단 */}
-          <View style={styles.bottomContainer} />
+          <View style={styles.bottomContainer}>
+            <Animated.View
+              style={{
+                transform: [{translateX: moveAnimation}],
+              }}>
+              <LottieView
+                source={require('../../assets/lottie/test.json')}
+                ref={animationRef}
+                autoPlay={true}
+                loop={true}
+                style={styles.lottieStyle}
+              />
+            </Animated.View>
+            <Animated.View
+              style={{
+                transform: [{translateX: moveAnimation2}],
+              }}>
+              <LottieView
+                source={require('../../assets/lottie/turtle.json')}
+                ref={secondAnimationRef}
+                autoPlay={true}
+                loop={true}
+                style={styles.lottieStyle}
+              />
+            </Animated.View>
+          </View>
         </View>
       </ImageBackground>
     </View>
@@ -664,5 +738,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     fontFamily: 'TmoneyRoundWindExtraBold',
+  },
+  lottieStyle: {
+    width: windowWidth * 0.1,
+    height: windowWidth * 0.1,
+
+    position: 'absolute',
+    top: windowHeight * -0.1,
   },
 });

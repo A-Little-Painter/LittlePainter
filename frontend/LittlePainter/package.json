@@ -20,6 +20,7 @@
     "@stomp/stompjs": "^7.0.0",
     "axios": "^1.5.1",
     "image-conversion": "^2.1.1",
+    "lottie-react-native": "^6.4.1",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-bouncy-checkbox": "^3.0.7",

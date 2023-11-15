@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo} from 'react';
+import React, {useEffect, useState, useMemo, useRef} from 'react';
 import {
   Dimensions,
   StyleSheet,
@@ -10,6 +10,7 @@ import {
 import {RootStackParams} from '../../navigations/AppNavigator';
 import type {StackScreenProps} from '@react-navigation/stack';
 import {useAppSelector} from '../../redux/hooks';
+import LottieView from 'lottie-react-native';
 
 type LoadScreenProp = StackScreenProps<RootStackParams, 'LoadScreen'>;
 
@@ -22,64 +23,19 @@ export default function LoadScreen({navigation}: LoadScreenProp) {
   const isLogin = useAppSelector(state => state.user.isLogin);
   const selectName = useAppSelector(state => state.user.selectName);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'MainScreen',
-            params: {},
-          },
-        ],
-      });
-    }, 3000);
+  const animationRef = useRef<LottieView>(null);
 
-    return () => clearTimeout(timeout);
-  }, [navigation]);
 
   const dataList = [
-    require('../../assets/profile/bear.png'),
-    require('../../assets/profile/cat.png'),
-    require('../../assets/profile/deer.png'),
-    require('../../assets/profile/dinosaur.png'),
-    require('../../assets/profile/dog.png'),
-    require('../../assets/profile/frog.png'),
-    require('../../assets/profile/giraffe.png'),
-    require('../../assets/profile/monkey.png'),
-    require('../../assets/profile/panda.png'),
-    require('../../assets/profile/penguin.png'),
-    require('../../assets/profile/rabbit.png'),
-    require('../../assets/profile/tiger.png'),
-    require('../../assets/profile/whale.png'),
+    require('../../assets/lottie/Loading_cat.json'),
+    require('../../assets/lottie/Loading_dog.json'),
   ];
 
+  const [randomLottie, setRandomLottie] = useState(dataList[0]);
   useEffect(() => {
-    const randomImageIndex = Math.floor(Math.random() * dataList.length); //랜덤 인덱스
-    const imageChangeInterval = setInterval(() => {
-      const nextImageIndex = randomImageIndex % dataList.length; // 이미지 선택
-
-      // 페이드 아웃 애니메이션 적용
-      Animated.timing(fadeInAnimation, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }).start(() => {
-        setCurrentImageIndex(nextImageIndex);
-        console.log(nextImageIndex);
-
-        // 페이드 인 애니메이션 적용
-        Animated.timing(fadeInAnimation, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }).start();
-      });
-    }, 1000);
-
-    return () => clearInterval(imageChangeInterval);
-  }, [currentImageIndex, dataList.length, fadeInAnimation]);
-
+    const randomIndex = Math.floor(Math.random() * dataList.length);
+    setRandomLottie(dataList[randomIndex]);
+  }, []);
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
@@ -91,17 +47,18 @@ export default function LoadScreen({navigation}: LoadScreenProp) {
         {/* 중단 */}
         <View style={styles.middleContainer}>
           <View style={styles.load}>
-            <Animated.Image
-              source={dataList[currentImageIndex]}
-              style={[
-                styles.loadImage,
-                {
-                  opacity: fadeInAnimation,
-                },
-              ]}
-            />
+            <View style={styles.overlay}>
+              <LottieView
+                style={styles.animationView}
+                source={randomLottie}
+                autoPlay
+                loop={true}
+              />
+            </View>
             {isLogin ? (
-              <Text style={styles.loadtext}>{selectName} 잠시만 기다려줘</Text>
+              <Text style={styles.loadtext}>
+                {selectName}, 잠시만 기다려줘!
+              </Text>
             ) : (
               <Text style={styles.loadtext}>잠시만 기다려 주세요.</Text>
             )}
@@ -147,5 +104,13 @@ const styles = StyleSheet.create({
     fontSize: windowHeight * 0.05,
     fontFamily: 'BMHANNA_11yrs_ttf',
     marginTop: windowHeight * 0.01,
+  },
+  animationView: {
+    height: windowHeight * 0.5,
+    width: windowWidth * 0.5,
+  },
+  overlay: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
