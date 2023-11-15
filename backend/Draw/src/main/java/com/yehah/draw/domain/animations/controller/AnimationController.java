@@ -1,6 +1,7 @@
 package com.yehah.draw.domain.animations.controller;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.yehah.draw.domain.animal.service.AnimalService;
 import com.yehah.draw.domain.animations.dto.request.AnimationFriendReqDto;
 import com.yehah.draw.global.Processor.ImageAndGifProcessor;
 import com.yehah.draw.domain.animations.dto.request.AnimationAnimalReqDto;
@@ -25,6 +26,8 @@ public class AnimationController {
 
     private final ImageAndGifProcessor imageAndGifProcessor;
 
+    private final AnimalService animalService;
+
     // NOTE : animals와 friendsAnimal 모두 받아온다.
     @PostMapping("/animals")
     public ResponseEntity<AnimationResDto> sendAnimatedAnimal(@ModelAttribute AnimationAnimalReqDto animationAnimalReqDto) throws IOException {
@@ -36,7 +39,10 @@ public class AnimationController {
         // 2. gif파일 받아오기
         gifFile = imageAndGifProcessor.animalConvertToGif(animationAnimalReqDto.getAnimalType(), imageFile);
         // 3. image, gif 파일 모두 업로드하기
-        return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(imageFile, gifFile));
+        AnimationResDto animationResDto = imageAndGifProcessor.uploadsImageAndGif(imageFile, gifFile);
+        animationResDto.setUrlSound(animalService.getAnimalUrlSound(animationAnimalReqDto.getAnimalType()));
+
+        return ResponseEntity.ok(animationResDto);
     }
 
     @PostMapping("/tales")

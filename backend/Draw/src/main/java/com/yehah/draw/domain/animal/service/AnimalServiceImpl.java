@@ -40,4 +40,11 @@ public class AnimalServiceImpl implements AnimalService {
                 .build();
     }
 
+    public String getAnimalUrlSound(String animalType){
+        Animal animal = animalRepository.findByAnimalType(animalType).orElseThrow(
+                () -> new IllegalArgumentException("해당 동물이 존재하지 않습니다.")
+        );
+        return animal.getAnimalType();
+    }
+
 }

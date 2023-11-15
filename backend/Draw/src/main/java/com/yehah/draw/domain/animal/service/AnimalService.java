@@ -10,4 +10,6 @@ public interface AnimalService {
     public List<AnimalResDto> getAnimalList();
 
     public AnimalChoiceResDto getAnimalChoiceData(long animalId);
+
+    public String getAnimalUrlSound(String animalType);
 }
