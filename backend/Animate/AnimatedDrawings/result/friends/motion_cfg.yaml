@@ -1,5 +1,5 @@
 filepath: examples/bvh/rokoko/waving_hand_rokoko.bvh
-start_frame_idx: 2
+start_frame_idx: 20
 end_frame_idx: 60
 groundplane_joint: LeftFoot
 forward_perp_joint_vectors:
