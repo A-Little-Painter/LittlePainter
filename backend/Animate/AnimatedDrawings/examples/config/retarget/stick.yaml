@@ -1,14 +1,15 @@
 char_starting_location: [0.0, 0.0, -0.5]
 bvh_projection_bodypart_groups:
 - bvh_joint_names:
+  - Spine2
+  - Head
+  - RightShoulder
   - RightArm
   - RightForeArm
-  - RightHand
   method: frontal
   name: Upper Limbs
 - bvh_joint_names:
   - Hips
-  - RightShoulder
   method: frontal
   name: Trunk
 char_bodypart_groups:
