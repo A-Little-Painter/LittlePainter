@@ -242,6 +242,7 @@ export default function FairytaleReadScreen({
       const ttsFinishListener = Tts.addEventListener('tts-finish', event => {
         // TTS 읽기 완료 시 실행될 코드
         console.log('TTS finished');
+        console.log('TTS finished');
         speakNextLine();
       });
 
