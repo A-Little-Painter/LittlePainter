@@ -9,11 +9,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.yehah.image.dto.request.AddChildWorkReqDto;
 import com.yehah.image.dto.request.AddChildWorkTaleReqDto;
 import com.yehah.image.dto.response.SaveMyAnimalResDto;
 import com.yehah.image.dto.response.TempSaveResDto;
@@ -140,11 +137,11 @@ public class ImageService {
 	}
 
 	public Mono<TempSaveResDto> uploadTempFiles(MultipartFile imageFile, MultipartFile gifFile) throws IOException {
-		if(imageFile.isEmpty() || gifFile.isEmpty()){
+
+		if(imageFile.isEmpty()){
 			throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
 		}
 
-		// Date currentDate = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 		String formattedDate = dateFormat.format(new Date()) + "/" + UUID.randomUUID();
 
@@ -152,7 +149,7 @@ public class ImageService {
 		String tempImageUrl = s3Util.upload(imageFile, "temp/" + formattedDate + "img");
 
 		// gif S3 저장
-		String tempGifUrl = s3Util.upload(gifFile, "temp/" + formattedDate + "gif");
+		String tempGifUrl = (gifFile.isEmpty()) ? null : s3Util.upload(gifFile, "temp/" + formattedDate + "gif");
 
 		TempSaveResDto tempSaveResDto = TempSaveResDto.builder()
 			.imageUrl(tempImageUrl)
