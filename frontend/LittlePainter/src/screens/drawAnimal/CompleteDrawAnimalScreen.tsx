@@ -7,10 +7,12 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ToastAndroid, // 토스트안드로이드 잠깐 사용
+  ToastAndroid,
   BackHandler,
   Image,
   ImageBackground,
+  Animated,
+  Easing,
 } from 'react-native';
 import ViewShot from 'react-native-view-shot';
 import type {StackScreenProps} from '@react-navigation/stack';
@@ -47,7 +49,15 @@ export default function CompleteDrawAnimalScreen({
   const [animatedGif] = useState<string>(route.params.animatedGif);
   const [originDrawUri] = useState<string>(route.params.originDrawUri);
   const [isSavedImage, setIsSavedImage] = useState<boolean>(false);
-  const [translateX, setTranslateX] = useState(0); // 초기값은 0
+  let random = Math.random() < 0.5 ? 1 : -1;
+  const [translate] = useState(
+    new Animated.ValueXY({
+      // x: Math.random() * (windowWidth / 2) * random,
+      // y: Math.random() * (windowHeight / 2) * random,
+      x: Math.random() * (windowWidth - windowHeight * 0.5),
+      y: Math.random() * (windowHeight - windowHeight * 0.5) * random,
+    }),
+  );
 
   const isLogin = useSelector((state: RootState) => state.user.isLogin);
   // const selectName = useSelector((state: RootState) => state.user.selectName);
@@ -141,23 +151,42 @@ export default function CompleteDrawAnimalScreen({
     return () => backHandler.remove();
   }, [backHandleNum, navigation]);
 
-  useEffect(() => {
-    console.log('moving', translateX);
-    // 타이머를 이용하여 일정 간격마다 이미지를 오른쪽으로 이동
-    const intervalId = setInterval(() => {
-      if (translateX >= 1100) {
-        setTranslateX(-100);
-      } else {
-        // console.log('go');
-        // setTranslateX(prevTranslateX => prevTranslateX + 100); // 10포인트씩 이동
-      }
-    }, 1865); // 1000밀리초(1초) 간격으로 실행
+  const handleLoad = () => {
+    console.log('이미지 로딩됨. 이동 시작.');
 
-    return () => {
-      // 컴포넌트가 언마운트될 때 타이머 해제
-      clearInterval(intervalId);
+    // 이미지 로딩이 완료되면 호출되는 함수
+    const startAnimation = () => {
+      Animated.timing(translate, {
+        toValue: {
+          x: Math.random() * (windowWidth - windowHeight * 0.5),
+          y:
+            Math.random() *
+            (windowHeight - windowHeight * 0.5) *
+            (Math.random() < 0.5 ? 1 : -1),
+        },
+        //   x: Math.random() * (windowWidth / 2) * (Math.random() < 0.5 ? 1 : -1),
+        //   y:
+        //     Math.random() * (windowHeight / 2) * (Math.random() < 0.5 ? 1 : -1),
+        // },
+        duration: 3000, // 애니메이션 지속 시간
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }).start(() => {
+        startAnimation();
+      }); // 애니메이션이 끝나면 다시 시작
     };
-  }, [translateX]);
+
+    // 첫 번째 애니메이션 시작
+    startAnimation();
+  };
+
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 한 번만 실행
+    handleLoad();
+
+    // 컴포넌트가 언마운트될 때 애니메이션 중지
+    return () => translate.stopAnimation();
+  }, []);
 
   const lore = () => {
     console.log(isLore);
@@ -249,7 +278,17 @@ export default function CompleteDrawAnimalScreen({
                 {/* <View style={{width: '100%', height: '100%'}} /> */}
               </ImageBackground>
             ) : (
-              <View style={{transform: [{translateX}]}}>
+              <Animated.View
+                style={[
+                  styles.image,
+                  {
+                    // translateX 및 translateY를 사용하여 위치 변경
+                    transform: [
+                      {translateX: translate.x},
+                      {translateY: translate.y},
+                    ],
+                  },
+                ]}>
                 <Image
                   style={styles.imageSize}
                   source={{
@@ -264,10 +303,10 @@ export default function CompleteDrawAnimalScreen({
                           : completeDrawUri
                         : animatedGif,
                   }}
-                  resizeMode="contain">
-                  {/* <View style={{width: '100%', height: '100%'}} /> */}
-                </Image>
-              </View>
+                  onLoad={handleLoad}
+                  resizeMode="contain"
+                />
+              </Animated.View>
             )}
             {/* </View> */}
           </ViewShot>
@@ -381,7 +420,7 @@ const styles = StyleSheet.create({
   },
   imageSize: {
     width: windowHeight * 0.5,
-    height: '100%',
+    height: windowHeight * 0.5,
   },
   imageBackgroundSize: {
     width: '100%',
@@ -454,5 +493,10 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: windowHeight * 0.04,
     fontFamily: 'TmoneyRoundWindExtraBold',
+  },
+  image: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
   },
 });
