@@ -35,7 +35,7 @@ import {
   handleDrawColorSelect,
   handleHavingGifUrl,
 } from '../../redux/slices/draw/draw';
-import {animalAnimations} from '../../apis/draw/draw';
+import {animalAnimations, pictureRemoveBg} from '../../apis/draw/draw';
 import {handleSoundEffect} from '../../redux/slices/music/music';
 import LottieView from 'lottie-react-native';
 import LoadScreen from '../load/LoadScreen';
@@ -158,6 +158,45 @@ export default function ColoringPictureScreen({
     setIsLoading(false);
   }
 
+  // 친구의 동물 사진 누끼
+  async function handlePictureImage() {
+    setIsLoading(true);
+    try {
+      dispatch(handleHavingGifUrl(true));
+      const response = await pictureRemoveBg(
+        // roomId,
+        // animalType,
+        captureBorderImagePath,
+        captureImagePath,
+      );
+      if (response.status === 200) {
+        console.log('친구의 동물 사진 누끼따기 성공', response.data);
+        setIsLoading(false);
+        handleGoComplete(response.data);
+        // handleGoComplete(response.data.gifUrl, response.data.imageUrl);
+      } else {
+        console.log('친구의 동물 사진 누끼따기 실패', response.status);
+        setIsLoading(false);
+        ToastAndroid.show(
+          '우리 친구가 움직일 수가 없어요ㅠㅠ',
+          ToastAndroid.LONG,
+        );
+        handleGoComplete('');
+        // handleGoComplete('', '');
+      }
+    } catch (error) {
+      console.log('친구의 동물 사진 누끼따기 실패', error);
+      setIsLoading(false);
+      ToastAndroid.show(
+        '우리 친구가 움직일 수가 없어요ㅠㅠ',
+        ToastAndroid.LONG,
+      );
+      handleGoComplete('');
+      // handleGoComplete('', '');
+    }
+    setIsLoading(false);
+  }
+
   // 캡쳐 함수
   async function handleDrawCapture() {
     try {
@@ -262,16 +301,27 @@ export default function ColoringPictureScreen({
   };
 
   const handleGoComplete = (
-    receiveanimatedGif: string,
+    // receiveanimatedGif: string,
     receiveDrawUri: string,
   ) => {
     navigation.navigate('CompleteDrawPictureScreen', {
       pictureId: pictureId,
       completeDrawUri: receiveDrawUri,
-      animatedGif: receiveanimatedGif,
+      animatedGif: '',
       originDrawUri: captureImagePath,
     });
   };
+  // const handleGoComplete = (
+  //   receiveanimatedGif: string,
+  //   receiveDrawUri: string,
+  // ) => {
+  //   navigation.navigate('CompleteDrawPictureScreen', {
+  //     pictureId: pictureId,
+  //     completeDrawUri: receiveDrawUri,
+  //     animatedGif: receiveanimatedGif,
+  //     originDrawUri: captureImagePath,
+  //   });
+  // };
 
   useEffect(() => {
     const randomNum = Math.floor(Math.random() * fastcolorData.length);
@@ -543,7 +593,8 @@ export default function ColoringPictureScreen({
               disabled={isLoading}
               onPress={() => {
                 dispatch(handleSoundEffect('btn'));
-                handlePictureAnimations();
+                // handlePictureAnimations();
+                handlePictureImage()
                 // handleGoComplete();
               }}>
               <Text style={styles.doneButtonText}>완성하기</Text>
