@@ -137,7 +137,6 @@ public class ImageService {
 	}
 
 	public Mono<TempSaveResDto> uploadTempFiles(MultipartFile imageFile, MultipartFile gifFile) throws IOException {
-
 		if(imageFile.isEmpty()){
 			throw new CustomException(ExceptionEnum.IMAGE_EMPTY);
 		}
@@ -149,7 +148,10 @@ public class ImageService {
 		String tempImageUrl = s3Util.upload(imageFile, "temp/" + formattedDate + "img");
 
 		// gif S3 저장
-		String tempGifUrl = (gifFile.isEmpty()) ? null : s3Util.upload(gifFile, "temp/" + formattedDate + "gif");
+		String tempGifUrl = null;
+		if(gifFile != null){
+			tempGifUrl = s3Util.upload(gifFile, "temp/" + formattedDate + "gif");
+		}
 
 		TempSaveResDto tempSaveResDto = TempSaveResDto.builder()
 			.imageUrl(tempImageUrl)

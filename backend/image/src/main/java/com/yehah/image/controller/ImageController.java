@@ -33,8 +33,8 @@ public class ImageController {
 
 	@Operation(summary = "S3- 임시 파일(img, gif) 저장하기", description = "(ALL) aws s3에 gif 파일을 임시로 저장한다.")
 	@PostMapping(value = "/temp")
-	public Mono<TempSaveResDto> uploadTempGif(@RequestPart(value="imageFile") MultipartFile imageFile, @RequestPart(value="gifFile") MultipartFile gifFile) throws IOException {
-		log.info("uploadTempGif() : imageFile = {}, gifFile = {}", imageFile.getOriginalFilename(), gifFile.getOriginalFilename());
+	public Mono<TempSaveResDto> uploadTempGif(@RequestPart(value="imageFile") MultipartFile imageFile, @RequestPart(value="gifFile", required = false) MultipartFile gifFile) throws IOException {
+		log.info("uploadTempGif()");
 		return imageService.uploadTempFiles(imageFile, gifFile);
 	}
 
@@ -53,7 +53,7 @@ public class ImageController {
 		return imageService.addChildWork(addChildWorkReqDto.getUserId().toString(), addChildWorkReqDto.getCategory(), addChildWorkReqDto.getImageUrl(), addChildWorkReqDto.getGifUrl());
 	}
 
-	@Operation(summary = "S3- 마이페이지에 동화 그림 저장하기", description = "<<수정중>> (USER) aws s3에 마이페이지에 저장할 그림을 저장한다.")
+	@Operation(summary = "S3- 마이페이지에 동화 그림 저장하기", description = "(USER) aws s3에 마이페이지에 저장할 그림을 저장한다.")
 	@PostMapping(value = "/child-work-tale")
 	public Mono<List<UploadS3MypageTaleResDto>> addChildWorkTale(@RequestBody List<AddChildWorkTaleReqDto> addChildWorkTaleReqDtoList) throws IOException {
 		log.info("addChildWorkTale() : ");
