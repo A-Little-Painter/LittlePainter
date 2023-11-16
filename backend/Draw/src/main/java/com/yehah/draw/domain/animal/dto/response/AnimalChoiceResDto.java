@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 public class AnimalChoiceResDto {
     private String detail;
     private String urlTrace;
+    private double comparisonValue;
 
     @Builder
-    public AnimalChoiceResDto(String detail, String urlTrace) {
+    public AnimalChoiceResDto(String detail, String urlTrace, double comparisonValue) {
         this.detail = detail;
         this.urlTrace = urlTrace;
+        this.comparisonValue = comparisonValue;
     }
 }

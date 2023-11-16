@@ -41,7 +41,7 @@ public class AnimalController {
     @PostMapping("/similarcheck")
     public ResponseEntity<Void> animalSimilarCheck(@ModelAttribute AnimalSimilarReqDto animalSimilarReqDto) throws IOException {
         similarCheckProcessor.similarCheck(animalSimilarReqDto.getRoomId(), animalSimilarReqDto.getOriginalFile(), animalSimilarReqDto.getNewFile()
-        ,1, AnimalType.animal);
+        ,animalSimilarReqDto.getComparisonValue(), AnimalType.animal);
         return ResponseEntity.ok().build();
     }
 }

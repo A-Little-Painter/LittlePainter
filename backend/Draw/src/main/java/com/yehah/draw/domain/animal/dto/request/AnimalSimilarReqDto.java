@@ -11,4 +11,5 @@ public class AnimalSimilarReqDto {
     private String roomId;
     private MultipartFile originalFile;
     private MultipartFile newFile;
+    private double comparisonValue;
 }

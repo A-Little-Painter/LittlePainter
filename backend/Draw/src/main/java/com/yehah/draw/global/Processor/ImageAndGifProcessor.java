@@ -153,8 +153,6 @@ public class ImageAndGifProcessor {
             }
         });
 
-        bodyData.add("gifFile", null);
-
         ObjectMapper objectMapper = new ObjectMapper();
         try{
             String json = objectMapper.writeValueAsString(communicationProcessor.postMultipartMethod(bodyData, imagePath+"/comm/temp", Object.class));

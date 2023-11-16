@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FriendResDto {
     private String imageUrl;
+    private String gifUrl;
 
     @Builder
     public FriendResDto(String imageUrl){
         this.imageUrl = imageUrl;
+        this.gifUrl = gifUrl;
     }
 }

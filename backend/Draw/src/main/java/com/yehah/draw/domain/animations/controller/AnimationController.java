@@ -69,14 +69,14 @@ public class AnimationController {
     }
 
     @PostMapping("/friends-animal")
-    public ResponseEntity<FriendResDto> saveFriendsAnimal(@ModelAttribute FriendReqDto friendReqDto) throws JsonMappingException {
+    public ResponseEntity<String> saveFriendsAnimal(@ModelAttribute FriendReqDto friendReqDto) throws JsonMappingException {
         byte[] imageFile;
 
         UUID uuid = UUID.randomUUID();
         // 1. 테두리의 영역 안에 있는 이미지만 추출하기
         imageFile = imageAndGifProcessor.extractBorderImage(uuid.toString(), friendReqDto.getOriginalFile(),
                 friendReqDto.getNewFile());
-        return ResponseEntity.ok(imageAndGifProcessor.uploadsImage(imageFile));
+        return ResponseEntity.ok(imageAndGifProcessor.uploadsImage(imageFile).getImageUrl());
     }
 
 }

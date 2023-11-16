@@ -37,6 +37,7 @@ public class AnimalServiceImpl implements AnimalService {
         return AnimalChoiceResDto.builder()
                 .detail(animal.getDetail())
                 .urlTrace(animal.getUrlTrace())
+                .comparisonValue(animal.getComparisonValue())
                 .build();
     }
 
