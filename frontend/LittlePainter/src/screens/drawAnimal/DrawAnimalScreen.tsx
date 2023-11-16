@@ -139,7 +139,7 @@ export default function DrawAnimalScreen({
     if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
       if (similarityState === 'END') {
         console.log('유사도: ', similarityValue);
-        handleGoColoring();
+        // handleGoColoring();
       }
     } else if (similarityMessage === '유사도 측정에 실패했습니다.') {
       console.log('유사도: 0');

@@ -278,7 +278,7 @@ export default function ColoringAnimalScreen({
     const randomNum = Math.floor(Math.random() * fastcolorData.length);
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
-      dispatch(handleLineThickness(25));
+      dispatch(handleLineThickness(35));
       dispatch(handleDrawColorSelect(fastcolorData[randomNum]));
     });
 

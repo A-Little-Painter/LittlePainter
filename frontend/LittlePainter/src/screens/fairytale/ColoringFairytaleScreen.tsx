@@ -290,7 +290,7 @@ export default function ColoringFairytaleScreen({
     // console.log(fastcolorData[randomNum]);
     const unsubscribe = navigation.addListener('focus', () => {
       // 화면에 들어올 때 실행될 코드
-      dispatch(handleLineThickness(25));
+      dispatch(handleLineThickness(35));
       // dispatch(handleDrawColorSelect('#05FF00'));
       dispatch(handleDrawColorSelect(fastcolorData[randomNum]));
     });
