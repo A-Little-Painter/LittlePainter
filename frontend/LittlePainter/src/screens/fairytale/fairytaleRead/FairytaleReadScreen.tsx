@@ -49,6 +49,7 @@ import {
   handleIsLoop,
   handleSoundEffect,
 } from '../../../redux/slices/music/music';
+import {AppState} from 'react-native';
 type FairytaleReadScreenProps = StackScreenProps<
   RootStackParams,
   'FairytaleReadScreen'
@@ -216,44 +217,90 @@ export default function FairytaleReadScreen({
 
   useEffect(() => {
     if (fairytaleData.length !== 0) {
-      setCharactersInfo(fairytaleData[pageNum - 1].characters);
-      Tts.stop();
-
-      // 자막
-      const lineChunks: string[] =
-        fairytaleData[pageNum - 1].narration.split('\n');
-      const initialLines: string[] = lineChunks.slice(0, 1);
-      setContentLines(initialLines);
-      console.log(initialLines[0]);
-      Tts.speak(initialLines[0]);
-
-      let lineIndex: number = 1;
-
-      const speakNextLine = () => {
-        if (lineIndex < lineChunks.length) {
-          const newLines = lineChunks.slice(lineIndex, lineIndex + 1);
-          setContentLines(newLines);
-          console.log(newLines);
-          Tts.speak(newLines[0]);
-          lineIndex += 1;
-        }
-      };
-
-      const ttsFinishListener = Tts.addEventListener('tts-finish', event => {
-        // TTS 읽기 완료 시 실행될 코드
-        console.log('TTS finished');
-        console.log('TTS finished');
-        speakNextLine();
-      });
-
-      // speakNextLine();
-
-      return () => {
+      try {
+        setCharactersInfo(fairytaleData[pageNum - 1].characters);
         Tts.stop();
-        ttsFinishListener.remove();
-      };
+
+        // 자막 & tts
+        const lineChunks: string[] =
+          fairytaleData[pageNum - 1].narration.split('\n');
+        const initialLines: string[] = lineChunks.slice(0, 1);
+        setContentLines(initialLines);
+        console.log(initialLines[0]);
+        Tts.speak(initialLines[0], {
+          androidParams: {
+            KEY_PARAM_VOLUME: 1,
+          },
+        });
+
+        let lineIndex: number = 1;
+
+        const speakNextLine = () => {
+          if (lineIndex < lineChunks.length) {
+            const newLines = lineChunks.slice(lineIndex, lineIndex + 1);
+            setContentLines(newLines);
+            console.log(newLines);
+            Tts.speak(newLines[0]);
+            lineIndex += 1;
+          }
+        };
+
+        const ttsFinishListener = Tts.addEventListener('tts-finish', event => {
+          // TTS 읽기 완료 시 실행될 코드
+          console.log('TTS finished');
+          console.log('TTS finished');
+          speakNextLine();
+        });
+
+        // speakNextLine();
+
+        return () => {
+          Tts.stop();
+          ttsFinishListener.remove();
+        };
+      } catch {
+        setCharactersInfo(fairytaleData[pageNum - 1].characters);
+        // 자막
+        const lineChunks: string[] =
+          fairytaleData[pageNum - 1].narration.split('\n');
+        const initialLines: string[] = lineChunks.slice(0, 1);
+        setContentLines(initialLines);
+        console.log(initialLines[0]);
+        let lineIndex: number = 1;
+        let interval: NodeJS.Timeout | undefined;
+        interval = setInterval(() => {
+          if (lineIndex < lineChunks.length) {
+            const newLines = lineChunks.slice(lineIndex, lineIndex + 1);
+            setContentLines(newLines);
+            console.log(newLines);
+            lineIndex += 1;
+          } else {
+            clearInterval(interval);
+          }
+        }, 5000);
+        return () => {
+          clearInterval(interval);
+        };
+      }
     }
   }, [pageNum, fairytaleData]);
+
+  useEffect(() => {
+    // AppState를 사용하여 앱 상태 변화 감지
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    ); // 이벤트 리스너 추가
+    return () => {
+      subscription(); // 이벤트 리스너 해제
+    };
+  }, []);
+
+  const handleAppStateChange = nextAppState => {
+    if (nextAppState === 'inactive' || nextAppState === 'background') {
+      Tts.stop();
+    }
+  };
 
   // useEffect(() => {
   //   if (fairytaleData.length !== 0) {
