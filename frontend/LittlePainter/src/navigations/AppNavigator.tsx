@@ -30,11 +30,6 @@ import DrawFairytaleScreen from '../screens/fairytale/DrawFairytaleScreen';
 import ColoringFairytaleScreen from '../screens/fairytale/ColoringFairytaleScreen';
 import FairytaleReadScreen from '../screens/fairytale/fairytaleRead/FairytaleReadScreen';
 
-// 동화그리기 이전. 안씀
-import ReadFairytaleScreen from '../screens/fairytale/Fairtytale1Screen.tsx/ReadFairytaleScreen';
-import FairytaleDrawScreen from '../screens/fairytale/Fairtytale1Screen.tsx/FairytaleDrawScreen';
-import FairytaleColoringScreen from '../screens/fairytale/Fairtytale1Screen.tsx/FairytaleColoringScreen';
-
 //이미지 업로드
 import UploadPicture0Screen from '../screens/uploadPicture/UploadPicture0Screen';
 import UploadPicture1Screen from '../screens/uploadPicture/UploadPicture1Screen';
@@ -52,13 +47,6 @@ import SaveDrawnToLoginModal from '../screens/modals/SaveDrawnToLoginModal';
 //기타
 import LoadScreen from '../screens/load/LoadScreen';
 import ShowScreen from '../screens/show/ShowScreen';
-// 이후 삭제
-
-import MainTmpScreen from '../screens/main/MainTmpScreen';
-import Detail1Screen from '../screens/detail/Detail1Screen';
-import DetailScreen from '../screens/detail/DetailScreen';
-import NodetailScreen from '../screens/detail/NodetailScreen';
-import Detail2Screen from '../screens/detail/Detail2Screen';
 
 // 타입
 import {
@@ -278,19 +266,7 @@ export default function AppNavigator() {
         name="FairytaleReadScreen"
         component={FairytaleReadScreen}
       />
-      {/* 이제 안씀 */}
-      <RootStack.Screen
-        name="ReadFairytaleScreen"
-        component={ReadFairytaleScreen}
-      />
-      <RootStack.Screen
-        name="FairytaleDrawScreen"
-        component={FairytaleDrawScreen}
-      />
-      <RootStack.Screen
-        name="FairytaleColoringScreen"
-        component={FairytaleColoringScreen}
-      />
+
       {/* 이미지 업로드 */}
       <RootStack.Screen
         name="UploadPicture0Screen"
@@ -329,13 +305,6 @@ export default function AppNavigator() {
       {/* 기타 */}
       <RootStack.Screen name="LoadScreen" component={LoadScreen} />
       <RootStack.Screen name="ShowScreen" component={ShowScreen} />
-
-      {/* 이하는 테스트용이었음 */}
-      <RootStack.Screen name="MainTmpScreen" component={MainTmpScreen} />
-      <RootStack.Screen name="DetailScreen" component={DetailScreen} />
-      <RootStack.Screen name="Detail1Screen" component={Detail1Screen} />
-      <RootStack.Screen name="Detail2Screen" component={Detail2Screen} />
-      <RootStack.Screen name="NodetailScreen" component={NodetailScreen} />
     </RootStack.Navigator>
   );
 }
