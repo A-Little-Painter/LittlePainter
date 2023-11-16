@@ -32,6 +32,7 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
   const passwordInputRef = useRef(null);
   const [email, setEmail] = useState('');
   const [password, setPasword] = useState('');
+  const [isLoging, setIsLoging] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
   const havingGifUrl = useSelector(
@@ -43,6 +44,7 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
   };
 
   const loginFonc = async () => {
+    setIsLoging(true);
     try {
       const cleanText = email.replace(/\s/g, '');
       const data = {
@@ -88,6 +90,7 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
     } catch (error) {
       console.error('로그인 오류:', error);
     }
+    setIsLoging(false);
   };
 
   return (
@@ -175,6 +178,7 @@ export default function LoginScreen({navigation}: LoginScreenProps) {
                 </View>
                 <TouchableOpacity
                   style={styles.loginButtonBox}
+                  disabled={isLoging}
                   onPress={() => {
                     loginFonc();
                   }}>

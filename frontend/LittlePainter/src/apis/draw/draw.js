@@ -530,25 +530,7 @@ export const taleAnimations = async (
     return response;
   }
 };
-// // 친구 그림 애니메이션
-// export const friendsAnimations = async (animalType, drawCaptureImageURI) => {
-//   try {
-//     const formData = new FormData();
-//     formData.append('animalType ', animalType);
 
-//     formData.append('originalFile', {
-//       uri: drawCaptureImageURI,
-//       type: 'image/png',
-//       name: 'originalFile.png',
-//     });
-//     const response = await axios.post(`${BASE_URL}/draws/animations/friends`, formData, {headers: {'Content-Type': 'multipart/form-data'}},);
-//     return response;
-//   } catch (error) {
-//     console.log('친구 그림 애니메이션 실패:', error);
-//     const response = error.response;
-//     return response;
-//   }
-// };
 
 //images
 // 내 동물 사진 올리기
@@ -771,6 +753,44 @@ export const FriendAnimations = async (
       `${BASE_URL}/draws/animations/friends`,
       formData,
       {headers},
+    );
+    return response;
+  } catch (error) {
+    console.log('동물 애니메이션 실패:', error);
+    const response = error.response;
+    return response;
+  }
+};
+
+// 친구의 동물 사진 누끼따기
+export const pictureRemoveBg = async (
+  // roomId,
+  // animalType,
+  captureBorderImagePath,
+  drawCaptureImageURI,
+) => {
+  try {
+    const formData = new FormData();
+    // formData.append('roomId', roomId);
+    // formData.append('animalType', animalType);
+
+    formData.append('originalFile', {
+      uri: captureBorderImagePath,
+      type: 'image/png',
+      name: 'originalFile.png',
+    });
+    formData.append('newFile', {
+      uri: drawCaptureImageURI,
+      type: 'image/png',
+      name: 'newFile.png',
+    });
+
+    console.log(formData._parts);
+
+    const response = await axios.post(
+      `${BASE_URL}/draws/animations/friends-animal`,
+      formData,
+      {headers: {'Content-Type': 'multipart/form-data'}},
     );
     return response;
   } catch (error) {

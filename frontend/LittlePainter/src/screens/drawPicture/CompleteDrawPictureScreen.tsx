@@ -75,7 +75,8 @@ export default function CompleteDrawPictureScreen({
       const response = await friendsPictureSaveToMypage(
         pictureId,
         completeDrawUri,
-        animatedGif,
+        // animatedGif,
+        null,
       );
       if (response.status === 201) {
         console.log('완성된 사진그리기 마이페이지에 저장 성공', response.data);
@@ -90,9 +91,17 @@ export default function CompleteDrawPictureScreen({
           '완성된 사진그리기 마이페이지에 저장 실패',
           response.status,
         );
+        ToastAndroid.show(
+          '내가 그린 그림을 저장하지 못했어요.',
+          ToastAndroid.SHORT,
+        );
       }
     } catch (error) {
       console.log('완성된 사진그리기 마이페이지에 저장 실패', error);
+      ToastAndroid.show(
+        '내가 그린 그림을 저장하지 못했어요.',
+        ToastAndroid.SHORT,
+      );
     }
   };
   useEffect(() => {
@@ -205,9 +214,9 @@ export default function CompleteDrawPictureScreen({
             <TouchableOpacity
               style={[
                 styles.doneButton,
-                {backgroundColor: animatedGif === '' ? 'gray' : '#A8CEFF'},
+                // {backgroundColor: animatedGif === '' ? 'gray' : '#A8CEFF'},
               ]}
-              disabled={animatedGif === ''}
+              // disabled={animatedGif === ''}
               onPress={() => {
                 dispatch(handleSoundEffect('btn'));
                 handlePressSaving();

@@ -73,7 +73,7 @@ export default function DrawAnimalScreen({
   const [socketLinked, setSocketLinked] = useState<boolean>(false);
   const [similarityMessage, setSimilarityMessage] = useState<string>('');
   const [similarityState, setSimilarityState] = useState<string>('');
-  const [similarityValue, setSimilarityValue] = useState<string>('');
+  const [similarityValue, setSimilarityValue] = useState<number>(0);
   useEffect(() => {
     let newClient: CompatClient;
 
@@ -137,9 +137,10 @@ export default function DrawAnimalScreen({
   }, [client]);
   useEffect(() => {
     if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
-      if (similarityState === 'END') {
+      // if (similarityState === 'END') {
+      if (similarityValue >= similarityReferenceValue * 0.9){
         console.log('유사도: ', similarityValue);
-        // handleGoColoring();
+        handleGoColoring();
       }
     } else if (similarityMessage === '유사도 측정에 실패했습니다.') {
       console.log('유사도: 0');
@@ -166,6 +167,8 @@ export default function DrawAnimalScreen({
   const [captureBorderImagePath, setCaptureBorderImagePath] =
     useState<string>('');
   const [canDrawCapture, setCanDrawCapture] = useState<boolean>(false);
+  const [similarityReferenceValue, setSimilarityReferenceValue] = useState<number>(1);
+
   // 로딩 변수
   const [isLoading, setIsLoading] = useState<boolean>(true);
   // 뒤로가기 변수
@@ -209,6 +212,8 @@ export default function DrawAnimalScreen({
         setIsLoading(false);
         setAnimalBorderURI(response.data.urlTrace);
         setAnimalExplanation(response.data.detail);
+        console.log('기준값', response.data.comparisonValue);
+        setSimilarityReferenceValue(response.data.comparisonValue);
         // await handleOriginCapture();
       } else {
         console.log('선택 동물 테두리 가져오기 실패', response.status);
