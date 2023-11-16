@@ -3,6 +3,7 @@ package com.yehah.draw.global.Processor;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yehah.draw.domain.animations.dto.response.AnimationResDto;
+import com.yehah.draw.domain.animations.dto.response.FriendResDto;
 import com.yehah.draw.domain.animations.exception.AnimationBorderExtractionException;
 import com.yehah.draw.domain.animations.exception.AnimationChangeException;
 import com.yehah.draw.domain.animations.exception.AnimationDataSaveException;
@@ -134,6 +135,31 @@ public class ImageAndGifProcessor {
             String json = objectMapper.writeValueAsString(communicationProcessor.postMultipartMethod(bodyData, imagePath+"/comm/temp", Object.class));
             log.info("Data : {}", json);
             return objectMapper.readValue(json, AnimationResDto.class);
+        } catch(JsonMappingException e){
+            e.printStackTrace();
+            throw new JsonMappingException("데이터 변환 오류");
+        } catch(Exception e){
+            throw new AnimationDataSaveException("S3에 이미지를 저장할 수 없습니다.");
+        }
+    }
+
+
+    public FriendResDto uploadsImage(byte[] imageFile) throws JsonMappingException {
+        MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
+        bodyData.add("imageFile", new ByteArrayResource(imageFile){
+            @Override
+            public String getFilename() throws IllegalStateException {
+                return "imageFile.jpg";
+            }
+        });
+
+        bodyData.add("gifFile", null);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try{
+            String json = objectMapper.writeValueAsString(communicationProcessor.postMultipartMethod(bodyData, imagePath+"/comm/temp", Object.class));
+            log.info("Data : {}", json);
+            return objectMapper.readValue(json, FriendResDto.class);
         } catch(JsonMappingException e){
             e.printStackTrace();
             throw new JsonMappingException("데이터 변환 오류");

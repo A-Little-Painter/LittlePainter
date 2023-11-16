@@ -37,4 +37,7 @@ public class Animal {
 
 	@Column(length = 200)
 	private String urlSound; // 동물의 울음소리
+
+	@Column
+	private double comparisonValue;
 }

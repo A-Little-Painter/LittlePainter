@@ -3,6 +3,8 @@ package com.yehah.draw.domain.animations.controller;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.yehah.draw.domain.animal.service.AnimalService;
 import com.yehah.draw.domain.animations.dto.request.AnimationFriendReqDto;
+import com.yehah.draw.domain.animations.dto.request.FriendReqDto;
+import com.yehah.draw.domain.animations.dto.response.FriendResDto;
 import com.yehah.draw.global.Processor.ImageAndGifProcessor;
 import com.yehah.draw.domain.animations.dto.request.AnimationAnimalReqDto;
 import com.yehah.draw.domain.animations.dto.request.AnimationTaleReqDto;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -28,7 +31,6 @@ public class AnimationController {
 
     private final AnimalService animalService;
 
-    // NOTE : animals와 friendsAnimal 모두 받아온다.
     @PostMapping("/animals")
     public ResponseEntity<AnimationResDto> sendAnimatedAnimal(@ModelAttribute AnimationAnimalReqDto animationAnimalReqDto) throws IOException {
         byte[] imageFile, gifFile;
@@ -64,6 +66,17 @@ public class AnimationController {
                 animationFriendReqDto.getNewFile());
         gifFile = imageAndGifProcessor.friendConvertToGif(imageFile);
         return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(imageFile, gifFile));
+    }
+
+    @PostMapping("/friends-animal")
+    public ResponseEntity<FriendResDto> saveFriendsAnimal(@ModelAttribute FriendReqDto friendReqDto) throws JsonMappingException {
+        byte[] imageFile;
+
+        UUID uuid = UUID.randomUUID();
+        // 1. 테두리의 영역 안에 있는 이미지만 추출하기
+        imageFile = imageAndGifProcessor.extractBorderImage(uuid.toString(), friendReqDto.getOriginalFile(),
+                friendReqDto.getNewFile());
+        return ResponseEntity.ok(imageAndGifProcessor.uploadsImage(imageFile));
     }
 
 }
