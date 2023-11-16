@@ -75,18 +75,18 @@ export default function CompleteDrawFriendScreen({
       console.log(animalId);
       console.log(completeDrawUri);
       console.log(originDrawUri);
-      let sendUri = animatedGif;
-      if (animatedGif === '') {
-        sendUri = originDrawUri;
-      }
-      console.log(sendUri);
+      // let sendUri = animatedGif;
+      // if (animatedGif === '') {
+      //   sendUri = originDrawUri;
+      // }
+      // console.log(sendUri);
       const response = await friendSaveToMypage(
         animalId,
         completeDrawUri,
-        sendUri,
+        animatedGif,
       );
       if (response.status === 201) {
-        console.log('완성된 동물 마이페이지에 저장 성공', response.data);
+        console.log('완성된 친구 마이페이지에 저장 성공', response.data);
         ToastAndroid.show(
           '내가 그린 그림이 저장되었어요🐇',
           ToastAndroid.SHORT,
@@ -94,10 +94,10 @@ export default function CompleteDrawFriendScreen({
         setIsSavedImage(true);
         dispatch(handleHavingGifUrl(false));
       } else {
-        console.log('완성된 동물 마이페이지에 저장 실패', response.status);
+        console.log('완성된 친구 마이페이지에 저장 실패', response.status);
       }
     } catch (error) {
-      console.log('완성된 동물 마이페이지에 저장 실패', error);
+      console.log('완성된 친구 마이페이지에 저장 실패', error);
     }
   };
   useEffect(() => {

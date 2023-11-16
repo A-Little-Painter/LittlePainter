@@ -2,6 +2,7 @@
 import {useEffect, useRef} from 'react';
 import {useAppSelector} from '../../redux/hooks';
 var Sound = require('react-native-sound');
+import {AppState} from 'react-native';
 Sound.setCategory('Playback');
 
 const BackgroundMusic = () => {
@@ -15,6 +16,26 @@ const BackgroundMusic = () => {
   }, [isLoop]);
   // useRef를 사용하여 whoosh를 참조
   const whooshRef = useRef(null);
+
+  //////////// 앱닫으면 bgm 종료.
+  useEffect(() => {
+    // AppState를 사용하여 앱 상태 변화 감지
+    const subscription = AppState.addEventListener('change', handleAppStateChange); // 이벤트 리스너 추가
+    return () => {
+      subscription(); // 이벤트 리스너 해제
+    };
+  }, []);
+
+  const handleAppStateChange = (nextAppState) => {
+    if (nextAppState === 'inactive' || nextAppState === 'background') {
+      if (whooshRef.current) {
+        whooshRef.current.stop(() => {
+          whooshRef.current.release();
+        });
+      }
+    }
+  };
+  ////////////////
 
   useEffect(() => {
     // whoosh를 초기화

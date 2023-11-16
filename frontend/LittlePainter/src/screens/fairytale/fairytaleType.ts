@@ -23,6 +23,7 @@ export interface CharactersInfoType {
 export interface DrawFairytaleScreenType {
   charactersInfo: FairyTaleInfoType['characters'];
   fairytaleTitle: string;
+  characterPageId: number;
 }
 
 export interface TaleListInquiryType {

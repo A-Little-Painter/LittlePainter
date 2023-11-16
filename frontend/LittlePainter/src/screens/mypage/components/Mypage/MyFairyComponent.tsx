@@ -46,14 +46,16 @@ const MyAnimalComponents: React.FC<MyAnimalComponentsProps> = ({}) => {
                 <Image
                   style={styles.pic}
                   resizeMode="contain"
-                  source={{uri: item.urlGif}}
+                  source={{uri: item.urlCover}}
                 />
               </TouchableOpacity>
-              <Text style={styles.picname}>{item.id}</Text>
+              <Text style={styles.picname}>
+                {item.title} {item.taleId}
+              </Text>
             </View>
           );
         }}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.taleId.toString()}
         numColumns={3}
       />
     </View>

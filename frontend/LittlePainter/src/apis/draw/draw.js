@@ -700,23 +700,32 @@ export const friendCheckSimilarity = async (
 // 완성된 친구 마이페이지에 저장
 export const friendSaveToMypage = async (workId, completeDrawUri, gifUrl) => {
   try {
-    const accessToken = await loadATokenFromKeychain();
-    const formData = new FormData();
-    formData.append('workId', workId);
-    formData.append('imageFile', {
-      uri: completeDrawUri,
-      type: 'image/png',
-      name: 'originalFile.png',
-    });
-    formData.append('gifUrl', JSON.stringify(gifUrl));
+    // const accessToken = await loadATokenFromKeychain();
+    // const formData = new FormData();
+    // formData.append('workId', workId);
+    // formData.append('imageFile', {
+    //   uri: completeDrawUri,
+    //   type: 'image/png',
+    //   name: 'originalFile.png',
+    // });
+    // formData.append('gifUrl', JSON.stringify(gifUrl));
 
-    console.log(formData._parts);
+    // console.log(formData._parts);
+    console.log(workId);
+    console.log(completeDrawUri);
+    console.log(gifUrl);
+    const accessToken = await loadATokenFromKeychain();
+    const formData = {
+      workId: workId,
+      imageUrl: completeDrawUri,
+      gifUrl: gifUrl,
+    };
     const response = await axios.post(
       `${BASE_URL}/draws/child_work/animal`,
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          // 'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${accessToken}`,
         },
       },

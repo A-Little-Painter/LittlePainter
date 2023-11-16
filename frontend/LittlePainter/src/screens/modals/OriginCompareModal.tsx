@@ -8,6 +8,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {RootState} from '../../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
@@ -26,7 +27,10 @@ const windowHeight = Dimensions.get('window').height;
 const OriginCompareModal = (props: OriginCompareModalProps) => {
   const dispatch = useDispatch();
   // const [animalBorderURI] = useState<string>(props.animalBorderURI);
-  const [animalExplanation] = useState<string>(props.animalExplanation);
+  // const [animalExplanation] = useState<string>(props.animalExplanation);
+  const [animalExplanation] = useState<string>(
+    props.animalExplanation.replace(/\. /g, '.\n').replace(/! /g, '!\n'),
+  );
   const [animalType] = useState<string>(props.animalType);
   const [originImage] = useState<string>(props.originImage);
   // 선 굵기 모달을 위한 라인
@@ -78,7 +82,11 @@ const OriginCompareModal = (props: OriginCompareModalProps) => {
             </View>
             {/* 하단 */}
             <View style={styles.modalBottom}>
-              <Text style={styles.contentText}>{animalExplanation}</Text>
+              <ScrollView>
+                <View onStartShouldSetResponder={() => true}>
+                  <Text style={styles.contentText}>{animalExplanation}</Text>
+                </View>
+              </ScrollView>
             </View>
           </Pressable>
         </Pressable>
@@ -142,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.03,
   },
   modalMiddle: {
-    flex: 0.7,
+    flex: 0.65,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -152,12 +160,12 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.7 * 0.8,
   },
   modalBottom: {
-    flex: 0.2,
+    flex: 0.25,
     alignItems: 'center',
   },
   contentText: {
     flexWrap: 'wrap',
-    fontSize: windowWidth * 0.02,
+    fontSize: windowWidth * 0.03,
     textAlign: 'center',
     color: 'black',
   },

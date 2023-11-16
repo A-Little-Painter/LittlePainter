@@ -425,6 +425,7 @@ export default function ColoringFairytaleScreen({
               style={[styles.colorCircle]}
               onPress={() => {
                 dispatch(handleSoundEffect('btn'));
+                setIsSelectColorFix(true);
                 dispatch(handleisDrawColorPaletteModalVisible(true));
               }}>
               <Image
