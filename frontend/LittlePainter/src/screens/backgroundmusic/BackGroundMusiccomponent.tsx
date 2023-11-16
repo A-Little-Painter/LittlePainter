@@ -42,6 +42,8 @@ const BackgroundMusic = () => {
       // 무한 루프 설정
       whooshRef.current.setNumberOfLoops(isLoop);
 
+      whooshRef.current.setVolume(volume);
+
       // 0.01초 후에 새로운 음악을 재생
       setTimeout(() => {
         whooshRef.current.play((success: any) => {
