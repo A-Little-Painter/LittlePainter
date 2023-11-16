@@ -97,7 +97,7 @@ if __name__ == '__main__':
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
         elif ran_num < 0.375:
             motion_cfg_fn = resource_filename(__name__, 'config/motion/jesse_dance.yaml')
-            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/mixamo_fff.yaml.yaml')
+            retarget_cfg_fn = resource_filename(__name__, 'config/retarget/mixamo_fff.yaml')
         elif ran_num < 0.500:
             motion_cfg_fn = resource_filename(__name__, '../result/friends/motion_cfg_ref1.yaml')
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine.yaml')
