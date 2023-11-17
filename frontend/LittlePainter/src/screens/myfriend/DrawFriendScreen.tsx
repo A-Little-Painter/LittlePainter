@@ -526,7 +526,8 @@ export default function DrawFriendScreen({
               style={styles.animalBorderImageBackground}
               imageStyle={styles.backgroundImageOpacity}
               resizeMode="contain">
-              {captureBorderImagePath !== '' && socketLinked ? (
+              {/* {captureBorderImagePath !== '' && socketLinked ? ( */}
+              {captureBorderImagePath !== '' ? (
                 <ViewShot
                   ref={drawCaptureRef}
                   options={{
