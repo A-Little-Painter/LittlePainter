@@ -548,7 +548,8 @@ export default function DrawPictureScreen({
               style={styles.pictureBorderImageBackground}
               imageStyle={styles.backgroundImageOpacity}
               resizeMode="contain">
-              {captureBorderImagePath !== '' && socketLinked ? (
+              {/* {captureBorderImagePath !== '' && socketLinked ? ( */}
+              {captureBorderImagePath !== '' ? (
                 <ViewShot
                   ref={drawCaptureRef}
                   options={{

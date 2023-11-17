@@ -138,7 +138,9 @@ export default function DrawAnimalScreen({
   useEffect(() => {
     if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
       // if (similarityState === 'END') {
-      if (similarityValue >= similarityReferenceValue * 0.9){
+      // if (similarityValue >= similarityReferenceValue * 0.9){
+      if (similarityValue >= similarityReferenceValue){
+        console.log('기준유사도: ', similarityReferenceValue);
         console.log('유사도: ', similarityValue);
         handleGoColoring();
       }
@@ -535,7 +537,8 @@ export default function DrawAnimalScreen({
               style={styles.animalBorderImageBackground}
               imageStyle={styles.backgroundImageOpacity}
               resizeMode="contain">
-              {captureBorderImagePath !== '' && socketLinked ? (
+              {/* {captureBorderImagePath !== '' && socketLinked ? ( */}
+              {captureBorderImagePath !== '' ? (
                 <ViewShot
                   ref={drawCaptureRef}
                   options={{

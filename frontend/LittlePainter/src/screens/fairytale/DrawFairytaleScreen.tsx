@@ -527,7 +527,8 @@ export default function DrawFairytaleScreen({
               imageStyle={styles.backgroundImageOpacity}
               resizeMode="contain">
               {/* <View style={{position:'absolute', width: 500, height: 500, backgroundColor:'red'}} /> */}
-              {captureBorderImagePath !== '' && socketLinked ? (
+              {/* {captureBorderImagePath !== '' && socketLinked ? ( */}
+              {captureBorderImagePath !== '' ? (
                 <ViewShot
                   ref={drawCaptureRef}
                   options={{
