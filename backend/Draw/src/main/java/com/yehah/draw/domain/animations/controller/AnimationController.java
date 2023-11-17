@@ -31,6 +31,7 @@ public class AnimationController {
 
     private final AnimalService animalService;
 
+    // NOTE : 동물 그리기
     @PostMapping("/animals")
     public ResponseEntity<AnimationResDto> sendAnimatedAnimal(@ModelAttribute AnimationAnimalReqDto animationAnimalReqDto) throws IOException {
         byte[] imageFile, gifFile;
@@ -47,6 +48,7 @@ public class AnimationController {
         return ResponseEntity.ok(animationResDto);
     }
 
+    // NOTE : 동화 그리기
     @PostMapping("/tales")
     public ResponseEntity<AnimationResDto> sendAnimatedTale(@ModelAttribute AnimationTaleReqDto animationTaleReqDto) throws JsonMappingException {
         byte[] imageFile, gifFile;
@@ -58,6 +60,7 @@ public class AnimationController {
         return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(imageFile, gifFile));
     }
 
+    // NOTE : 내 친구 그리기
     @PostMapping("/friends")
     public ResponseEntity<AnimationResDto> sendAnimatedFriends(@ModelAttribute AnimationFriendReqDto animationFriendReqDto) throws JsonMappingException {
         byte[] imageFile, gifFile;
@@ -68,6 +71,7 @@ public class AnimationController {
         return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(imageFile, gifFile));
     }
 
+    // NOTE : 내 친구의 동물 그리기
     @PostMapping("/friends-animal")
     public ResponseEntity<String> saveFriendsAnimal(@ModelAttribute FriendReqDto friendReqDto) throws JsonMappingException {
         byte[] imageFile;

@@ -45,7 +45,7 @@ public class SimilarCheckProcessor {
         try{
             log.info("-----확인-----> {}", similarityPath );
             double value = Double.parseDouble(String.valueOf(communicationProcessor.postMultipartMethod(bodyData, similarityPath+"/similarcheck", String.class)));
-            log.info("-----유사도-----> {}", value);
+            log.info("-----유사도-----> {}, {}", value, comparisonValue);
 
             // NOTE : STOMP 연결하기
             SimilarMessageResponse similarMessageResponse = SimilarMessageResponse.builder()

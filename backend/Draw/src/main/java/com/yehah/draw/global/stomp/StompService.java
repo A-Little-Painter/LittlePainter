@@ -4,9 +4,11 @@ import com.yehah.draw.domain.animal.entity.SimilarState;
 import com.yehah.draw.global.stomp.dto.MessageResponse;
 import com.yehah.draw.global.stomp.dto.SimilarMessageResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StompService {
@@ -15,6 +17,7 @@ public class StompService {
 
     // NOTE : STOMP 성공 응답 전송하기
     public void stompSuccessRes(String responseUrl, SimilarState similarState, SimilarMessageResponse similarMessageResponse){
+        log.info("similarState : {}", similarState);
         similarMessageResponse.setSimilarState(similarState);
         messagingTemplate.convertAndSend(responseUrl, similarMessageResponse);
     }
