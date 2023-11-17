@@ -37,7 +37,7 @@ public class TaleController {
 	@PostMapping("/similarcheck")
 	public ResponseEntity<Void> taleSimilarCheck(@ModelAttribute TaleSimilarReqDto taleSimilarReqDto) throws IOException {
 		similarCheckProcessor.similarCheck(taleSimilarReqDto.getRoomId(), taleSimilarReqDto.getOriginalFile(), taleSimilarReqDto.getNewFile()
-				,1, AnimalType.tale);
+				,0.23, AnimalType.tale);
 		return ResponseEntity.ok().build();
 	}
 }
