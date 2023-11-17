@@ -72,13 +72,13 @@ def detect_objects():
         border_only = img_to_file(border_only, "trace_")
 
         # 이미지 데이터를 S3에 업로드합니다.
-        rembg_filename = f"friends-animal/rembg/{unique_filename_base}_rembg{file_extension}"
+        rembg_filename = f"animal/rembg/{unique_filename_base}_rembg{file_extension}"
 
         s3_client.upload_file(rembg_with_border, S3_BUCKET, rembg_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
 
         rembg_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{rembg_filename}"
 
-        border_filename = f"friends-animal/trace/{unique_filename_base}_trace{file_extension}"
+        border_filename = f"animal/trace/{unique_filename_base}_trace{file_extension}"
 
         s3_client.upload_file(border_only, S3_BUCKET, border_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
 
