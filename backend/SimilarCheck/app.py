@@ -60,22 +60,16 @@ def borderExtractionTest(roomId, originalPath, newPath):
     contours1, _ = cv2.findContours(cv2.inRange(originalImage, (0, 0, 0), (30, 30, 30)), cv2.RETR_EXTERNAL,
                                     cv2.CHAIN_APPROX_SIMPLE)
 
-    # # [newImage]에서 [originalImage]의 테두리를 기반으로 마스크 생성
-    # mask = np.zeros(newImage.shape, dtype=np.uint8)
-    # cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
-
     # 팽창을 위한 커널 생성
-    kernel = np.ones((25, 25), np.uint8)  # 팽창을 위한 5x5 크기의 커널, 크기는 상황에 따라 조절 가능
+    kernel = np.ones((5, 5), np.uint8)  # 팽창을 위한 5x5 크기의 커널, 크기는 상황에 따라 조절 가능
 
     # contour 기반으로 마스크 생성 후 팽창 적용
     mask = np.zeros(newImage.shape, dtype=np.uint8)
     cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
-    mask = cv2.dilate(mask, kernel, iterations=1)  # iterations 값은 팽창의 강도를 결정
+    mask = cv2.dilate(mask, kernel, iterations=3)  # iterations 값은 팽창의 강도를 결정
 
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
     result_image = cv2.bitwise_and(newImage, mask)
-
-    # cv2.imwrite('./borderImages/' + roomId + 'output2.jpg', result_image)
 
     # mask 영역의 검은색 부분이 있는 위치를 찾습니다.
     black_pixels_in_mask = (mask == [0, 0, 0]).all(axis=2)
@@ -109,9 +103,27 @@ def colorChangeToBlack(originalPath):
     # 이미지 저장
     new_image.save(originalPath)
 
+def removeFile():
+    folder_path = './borderImages/'  # 삭제하려는 폴더 경로
+    file_to_exclude = 'borderImageData'  # 제외할 파일명 또는 패턴
+
+    # 폴더 내 파일들을 리스트업하고 특정 파일을 제외하고 삭제
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        try:
+            if os.path.isfile(file_path) and file_to_exclude not in filename:
+                os.remove(file_path)
+                print(f'{file_path} 파일이 삭제되었습니다.')
+        except Exception as e:
+            print(f'파일 삭제 중 에러 발생: {e}')
 
 @app.route('/border-extraction', methods=['POST'])
 def borderExtraction():
+    #이전에 있던 파일 삭제하기
+    removeFile()
+    print("come")
+
+    # JSON 데이터 파싱
     roomId = request.form.get('roomId')
     originalFile = request.files['originalFile']
     newFile = request.files['newFile']
@@ -139,7 +151,6 @@ def borderExtraction():
 
 @app.route('/similarcheck', methods=['POST'])
 def similarityCheck():
-
     # JSON 데이터 파싱
     roomId = request.form.get("roomId")
     originalFile = request.files['originalFile']
