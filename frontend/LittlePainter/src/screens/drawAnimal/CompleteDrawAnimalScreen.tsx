@@ -247,7 +247,9 @@ export default function CompleteDrawAnimalScreen({
         <TouchableOpacity
           style={[styles.middleContainer]}
           onPress={() => {
-            lore();
+            if (isLore !== null && isLore !== undefined) {
+              lore();
+            }
           }}>
           <ViewShot
             // style={[styles.middleContainer, {backgroundColor: 'white'}]}

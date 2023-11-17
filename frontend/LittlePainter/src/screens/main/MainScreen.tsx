@@ -39,11 +39,13 @@ export default function MainScreen({navigation}: MainScreenProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
   const [animalVisible, setAnimalVisible] = useState(false);
-  const [fairyVisible, setFairyVisible] = useState(false);
+  // const [fairyVisible, setFairyVisible] = useState(false);
   const [friendVisible, setFriendVisible] = useState(false);
-  const [pictureVisible, setPictureVisible] = useState(false);
-  const [uploadVisible, setUploadVisible] = useState(false);
+  // const [pictureVisible, setPictureVisible] = useState(false);
+  // const [uploadVisible, setUploadVisible] = useState(false);
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
+  4;
+  4;
   const isLogin = useAppSelector(state => state.user.isLogin);
   const selectName = useAppSelector(state => state.user.selectName);
   const selectImage = useAppSelector(state => state.user.selectImage);
@@ -310,7 +312,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                     />
                     <View style={styles.modalbtns}>
                       <Pressable
-                        style={[styles.Mbutton2]}
+                        style={[styles.Mbutton3]}
                         onPress={() => goScreen('SelectAnimalScreen')}>
                         <Text style={styles.Mbuttontext}>해보기</Text>
                       </Pressable>
@@ -363,7 +365,11 @@ export default function MainScreen({navigation}: MainScreenProps) {
                     source={require('../../assets/images/main-picture.png')}
                   />
                 </View>
-                <TouchableOpacity style={styles.cardFrame3}>
+                <TouchableOpacity
+                  style={styles.cardFrame3}
+                  onPress={() => {
+                    setFriendVisible(true);
+                  }}>
                   <View style={styles.playButtonCircle}>
                     <Text>
                       <IconFontAwesome5
@@ -396,6 +402,42 @@ export default function MainScreen({navigation}: MainScreenProps) {
                         style={[styles.Mbutton2]}
                         onPress={() => goLogin()}>
                         <Text style={styles.Mbuttontext}>로그인 하기</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                </Pressable>
+              </Modal>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={friendVisible}
+                onRequestClose={() => {
+                  setFriendVisible(!friendVisible);
+                }}>
+                <Pressable
+                  style={styles.centeredView}
+                  onPress={() => setFriendVisible(!friendVisible)}>
+                  <View style={styles.modalView1}>
+                    <Video
+                      style={{
+                        height: windowHeight * 0.09 * 5,
+                        width: windowHeight * 0.16 * 5,
+                      }}
+                      source={{
+                        uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/tutorial/human-tutorial.mp4',
+                      }}
+                      controls={false}
+                      resizeMode="cover"
+                      repeat={true}
+                    />
+                    <View style={styles.modalbtns}>
+                      <Pressable
+                        style={[styles.Mbutton2]}
+                        onPress={() => {
+                          goSelcetFriend();
+                          setFriendVisible(!friendVisible);
+                        }}>
+                        <Text style={styles.Mbuttontext}>해보기</Text>
                       </Pressable>
                     </View>
                   </View>
@@ -779,6 +821,14 @@ const styles = StyleSheet.create({
   },
   Mbutton2: {
     backgroundColor: '#FE7F22',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: windowWidth * 0.15,
+    height: windowWidth * 0.05,
+    borderRadius: windowWidth * 0.005,
+  },
+  Mbutton3: {
+    backgroundColor: '#5E9FF9',
     justifyContent: 'center',
     alignItems: 'center',
     width: windowWidth * 0.15,
