@@ -49,11 +49,11 @@ export const animalBorder = async animalId => {
 // 선택 동물 유사도 검사
 // { MultipartFile 원본테두리이미지, MultipartFile 사용자가그린테두리이미지 }
 
-// export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
 export const animalCheckSimilarity = async (
   roomId,
   originBorderFileUri,
   compareBorderFileUri,
+  comparisonValue,
 ) => {
   try {
     const formData = new FormData();
@@ -71,6 +71,8 @@ export const animalCheckSimilarity = async (
       type: 'image/png',
       name: 'newFile.png',
     });
+
+    formData.append('comparisonValue', comparisonValue);
     const response = await axios.post(
       `${BASE_URL}/draws/animals/similarcheck`,
       formData,
@@ -643,7 +645,6 @@ export const FriendBorder = async Id => {
 // 선택 친구 유사도 검사
 // { MultipartFile 원본테두리이미지, MultipartFile 사용자가그린테두리이미지 }
 
-// export const animalCheckSimilarity = async (sessionId, originBorderFileUri, compareBorderFileUri,) => {
 export const friendCheckSimilarity = async (
   roomId,
   originBorderFileUri,

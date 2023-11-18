@@ -81,6 +81,7 @@ export default function DrawAnimalScreen({
       newClient = Stomp.over(
         () =>
           new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'),
+          // new SockJS('https://k9d106.p.ssafy.io:8301/ws/draws/comm-similarity'),
       );
 
       newClient.onConnect = frame => {
@@ -138,7 +139,6 @@ export default function DrawAnimalScreen({
   useEffect(() => {
     if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
       // if (similarityState === 'END') {
-      // if (similarityValue >= similarityReferenceValue * 0.9){
       if (similarityValue >= similarityReferenceValue){
         console.log('기준유사도: ', similarityReferenceValue);
         console.log('유사도: ', similarityValue);
@@ -233,6 +233,7 @@ export default function DrawAnimalScreen({
         roomId,
         captureBorderImagePath,
         compareImagePath,
+        similarityReferenceValue,
       );
       if (response.status === 200 || response.status === 404) {
         console.log('동물 그리기 유사도 체크 성공', response.data);
