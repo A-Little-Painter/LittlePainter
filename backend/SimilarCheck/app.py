@@ -71,11 +71,23 @@ def borderExtractionTest(roomId, originalPath, newPath):
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
     result_image = cv2.bitwise_and(newImage, mask)
 
-    # mask 영역의 검은색 부분이 있는 위치를 찾습니다.
+    # mask 영역의 검은색 부분이 있는 위치를 찾는다.
     black_pixels_in_mask = (mask == [0, 0, 0]).all(axis=2)
 
     # result_image에서 mask 영역의 검은색 부분에 해당하는 영역에서만 픽셀을 하얀색으로 변경
     result_image[black_pixels_in_mask] = [255, 255, 255]
+
+    height, width = result_image.shape[:2]
+    if width > height:
+        # 이미지를 세로 길이에 맞게 자르기
+        start_col = (width - height) // 2
+        end_col = start_col + height
+        result_image = result_image[:, start_col:end_col]
+    elif height > width:
+        # 이미지를 가로 길이에 맞게 자르기
+        start_row = (height - width) // 2
+        end_row = start_row + width
+        result_image = result_image[start_row:end_row, :]
 
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/'+roomId+'output.jpg', result_image)
@@ -147,7 +159,6 @@ def borderExtraction():
     os.remove(newPath)
 
     return send_file('./borderImages/'+roomId+'output.jpg', as_attachment=True)
-
 
 @app.route('/similarcheck', methods=['POST'])
 def similarityCheck():
