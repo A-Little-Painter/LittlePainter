@@ -22,6 +22,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     //   http://localhost:8300/draws/comm-similarity
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
+        log.info(webSocketUrl);
         registry.addEndpoint("/ws/draws/comm-similarity")
                 .setAllowedOrigins(webSocketUrl).withSockJS();
     }
