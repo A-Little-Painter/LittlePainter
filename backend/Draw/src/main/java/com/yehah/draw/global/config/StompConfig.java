@@ -23,7 +23,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
         log.info(webSocketUrl);
-        registry.addEndpoint("/ws/draws/comm-similarity")
+        registry.addEndpoint("/ws")
                 .setAllowedOrigins("*").withSockJS();
     }
 
