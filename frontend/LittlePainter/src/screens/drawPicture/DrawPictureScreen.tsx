@@ -83,7 +83,8 @@ export default function DrawPictureScreen({
     const connectAndSetupListeners = () => {
       newClient = Stomp.over(
         () =>
-          new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'),
+          // new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'),
+          new SockJS('https://k9d106.p.ssafy.io:8301/ws/draws/comm-similarity'),
       );
 
       newClient.onConnect = frame => {

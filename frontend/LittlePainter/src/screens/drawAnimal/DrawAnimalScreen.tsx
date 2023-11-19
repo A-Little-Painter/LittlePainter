@@ -80,8 +80,8 @@ export default function DrawAnimalScreen({
     const connectAndSetupListeners = () => {
       newClient = Stomp.over(
         () =>
-          new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'),
-          // new SockJS('https://k9d106.p.ssafy.io:8301/ws/draws/comm-similarity'),
+          // new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'),
+          new SockJS('https://k9d106.p.ssafy.io:8301/ws/draws/comm-similarity'),
       );
 
       newClient.onConnect = frame => {
@@ -139,7 +139,7 @@ export default function DrawAnimalScreen({
   useEffect(() => {
     if (similarityMessage === '유사도 연결에 성공하셨습니다.') {
       // if (similarityState === 'END') {
-      if (similarityValue >= similarityReferenceValue){
+      if (similarityValue >= similarityReferenceValue) {
         console.log('기준유사도: ', similarityReferenceValue);
         console.log('유사도: ', similarityValue);
         handleGoColoring();
@@ -169,7 +169,8 @@ export default function DrawAnimalScreen({
   const [captureBorderImagePath, setCaptureBorderImagePath] =
     useState<string>('');
   const [canDrawCapture, setCanDrawCapture] = useState<boolean>(false);
-  const [similarityReferenceValue, setSimilarityReferenceValue] = useState<number>(1);
+  const [similarityReferenceValue, setSimilarityReferenceValue] =
+    useState<number>(1);
 
   // 로딩 변수
   const [isLoading, setIsLoading] = useState<boolean>(true);
