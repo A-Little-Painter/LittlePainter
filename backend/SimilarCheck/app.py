@@ -65,11 +65,17 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # contour 기반으로 마스크 생성 후 팽창 적용
     mask = np.zeros(newImage.shape, dtype=np.uint8)
+
+
     cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
+
+
     mask = cv2.dilate(mask, kernel, iterations=3)  # iterations 값은 팽창의 강도를 결정
+
 
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
     result_image = cv2.bitwise_and(newImage, mask)
+
 
     # mask 영역의 검은색 부분이 있는 위치를 찾는다.
     black_pixels_in_mask = (mask == [0, 0, 0]).all(axis=2)
@@ -81,23 +87,23 @@ def borderExtractionTest(roomId, originalPath, newPath):
     height, width = result_image.shape[:2]
 
     # 이미지를 중앙을 기준으로 500x500으로 자르기
-    start_row = max(0, int((height - 500) / 2))
-    end_row = min(height, start_row + 500)
-    start_col = max(0, int((width - 500) / 2))
-    end_col = min(width, start_col + 500)
+    start_row = max(0, int((height - 1000) / 2))
+    end_row = min(height, start_row + 1000)
+    start_col = max(0, int((width - 1000) / 2))
+    end_col = min(width, start_col + 1000)
 
-    # 이미지를 500x500으로 자르거나 확장하기
+    # 이미지를 1000x1000으로 자르거나 확장하기
     result_image = result_image[start_row:end_row, start_col:end_col]
 
-    if result_image.shape[0] < 500:  # 세로가 500보다 작으면
-        pad_top = (500 - result_image.shape[0]) // 2
-        pad_bottom = 500 - result_image.shape[0] - pad_top
+    if result_image.shape[0] < 1000:  # 세로가 500보다 작으면
+        pad_top = (1000 - result_image.shape[0]) // 2
+        pad_bottom = 1000 - result_image.shape[0] - pad_top
         result_image = cv2.copyMakeBorder(result_image, pad_top, pad_bottom, 0, 0, cv2.BORDER_CONSTANT,
                                           value=(255, 255, 255))
 
-    if result_image.shape[1] < 500:  # 가로가 500보다 작으면
-        pad_left = (500 - result_image.shape[1]) // 2
-        pad_right = 500 - result_image.shape[1] - pad_left
+    if result_image.shape[1] < 1000:  # 가로가 500보다 작으면
+        pad_left = (1000 - result_image.shape[1]) // 2
+        pad_right = 1000 - result_image.shape[1] - pad_left
         result_image = cv2.copyMakeBorder(result_image, 0, 0, pad_left, pad_right, cv2.BORDER_CONSTANT,
                                           value=(255, 255, 255))
 
@@ -127,9 +133,10 @@ def colorChangeToBlack(originalPath):
     # 이미지 저장
     new_image.save(originalPath)
 
+
 def removeFile():
     folder_path = './borderImages/'  # 삭제하려는 폴더 경로
-    file_to_exclude = 'borderImageData'  # 제외할 파일명 또는 패턴
+    file_to_exclude = 'borderImageData'  # 제외할 파일명
 
     # 폴더 내 파일들을 리스트업하고 특정 파일을 제외하고 삭제
     for filename in os.listdir(folder_path):
@@ -162,6 +169,7 @@ def borderExtraction():
 
     # originalFile의 색을 변경(회색 → 검은색)
     colorChangeToBlack(originalPath)
+
 
     # 파일에서 테두리 안의 데이터 추출
     borderExtractionTest(roomId, originalPath, newPath)
