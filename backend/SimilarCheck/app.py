@@ -87,23 +87,23 @@ def borderExtractionTest(roomId, originalPath, newPath):
     height, width = result_image.shape[:2]
 
     # 이미지를 중앙을 기준으로 500x500으로 자르기
-    start_row = max(0, int((height - 2000) / 2))
-    end_row = min(height, start_row + 2000)
-    start_col = max(0, int((width - 2000) / 2))
-    end_col = min(width, start_col + 2000)
+    start_row = max(0, int((height - 1500) / 2))
+    end_row = min(height, start_row + 1500)
+    start_col = max(0, int((width - 1500) / 2))
+    end_col = min(width, start_col + 1500)
 
     # 이미지를 1000x1000으로 자르거나 확장하기
     result_image = result_image[start_row:end_row, start_col:end_col]
 
-    if result_image.shape[0] < 2000:  # 세로가 500보다 작으면
-        pad_top = (2000 - result_image.shape[0]) // 2
-        pad_bottom = 2000 - result_image.shape[0] - pad_top
+    if result_image.shape[0] < 1500:  # 세로가 500보다 작으면
+        pad_top = (1500 - result_image.shape[0]) // 2
+        pad_bottom = 1500 - result_image.shape[0] - pad_top
         result_image = cv2.copyMakeBorder(result_image, pad_top, pad_bottom, 0, 0, cv2.BORDER_CONSTANT,
                                           value=(255, 255, 255))
 
-    if result_image.shape[1] < 2000:  # 가로가 500보다 작으면
-        pad_left = (2000 - result_image.shape[1]) // 2
-        pad_right = 2000 - result_image.shape[1] - pad_left
+    if result_image.shape[1] < 1500:  # 가로가 500보다 작으면
+        pad_left = (1500 - result_image.shape[1]) // 2
+        pad_right = 1500 - result_image.shape[1] - pad_left
         result_image = cv2.copyMakeBorder(result_image, 0, 0, pad_left, pad_right, cv2.BORDER_CONSTANT,
                                           value=(255, 255, 255))
 
