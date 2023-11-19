@@ -72,8 +72,17 @@ def image_to_annotations(img_fn: str, out_dir: str, animation_type=None) -> None
     logging.info(msg)
 
     # calculate the coordinates of the character bounding box
-    bbox = np.array(detection_results[0]['bbox'])
-    l, t, r, b = [round(x) for x in bbox]
+    outdir_parent_filepath = outdir.parent/'bounding_box.yaml'
+    if outdir_parent_filepath.exists():
+        with open(outdir_parent_filepath, 'r') as file:
+            yaml_data = yaml.safe_load(file)
+            l = yaml_data['left']
+            t = yaml_data['top']
+            r = yaml_data['right']
+            b = yaml_data['bottom']
+    else:
+        bbox = np.array(detection_results[0]['bbox'])
+        l, t, r, b = [round(x) for x in bbox]
 
     # dump the bounding box results to file
     with open(str(outdir/'bounding_box.yaml'), 'w') as f:
