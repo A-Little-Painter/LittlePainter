@@ -86,13 +86,13 @@ def borderExtractionTest(roomId, originalPath, newPath):
     # 이미지의 높이와 너비 가져오기
     height, width = result_image.shape[:2]
 
-    # 이미지를 중앙을 기준으로 500x500으로 자르기
+    # 이미지를 중앙을 기준으로 1500x1500으로 자르기
     start_row = max(0, int((height - 1500) / 2))
     end_row = min(height, start_row + 1500)
     start_col = max(0, int((width - 1500) / 2))
     end_col = min(width, start_col + 1500)
 
-    # 이미지를 1000x1000으로 자르거나 확장하기
+    # 이미지를 1500x1500으로 자르거나 확장하기
     result_image = result_image[start_row:end_row, start_col:end_col]
 
     if result_image.shape[0] < 1500:  # 세로가 500보다 작으면
