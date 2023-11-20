@@ -489,6 +489,7 @@ export default function FairytaleReadScreen({
                 {pageNum === 1 ? null : (
                   <TouchableOpacity
                     onPress={() => {
+                      Tts.stop();
                       dispatch(handleSoundEffect('btn'));
                       if (isFairytaleEndingPageVisible) {
                         dispatch(handleisFairytaleEndingPageVisible(false));
@@ -627,6 +628,7 @@ export default function FairytaleReadScreen({
                 {isFairytaleEndingPageVisible ? null : (
                   <TouchableOpacity
                     onPress={() => {
+                      Tts.stop();
                       dispatch(handleSoundEffect('btn'));
                       if (isDrawReadDone && isReReading) {
                         // 다 그리고, 읽기 중이라면
@@ -705,6 +707,7 @@ export default function FairytaleReadScreen({
                   <TouchableOpacity
                     style={styles.endingBox}
                     onPress={() => {
+                      Tts.stop();
                       dispatch(handleSoundEffect('btn'));
                       dispatch(handlePageNum(1));
                       dispatch(handleisFairytaleEndingPageVisible(false));
@@ -715,6 +718,7 @@ export default function FairytaleReadScreen({
                   <TouchableOpacity
                     style={styles.endingBox}
                     onPress={() => {
+                      Tts.stop();
                       handlePressSaving();
                       dispatch(handleSoundEffect('btn'));
                     }}>
