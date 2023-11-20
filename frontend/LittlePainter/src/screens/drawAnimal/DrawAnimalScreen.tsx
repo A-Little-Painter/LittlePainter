@@ -80,8 +80,8 @@ export default function DrawAnimalScreen({
     const connectAndSetupListeners = () => {
       newClient = Stomp.over(
         () =>
-          new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'),
-          // new SockJS('https://k9d106.p.ssafy.io:8301/ws/draws/comm-similarity'),
+          // new SockJS('http://k9d106.p.ssafy.io:8300/ws/draws/comm-similarity'),
+          new SockJS('https://k9d106.p.ssafy.io:8301/ws/draws/comm-similarity'),
       );
 
       newClient.onConnect = frame => {
@@ -638,6 +638,7 @@ export default function DrawAnimalScreen({
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
+              activeOpacity={1}
               style={[
                 styles.doneButton,
                 // eslint-disable-next-line react-native/no-inline-styles
