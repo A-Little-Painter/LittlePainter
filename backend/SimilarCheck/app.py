@@ -1,3 +1,6 @@
+import shutil
+import tempfile
+
 from flask import Flask, request, send_file
 import cv2, sys, os
 import numpy as np
@@ -177,7 +180,13 @@ def borderExtraction():
     os.remove(originalPath)
     os.remove(newPath)
 
-    return send_file('./borderImages/'+roomId+'output.jpg', as_attachment=True)
+    # 이미지 여러개 전송
+    temp_dir = tempfile.mkdtemp()
+    shutil.copy(f'./borderImages/{roomId}output.jpg', temp_dir)
+    shutil.copy(f'./borderImages/{roomId}output_mask.jpg', temp_dir)
+    shutil.make_archive(temp_dir, 'zip', temp_dir)
+
+    return send_file(temp_dir+'.zip', as_attachment=True)
 
 @app.route('/similarcheck', methods=['POST'])
 def similarityCheck():
