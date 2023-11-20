@@ -65,13 +65,11 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # contour 기반으로 마스크 생성 후 팽창 적용
     mask = np.zeros(newImage.shape, dtype=np.uint8)
-    cv2.imwrite('./borderImages/' + roomId + '_mask_0.jpg', mask)
 
     cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
-    cv2.imwrite('./borderImages/' + roomId + '_mask_1.jpg', mask)
 
     mask = cv2.dilate(mask, kernel, iterations=3)  # iterations 값은 팽창의 강도를 결정
-    cv2.imwrite('./borderImages/' + roomId + '_mask_2.jpg', mask)
+    cv2.imwrite('./borderImages/' + roomId + 'output_mask.jpg', mask)
 
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
     result_image = cv2.bitwise_and(newImage, mask) # result_image는 newImage와 기존 테두리의 교점
