@@ -1,9 +1,6 @@
-import tempfile
-
 from flask import Flask, request, send_file
 import cv2, sys, os
 import numpy as np
-import shutil
 from PIL import Image
 
 app = Flask(__name__)
@@ -68,33 +65,35 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # contour 기반으로 마스크 생성 후 팽창 적용
     mask = np.zeros(newImage.shape, dtype=np.uint8)
+    cv2.imwrite('./borderImages/' + roomId + '_mask_0.jpg', mask)
+
     cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
+    cv2.imwrite('./borderImages/' + roomId + '_mask_1.jpg', mask)
+
     mask = cv2.dilate(mask, kernel, iterations=3)  # iterations 값은 팽창의 강도를 결정
+    cv2.imwrite('./borderImages/' + roomId + '_mask_2.jpg', mask)
 
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
-    result_image = cv2.bitwise_and(newImage, mask)
+    result_image = cv2.bitwise_and(newImage, mask) # result_image는 newImage와 기존 테두리의 교점
 
     # mask 영역의 검은색 부분이 있는 위치를 찾는다.
     black_pixels_in_mask = (mask == [0, 0, 0]).all(axis=2)
-    white_image = np.ones_like(originalImage) * 255
 
     # result_image에서 mask 영역의 검은색 부분에 해당하는 영역에서만 픽셀을 하얀색으로 변경
     result_image[black_pixels_in_mask] = [255, 255, 255]
-    result_image_mask = cv2.bitwise_and(originalImage, mask)
-    result_image_mask[~black_pixels_in_mask] = [0, 0, 0]
 
     # 이미지의 높이와 너비 가져오기
     height, width = result_image.shape[:2]
 
     print("height: ", height ,", width: ", width)
 
-    # 이미지를 중앙을 기준으로 1500x1500으로 자르기
+    # 이미지를 중앙을 기준으로 2000x2000으로 자르기
     start_row = max(0, int((height - 2000) / 2))
     end_row = min(height, start_row + 2000)
     start_col = max(0, int((width - 2000) / 2))
     end_col = min(width, start_col + 2000)
 
-    # 이미지를 1500x1500으로 자르거나 확장하기
+    # 이미지를 2000x2000으로 자르거나 확장하기
     result_image = result_image[start_row:end_row, start_col:end_col]
 
     if result_image.shape[0] < 2000:  # 세로가 500보다 작으면
@@ -111,8 +110,6 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/'+roomId+'output.jpg', result_image)
-    cv2.imwrite('./borderImages/'+roomId+'output_mask.jpg', result_image_mask)
-
 
 # 원본의 이미지 테두리를 회색에서 검은색으로 변경해서 저장함
 def colorChangeToBlack(originalPath):
@@ -152,7 +149,6 @@ def removeFile():
         except Exception as e:
             print(f'파일 삭제 중 에러 발생: {e}')
 
-
 @app.route('/border-extraction', methods=['POST'])
 def borderExtraction():
     #이전에 있던 파일 삭제하기
@@ -165,8 +161,8 @@ def borderExtraction():
     newFile = request.files['newFile']
 
     # 파일을 저장할 경로 지정
-    originalPath = './borderImages/' + roomId + originalFile.name + '.jpg'
-    newPath = './borderImages/' + roomId + newFile.name + '.jpg'
+    originalPath = './borderImages/' + roomId + originalFile.name + '.jpg';
+    newPath = './borderImages/' + roomId + newFile.name + '.jpg';
 
     # 파일을 서버에 저장
     originalFile.save(originalPath)
@@ -183,13 +179,7 @@ def borderExtraction():
     os.remove(originalPath)
     os.remove(newPath)
 
-    # 이미지 여러개 전송
-    temp_dir = tempfile.mkdtemp()
-    shutil.copy(f'./borderImages/{roomId}output.jpg', temp_dir)
-    shutil.copy(f'./borderImages/{roomId}output_mask.jpg', temp_dir)
-    shutil.make_archive(temp_dir, 'zip', temp_dir)
-
-    return send_file(temp_dir+'.zip', as_attachment=True)
+    return send_file('./borderImages/'+roomId+'output.jpg', as_attachment=True)
 
 @app.route('/similarcheck', methods=['POST'])
 def similarityCheck():
