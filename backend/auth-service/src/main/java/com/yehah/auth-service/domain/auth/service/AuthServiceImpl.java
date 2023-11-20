@@ -24,7 +24,6 @@ public class AuthServiceImpl implements AuthService{
     @Value("${spring.path.user_service_url}")
     private String user_service_url;
 
-//    private final RestTemplate restTemplate;
     private final EmailService emailService;
 
     private final WebClient.Builder webClientBuilder;
@@ -65,9 +64,6 @@ public class AuthServiceImpl implements AuthService{
         return emailService.getEmailAuth(checkAuthCodeRequestDTO);
     }
 
-//    public void deleteEmailAuth(String email){
-//        emailService.deletEmailAuth(email);
-//    }
 
     //회원가입
     @Transactional

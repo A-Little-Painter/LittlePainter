@@ -59,9 +59,6 @@ public class AuthController {
     })
     @PostMapping("/auth-code")
     public ResponseEntity<?> checkAuthCode(@RequestBody CheckAuthCodeRequestDTO checkAuthCodeRequestDTO){
-
-//        EmailAuth emailAuth = authService.getEmailAuth(checkAuthCodeRequestDTO);
-
         return authService.getEmailAuth(checkAuthCodeRequestDTO);
     }
 
@@ -105,6 +102,12 @@ public class AuthController {
         return authService.refresh(refreshTokenRequestDTO);
     }
 
+    @Operation(summary = "비밀번호 변경", description = "AUTH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공"),
+            @ApiResponse(responseCode = "500", description = "비밀번호 변경 실패"),
+            @ApiResponse(responseCode = "510", description = "비밀번호 변경 실패")
+    })
     @PatchMapping("/password")
     public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordRequestDTO updatePasswordRequestDTO){
         return authService.updatePassword(updatePasswordRequestDTO);

@@ -17,11 +17,6 @@ public class AuthControllerAdvice {
         return ResponseEntity.status(504).body(e.getMessage());
     }
 
-//    @ExceptionHandler
-//    public ResponseEntity<?> handleSignInException(SignInException e){
-//        return ResponseEntity.status(401).body(e.getMessage());
-//    }
-
     @ExceptionHandler
     public ResponseEntity<?> handleEmailSendingException(EmailSendingException e){
         return ResponseEntity.status(501).body(e.getMessage());

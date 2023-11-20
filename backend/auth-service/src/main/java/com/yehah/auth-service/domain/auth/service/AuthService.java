@@ -5,7 +5,6 @@ import com.yehah.auth.domain.auth.dto.response.TokenResponseDTO;
 import com.yehah.auth.global.redis.entity.EmailAuth;
 import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
-//import org.springframework.transaction.annotation.Transactional;
 
 
 public interface AuthService {
@@ -16,7 +15,6 @@ public interface AuthService {
 
     public ResponseEntity<?> getEmailAuth(CheckAuthCodeRequestDTO checkAuthCodeRequestDTO);
 
-//    public void deleteEmailAuth(String email);
 
     public ResponseEntity<?> signup(SignUpRequestDTO signUpRequestDTO);
 
