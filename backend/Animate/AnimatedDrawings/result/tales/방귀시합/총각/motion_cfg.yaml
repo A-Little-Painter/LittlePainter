@@ -1,0 +1,11 @@
+filepath: examples/bvh/rokoko/fart1_rokoko.bvh
+start_frame_idx: 0
+end_frame_idx: 120
+groundplane_joint: LeftFoot
+forward_perp_joint_vectors:
+  - - LeftShoulder
+    - RightShoulder
+  - - LeftThigh
+    - RightThigh
+scale: 0.025
+up: +y
