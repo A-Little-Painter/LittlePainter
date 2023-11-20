@@ -24,7 +24,6 @@ def clear_upload_folder():
             print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 def img_to_file(img_nparray, prefix=""):
-    # Generate a unique file name with a prefix and save the image
     file_name = os.path.join(UPLOAD_FOLDER, f"{prefix}{uuid.uuid4().hex}.jpg")
     cv2.imwrite(file_name, img_nparray)
     return file_name
@@ -65,13 +64,12 @@ def detect_objects():
     file.save(temp_local_file)
 
     try:
-        # Directly call the detect function from yolov5, assuming it's modified to return the processed image
         rembg_with_border, border_only, animal_type = detect.run(weights='yolov5s.pt', source=temp_local_file)
 
         rembg_with_border = rembg_to_file(rembg_with_border, "border_")
         border_only = img_to_file(border_only, "trace_")
 
-        # 이미지 데이터를 S3에 업로드합니다.
+        # 이미지 데이터 S3에 업로드
         rembg_filename = f"animal/rembg/{unique_filename_base}_rembg{file_extension}"
 
         s3_client.upload_file(rembg_with_border, S3_BUCKET, rembg_filename, ExtraArgs={'ContentType': 'image/jpeg'})  # ContentType 설정)
