@@ -273,6 +273,7 @@ export default function SelectPictureScreen({
               ]}>
               <TouchableOpacity
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   navigation.navigate('MainScreen');
                 }}
                 style={styles.goHomeArea}>

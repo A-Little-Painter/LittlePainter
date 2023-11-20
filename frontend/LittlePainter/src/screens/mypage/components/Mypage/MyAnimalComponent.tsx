@@ -39,7 +39,7 @@ const MyAnimalComponents: React.FC<MyAnimalComponentsProps> = ({}) => {
     <View style={styles.picList}>
       <FlatList
         data={childs}
-        renderItem={({item}) => {
+        renderItem={({item, index}) => {
           return (
             <View>
               <TouchableOpacity style={styles.backPlate}>
@@ -49,7 +49,7 @@ const MyAnimalComponents: React.FC<MyAnimalComponentsProps> = ({}) => {
                   source={{uri: item.urlGif}}
                 />
               </TouchableOpacity>
-              <Text style={styles.picname}>{item.id}</Text>
+              <Text style={styles.picname}>내 그림{index + 1}</Text>
             </View>
           );
         }}

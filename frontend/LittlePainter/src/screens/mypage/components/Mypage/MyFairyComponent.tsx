@@ -11,6 +11,10 @@ import {
 
 // Import myAnimal from your API file
 import {myFairy} from '../../../../apis/mypage/mypageApi';
+import TaleDrawedImageModal from '../../../modals/TaleDrawedImageModal';
+import {RootState} from '../../../../redux/store';
+import {handleIsTaleDrawedImageModalVisible} from '../../../../redux/slices/user/user';
+import {useDispatch, useSelector} from 'react-redux';
 
 type MyAnimalComponentsProps = {
   selectedSubComponent: (componentName: string) => void;
@@ -20,6 +24,12 @@ const windowWidth = Dimensions.get('window').width;
 
 const MyAnimalComponents: React.FC<MyAnimalComponentsProps> = ({}) => {
   const [childs, setChilds] = useState<any[]>([]);
+  const dispatch = useDispatch();
+  const isTaleDrawedImageModalVisible = useSelector(
+    (state: RootState) => state.user.isTaleDrawedImageModalVisible,
+  );
+  const [selectTaleid, setSelectTaleid] = useState<number>(1);
+  const [selectTitle, setSelectTitle] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,22 +52,29 @@ const MyAnimalComponents: React.FC<MyAnimalComponentsProps> = ({}) => {
         renderItem={({item}) => {
           return (
             <View>
-              <TouchableOpacity style={styles.backPlate}>
+              <TouchableOpacity
+                style={styles.backPlate}
+                onPress={() => {
+                  setSelectTitle(item.title);
+                  setSelectTaleid(item.taleId);
+                  dispatch(handleIsTaleDrawedImageModalVisible(true));
+                }}>
                 <Image
                   style={styles.pic}
                   resizeMode="contain"
                   source={{uri: item.urlCover}}
                 />
               </TouchableOpacity>
-              <Text style={styles.picname}>
-                {item.title} {item.taleId}
-              </Text>
+              <Text style={styles.picname}>{item.title}</Text>
             </View>
           );
         }}
         keyExtractor={item => item.taleId.toString()}
         numColumns={3}
       />
+      {isTaleDrawedImageModalVisible ? (
+        <TaleDrawedImageModal taleId={selectTaleid} title={selectTitle} />
+      ) : null}
     </View>
   );
 };
