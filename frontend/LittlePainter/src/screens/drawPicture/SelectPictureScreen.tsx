@@ -479,8 +479,6 @@ const styles = StyleSheet.create({
   goHomeArea: {
     justifyContent: 'center',
     marginRight: windowWidth * 0.05,
-    // marginLeft: windowWidth * 0.35,
-    // marginTop: windowWidth * 0.03,
   },
   goHome: {
     height: windowWidth * 0.05,

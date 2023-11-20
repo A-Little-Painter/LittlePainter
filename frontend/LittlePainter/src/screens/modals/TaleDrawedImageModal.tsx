@@ -20,10 +20,6 @@ import IconAntDesign from 'react-native-vector-icons/AntDesign';
 export type TaleDrawedImageModalProps = {
   taleId: number;
   title: string;
-  // pictureTitle: string;
-  // pictureBorderURI: string;
-  // pictureOriginImageUri: string;
-  // pictureExplanation: string;
 };
 
 const windowWidth = Dimensions.get('window').width;
