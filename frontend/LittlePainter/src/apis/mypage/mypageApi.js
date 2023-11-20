@@ -264,7 +264,7 @@ export const deleteUser = async () => {
   }
 };
 
-export const myFairyImage = async (taleId) => {
+export const myFairyImage = async taleId => {
   try {
     console.log(taleId);
     const token = await loadATokenFromKeychain();
