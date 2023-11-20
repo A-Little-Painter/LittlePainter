@@ -80,9 +80,8 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # result_image에서 mask 영역의 검은색 부분에 해당하는 영역에서만 픽셀을 하얀색으로 변경
     result_image[black_pixels_in_mask] = [255, 255, 255]
-    result_image_mask = white_image.copy()
-    result_image_mask = cv2.bitwise_or(result_image_mask, originalImage)
-    result_image_mask = cv2.bitwise_and(result_image_mask, mask)
+    result_image_mask = cv2.bitwise_and(originalImage, mask)
+    result_image_mask[~black_pixels_in_mask] = [0, 0, 0]
 
     # 이미지의 높이와 너비 가져오기
     height, width = result_image.shape[:2]
@@ -166,8 +165,8 @@ def borderExtraction():
     newFile = request.files['newFile']
 
     # 파일을 저장할 경로 지정
-    originalPath = './borderImages/' + roomId + originalFile.name + '.jpg';
-    newPath = './borderImages/' + roomId + newFile.name + '.jpg';
+    originalPath = './borderImages/' + roomId + originalFile.name + '.jpg'
+    newPath = './borderImages/' + roomId + newFile.name + '.jpg'
 
     # 파일을 서버에 저장
     originalFile.save(originalPath)
