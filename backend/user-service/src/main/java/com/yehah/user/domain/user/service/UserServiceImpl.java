@@ -47,11 +47,6 @@ public class UserServiceImpl implements UserService{
         log.info("user.getEmail() "+user.getEmail());
 
         List<Child> children = childRepository.findByUserIdAndDeletedDateIsNull(user.getId());
-//        List<ChildrenResponseDTO> children = userRepository.findById(user.getId())
-//                .map(userFromDB -> userFromDB.getChildren().stream()
-//                        .map(this::toDTO)
-//                        .collect(Collectors.toList()))
-//                .orElseThrow(() -> new UserNotFoundException("로그인 사용자를 DB에서 찾을 수 없습니다."));
 
         if(children.isEmpty()){
             throw new NoDataFoundException("아이를 찾을 수 없습니다.");
