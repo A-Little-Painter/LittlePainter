@@ -77,7 +77,7 @@ export default function SelectAnimalScreen({
     handleAnimalWholeData();
     dispatch(
       handleBGMMusic(
-        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_animal_tale.mp3',
+        'https://d36iq79hai056s.cloudfront.net/sound/bgm/BG_animal_tale.mp3',
       ),
     );
   }, []);

@@ -191,7 +191,7 @@ export default function SelectPictureScreen({
     // handleFriendsWholePicture();
     dispatch(
       handleBGMMusic(
-        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_my%2BfriendsAnimal.mp3',
+        'https://d36iq79hai056s.cloudfront.net/sound/bgm/BG_my%2BfriendsAnimal.mp3',
       ),
     );
   }, []);
@@ -273,6 +273,7 @@ export default function SelectPictureScreen({
               ]}>
               <TouchableOpacity
                 onPress={() => {
+                  dispatch(handleSoundEffect('btn'));
                   navigation.navigate('MainScreen');
                 }}
                 style={styles.goHomeArea}>
@@ -478,8 +479,8 @@ const styles = StyleSheet.create({
   goHomeArea: {
     justifyContent: 'center',
     marginRight: windowWidth * 0.05,
-    // marginLeft: windowWidth * 0.35,
-    // marginTop: windowWidth * 0.03,
+    marginLeft: windowWidth * 0.34,
+    marginBottom: windowWidth * 0.05,
   },
   goHome: {
     height: windowWidth * 0.05,

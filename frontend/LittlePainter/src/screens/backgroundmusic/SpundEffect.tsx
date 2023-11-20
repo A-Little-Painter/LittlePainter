@@ -13,7 +13,7 @@ const BackgroundMusic = () => {
 
   // 상수로 정의된 preload 경로
   const PRELOAD_EFFECT =
-    'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/ButtonSounds.mp3';
+    'https://d36iq79hai056s.cloudfront.net/sound/bgm/ButtonSounds.mp3';
 
   // 초기화 시에 음원을 로딩하는 함수
   const initSound = async () => {

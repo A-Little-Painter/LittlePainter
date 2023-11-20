@@ -66,7 +66,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
       dispatch(handleIsLoop(-1));
       dispatch(
         handleBGMMusic(
-          'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_main.mp3',
+          'https://d36iq79hai056s.cloudfront.net/sound/bgm/BG_main.mp3',
         ),
       );
     }
@@ -238,7 +238,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   maximumValue={1} // 최대값 설정
                   maximumTrackTintColor="#FE7779" // 값이 크면 빨간색
                   minimumTrackTintColor="#5E9FF9" // 값이 작으면 파란색
-                  step={0.05} // 1단위로 값이 변경
+                  step={0.01} // 1단위로 값이 변경
                 />
                 <Text
                   style={{
@@ -325,7 +325,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                         width: windowHeight * 0.16 * 5,
                       }}
                       source={{
-                        uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/tutorial/animal-tutorial.mp4',
+                        uri: 'https://d36iq79hai056s.cloudfront.net/tutorial/animal-tutorial.mp4',
                       }}
                       controls={false}
                       resizeMode="cover"
@@ -445,7 +445,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                         width: windowHeight * 0.16 * 5,
                       }}
                       source={{
-                        uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/tutorial/human-tutorial.mp4',
+                        uri: 'https://d36iq79hai056s.cloudfront.net/tutorial/human-tutorial.mp4',
                       }}
                       controls={false}
                       resizeMode="cover"
