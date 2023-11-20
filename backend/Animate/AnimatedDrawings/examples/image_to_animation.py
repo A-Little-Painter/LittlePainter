@@ -17,20 +17,9 @@ from pkg_resources import resource_filename
 
 def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None,
                        character=None):
-    """
-    Given the image located at img_fn, create annotation files needed for animation.
-    Then create animation from those animations and motion cfg and retarget cfg.
-    """
-    logging.debug('image_to_animation 진입')
-
-    # create the annotations
-    image_to_annotations(img_fn, char_anno_dir, animation_type)
 
     # 동물그리기) 모델이 도출한 annotation(mask, texture)을 프리셋에 맞게 수정
     if animation_type == 'tales' or animation_type == 'animals':
-        # 수정하기 전 texture.png, char_cfg.yaml 보존
-        shutil.copy(f"{char_anno_dir}/char_cfg.yaml", f"{char_anno_dir}/char_cfg2.yaml")
-        shutil.copy(f"{char_anno_dir}/texture.png", f"{char_anno_dir}/texture2.png")
 
         # 프리셋 반영 1) char_cfg파일 복사
         try:
@@ -49,7 +38,7 @@ def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, reta
         with open(f"{char_anno_dir}/char_cfg.yaml", "r") as file:
             cfg_file = yaml.safe_load(file)
         # # texture.png 로드, *수정*, 저장
-        texture = Image.open(f"{char_anno_dir}/texture.png")
+        texture = Image.open(img_fn)
         resized_image = ImageOps.pad(texture, (cfg_file["width"], cfg_file["height"]), method=1)
         resized_image.save(f"{char_anno_dir}/texture.png")
         # # mask.png 로드, *수정*, 저장
