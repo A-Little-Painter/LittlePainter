@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6ecabd8a-013e-415c-b6d2-700063859b8a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/user/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/gradlew.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/UserApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/UserApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/contoller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/contoller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/contoller/UserControllerAdvice.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/contoller/UserControllerAdvice.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/dto/request/AddChildRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/dto/request/AddChildRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/dto/request/ChangeChildRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/dto/request/ChangeChildRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/dto/request/ChangeIconRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/dto/request/ChangeIconRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/dto/request/GetChildInfoRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/dto/request/GetChildInfoRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/dto/request/UpdatePasswordRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/dto/request/UpdatePasswordRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/dto/response/AddChildResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/dto/response/AddChildResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/dto/response/ChildrenResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/dto/response/ChildrenResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/dto/response/GetChildInfoResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/dto/response/GetChildInfoResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/dto/response/GetIconsResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/dto/response/GetIconsResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/exception/DTOConversionException.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/exception/DTOConversionException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/exception/DatabaseException.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/exception/DatabaseException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/exception/NoDataFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/exception/NoDataFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/exception/UserNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/exception/UserNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/repository/ChildRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/repository/ChildRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/repository/IconRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/repository/IconRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/user/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/user/service/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/controller/UserAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/controller/UserAuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/controller/UserAuthControllerAdvice.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/controller/UserAuthControllerAdvice.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/dto/request/RefreshTokenRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/dto/request/RefreshTokenRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/dto/request/SignInRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/dto/request/SignInRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/dto/request/SignUpRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/dto/request/SignUpRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/dto/request/UpdatePasswordRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/dto/request/UpdatePasswordRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/dto/response/SignInResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/dto/response/SignInResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/entity/Child.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/entity/Child.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/entity/Icon.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/entity/Icon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/enums/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/enums/Role.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/exception/AlreadyUsedEmailException.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/exception/AlreadyUsedEmailException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/exception/PasswordNotMatchException.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/exception/PasswordNotMatchException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/exception/UserDeletedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/exception/UserDeletedException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/repository/UserAuthRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/repository/UserAuthRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/service/UserAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/service/UserAuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/domain/userAuth/service/UserAuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/domain/userAuth/service/UserAuthServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/global/redis/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/global/redis/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/global/security/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/global/security/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/global/security/entity/RefreshToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/global/security/entity/RefreshToken.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/global/security/entity/Token.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/global/security/entity/Token.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/global/security/filter/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/global/security/filter/JwtFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/global/security/repository/RefreshTokenRedisRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/global/security/repository/RefreshTokenRedisRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/java/com/yehah/user/global/security/service/JwtProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yehah/user/global/security/service/JwtProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/src/test/java/com/yehah/user/UserApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/test/java/com/yehah/user/UserApplicationTests.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1700444552" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="deploy/User-Service" />
+                    <option name="lastUsedInstant" value="1700444491" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="deploy/Auth-Service" />
+                    <option name="lastUsedInstant" value="1700443518" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$/.." />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2YQ0x20Vmc5XhfICjWqNWm2EzFK" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/authTest/S09P31D106/backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6ecabd8a-013e-415c-b6d2-700063859b8a" name="Changes" comment="" />
+      <created>1700442743946</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1700442743946</updated>
+      <workItem from="1700442745101" duration="2170000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

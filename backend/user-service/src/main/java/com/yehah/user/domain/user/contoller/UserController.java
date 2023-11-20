@@ -90,30 +90,60 @@ public class UserController {
     }
 
     //아이 아이콘 변경
+    @Operation(summary = "아이 아이콘 변경", description = "USER")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "아이 아이콘 변경 성공"),
+            @ApiResponse(responseCode = "511", description = "DB 접근 실패"),
+            @ApiResponse(responseCode = "512", description = "사용자 못 찾음")
+    })
     @PatchMapping("/icons")
     public ResponseEntity<?> changeIcon(@RequestBody ChangeIconRequestDTO changeIconRequestDTO){
         return userService.changeIcon(changeIconRequestDTO);
     }
 
     //아이 정보 수정
+    @Operation(summary = "아이 정보 수정", description = "USER")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "아이 정보 수정 성공"),
+            @ApiResponse(responseCode = "511", description = "DB 접근 실패"),
+            @ApiResponse(responseCode = "512", description = "사용자 못 찾음")
+    })
     @PatchMapping("/child")
     public ResponseEntity<?> updateChild(@RequestBody ChangeChildRequestDTO changeChildRequestDTO){
         return userService.updateChild(changeChildRequestDTO);
     }
 
     //유저 탈퇴
+    @Operation(summary = "유저 탈퇴", description = "USER")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 탈퇴 성공"),
+            @ApiResponse(responseCode = "511", description = "DB 접근 실패"),
+            @ApiResponse(responseCode = "512", description = "사용자 못 찾음")
+    })
     @DeleteMapping
     public ResponseEntity<?> deleteUser(){
         return userService.deleteUser();
     }
 
     //유저 비밀번호 변경
+    @Operation(summary = "유저 비밀번호 변경", description = "USER")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 탈퇴 성공"),
+            @ApiResponse(responseCode = "511", description = "DB 접근 실패"),
+            @ApiResponse(responseCode = "512", description = "사용자 못 찾음")
+    })
     @PatchMapping("/password")
     public ResponseEntity<?> changePassword(@RequestBody UpdatePasswordRequestDTO updatePasswordRequestDTO){
         return userService.updatePassword(updatePasswordRequestDTO);
     }
 
     //아이 삭제
+    @Operation(summary = "아이 삭제", description = "USER")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "아이 삭제 성공"),
+            @ApiResponse(responseCode = "511", description = "DB 접근 실패"),
+            @ApiResponse(responseCode = "512", description = "사용자 못 찾음")
+    })
     @DeleteMapping("/child/{childId}")
     public ResponseEntity<?> deleteChild(@PathVariable Long childId){
         return userService.deleteChild(childId);
