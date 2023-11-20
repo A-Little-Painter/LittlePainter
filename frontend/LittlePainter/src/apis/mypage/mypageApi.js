@@ -263,3 +263,25 @@ export const deleteUser = async () => {
     return response;
   }
 };
+
+export const myFairyImage = async (taleId) => {
+  try {
+    console.log(taleId);
+    const token = await loadATokenFromKeychain();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(
+      `${BASE_URL}/draws/child_work_tale/${taleId}`,
+      {
+        headers,
+      },
+    );
+    return response;
+  } catch (error) {
+    console.log('fall');
+    console.log(error);
+    const response = error.response;
+    return response;
+  }
+};

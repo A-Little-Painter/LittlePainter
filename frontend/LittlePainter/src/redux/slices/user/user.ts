@@ -14,6 +14,7 @@ interface CounterState {
   selectName: string;
   selectImage: string;
   userEmail: string;
+  isTaleDrawedImageModalVisible: boolean;
 }
 
 const initialState: CounterState = {
@@ -29,6 +30,7 @@ const initialState: CounterState = {
   selectName: '',
   selectImage: '',
   userEmail: '',
+  isTaleDrawedImageModalVisible: false,
 };
 
 export const userSlice = createSlice({
@@ -89,6 +91,12 @@ export const userSlice = createSlice({
     iconUpdate: (state, action: PayloadAction<string>) => {
       state.selectImage = action.payload;
     },
+    handleIsTaleDrawedImageModalVisible: (
+      state,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.isTaleDrawedImageModalVisible = action.payload;
+    },
   },
 });
 
@@ -103,6 +111,7 @@ export const {
   addKids,
   selected,
   iconUpdate,
+  handleIsTaleDrawedImageModalVisible,
 } = userSlice.actions;
 export const selectCount = (state: RootState) => state.user.testValue;
 export const selectPracticeValue = (state: RootState) =>
@@ -112,4 +121,6 @@ export const isAddKids = (state: RootState) => state.user.isAddKids;
 export const selectId = (state: RootState) => state.user.selectId;
 export const selectName = (state: RootState) => state.user.selectName;
 export const selectImage = (state: RootState) => state.user.selectImage;
+export const isTaleDrawedImageModalVisible = (state: RootState) =>
+  state.user.isTaleDrawedImageModalVisible;
 export default userSlice.reducer;
