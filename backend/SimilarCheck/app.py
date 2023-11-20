@@ -72,7 +72,6 @@ def borderExtractionTest(roomId, originalPath, newPath):
     cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
 
     mask = cv2.dilate(mask, kernel, iterations=3)  # iterations 값은 팽창의 강도를 결정
-    cv2.imwrite('./borderImages/' + roomId + 'output_mask.jpg', mask)
 
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
     result_image = cv2.bitwise_and(newImage, mask) # result_image는 newImage와 기존 테두리의 교점
@@ -96,21 +95,29 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # 이미지를 2000x2000으로 자르거나 확장하기
     result_image = result_image[start_row:end_row, start_col:end_col]
+    result_image_mask = mask[start_row:end_row, start_col:end_col]
 
     if result_image.shape[0] < 2000:  # 세로가 500보다 작으면
         pad_top = (2000 - result_image.shape[0]) // 2
         pad_bottom = 2000 - result_image.shape[0] - pad_top
         result_image = cv2.copyMakeBorder(result_image, pad_top, pad_bottom, 0, 0, cv2.BORDER_CONSTANT,
                                           value=(255, 255, 255))
+        pad_top = (2000 - mask.shape[0]) // 2
+        pad_bottom = 2000 - mask.shape[0] - pad_top
+        mask = cv2.copyMakeBorder(mask, pad_top, pad_bottom, 0, 0, cv2.BORDER_CONSTANT, value=(255, 255, 255))
 
     if result_image.shape[1] < 2000:  # 가로가 500보다 작으면
         pad_left = (2000 - result_image.shape[1]) // 2
         pad_right = 2000 - result_image.shape[1] - pad_left
         result_image = cv2.copyMakeBorder(result_image, 0, 0, pad_left, pad_right, cv2.BORDER_CONSTANT,
                                           value=(255, 255, 255))
+        pad_left = (2000 - mask.shape[1]) // 2
+        pad_right = 2000 - mask.shape[1] - pad_left
+        mask = cv2.copyMakeBorder(mask, 0, 0, pad_left, pad_right, cv2.BORDER_CONSTANT, value=(255, 255, 255))
 
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/'+roomId+'output.jpg', result_image)
+    cv2.imwrite('./borderImages/' + roomId + 'output_mask.jpg', mask)
 
 # 원본의 이미지 테두리를 회색에서 검은색으로 변경해서 저장함
 def colorChangeToBlack(originalPath):
@@ -185,6 +192,7 @@ def borderExtraction():
     shutil.copy(f'./borderImages/{roomId}output.jpg', temp_dir)
     shutil.copy(f'./borderImages/{roomId}output_mask.jpg', temp_dir)
     shutil.make_archive(temp_dir, 'zip', temp_dir)
+    shutil.copy(f'temp_dir{temp_dir}.zip', '/app/')
 
     return send_file(temp_dir+'.zip', as_attachment=True)
 
