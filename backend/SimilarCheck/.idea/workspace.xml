@@ -7,7 +7,6 @@
     <list default="true" id="6c78e1d7-0a2e-4cfd-a238-eeb09d4c814c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/borderImages/test1232output.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/borderImages/test1232output.jpg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -246,7 +245,7 @@
       <workItem from="1700007551097" duration="3815000" />
       <workItem from="1700181540512" duration="3415000" />
       <workItem from="1700300548502" duration="13443000" />
-      <workItem from="1700436050093" duration="621000" />
+      <workItem from="1700436050093" duration="1551000" />
     </task>
     <servers />
   </component>
