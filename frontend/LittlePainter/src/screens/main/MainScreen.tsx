@@ -28,14 +28,14 @@ import {
 import {useIsFocused} from '@react-navigation/native';
 import Video from 'react-native-video';
 import LottieView from 'lottie-react-native';
+import Popover from 'react-native-popover-view';
+import Slider from 'react-native-sliders';
 
 type MainScreenProps = StackScreenProps<RootStackParams, 'MainScreen'>;
-type ismuted = boolean;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function MainScreen({navigation}: MainScreenProps) {
-  const [ismuted, setIsmuted] = useState<ismuted>(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
   const [animalVisible, setAnimalVisible] = useState(false);
@@ -44,8 +44,10 @@ export default function MainScreen({navigation}: MainScreenProps) {
   // const [pictureVisible, setPictureVisible] = useState(false);
   // const [uploadVisible, setUploadVisible] = useState(false);
   const [backHandleNum, setBackHandleNum] = useState<number>(0);
-  4;
-  4;
+  const [isPopoverVisible, setPopoverVisible] = useState(false);
+  const volume = useAppSelector(state => state.music.isVolume);
+  const [myValue, setMyValue] = useState(volume);
+
   const isLogin = useAppSelector(state => state.user.isLogin);
   const selectName = useAppSelector(state => state.user.selectName);
   const selectImage = useAppSelector(state => state.user.selectImage);
@@ -64,7 +66,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
       dispatch(handleIsLoop(-1));
       dispatch(
         handleBGMMusic(
-          'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_main.mp3',
+          'https://d36iq79hai056s.cloudfront.net/sound/bgm/BG_main.mp3',
         ),
       );
     }
@@ -173,13 +175,14 @@ export default function MainScreen({navigation}: MainScreenProps) {
     navigation.navigate('UploadPicture1Screen');
   };
 
-  const goMute = () => {
-    setIsmuted(!ismuted);
-    if (ismuted === false) {
-      dispatch(handleBGMVolume(0));
-    } else {
-      dispatch(handleBGMVolume(1));
-    }
+  const setVolume = (value: number) => {
+    const numericValue = Number(value); // 명시적으로 Number 타입으로 변환
+    setMyValue(numericValue);
+    dispatch(handleBGMVolume(numericValue));
+  };
+
+  const togglePopover = () => {
+    setPopoverVisible(!isPopoverVisible);
   };
 
   const goScreen = (value: string) => {
@@ -207,27 +210,44 @@ export default function MainScreen({navigation}: MainScreenProps) {
                   />
                 )}
               </View>
-              <TouchableOpacity
-                style={styles.circleBg2}
-                onPress={() => {
-                  goMute();
-                }}>
-                <Text>
-                  {ismuted ? (
-                    <IconSimpleLineIcons
-                      name="volume-off"
-                      color={'black'}
-                      size={windowWidth * 0.03}
-                    />
-                  ) : (
-                    <IconSimpleLineIcons
-                      name="volume-2"
-                      color={'black'}
-                      size={windowWidth * 0.03}
-                    />
-                  )}
+              <Popover
+                popoverStyle={{
+                  borderRadius: windowHeight * 0.03,
+                  flexDirection: 'row',
+                  height: windowHeight * 0.08,
+                  width: windowHeight * 0.44,
+                }}
+                from={
+                  <TouchableOpacity
+                    style={styles.circleBg2}
+                    onPress={togglePopover}>
+                    <Text>
+                      <IconSimpleLineIcons
+                        name="volume-2"
+                        color={'black'}
+                        size={windowWidth * 0.03}
+                      />
+                    </Text>
+                  </TouchableOpacity>
+                }>
+                <Slider
+                  style={styles.slider}
+                  value={myValue}
+                  onValueChange={(value: number) => setVolume(value)}
+                  minimumValue={0} // 최소값 설정
+                  maximumValue={1} // 최대값 설정
+                  maximumTrackTintColor="#FE7779" // 값이 크면 빨간색
+                  minimumTrackTintColor="#5E9FF9" // 값이 작으면 파란색
+                  step={0.01} // 1단위로 값이 변경
+                />
+                <Text
+                  style={{
+                    textAlignVertical: 'center',
+                    marginRight: windowHeight * 0.015,
+                  }}>
+                  {Math.floor(volume * 100)}
                 </Text>
-              </TouchableOpacity>
+              </Popover>
             </View>
             <TouchableOpacity
               onPress={() => {
@@ -305,7 +325,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                         width: windowHeight * 0.16 * 5,
                       }}
                       source={{
-                        uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/tutorial/animal-tutorial.mp4',
+                        uri: 'https://d36iq79hai056s.cloudfront.net/tutorial/animal-tutorial.mp4',
                       }}
                       controls={false}
                       resizeMode="cover"
@@ -425,7 +445,7 @@ export default function MainScreen({navigation}: MainScreenProps) {
                         width: windowHeight * 0.16 * 5,
                       }}
                       source={{
-                        uri: 'https://littlepainter.s3.ap-northeast-2.amazonaws.com/tutorial/human-tutorial.mp4',
+                        uri: 'https://d36iq79hai056s.cloudfront.net/tutorial/human-tutorial.mp4',
                       }}
                       controls={false}
                       resizeMode="cover"
@@ -848,5 +868,14 @@ const styles = StyleSheet.create({
 
     position: 'absolute',
     top: windowHeight * -0.1,
+  },
+  pop: {
+    flexDirection: 'row',
+  },
+  slider: {
+    height: windowHeight * 0.05,
+    width: windowWidth * 0.2,
+    marginHorizontal: windowWidth * 0.01,
+    alignSelf: 'center',
   },
 });

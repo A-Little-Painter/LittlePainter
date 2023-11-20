@@ -77,7 +77,7 @@ export default function SelectFriendScreen({
     handleFriendWholeData();
     dispatch(
       handleBGMMusic(
-        'https://littlepainter.s3.ap-northeast-2.amazonaws.com/sound/bgm/BG_my%2BfriendsAnimal.mp3',
+        'https://d36iq79hai056s.cloudfront.net/sound/bgm/BG_my%2BfriendsAnimal.mp3',
       ),
     );
   }, []);
@@ -218,6 +218,8 @@ const styles = StyleSheet.create({
   topContainer: {
     flex: 0.3,
     flexDirection: 'row',
+    width: '100%',
+    marginLeft: windowWidth * 0.04,
   },
   middleContainer: {
     flex: 0.7,
@@ -288,7 +290,7 @@ const styles = StyleSheet.create({
     left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
   },
   goHomeArea: {
-    marginLeft: windowWidth * 0.5,
+    marginLeft: windowWidth * 0.45,
     marginTop: windowWidth * 0.03,
   },
   goHome: {

@@ -20,13 +20,16 @@ const BackgroundMusic = () => {
   //////////// 앱닫으면 bgm 종료.
   useEffect(() => {
     // AppState를 사용하여 앱 상태 변화 감지
-    const subscription = AppState.addEventListener('change', handleAppStateChange); // 이벤트 리스너 추가
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    ); // 이벤트 리스너 추가
     return () => {
       subscription(); // 이벤트 리스너 해제
     };
   }, []);
 
-  const handleAppStateChange = (nextAppState) => {
+  const handleAppStateChange = nextAppState => {
     if (nextAppState === 'inactive' || nextAppState === 'background') {
       if (whooshRef.current) {
         whooshRef.current.stop(() => {
