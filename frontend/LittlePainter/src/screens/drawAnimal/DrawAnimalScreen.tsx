@@ -639,6 +639,7 @@ export default function DrawAnimalScreen({
           {/* 하단 우측 */}
           <View style={styles.bottomContainerRight}>
             <TouchableOpacity
+              activeOpacity={1}
               style={[
                 styles.doneButton,
                 // eslint-disable-next-line react-native/no-inline-styles

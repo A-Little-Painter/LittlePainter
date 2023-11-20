@@ -44,7 +44,7 @@ export default function ShowScreen({navigation}: ShowScreenProps) {
         // 랜덤으로 10개의 이미지 선택
         const randomImageUrls = response
           .sort(() => Math.random() - 0.5) // 이미지 배열을 랜덤으로 섞음
-          .slice(0, 20); // 배열의 처음 10개의 요소 선택
+          .slice(0, 10); // 배열의 처음 10개의 요소 선택
 
         // 이미지 URL 목록을 설정
         setImageUrls(randomImageUrls);

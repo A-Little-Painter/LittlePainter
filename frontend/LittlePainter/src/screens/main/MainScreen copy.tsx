@@ -254,7 +254,6 @@ export default function MainScreen({navigation}: MainScreenProps) {
           <View style={styles.middleContainer}>
             <ScrollView
               horizontal={true}
-              // pagingEnabled
               showsHorizontalScrollIndicator={false}>
               {/* 동물선택카드 */}
               <TouchableOpacity
