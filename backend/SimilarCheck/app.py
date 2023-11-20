@@ -1,6 +1,9 @@
+import tempfile
+
 from flask import Flask, request, send_file
 import cv2, sys, os
 import numpy as np
+import shutil
 from PIL import Image
 
 app = Flask(__name__)
@@ -65,23 +68,21 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # contour 기반으로 마스크 생성 후 팽창 적용
     mask = np.zeros(newImage.shape, dtype=np.uint8)
-
-
     cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
-
-
     mask = cv2.dilate(mask, kernel, iterations=3)  # iterations 값은 팽창의 강도를 결정
-
 
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
     result_image = cv2.bitwise_and(newImage, mask)
 
-
     # mask 영역의 검은색 부분이 있는 위치를 찾는다.
     black_pixels_in_mask = (mask == [0, 0, 0]).all(axis=2)
+    white_image = np.ones_like(originalImage) * 255
 
     # result_image에서 mask 영역의 검은색 부분에 해당하는 영역에서만 픽셀을 하얀색으로 변경
     result_image[black_pixels_in_mask] = [255, 255, 255]
+    result_image_mask = white_image.copy()
+    result_image_mask = cv2.bitwise_or(result_image_mask, originalImage)
+    result_image_mask = cv2.bitwise_and(result_image_mask, mask)
 
     # 이미지의 높이와 너비 가져오기
     height, width = result_image.shape[:2]
@@ -111,6 +112,8 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/'+roomId+'output.jpg', result_image)
+    cv2.imwrite('./borderImages/'+roomId+'output_mask.jpg', result_image_mask)
+
 
 # 원본의 이미지 테두리를 회색에서 검은색으로 변경해서 저장함
 def colorChangeToBlack(originalPath):
@@ -150,6 +153,7 @@ def removeFile():
         except Exception as e:
             print(f'파일 삭제 중 에러 발생: {e}')
 
+
 @app.route('/border-extraction', methods=['POST'])
 def borderExtraction():
     #이전에 있던 파일 삭제하기
@@ -180,7 +184,13 @@ def borderExtraction():
     os.remove(originalPath)
     os.remove(newPath)
 
-    return send_file('./borderImages/'+roomId+'output.jpg', as_attachment=True)
+    # 이미지 여러개 전송
+    temp_dir = tempfile.mkdtemp()
+    shutil.copy(f'./borderImages/{roomId}output.jpg', temp_dir)
+    shutil.copy(f'./borderImages/{roomId}output_mask.jpg', temp_dir)
+    shutil.make_archive(temp_dir, 'zip', temp_dir)
+
+    return send_file(temp_dir+'.zip', as_attachment=True)
 
 @app.route('/similarcheck', methods=['POST'])
 def similarityCheck():
