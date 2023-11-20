@@ -25,7 +25,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    //이메일 중복확인  
+    //이메일 중복확인
     @Operation(summary = "이메일 중복확인", description = "AUTH")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "사용가능한 이메일"),
