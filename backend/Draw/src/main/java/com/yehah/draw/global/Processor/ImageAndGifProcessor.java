@@ -7,7 +7,7 @@ import com.yehah.draw.domain.animations.dto.response.FriendResDto;
 import com.yehah.draw.domain.animations.exception.AnimationBorderExtractionException;
 import com.yehah.draw.domain.animations.exception.AnimationChangeException;
 import com.yehah.draw.domain.animations.exception.AnimationDataSaveException;
-import jakarta.annotation.PostConstruct;
+import com.yehah.draw.global.common.ImageListToRequestBodyData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +16,8 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @Configuration
@@ -53,17 +55,12 @@ public class ImageAndGifProcessor {
         }
     }
 
-    public byte[] animalConvertToGif(String animalType, byte[] imageFile){
+    public byte[] animalConvertToGif(String animalType, List<byte[]> images){
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
         //bodyData.clear();
         bodyData.add("animalType", animalType);
-        bodyData.add("image", new ByteArrayResource(imageFile){
-            @Override
-            public String getFilename() throws IllegalStateException{
-                return "image.jpg";
-            }
-        });
+        ImageListToRequestBodyData.addImage(images, bodyData);
 
         try{
             return communicationProcessor.postMultipartAnimateMethod(bodyData, animatePath+"/animals");
@@ -72,19 +69,14 @@ public class ImageAndGifProcessor {
         }
     }
 
-    public byte[] taleConvertToGif(int pageNo, String taleTitle, String character, byte[] image){
+    public byte[] taleConvertToGif(int pageNo, String taleTitle, String character, List<byte[]> images){
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
         // bodyData.clear();
         bodyData.add("pageNo", pageNo);
         bodyData.add("taleTitle", taleTitle.replace(" ", ""));
         bodyData.add("character", character.replace(" ", ""));
-        bodyData.add("image", new ByteArrayResource(image){
-            @Override
-            public String getFilename() throws IllegalStateException{
-                return "image.jpg";
-            }
-        });
+        ImageListToRequestBodyData.addImage(images, bodyData);
 
         try{
             return communicationProcessor.postMultipartAnimateMethod(bodyData, animatePath+"/tales");
@@ -94,16 +86,11 @@ public class ImageAndGifProcessor {
         }
     }
 
-    public byte[] friendConvertToGif(byte[] image){
+    public byte[] friendConvertToGif(List<byte[]> images){
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
         //bodyData.clear();
-        bodyData.add("image", new ByteArrayResource(image){
-            @Override
-            public String getFilename() throws IllegalStateException{
-                return "image.jpg";
-            }
-        });
+        ImageListToRequestBodyData.addImage(images, bodyData);
 
         try{
             return communicationProcessor.postMultipartAnimateMethod(bodyData, animatePath+"/friends");
