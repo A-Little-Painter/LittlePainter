@@ -10,7 +10,8 @@ import sys
 import yaml
 
 
-def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None, character=None):
+def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None,
+                             character=None):
     """
     Given a path to a directory with character annotations, a motion configuration file, and a retarget configuration file,
     creates an animation and saves it to {annotation_dir}/video.png
@@ -42,23 +43,8 @@ def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cf
     # render the video
     animated_drawings.render.start(output_mvc_cfn_fn)
 
-    # 애니메이션 크기 확장
-    with Image.open(f'{output_mvc_cfn_fn}/video.gif') as img:
-        frames = []
-        for frame in range(img.n_frames):
-            img.seek(frame)
-            frames.append(img.copy())
-
-        # 각 프레임 4배 확장
-        expanded_frames = [frame.resize((frame.width * 4, frame.height * 4), Image.ANTIALIAS) for frame in frames]
-
-        # 저장
-        expanded_frames[0].save(f'{output_mvc_cfn_fn}/video.gif', save_all=True, append_images=expanded_frames[1:],
-                                duration=img.info['duration'], loop=img.info['loop'])
-
 
 from pkg_resources import resource_filename
-
 
 if __name__ == '__main__':
 
