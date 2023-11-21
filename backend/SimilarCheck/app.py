@@ -82,6 +82,11 @@ def borderExtractionTest(roomId, originalPath, newPath):
     # result_image에서 mask 영역의 검은색 부분에 해당하는 영역에서만 픽셀을 하얀색으로 변경
     result_image[black_pixels_in_mask] = [255, 255, 255]
 
+    # 테두리 이용해서 사용하지 않는 부분 제거
+    x, y, w, h = cv2.boundingRect(contours1[0])
+    result_image = result_image[y:y + h, x:x + w]
+    mask = mask[y:y + h, x:x + w]
+
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/' + roomId + 'output.jpg', result_image)
     cv2.imwrite('./borderImages/' + roomId + 'output_mask.jpg', mask)
