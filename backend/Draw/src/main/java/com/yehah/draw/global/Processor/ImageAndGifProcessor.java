@@ -17,6 +17,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import java.util.Map;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public class ImageAndGifProcessor {
             throw new AnimationBorderExtractionException("테두리 내부 영역의 이미지를 추출할 수 없습니다.");
         }
     }
-    public byte[] animalConvertToGif(String animalType, List<byte[]> images){
+    public byte[] animalConvertToGif(String animalType, Map<String, byte[]> images){
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
         //bodyData.clear();
         bodyData.add("animalType", animalType);
@@ -58,7 +59,7 @@ public class ImageAndGifProcessor {
             throw new AnimationChangeException("이미지를 GIF로 변환할 수 없습니다.");
         }
     }
-    public byte[] taleConvertToGif(int pageNo, String taleTitle, String character, List<byte[]> images){
+    public byte[] taleConvertToGif(int pageNo, String taleTitle, String character, Map<String, byte[]> images){
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
         // bodyData.clear();
         bodyData.add("pageNo", pageNo);
@@ -72,7 +73,7 @@ public class ImageAndGifProcessor {
             throw new AnimationChangeException("이미지를 GIF로 변환할 수 없습니다.");
         }
     }
-    public byte[] friendConvertToGif(List<byte[]> images){
+    public byte[] friendConvertToGif(Map<String, byte[]> images){
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
         //bodyData.clear();
         ImageListToRequestBodyData.addImage(images, bodyData);
