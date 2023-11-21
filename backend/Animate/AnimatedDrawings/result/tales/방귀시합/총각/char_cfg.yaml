@@ -51,13 +51,13 @@ skeleton:
   name: left_hand
   parent: left_elbow
 - loc:
-  - 229
-  - 604
+  - 235
+  - 526
   name: right_hip
   parent: root
 - loc:
-  - 209
-  - 608
+  - 224
+  - 633
   name: right_knee
   parent: right_hip
 - loc:
@@ -66,13 +66,13 @@ skeleton:
   name: right_foot
   parent: right_knee
 - loc:
-  - 362
-  - 601
+  - 339
+  - 526
   name: left_hip
   parent: root
 - loc:
-  - 383
-  - 677
+  - 368
+  - 635
   name: left_knee
   parent: left_hip
 - loc:
