@@ -1,33 +1,33 @@
-height: 369
+height: 754
 skeleton:
 - loc:
-  - 179
-  - 137
+  - 352
+  - 232
   name: root
   parent: null
 - loc:
-  - 179
-  - 137
+  - 352
+  - 232
   name: hip
   parent: root
 - loc:
-  - 179
-  - 137
+  - 352
+  - 232
   name: torso
   parent: hip
 - loc:
-  - 179
-  - 137
+  - 352
+  - 232
   name: neck
   parent: torso
 - loc:
-  - 179
-  - 137
+  - 352
+  - 232
   name: right_shoulder
   parent: torso
 - loc:
-  - 34
-  - 347
+  - 155
+  - 553
   name: right_hand
   parent: right_shoulder
-width: 296
+width: 537
