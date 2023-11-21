@@ -78,13 +78,10 @@ def borderExtractionTest(roomId, originalPath, newPath):
     mask = mask[t:b, l:r]
 
     # mask 검은 테두리 생성
-    border = np.zeros((b-t + 2, r-l + 2, 3), dtype="uint8")
-    border[0:b-t + 1, 0:r-l + 1] = (0, 0, 0)
-    cv2.copyTo(border, mask)
-
+    border_mask = cv2.copyMakeBorder(mask, 1, 1, 1, 1, cv2.BORDER_CONSTANT, value=(0, 0, 0))
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/' + roomId + 'output.jpg', result_image)
-    cv2.imwrite('./borderImages/' + roomId + 'output_mask.jpg', mask)
+    cv2.imwrite('./borderImages/' + roomId + 'output_mask.jpg', border_mask)
 
 
 # 원본의 이미지 테두리를 회색에서 검은색으로 변경해서 저장함
