@@ -442,7 +442,7 @@ export default function DrawFairytaleScreen({
                 <IconFontAwesome
                   name="reply"
                   size={windowWidth * 0.05}
-                  color={paths.length ? '#5E9FF9' : 'gray'}
+                  color={paths.length ? '#A6D934' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -458,7 +458,7 @@ export default function DrawFairytaleScreen({
                 <IconFontAwesome
                   name="share"
                   size={windowWidth * 0.05}
-                  color={tmpPaths.length ? '#5E9FF9' : 'gray'}
+                  color={tmpPaths.length ? '#A6D934' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -503,7 +503,7 @@ export default function DrawFairytaleScreen({
                 <IconFontAwesome6
                   name="x"
                   size={windowWidth * 0.03}
-                  color={'#5E9FF9'}
+                  color={'#A6D934'}
                 />
               </Text>
             </TouchableOpacity>
@@ -636,7 +636,7 @@ export default function DrawFairytaleScreen({
                   backgroundColor:
                     captureImagePath === '' || paths.length === 0
                       ? 'gray'
-                      : '#A8CEFF',
+                      : '#A6D934',
                 },
               ]}
               onPress={() => {
@@ -740,7 +740,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
-    borderColor: '#5E9FF9',
+    borderColor: '#A6D934',
     borderWidth: 2,
   },
   xText: {

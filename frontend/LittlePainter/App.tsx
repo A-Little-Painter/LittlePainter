@@ -27,10 +27,25 @@ Tts.speak('꼬마화가');
 // Axios 인터셉터 설정
 axios.interceptors.response.use(
   response => response,
-  error => {
+  async error => {
     if (error.response.status === 401) {
-      refreshAccessToken();
+      console.log('Token refresh needed. Refreshing access token...');
+      try {
+        await refreshAccessToken();
+        console.log('Token refreshed. Retrying the original request...');
+        // 토큰이 성공적으로 리프레시되었다면, 원래의 요청을 다시 시도
+        const originalRequest = error.config;
+        return axios(originalRequest);
+      } catch (refreshError) {
+        console.error(
+          'Token refresh failed. Redirect to login page.',
+          refreshError,
+        );
+        // 토큰 리프레시에 실패한 경우, 로그인 페이지로 리다이렉트 또는 다른 에러 처리
+        return Promise.reject(refreshError);
+      }
     }
+    console.log('Error:', error);
     return Promise.reject(error);
   },
 );

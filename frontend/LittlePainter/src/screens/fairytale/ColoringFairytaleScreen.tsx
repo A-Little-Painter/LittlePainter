@@ -42,6 +42,7 @@ import {
 import {taleAnimations} from '../../apis/draw/draw';
 import {handleSoundEffect} from '../../redux/slices/music/music';
 // import {CharactersInfoType} from './fairytaleType';
+import LottieView from 'lottie-react-native';
 
 type ColoringFairytaleScreenProps = StackScreenProps<
   RootStackParams,
@@ -134,6 +135,7 @@ export default function ColoringFairytaleScreen({
     (state: RootState) => state.draw.isDrawScreenshotModalVisible,
   );
   const [captureImagePath, setCaptureImagePath] = useState<string>('');
+  const [animationPlayed, setAnimationPlayed] = useState(false);
 
   // 동화 애니메이션
   async function handleTaleAnimations() {
@@ -389,7 +391,7 @@ export default function ColoringFairytaleScreen({
                 <IconFontAwesome
                   name="reply"
                   size={windowWidth * 0.05}
-                  color={paths.length ? '#5E9FF9' : 'gray'}
+                  color={paths.length ? '#A6D934' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -405,7 +407,7 @@ export default function ColoringFairytaleScreen({
                 <IconFontAwesome
                   name="share"
                   size={windowWidth * 0.05}
-                  color={tmpPaths.length ? '#5E9FF9' : 'gray'}
+                  color={tmpPaths.length ? '#A6D934' : 'gray'}
                 />
               </Text>
             </TouchableOpacity>
@@ -446,7 +448,7 @@ export default function ColoringFairytaleScreen({
                 <IconFontAwesome6
                   name="x"
                   size={windowWidth * 0.03}
-                  color={'#5E9FF9'}
+                  color={'#A6D934'}
                 />
               </Text>
             </TouchableOpacity>
@@ -581,6 +583,19 @@ export default function ColoringFairytaleScreen({
           source={require('../../assets/images/loading2.png')}
         />
       ) : null}
+      {!animationPlayed && (
+        <View style={styles.overlay}>
+          <LottieView
+            style={styles.animationView}
+            source={require('../../assets/lottie/draw_complete.json')}
+            autoPlay
+            loop={false}
+            onAnimationFinish={() => {
+              setAnimationPlayed(true); // 애니메이션이 끝나면 이 상태를 true로 설정
+            }}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -653,7 +668,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
-    borderColor: '#5E9FF9',
+    borderColor: '#A6D934',
     borderWidth: 2,
   },
   xText: {
@@ -726,7 +741,7 @@ const styles = StyleSheet.create({
     flex: 0.4,
   },
   nextButton: {
-    backgroundColor: '#A8CEFF',
+    backgroundColor: '#A6D934',
     width: '60%',
     height: '80%',
     alignItems: 'center',
@@ -735,7 +750,7 @@ const styles = StyleSheet.create({
     borderRadius: windowWidth * 0.2 * 0.07,
   },
   doneButton: {
-    backgroundColor: '#A8CEFF',
+    backgroundColor: '#A6D934',
     width: '40%',
     height: '80%',
     alignItems: 'center',
@@ -753,5 +768,19 @@ const styles = StyleSheet.create({
     height: windowHeight * 0.3,
     top: windowHeight * 0.5 - windowHeight * 0.3 * 0.5,
     left: windowWidth * 0.5 - windowHeight * 0.3 * 0.5,
+  },
+  animationView: {
+    height: windowHeight * 0.5,
+    width: windowWidth * 0.5,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
   },
 });
