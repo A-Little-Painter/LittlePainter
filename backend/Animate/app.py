@@ -55,6 +55,9 @@ class Animals(Resource):
         image = request.files['image']
         mask_image = request.files.get('image_mask')
 
+        image.save('imageinput.png')
+        mask_image.save('image_maskinput.png')
+
         # requestbody 확인되면 요청별 전용 경로 생성
         animal_list = ['곰', '낙타', '돼지', '원숭이', '코뿔소', '판다', '하마', '호랑이', '사슴', '강아지', '기린', '사자', '고양이', '아기호랑이']
         if animal_type in animal_list:
