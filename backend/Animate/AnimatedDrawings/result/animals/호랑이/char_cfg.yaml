@@ -1,4 +1,4 @@
-height: 738
+height: 740
 skeleton:
   - loc:
       - 636
@@ -80,4 +80,4 @@ skeleton:
       - 684
     name: left_foot_b
     parent: left_knee_b
-width: 1222
+width: 1224
