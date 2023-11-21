@@ -73,17 +73,12 @@ class Animals(Resource):
         # 이미지 저장
         original_filename, file_extension = os.path.splitext(image.filename)
         file_uuid = uuid.uuid4()
-        filename = secure_filename(
-            f"{original_filename}{datetime.now().strftime('%m%d%H%M%S')}{str(file_uuid)}{file_extension}")
-        image.save(f"{filename}")
+        image.save(f"{OUTPUT_FILE_PATH}/texture.png")
         mask_image.save(f'{OUTPUT_FILE_PATH}/mask.png')
 
         # 저장한 이미지로 애니메이션 생성
-        result = shell_create_animation(filename, OUTPUT_FILE_PATH, animal_type, 'animals')
+        result = shell_create_animation(OUTPUT_FILE_PATH, animal_type, 'animals')
         logging.debug(result)
-
-        # 임시로 저장한 이미지 삭제
-        os.remove(filename)
 
         # 임시값 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')

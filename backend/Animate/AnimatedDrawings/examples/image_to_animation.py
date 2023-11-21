@@ -15,7 +15,7 @@ import sys
 from pkg_resources import resource_filename
 
 
-def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None,
+def image_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None,
                        character=None):
 
     # 동물그리기) 모델이 도출한 annotation(mask, texture)을 프리셋에 맞게 수정
@@ -38,7 +38,7 @@ def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, reta
         with open(f"{char_anno_dir}/char_cfg.yaml", "r") as file:
             cfg_file = yaml.safe_load(file)
         # # texture.png 로드, *수정*, 저장
-        texture = Image.open(img_fn)
+        texture = Image.open(f"{char_anno_dir}/texture.png")
         resized_image = ImageOps.pad(texture, (cfg_file["width"], cfg_file["height"]), method=1)
         resized_image.save(f"{char_anno_dir}/texture.png")
         # # mask.png 로드, *수정*, 저장
