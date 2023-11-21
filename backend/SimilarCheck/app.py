@@ -78,8 +78,7 @@ def borderExtractionTest(roomId, originalPath, newPath):
     mask = mask[t:b, l:r]
 
     # mask 검은 테두리 생성
-    width, height = r-l, t-b
-    border = np.zeros((height + 2, width + 2), dtype="uint8")
+    border = np.zeros((b-t + 2, r-l + 2), dtype="uint8")
     border[1:-1, 1:-1] = (0, 0, 0)
     cv2.copyTo(border, mask)
 
