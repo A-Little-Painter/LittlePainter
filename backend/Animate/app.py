@@ -24,10 +24,8 @@ class Hello(Resource):
         }, 777, None
 
 
-def shell_create_animation(input_filename, char_anno_dir, character, animation_type, title=None, no=None):
-    logging.debug(f"shell 명령어 호출_common {input_filename} {char_anno_dir} {character}")
-
-    cmd = generate_command(input_filename, char_anno_dir, character, animation_type, title, no)
+def shell_create_animation(char_anno_dir, character, animation_type, title=None, no=None):
+    cmd = generate_command(char_anno_dir, character, animation_type, title, no)
     # 셸 명령 실행
     try:
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
@@ -37,8 +35,8 @@ def shell_create_animation(input_filename, char_anno_dir, character, animation_t
         return e.stderr
 
 
-def generate_command(input_filename, char_anno_dir, character, animation_type, title=None, no=None):
-    base_cmd = f"python AnimatedDrawings/examples/image_to_animation.py {input_filename} {char_anno_dir} {character} {animation_type}"
+def generate_command(char_anno_dir, character, animation_type, title=None, no=None):
+    base_cmd = f"python AnimatedDrawings/examples/image_to_animation.py {char_anno_dir} {character} {animation_type}"
     if animation_type == 'tales':
         base_cmd += f" {title} {no}"
     return base_cmd.strip()
