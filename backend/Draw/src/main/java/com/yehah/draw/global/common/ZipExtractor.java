@@ -1,22 +1,18 @@
-
 package com.yehah.draw.global.common;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-@Slf4j
 public class ZipExtractor {
-    public static Map<String, byte[]> unzip(byte[] imageZip) throws IOException {
-        Map<String, byte[]> imageList = new HashMap<>();
+    public static List<byte[]> unzip(byte[] imageZip) throws IOException {
+        List<byte[]> imageList = new ArrayList<>();
         byte[] buffer = new byte[1024];
+
         try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(imageZip))) {
             ZipEntry zipEntry = zipInputStream.getNextEntry();
             while (zipEntry != null) {
@@ -27,8 +23,7 @@ public class ZipExtractor {
                     while ((length = zipInputStream.read(buffer)) > 0) {
                         outputStream.write(buffer, 0, length);
                     }
-                    log.debug("Zip debug : " + zipEntry.getName());
-                    imageList.put(zipEntry.getName(), outputStream.toByteArray());
+                    imageList.add(outputStream.toByteArray());
                 }
                 zipEntry = zipInputStream.getNextEntry();
             }
