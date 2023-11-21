@@ -38,6 +38,7 @@ public class AnimationController {
     @PostMapping("/animals")
     public ResponseEntity<AnimationResDto> sendAnimatedAnimal(@ModelAttribute AnimationAnimalReqDto animationAnimalReqDto) throws IOException {
         byte[] imageZip, gifFile;
+        log.debug("animal draw 잘 들어옴");
 
         // 1. 테두리의 영역 안에 있는 이미지만 추출하기
         imageZip = imageAndGifProcessor.extractBorderImage(animationAnimalReqDto.getRoomId(), animationAnimalReqDto.getOriginalFile(),
@@ -77,7 +78,7 @@ public class AnimationController {
         Map<String, byte[]> images = ZipExtractor.unzip(imageZip);
 
         gifFile = imageAndGifProcessor.friendConvertToGif(images);
-        return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(images.get(0), gifFile));
+        return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(images.get("output.jpg"), gifFile));
     }
 
     // NOTE : 내 친구의 동물 그리기
