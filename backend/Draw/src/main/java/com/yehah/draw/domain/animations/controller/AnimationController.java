@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -41,12 +42,12 @@ public class AnimationController {
         // 1. 테두리의 영역 안에 있는 이미지만 추출하기
         imageZip = imageAndGifProcessor.extractBorderImage(animationAnimalReqDto.getRoomId(), animationAnimalReqDto.getOriginalFile(),
                 animationAnimalReqDto.getNewFile());
-        List<byte[]> images = ZipExtractor.unzip(imageZip);
+        Map<String, byte[]> images = ZipExtractor.unzip(imageZip);
 
         // 2. gif파일 받아오기
         gifFile = imageAndGifProcessor.animalConvertToGif(animationAnimalReqDto.getAnimalType(), images);
         // 3. image, gif 파일 모두 업로드하기
-        AnimationResDto animationResDto = imageAndGifProcessor.uploadsImageAndGif(images.get(0), gifFile);
+        AnimationResDto animationResDto = imageAndGifProcessor.uploadsImageAndGif(images.get("output.jpg"), gifFile);
         animationResDto.setUrlSound(animalService.getAnimalUrlSound(animationAnimalReqDto.getAnimalType()));
 
         return ResponseEntity.ok(animationResDto);
@@ -59,11 +60,11 @@ public class AnimationController {
 
         imageZip = imageAndGifProcessor.extractBorderImage(animationTaleReqDto.getRoomId(), animationTaleReqDto.getOriginalFile(),
                 animationTaleReqDto.getNewFile());
-        List<byte[]> images = ZipExtractor.unzip(imageZip);
+        Map<String, byte[]> images = ZipExtractor.unzip(imageZip);
 
         gifFile = imageAndGifProcessor.taleConvertToGif(animationTaleReqDto.getPageNumber(), animationTaleReqDto.getTitle(),
                 animationTaleReqDto.getRequestCharacter(), images);
-        return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(images.get(0), gifFile));
+        return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(images.get("output.jpg"), gifFile));
     }
 
     // NOTE : 내 친구 그리기
@@ -73,7 +74,7 @@ public class AnimationController {
 
         imageZip = imageAndGifProcessor.extractBorderImage(animationFriendReqDto.getRoomId(), animationFriendReqDto.getOriginalFile(),
                 animationFriendReqDto.getNewFile());
-        List<byte[]> images = ZipExtractor.unzip(imageZip);
+        Map<String, byte[]> images = ZipExtractor.unzip(imageZip);
 
         gifFile = imageAndGifProcessor.friendConvertToGif(images);
         return ResponseEntity.ok(imageAndGifProcessor.uploadsImageAndGif(images.get(0), gifFile));
@@ -88,9 +89,9 @@ public class AnimationController {
         // 1. 테두리의 영역 안에 있는 이미지만 추출하기
         imageZip = imageAndGifProcessor.extractBorderImage(uuid.toString(), friendReqDto.getOriginalFile(),
                 friendReqDto.getNewFile());
-        List<byte[]> images = ZipExtractor.unzip(imageZip);
+        Map<String, byte[]> images = ZipExtractor.unzip(imageZip);
 
-        return ResponseEntity.ok(imageAndGifProcessor.uploadsImage(images.get(0)).getImageUrl());
+        return ResponseEntity.ok(imageAndGifProcessor.uploadsImage(images.get("output.jpg")).getImageUrl());
     }
 
 }

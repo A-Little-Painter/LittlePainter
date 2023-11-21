@@ -18,6 +18,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Configuration
@@ -55,7 +56,7 @@ public class ImageAndGifProcessor {
         }
     }
 
-    public byte[] animalConvertToGif(String animalType, List<byte[]> images){
+    public byte[] animalConvertToGif(String animalType, Map<String, byte[]> images){
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
         //bodyData.clear();
@@ -69,7 +70,7 @@ public class ImageAndGifProcessor {
         }
     }
 
-    public byte[] taleConvertToGif(int pageNo, String taleTitle, String character, List<byte[]> images){
+    public byte[] taleConvertToGif(int pageNo, String taleTitle, String character, Map<String, byte[]> images){
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
         // bodyData.clear();
@@ -86,7 +87,7 @@ public class ImageAndGifProcessor {
         }
     }
 
-    public byte[] friendConvertToGif(List<byte[]> images){
+    public byte[] friendConvertToGif(Map<String, byte[]> images){
         MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
 
         //bodyData.clear();
