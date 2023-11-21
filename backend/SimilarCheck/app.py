@@ -82,42 +82,10 @@ def borderExtractionTest(roomId, originalPath, newPath):
     # result_image에서 mask 영역의 검은색 부분에 해당하는 영역에서만 픽셀을 하얀색으로 변경
     result_image[black_pixels_in_mask] = [255, 255, 255]
 
-    # 이미지의 높이와 너비 가져오기
-    height, width = result_image.shape[:2]
-
-    print("height: ", height ,", width: ", width)
-
-    # 이미지를 중앙을 기준으로 2000x2000으로 자르기
-    start_row = max(0, int((height - 2000) / 2))
-    end_row = min(height, start_row + 2000)
-    start_col = max(0, int((width - 2000) / 2))
-    end_col = min(width, start_col + 2000)
-
-    # 이미지를 2000x2000으로 자르거나 확장하기
-    result_image = result_image[start_row:end_row, start_col:end_col]
-    mask = mask[start_row:end_row, start_col:end_col]
-
-    if result_image.shape[0] < 2000:  # 세로가 500보다 작으면
-        pad_top = (2000 - result_image.shape[0]) // 2
-        pad_bottom = 2000 - result_image.shape[0] - pad_top
-        result_image = cv2.copyMakeBorder(result_image, pad_top, pad_bottom, 0, 0, cv2.BORDER_CONSTANT,
-                                          value=(255, 255, 255))
-        pad_top = (2000 - mask.shape[0]) // 2
-        pad_bottom = 2000 - mask.shape[0] - pad_top
-        mask = cv2.copyMakeBorder(mask, pad_top, pad_bottom, 0, 0, cv2.BORDER_CONSTANT, value=(0, 0, 0))
-
-    if result_image.shape[1] < 2000:  # 가로가 500보다 작으면
-        pad_left = (2000 - result_image.shape[1]) // 2
-        pad_right = 2000 - result_image.shape[1] - pad_left
-        result_image = cv2.copyMakeBorder(result_image, 0, 0, pad_left, pad_right, cv2.BORDER_CONSTANT,
-                                          value=(255, 255, 255))
-        pad_left = (2000 - mask.shape[1]) // 2
-        pad_right = 2000 - mask.shape[1] - pad_left
-        mask = cv2.copyMakeBorder(mask, 0, 0, pad_left, pad_right, cv2.BORDER_CONSTANT, value=(0, 0, 0))
-
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/' + roomId + 'output.jpg', result_image)
     cv2.imwrite('./borderImages/' + roomId + 'output_mask.jpg', mask)
+
 
 # 원본의 이미지 테두리를 회색에서 검은색으로 변경해서 저장함
 def colorChangeToBlack(originalPath):
