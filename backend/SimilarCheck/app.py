@@ -74,13 +74,11 @@ def borderExtractionTest(roomId, originalPath, newPath):
     non_black_pixels = np.where(~black_pixels_in_mask)
     t, b = np.min(non_black_pixels[0]), np.max(non_black_pixels[0])
     l, r = np.min(non_black_pixels[1]), np.max(non_black_pixels[1])
-    result_image = result_image[t:b, l:r]
+    result_image = result_image[t-1:b+1, l-1:r+1]
     mask = mask[t:b, l:r]
 
     # mask 검은 테두리 생성
-    width, height = mask.size
-    img_with_border = Image.new('RGB', (width, height), color='black')
-    mask = img_with_border.paste(img, (border_size, border_size))
+    mask = ImageOps.expand(mask, border=1, fill='black')
 
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/' + roomId + 'output.jpg', result_image)
