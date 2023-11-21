@@ -57,10 +57,9 @@ if __name__ == '__main__':
     retarget_cfg_fn = None
 
     # 인자 수신
-    img_fn = sys.argv[1]
-    char_anno_dir = sys.argv[2]
-    character = sys.argv[3]
-    animation_type = sys.argv[4]
+    char_anno_dir = sys.argv[1]
+    character = sys.argv[2]
+    animation_type = sys.argv[3]
 
     # motion, retarget config 할당
     if animation_type == 'animals':
@@ -69,8 +68,8 @@ if __name__ == '__main__':
         retarget_cfg_fn = resource_filename(__name__, 'config/retarget/four_legs.yaml')
     elif animation_type == 'tales':
         # 동화 추가인자 수신
-        title = sys.argv[5]
-        page_no = sys.argv[6]
+        title = sys.argv[4]
+        page_no = sys.argv[5]
         motion_cfg_fn = resource_filename(__name__, f'../result/tales/{title}/{character}/motion_cfg.yaml')
         if title == '방귀시합' and character == '방망이':
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/stick.yaml')
@@ -104,4 +103,4 @@ if __name__ == '__main__':
             retarget_cfg_fn = resource_filename(__name__, 'config/retarget/rokoko_mine.yaml')
 
     # 골격종류 포함하여 config파일 생성 함수 실행
-    image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn, animation_type, character)
+    image_to_animation(char_anno_dir, motion_cfg_fn, retarget_cfg_fn, animation_type, character)
