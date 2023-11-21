@@ -4,7 +4,7 @@ import tempfile
 from flask import Flask, request, send_file
 import cv2, sys, os
 import numpy as np
-from PIL import Image, ImageOps
+from PIL import Image
 app = Flask(__name__)
 # 두 이미지의 유사도를 검사한다.
 def similarityCheckTest(originalPath, newPath):
@@ -74,11 +74,14 @@ def borderExtractionTest(roomId, originalPath, newPath):
     non_black_pixels = np.where(~black_pixels_in_mask)
     t, b = np.min(non_black_pixels[0]), np.max(non_black_pixels[0])
     l, r = np.min(non_black_pixels[1]), np.max(non_black_pixels[1])
-    result_image = result_image[t-1:b+1, l-1:r+1]
+    result_image = result_image[t:b, l:r]
     mask = mask[t:b, l:r]
 
     # mask 검은 테두리 생성
-    mask = ImageOps.expand(mask, border=1, fill='black')
+    width, height = r-l, t-b
+    img_with_border = Image.new('RGB', (width, height), color='black')
+    img_with_border.paste(mask, (1, 1))
+    mask = img_with_border
 
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/' + roomId + 'output.jpg', result_image)
