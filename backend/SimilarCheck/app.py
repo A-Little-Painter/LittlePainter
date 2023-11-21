@@ -95,7 +95,7 @@ def borderExtractionTest(roomId, originalPath, newPath):
 
     # 이미지를 2000x2000으로 자르거나 확장하기
     result_image = result_image[start_row:end_row, start_col:end_col]
-    result_image_mask = mask[start_row:end_row, start_col:end_col]
+    mask = mask[start_row:end_row, start_col:end_col]
 
     if result_image.shape[0] < 2000:  # 세로가 500보다 작으면
         pad_top = (2000 - result_image.shape[0]) // 2
@@ -104,7 +104,7 @@ def borderExtractionTest(roomId, originalPath, newPath):
                                           value=(255, 255, 255))
         pad_top = (2000 - mask.shape[0]) // 2
         pad_bottom = 2000 - mask.shape[0] - pad_top
-        mask = cv2.copyMakeBorder(mask, pad_top, pad_bottom, 0, 0, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+        mask = cv2.copyMakeBorder(mask, pad_top, pad_bottom, 0, 0, cv2.BORDER_CONSTANT, value=(0, 0, 0))
 
     if result_image.shape[1] < 2000:  # 가로가 500보다 작으면
         pad_left = (2000 - result_image.shape[1]) // 2
@@ -113,10 +113,10 @@ def borderExtractionTest(roomId, originalPath, newPath):
                                           value=(255, 255, 255))
         pad_left = (2000 - mask.shape[1]) // 2
         pad_right = 2000 - mask.shape[1] - pad_left
-        mask = cv2.copyMakeBorder(mask, 0, 0, pad_left, pad_right, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+        mask = cv2.copyMakeBorder(mask, 0, 0, pad_left, pad_right, cv2.BORDER_CONSTANT, value=(0, 0, 0))
 
     # 결과 이미지를 저장
-    cv2.imwrite('./borderImages/'+roomId+'output.jpg', result_image)
+    cv2.imwrite('./borderImages/' + roomId + 'output.jpg', result_image)
     cv2.imwrite('./borderImages/' + roomId + 'output_mask.jpg', mask)
 
 # 원본의 이미지 테두리를 회색에서 검은색으로 변경해서 저장함
