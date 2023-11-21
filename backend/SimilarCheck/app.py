@@ -83,15 +83,18 @@ def borderExtractionTest(roomId, originalPath, newPath):
     result_image[black_pixels_in_mask] = [255, 255, 255]
 
     # 테두리 이용해서 사용하지 않는 부분 제거
-    x, y, w, h = cv2.boundingRect(contours1[0])
-    result_image_cropped = result_image[y:y + h, x:x + w]
-    mask_cropped = mask[y:y + h, x:x + w]
+    non_black_pixels = np.where(~black_pixels_in_mask)
+    t, b = np.min(non_black_pixels[0]), np.max(non_black_pixels[0])
+    l, r = np.min(non_black_pixels[1]), np.max(non_black_pixels[1])
+
+    result_image_cropped = result_image[t:b, l:r]
+    mask_cropped = mask[t:b, l:r]
 
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/' + roomId + 'output.jpg', result_image)
     cv2.imwrite('./borderImages/' + roomId + 'output_mask.jpg', mask)
-    cv2.imwrite('./borderImages/' + roomId + 'output_cropped.jpg', result_image)
-    cv2.imwrite('./borderImages/' + roomId + 'output_mask_cropped.jpg', mask)
+    cv2.imwrite('./borderImages/' + roomId + 'output_cropped.jpg', result_image_cropped)
+    cv2.imwrite('./borderImages/' + roomId + 'output_mask_cropped.jpg', mask_cropped)
 
 
 # 원본의 이미지 테두리를 회색에서 검은색으로 변경해서 저장함
