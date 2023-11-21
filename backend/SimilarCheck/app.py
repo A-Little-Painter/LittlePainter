@@ -33,40 +33,60 @@ def similarityCheckTest(originalPath, newPath):
     match_accuracy = len(matches) / len(kp1)
     print('유사도:', match_accuracy)
     return match_accuracy
+
+
 # 테두리 영역 안의 그림만 추출한다.
 def borderExtractionTest(roomId, originalPath, newPath):
+
     originalImage = cv2.imread(originalPath)
+
     if originalImage is None:
         print(f'Unable to load image from {originalPath}')
         exit()
     newImage = cv2.imread(newPath)
+
     if newImage is None:
         print(f'Unable to load image from {newPath}')
         exit()
+
     # [originalImage]에서 테두리 영역을 추출
     contours1, _ = cv2.findContours(cv2.inRange(originalImage, (0, 0, 0), (30, 30, 30)), cv2.RETR_EXTERNAL,
                                     cv2.CHAIN_APPROX_SIMPLE)
+
     # 팽창을 위한 커널 생성
     kernel = np.ones((5, 5), np.uint8)  # 팽창을 위한 5x5 크기의 커널, 크기는 상황에 따라 조절 가능
+
     # contour 기반으로 마스크 생성 후 팽창 적용
     mask = np.zeros(newImage.shape, dtype=np.uint8)
     cv2.drawContours(mask, contours1, -1, (255, 255, 255), thickness=cv2.FILLED)
     mask = cv2.dilate(mask, kernel, iterations=3)  # iterations 값은 팽창의 강도를 결정
+
     # [newImage]에서 [originalImage]의 테두리를 기반으로 영역 추출
     result_image = cv2.bitwise_and(newImage, mask) # result_image는 newImage와 기존 테두리의 교점
+
     # mask 영역의 검은색 부분이 있는 위치를 찾는다.
     black_pixels_in_mask = (mask == [0, 0, 0]).all(axis=2)
+
     # result_image에서 mask 영역의 검은색 부분에 해당하는 영역에서만 픽셀을 하얀색으로 변경
     result_image[black_pixels_in_mask] = [255, 255, 255]
+
     # 테두리 이용해서 사용하지 않는 부분 제거
     non_black_pixels = np.where(~black_pixels_in_mask)
     t, b = np.min(non_black_pixels[0]), np.max(non_black_pixels[0])
     l, r = np.min(non_black_pixels[1]), np.max(non_black_pixels[1])
     result_image = result_image[t:b, l:r]
     mask = mask[t:b, l:r]
+
+    # mask 검은 테두리 생성
+    width, height = mask.size
+    img_with_border = Image.new('RGB', (width, height), color='black')
+    mask = img_with_border.paste(img, (border_size, border_size))
+
     # 결과 이미지를 저장
     cv2.imwrite('./borderImages/' + roomId + 'output.jpg', result_image)
     cv2.imwrite('./borderImages/' + roomId + 'output_mask.jpg', mask)
+
+
 # 원본의 이미지 테두리를 회색에서 검은색으로 변경해서 저장함
 def colorChangeToBlack(originalPath):
     # 이미지 열기
@@ -84,6 +104,8 @@ def colorChangeToBlack(originalPath):
     new_image.putdata(pixels)
     # 이미지 저장
     new_image.save(originalPath)
+
+
 def removeFile():
     folder_path = './borderImages/'  # 삭제하려는 폴더 경로
     file_to_exclude = 'borderImageData'  # 제외할 파일명
@@ -96,6 +118,8 @@ def removeFile():
                 print(f'{file_path} 파일이 삭제되었습니다.')
         except Exception as e:
             print(f'파일 삭제 중 에러 발생: {e}')
+
+
 @app.route('/border-extraction', methods=['POST'])
 def borderExtraction():
     #이전에 있던 파일 삭제하기
@@ -125,6 +149,8 @@ def borderExtraction():
     shutil.make_archive(temp_dir, 'zip', temp_dir)
     # shutil.copy(f'{temp_dir}.zip', '/app/')
     return send_file(temp_dir+'.zip', as_attachment=True)
+
+
 @app.route('/similarcheck', methods=['POST'])
 def similarityCheck():
     # JSON 데이터 파싱
@@ -143,5 +169,7 @@ def similarityCheck():
     os.remove(originalPath)
     os.remove(newPath)
     return result
+
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=8600, debug=True)
