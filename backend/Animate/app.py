@@ -69,8 +69,6 @@ class Animals(Resource):
             }, 400
 
         # 이미지 저장
-        original_filename, file_extension = os.path.splitext(image.filename)
-        file_uuid = uuid.uuid4()
         image.save(f"{OUTPUT_FILE_PATH}/texture.png")
         mask_image.save(f'{OUTPUT_FILE_PATH}/mask.png')
 
@@ -94,25 +92,17 @@ class Tales(Resource):
 
         # requestbody 확인되면 요청별 전용 경로 생성
         tale_list = ['방귀시합']
-        # if tale_title in tale_list:
         folder_uuid = uuid.uuid4()
         OUTPUT_FILE_PATH = f"AnimatedDrawings/result/tales/{tale_title}/{character}/{datetime.now().strftime('%m%d%H%M%S')}{str(folder_uuid)}"
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
         # 이미지 저장
-        original_filename, file_extension = os.path.splitext(image.filename)
-        file_uuid = uuid.uuid4()
-        filename = secure_filename(
-            f"{original_filename}{datetime.now().strftime('%m%d%H%M%S')}{str(file_uuid)}{file_extension}")
-        image.save(filename)
+        image.save(f"{OUTPUT_FILE_PATH}/texture.png")
         mask_image.save(f'{OUTPUT_FILE_PATH}/mask.png')
 
         # 저장한 이미지로 애니메이션 생성
-        result = shell_create_animation(filename, OUTPUT_FILE_PATH, character, 'tales', tale_title, page_no)
+        result = shell_create_animation(OUTPUT_FILE_PATH, character, 'tales', tale_title, page_no)
         logging.debug(result)
-
-        # 임시로 저장한 이미지 삭제
-        os.remove(filename)
 
         # 임시애니메이션 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
@@ -131,21 +121,14 @@ class Friends(Resource):
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
         # 이미지 저장
-        original_filename, file_extension = os.path.splitext(image.filename)
-        file_uuid = uuid.uuid4()
-        filename = secure_filename(
-            f"{original_filename}{datetime.now().strftime('%m%d%H%M%S')}{str(file_uuid)}{file_extension}")
-        image.save(filename)
+        image.save(f"{OUTPUT_FILE_PATH}/texture.png")
         mask_image.save(f'{OUTPUT_FILE_PATH}/mask.png')
 
         # 저장한 이미지로 애니메이션 생성
-        result = shell_create_animation(filename, OUTPUT_FILE_PATH, 'friend', 'friends')
+        result = shell_create_animation(OUTPUT_FILE_PATH, 'friend', 'friends')
         logging.debug(result)
 
-        # 임시로 저장한 이미지 삭제
-        os.remove(filename)
-
-        # 임시애니메이션 반환
+        # 애니메이션 반환
         return send_file(f"{OUTPUT_FILE_PATH}/video.gif", mimetype='image/gif')
 
 
