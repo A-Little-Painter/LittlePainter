@@ -17,13 +17,19 @@ from pkg_resources import resource_filename
 
 def image_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None,
                        character=None):
-    if animation_type != 'animals' or animation_type != 'tales':
+    if animation_type != 'animals' and animation_type != 'tales':
         image_to_annotations(char_anno_dir, animation_type)
 
     # 동물그리기) 모델이 도출한 annotation(mask, texture)을 프리셋에 맞게 수정
     if animation_type == 'tales' or animation_type == 'animals':
         # 프리셋 반영 1) char_cfg파일 복사
-        shutil.copy(f"{char_anno_dir}/../char_cfg.yaml", f"{char_anno_dir}/char_cfg.yaml")
+        try:
+            # Copy the file to the destination folder
+            shutil.copy(f"{char_anno_dir}/../char_cfg.yaml", f"{char_anno_dir}/char_cfg.yaml")
+            print("File copied successfully.")
+        except FileNotFoundError:
+            logging.info("기본 cfg 없음. torchsever에 생성 요청")
+            image_to_annotations(char_anno_dir, animation_type)
 
         # 프리셋 반영 2) 복사한 char_cfg파일에 맞게 이미지 수정
         # # cfg파일 로드
