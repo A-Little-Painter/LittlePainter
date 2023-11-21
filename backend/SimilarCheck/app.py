@@ -4,7 +4,7 @@ import tempfile
 from flask import Flask, request, send_file
 import cv2, sys, os
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 app = Flask(__name__)
 # 두 이미지의 유사도를 검사한다.
 def similarityCheckTest(originalPath, newPath):
