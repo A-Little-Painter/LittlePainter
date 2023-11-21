@@ -7,7 +7,6 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 import java.util.Map;
 @Slf4j
-@Configuration
 public class ImageListToRequestBodyData {
     public static void addImage(Map<String, byte[]> images, MultiValueMap<String, Object> bodyData) {
         log.info("images 사이즈 = " + images.size());
