@@ -53,9 +53,6 @@ class Animals(Resource):
         image = request.files['image']
         mask_image = request.files.get('image_mask')
 
-        image.save('imageinput.png')
-        mask_image.save('image_maskinput.png')
-
         # requestbody 확인되면 요청별 전용 경로 생성
         animal_list = ['곰', '낙타', '돼지', '원숭이', '코뿔소', '판다', '하마', '호랑이', '사슴', '강아지', '기린', '사자', '고양이', '아기호랑이']
         if animal_type in animal_list:
@@ -69,8 +66,8 @@ class Animals(Resource):
             }, 400
 
         # 이미지 저장
-        image.save(f"{OUTPUT_FILE_PATH}/texture.png")
-        mask_image.save(f'{OUTPUT_FILE_PATH}/mask.png')
+        image.save(os.path.join(OUTPUT_FILE_PATH, 'texture.png'))
+        mask_image.save(os.path.join(OUTPUT_FILE_PATH, 'mask.png'))
 
         # 저장한 이미지로 애니메이션 생성
         result = shell_create_animation(OUTPUT_FILE_PATH, animal_type, 'animals')
@@ -97,8 +94,8 @@ class Tales(Resource):
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
         # 이미지 저장
-        image.save(f"{OUTPUT_FILE_PATH}/texture.png")
-        mask_image.save(f'{OUTPUT_FILE_PATH}/mask.png')
+        image.save(os.path.join(OUTPUT_FILE_PATH, 'texture.png'))
+        mask_image.save(os.path.join(OUTPUT_FILE_PATH, 'mask.png'))
 
         # 저장한 이미지로 애니메이션 생성
         result = shell_create_animation(OUTPUT_FILE_PATH, character, 'tales', tale_title, page_no)
@@ -121,8 +118,8 @@ class Friends(Resource):
         Path(OUTPUT_FILE_PATH).mkdir(exist_ok=True, parents=True)
 
         # 이미지 저장
-        image.save(f"{OUTPUT_FILE_PATH}/texture.png")
-        mask_image.save(f'{OUTPUT_FILE_PATH}/mask.png')
+        image.save(os.path.join(OUTPUT_FILE_PATH, 'texture.png'))
+        mask_image.save(os.path.join(OUTPUT_FILE_PATH, 'mask.png'))
 
         # 저장한 이미지로 애니메이션 생성
         result = shell_create_animation(OUTPUT_FILE_PATH, 'friend', 'friends')

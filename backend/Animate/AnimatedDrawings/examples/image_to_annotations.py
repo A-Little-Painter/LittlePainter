@@ -24,6 +24,7 @@ def image_to_annotations(out_dir: str, animation_type=None) -> None:
         out_dir: directory where outputs will be saved
     """
     img_fn = f'{out_dir}/texture.png'
+
     logging.debug(f'image_to_annotations 진입 {img_fn} {out_dir} {animation_type}')
 
     # read image
