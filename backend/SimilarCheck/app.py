@@ -120,8 +120,8 @@ def borderExtraction():
     os.remove(newPath)
     # 이미지 여러개 전송
     temp_dir = tempfile.mkdtemp()
-    shutil.copy(f'./borderImages/{roomId}output.jpg', temp_dir)
-    shutil.copy(f'./borderImages/{roomId}output_mask.jpg', temp_dir)
+    shutil.copy(f'./borderImages/output.jpg', temp_dir)
+    shutil.copy(f'./borderImages/output_mask.jpg', temp_dir)
     shutil.make_archive(temp_dir, 'zip', temp_dir)
     # shutil.copy(f'{temp_dir}.zip', '/app/')
     return send_file(temp_dir+'.zip', as_attachment=True)
