@@ -15,10 +15,15 @@ import logging
 
 
 def image_to_annotations(out_dir: str, animation_type=None) -> None:
+
     img_fn = f'{out_dir}/texture.png'
+    outdir = Path(f"{out_dir}/")
 
     # read image
     img = cv2.imread(img_fn)
+
+    # copy the original image into the output_dir
+    cv2.imwrite(str(outdir/'image.png'), img)
 
     # convert to bytes and send to torchserve
     img_b = cv2.imencode('.png', img)[1].tobytes()
