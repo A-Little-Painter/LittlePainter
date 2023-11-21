@@ -1,5 +1,5 @@
-package com.yehah.draw.global.common;
 
+package com.yehah.draw.global.common;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,12 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 public class ZipExtractor {
     public static List<byte[]> unzip(byte[] imageZip) throws IOException {
         List<byte[]> imageList = new ArrayList<>();
         byte[] buffer = new byte[1024];
-
         try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(imageZip))) {
             ZipEntry zipEntry = zipInputStream.getNextEntry();
             while (zipEntry != null) {
