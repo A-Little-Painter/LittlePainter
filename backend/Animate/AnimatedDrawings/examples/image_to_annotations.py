@@ -14,18 +14,9 @@ import yaml
 import logging
 
 
-def image_to_annotations(img_fn: str, out_dir: str, animation_type=None) -> None:
-    """
-    Given the RGB image located at img_fn, runs detection, segmentation, and pose estimation for drawn character within it.
-    Crops the image and saves texture, mask, and character config files necessary for animation. Writes to out_dir.
+def image_to_annotations(out_dir: str, animation_type=None) -> None:
 
-    Params:
-        img_fn: path to RGB image
-        out_dir: directory where outputs will be saved
-    """
-    logging.debug(f'image_to_annotations 진입 {img_fn} {out_dir} {animation_type}')
-
-    # create output directory
+    img_fn = f'{out_dir}/texture.png'
     outdir = Path(f"{out_dir}/")
 
     # read image
@@ -33,17 +24,6 @@ def image_to_annotations(img_fn: str, out_dir: str, animation_type=None) -> None
 
     # copy the original image into the output_dir
     cv2.imwrite(str(outdir/'image.png'), img)
-
-    # ensure it's rgb
-    if len(img.shape) != 3:
-        msg = f'image must have 3 channels (rgb). Found {len(img.shape)}'
-        logging.critical(msg)
-        assert False, msg
-
-    # resize if needed
-    if np.max(img.shape) > 1000:
-        scale = 1000 / np.max(img.shape)
-        img = cv2.resize(img, (round(scale * img.shape[1]), round(scale * img.shape[0])))
 
     # convert to bytes and send to torchserve
     img_b = cv2.imencode('.png', img)[1].tobytes()

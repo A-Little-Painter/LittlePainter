@@ -1,5 +1,5 @@
 filepath: examples/bvh/rokoko/fart1_rokoko.bvh
-start_frame_idx: 0
+start_frame_idx: 20
 end_frame_idx: 120
 groundplane_joint: LeftFoot
 forward_perp_joint_vectors:

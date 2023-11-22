@@ -1,6 +1,8 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
+from PIL.Image import Image
+
 import animated_drawings.render
 import logging
 from pathlib import Path
@@ -8,7 +10,8 @@ import sys
 import yaml
 
 
-def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None, character=None):
+def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str, animation_type=None,
+                             character=None):
     """
     Given a path to a directory with character annotations, a motion configuration file, and a retarget configuration file,
     creates an animation and saves it to {annotation_dir}/video.png
@@ -42,7 +45,6 @@ def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cf
 
 
 from pkg_resources import resource_filename
-
 
 if __name__ == '__main__':
 
