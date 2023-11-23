@@ -20,9 +20,10 @@
 
 # 배포 및 빌드 (환경파일)
 
-프론트엔드 : https://drive.google.com/file/d/1DCX1IPkV2-KZlImCQE5IJQh6QVNmV1dO/view?usp=drive_link
+### 프론트엔드 : <br></br>
+https://drive.google.com/file/d/1DCX1IPkV2-KZlImCQE5IJQh6QVNmV1dO/view?usp=drive_link
 
-백엔드 : <br></br>
+### 백엔드 : <br></br>
 docker run -d -p 8050:8050 redis <br></br>
 각각의 마이크로서비스 폴더 안에 들어간 후
 - docker build -t [이미지명]:[태그] .
