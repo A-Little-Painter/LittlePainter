@@ -108,7 +108,10 @@ systemctl --user enable docker-desktop
 
 
 ### 배포 특이사항
-git pull 
+git clone
 - https://github.com/A-Little-Painter/configServer.git
 - https://github.com/A-Little-Painter/gateway.git
 - https://github.com/A-Little-Painter/eureka.git
+
+- docker build -t [이미지명]:[태그] .
+- docker run -d -p [포트번호]:[포트번호]
