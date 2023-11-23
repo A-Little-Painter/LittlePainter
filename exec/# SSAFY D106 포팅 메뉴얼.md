@@ -50,7 +50,7 @@ docker run -d -p 8050:8050 redis <br></br>
 
 ## 두 번째 ec2
 ### 애니메이션 머신러닝 배포
-- 1.ubuntu 환경에 도커 엔진 설치
+- 1-1. ubuntu 환경에 도커 엔진 설치
 ```bash
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 # Add Docker's official GPG key:
@@ -68,6 +68,34 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+- 1-2. 설치 확인
+```bash
+sudo docker run hello-world
+```
+- 2. ubuntu 환경에 도커-데스크탑 설치
+```bash
+sudo apt install gnome-terminal
+
+
+sudo apt remove docker-desktop
+# complete remove
+rm -r $HOME/.docker/desktop
+sudo rm /usr/local/bin/com.docker.cli
+sudo apt purge docker-desktop
+
+wget https://desktop.docker.com/linux/main/amd64/docker-desktop-4.25.0-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64&_gl=1*1yotftr*_ga*NTA0NTMwMjA2LjE2OTgwMjY5MTI.*_ga_XJWPQMJYHQ*MTY5ODc5Nzc4My44LjEuMTY5ODc5ODkyOS4yNS4wLjA.
+sudo apt-get update
+sudo apt-get install {다운받은 deb파일}
+
+# 실행 확인
+docker compose version
+docker --version
+docker version
+systemctl status docker
+
+# 자동실행 설정
+systemctl --user enable docker-desktop
 ```
 
 ### port
