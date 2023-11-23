@@ -161,12 +161,41 @@
 </table>
 
 ## 🧱아키텍처
+### - 전체 아키텍처
+![꼬마화가-페이지-2.drawio__2_](/uploads/c674d1b00f3429dd20a7546cb303b996/꼬마화가-페이지-2.drawio__2_.png)
 
-![아키텍처](./temp.png)
+### - Auth, User Service
+- 회원가입 및 이메일 인증번호 전송
+- 로그인, JWT 발급
+- 마이페이지, 회원 정보 관리 
+
+![꼬마화가-페이지-3.drawio](/uploads/6cfb13e6f159daabf7e73319a1e15125/꼬마화가-페이지-3.drawio.png)
+
+### - Draw Service
+- 모든 그리기 관련 로직 처리
+- Detection, SimilarCheck, Animate, Image Service는 client와 직접 통신을 하지 않고 Draw Service와 서버간 통신
+
+### - Image Service
+- 사용자가 그린 그림과 애니메이션이 적용된 gif 파일을 S3에 업로드
+
+### - Detection Service
+- YOLOv5모델을 통한 객체 및 동물 종류 인식
+- OpenCV를 활용한 배경 제거 및 테두리 검출
+
+![꼬마화가-페이지-4.drawio](/uploads/03ea3ed32f62d4c9b8c7d8e64aeee11e/꼬마화가-페이지-4.drawio.png)
+
+### - SimilarCheck Service
+- 실시간 유사도 검사 
+  - http : Draw Service에서 SimilarCheck Service로 테두리 원본 이미지와 사용자가 그린 테두리 이미지를 전송하여, 두 이미지 사이의 유사도 검사를 요청
+  - web socket stomp : stomp를 통해 유사도 결과값, 커맨드를 프론트로 전송 
+![꼬마화가-페이지-5.drawio](/uploads/1961a9da9df8e3f3225abad50a37eeed/꼬마화가-페이지-5.drawio.png)
+
+### - Animate Service
+- 애니메이션 적용 : Animated Drawings를 활용하여 동물, 동화 속 주인공에 따른 설정파일을 적용하여 애니메이션 생성
+![꼬마화가-페이지-6.drawio](/uploads/6a0b2388fdce1d706c39cb10454b6788/꼬마화가-페이지-6.drawio.png)
 
 ## 🗂ERD
-
-![ERD](./캡처.png)
+![꼬마화가](/uploads/d7ca4763fedc60bf3908fff8a600e4cb/꼬마화가.png)
 
 ## 🧚‍♀️팀원 소개
 
