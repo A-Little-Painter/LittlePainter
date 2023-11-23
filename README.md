@@ -188,10 +188,12 @@
 - 실시간 유사도 검사 
   - http : Draw Service에서 SimilarCheck Service로 테두리 원본 이미지와 사용자가 그린 테두리 이미지를 전송하여, 두 이미지 사이의 유사도 검사를 요청
   - web socket stomp : stomp를 통해 유사도 결과값, 커맨드를 프론트로 전송 
+
 ![꼬마화가-페이지-5.drawio](/uploads/1961a9da9df8e3f3225abad50a37eeed/꼬마화가-페이지-5.drawio.png)
 
 ### - Animate Service
 - 애니메이션 적용 : Animated Drawings를 활용하여 동물, 동화 속 주인공에 따른 설정파일을 적용하여 애니메이션 생성
+
 ![꼬마화가-페이지-6.drawio](/uploads/6a0b2388fdce1d706c39cb10454b6788/꼬마화가-페이지-6.drawio.png)
 
 ## 🗂ERD
