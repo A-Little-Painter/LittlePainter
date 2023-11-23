@@ -17,6 +17,8 @@
 - Spring Boot 3.0.2
 - MySQL 8.0.33
 - redis 7.0.12
+- Python 3.8
+- Flask 3.0.0
 
 # 배포 및 빌드 (환경파일)
 
@@ -108,10 +110,11 @@ systemctl --user enable docker-desktop
 
 
 ### 배포 특이사항
-git clone
+- ### git clone
 - https://github.com/A-Little-Painter/configServer.git
 - https://github.com/A-Little-Painter/gateway.git
 - https://github.com/A-Little-Painter/eureka.git
-
+<br></br>
+<br></br>
 - docker build -t [이미지명]:[태그] .
 - docker run -d -p [포트번호]:[포트번호]
