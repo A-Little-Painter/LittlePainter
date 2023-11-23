@@ -22,8 +22,11 @@
 
 프론트엔드 : https://drive.google.com/file/d/1DCX1IPkV2-KZlImCQE5IJQh6QVNmV1dO/view?usp=drive_link
 
-백엔드 : 아래 포트에 맞게 각각 docker run -d -p
-+ docker run -d -p 8050:8050 redis
+백엔드 : 
+docker run -d -p 8050:8050 redis
+각각의 마이크로서비스 폴더 안에 들어간 후
+- docker build -t [이미지명]:[태그] .
+- docker run -d -p [포트번호]:[포트번호]
 
 ### port
 
@@ -57,6 +60,6 @@
 
 ### 배포 특이사항
 git pull 
-https://github.com/A-Little-Painter/configServer.git
-https://github.com/A-Little-Painter/gateway.git
-https://github.com/A-Little-Painter/eureka.git
+- https://github.com/A-Little-Painter/configServer.git
+- https://github.com/A-Little-Painter/gateway.git
+- https://github.com/A-Little-Painter/eureka.git
