@@ -64,47 +64,26 @@
 #### <strong>🔆 놀이방</strong>
 : 다른 사용자들이 그린 동물 작품들을 랜덤으로 볼 수 있는 공간을 제공한다.
 
-| 동물 그리기 | 
-|-------|
-|![동물 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/동물%20그리기.gif)
+<br>
+<br>
 
-
+| 동물 그리기 | 동화 그리기 |
+|------------|------------|
+| ![동물 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/동물%20그리기.gif) | ![동화 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/동화%20그리기.gif) |
 
 
 <br>
 
-| 동화 그리기 |
-|-------|
-|![동화 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/동화%20그리기.gif)
-
-
-<br>
-
-| 친구 사진 올리기 |
-|-------|
-|![친구 사진 올리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/친구%20올리기.gif)
-
-
-
-| 친구 그리기 |
-|-------|
-|![친구 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/친구%20그리기.gif)
-
+| 친구 사진 올리기 | 친구 사진 그리기 |
+|------------|------------|
+| ![친구 사진 올리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/친구%20올리기.gif) | ![친구 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/친구%20그리기.gif) |
 
 <br>
 
 
-| 동물 사진 검색해서 올리기&그리기 |
-|-------|
-|![동물 사진 검색해서 올리기, 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/동물%20사진%20검색%20그리기.gif)
-
-
-<br>
-
-| 놀이방 |
-|-------|
-| ![놀이방](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/놀이방.gif)
-
+| 동물 사진 검색해서 올리기&그리기 | 놀이방 |
+|------------|------------|
+|![동물 사진 검색해서 올리기, 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/동물%20사진%20검색%20그리기.gif)| ![놀이방](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/놀이방.gif) |
 
 <br>
 
