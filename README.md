@@ -66,37 +66,44 @@
 
 | 동물 그리기 | 
 |-------|
-|![Alt text](<동물 그리기.gif>)
+|![동물 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/동물%20그리기.gif)
+
+
+
 
 <br>
 
 | 동화 그리기 |
 |-------|
-|![Alt text](<동화 그리기.gif>) 
+|![동화 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/동화%20그리기.gif)
+
 
 <br>
 
 | 친구 사진 올리기 |
 |-------|
-|![Alt text](<친구 올리기.gif>) | 
+|![친구 사진 올리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/친구%20올리기.gif)
+
 
 
 | 친구 그리기 |
 |-------|
-| ![Alt text](<친구 그리기.gif>) |
+|![친구 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/친구%20그리기.gif)
+
 
 <br>
 
 
 | 동물 사진 검색해서 올리기&그리기 |
 |-------|
-| ![Alt text](<동물 사진 검색 그리기.gif>) |
+|![동물 사진 검색해서 올리기, 그리기](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/동물%20사진%20검색%20그리기.gif)
+
 
 <br>
 
 | 놀이방 |
 |-------|
-| ![Alt text](%EB%86%80%EC%9D%B4%EB%B0%A9.gif) |
+| ![놀이방](https://github.com/A-Little-Painter/LittlePainter/raw/master/gif/놀이방.gif)
 
 
 <br>
