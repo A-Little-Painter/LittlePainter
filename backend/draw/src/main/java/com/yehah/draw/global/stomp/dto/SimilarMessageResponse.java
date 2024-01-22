@@ -21,8 +21,7 @@ public class SimilarMessageResponse {
     private String message;
 
     @Builder
-    public SimilarMessageResponse(String roomId, AnimalType animalType,
-                                  Double similarValue,ResponseState responseState, String message) {
+    public SimilarMessageResponse(String roomId, AnimalType animalType, Double similarValue, ResponseState responseState, String message) {
         this.roomId = roomId;
         this.animalType = animalType;
         this.similarValue = similarValue;
