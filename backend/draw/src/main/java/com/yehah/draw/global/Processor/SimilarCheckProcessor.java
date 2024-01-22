@@ -26,16 +26,10 @@ public class SimilarCheckProcessor {
     private final CommunicationProcessor communicationProcessor;
 
     private final StompService stompService;
-    private MultiValueMap<String, Object> bodyData;
-
-    @PostConstruct
-    public void initialize(){
-        bodyData = new LinkedMultiValueMap<>();
-    }
 
     public void similarCheck(String roomId, MultipartFile originalFile, MultipartFile newFile
             ,double comparisonValue, AnimalType animalType){
-        bodyData.clear();
+        MultiValueMap<String, Object> bodyData = new LinkedMultiValueMap<>();
         bodyData.add("roomId", roomId);
         bodyData.add("originalFile", originalFile.getResource());
         bodyData.add("newFile", newFile.getResource());
