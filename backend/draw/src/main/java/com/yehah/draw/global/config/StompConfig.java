@@ -15,24 +15,19 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
     @Value("${ws.path.draw}")
-    private String webSocketUrl; // http://k9d106.p.ssafy.io:8300
+    private String webSocketUrl;
 
-
-    //   http://k9d106.p.ssafy.io:8300/draws/comm-similarity
-    //   http://localhost:8300/draws/comm-similarity
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
         log.info(webSocketUrl);
         registry.addEndpoint("/ws/draws/comm-similarity")
                 .setAllowedOrigins("*").withSockJS();
     }
-
-
-    // NOTE : pub, sub 등록
+    
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry){
-        registry.setApplicationDestinationPrefixes("/pub"); // 입구 app
-        registry.enableSimpleBroker("/sub"); // 출구 sub
+        registry.setApplicationDestinationPrefixes("/pub"); 
+        registry.enableSimpleBroker("/sub"); 
     }
 
 
