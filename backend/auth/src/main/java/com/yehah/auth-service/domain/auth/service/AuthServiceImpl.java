@@ -29,26 +29,43 @@ public class AuthServiceImpl implements AuthService{
     private final WebClient.Builder webClientBuilder;
 
 
-    //이메일 중복 확인
-    public ResponseEntity<String> checkEmail(String email) {
+    // //이메일 중복 확인
+    // public ResponseEntity<String> checkEmail(String email) {
+    //     String path = user_service_url + "/comm/email/" + email;
+
+    //     WebClient webClient = webClientBuilder.build();
+
+    //     try {
+    //         return webClient.get()
+    //                 .uri(path)
+    //                 .retrieve()
+    //                 .toEntity(String.class)
+    //                 .block();
+    //     } catch (WebClientResponseException e) {
+
+    //         if (e.getStatusCode().is5xxServerError()) {
+    //             return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
+    //         }
+    //         throw e;
+    //     }
+    // }
+    
+    public Mono<ResponseEntity<String>> checkEmail(String email) {
         String path = user_service_url + "/comm/email/" + email;
-
         WebClient webClient = webClientBuilder.build();
-
-        try {
-            return webClient.get()
-                    .uri(path)
-                    .retrieve()
-                    .toEntity(String.class)
-                    .block();
-        } catch (WebClientResponseException e) {
-
-            if (e.getStatusCode().is5xxServerError()) {
-                return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
-            }
-            throw e;
-        }
+    
+        return webClient.get()
+                .uri(path)
+                .retrieve()
+                .toEntity(String.class)
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    if (e.getStatusCode().is5xxServerError()) {
+                        return Mono.just(ResponseEntity.badRequest().body(e.getResponseBodyAsString()));
+                    }
+                    return Mono.error(e);
+                });
     }
+
 
     //이메일 인증코드 전송
     public void sendAuthCode(String email){
@@ -65,87 +82,154 @@ public class AuthServiceImpl implements AuthService{
     }
 
 
-    //회원가입
+    // //회원가입
+    // @Transactional
+    // public ResponseEntity<?> signup(SignUpRequestDTO signUpRequestDTO){
+    //     String path=user_service_url+"/comm/signup";
+
+    //     WebClient webClient = webClientBuilder.build();
+
+    //     try{
+    //         return webClient.post()
+    //                 .uri(path)
+    //                 .bodyValue(signUpRequestDTO)
+    //                 .retrieve()
+    //                 .toEntity(String.class)
+    //                 .block();
+    //     } catch (WebClientResponseException e) {
+    //         if (e.getStatusCode().is5xxServerError()) {
+    //             return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
+    //         }
+    //         throw e;
+    //     }
+
+    // }
     @Transactional
-    public ResponseEntity<?> signup(SignUpRequestDTO signUpRequestDTO){
-        String path=user_service_url+"/comm/signup";
-
-        WebClient webClient = webClientBuilder.build();
-
-        try{
-            return webClient.post()
-                    .uri(path)
-                    .bodyValue(signUpRequestDTO)
-                    .retrieve()
-                    .toEntity(String.class)
-                    .block();
-        } catch (WebClientResponseException e) {
-            if (e.getStatusCode().is5xxServerError()) {
-                return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
-            }
-            throw e;
-        }
-
+    public Mono<ResponseEntity<?>> signup(SignUpRequestDTO signUpRequestDTO){
+        String path = user_service_url + "/comm/signup";
+    
+        return webClientBuilder.build().post()
+                .uri(path)
+                .bodyValue(signUpRequestDTO)
+                .retrieve()
+                .toEntity(String.class)
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    if (e.getStatusCode().is5xxServerError()) {
+                        return Mono.just(ResponseEntity.badRequest().body(e.getResponseBodyAsString()));
+                    }
+                    return Mono.error(e);
+                });
     }
 
-    //로그인
+
+    // //로그인
+    // @Transactional
+    // public ResponseEntity<?> signIn(SignInRequestDTO signInRequestDTO){
+    //     String path = user_service_url + "/comm/signin";
+
+    //     WebClient webClient = webClientBuilder.build();
+
+    //     try{
+    //         return webClient.post()
+    //                 .uri(path)
+    //                 .bodyValue(signInRequestDTO)
+    //                 .retrieve()
+    //                 .toEntity(SignInResponseDTO.class).block();
+    //     }catch(WebClientResponseException e){
+    //         if(e.getStatusCode().is5xxServerError()){
+    //             return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
+    //         }
+    //         throw e;
+    //     }
+    // }
     @Transactional
-    public ResponseEntity<?> signIn(SignInRequestDTO signInRequestDTO){
+    public Mono<ResponseEntity<?>> signIn(SignInRequestDTO signInRequestDTO){
         String path = user_service_url + "/comm/signin";
-
-        WebClient webClient = webClientBuilder.build();
-
-        try{
-            return webClient.post()
-                    .uri(path)
-                    .bodyValue(signInRequestDTO)
-                    .retrieve()
-                    .toEntity(SignInResponseDTO.class).block();
-        }catch(WebClientResponseException e){
-            if(e.getStatusCode().is5xxServerError()){
-                return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
-            }
-            throw e;
-        }
+    
+        return webClientBuilder.build().post()
+                .uri(path)
+                .bodyValue(signInRequestDTO)
+                .retrieve()
+                .toEntity(SignInResponseDTO.class)
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    if(e.getStatusCode().is5xxServerError()){
+                        return Mono.just(ResponseEntity.badRequest().body(e.getResponseBodyAsString()));
+                    }
+                    return Mono.error(e);
+                });
     }
 
 
-    //토큰 재발급
-    public ResponseEntity<?> refresh(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+
+    // //토큰 재발급
+    // public ResponseEntity<?> refresh(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+    //     String path = user_service_url + "/comm/refresh";
+
+    //     WebClient webClient = webClientBuilder.build();
+
+    //     try{
+    //         return webClient.post()
+    //                 .uri(path)
+    //                 .bodyValue(refreshTokenRequestDTO)
+    //                 .retrieve()
+    //                 .toEntity(TokenResponseDTO.class).block();
+    //     }catch(WebClientResponseException e){
+    //         if(e.getStatusCode().is5xxServerError()){
+    //             return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
+    //         }
+    //         throw e;
+    //     }
+    // }
+    public Mono<ResponseEntity<?>> refresh(RefreshTokenRequestDTO refreshTokenRequestDTO) {
         String path = user_service_url + "/comm/refresh";
-
-        WebClient webClient = webClientBuilder.build();
-
-        try{
-            return webClient.post()
-                    .uri(path)
-                    .bodyValue(refreshTokenRequestDTO)
-                    .retrieve()
-                    .toEntity(TokenResponseDTO.class).block();
-        }catch(WebClientResponseException e){
-            if(e.getStatusCode().is5xxServerError()){
-                return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
-            }
-            throw e;
-        }
+    
+        return webClientBuilder.build().post()
+                .uri(path)
+                .bodyValue(refreshTokenRequestDTO)
+                .retrieve()
+                .toEntity(TokenResponseDTO.class)
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    if(e.getStatusCode().is5xxServerError()){
+                        return Mono.just(ResponseEntity.badRequest().body(e.getResponseBodyAsString()));
+                    }
+                    return Mono.error(e);
+                });
     }
 
-    public ResponseEntity<?> updatePassword(UpdatePasswordRequestDTO updatePasswordRequestDTO){
+
+    // public ResponseEntity<?> updatePassword(UpdatePasswordRequestDTO updatePasswordRequestDTO){
+    //     String path = user_service_url + "/comm/password";
+
+    //     WebClient webClient = webClientBuilder.build();
+
+    //     try{
+    //         return webClient.patch()
+    //                 .uri(path)
+    //                 .bodyValue(updatePasswordRequestDTO)
+    //                 .retrieve()
+    //                 .toEntity(String.class).block();
+    //     }catch(WebClientResponseException e){
+    //         if(e.getStatusCode().is5xxServerError()){
+    //             return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
+    //         }
+    //         throw e;
+    //     }
+    // }
+    public Mono<ResponseEntity<?>> updatePassword(UpdatePasswordRequestDTO updatePasswordRequestDTO){
         String path = user_service_url + "/comm/password";
-
-        WebClient webClient = webClientBuilder.build();
-
-        try{
-            return webClient.patch()
-                    .uri(path)
-                    .bodyValue(updatePasswordRequestDTO)
-                    .retrieve()
-                    .toEntity(String.class).block();
-        }catch(WebClientResponseException e){
-            if(e.getStatusCode().is5xxServerError()){
-                return ResponseEntity.badRequest().body(e.getResponseBodyAsString());
-            }
-            throw e;
-        }
+    
+        return webClientBuilder.build().patch()
+                .uri(path)
+                .bodyValue(updatePasswordRequestDTO)
+                .retrieve()
+                .toEntity(String.class)
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    if(e.getStatusCode().is5xxServerError()){
+                        return Mono.just(ResponseEntity.badRequest().body(e.getResponseBodyAsString()));
+                    }
+                    return Mono.error(e);
+                });
     }
+
+    
 }
