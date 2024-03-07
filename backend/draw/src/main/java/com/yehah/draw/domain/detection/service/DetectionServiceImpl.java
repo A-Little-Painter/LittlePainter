@@ -41,42 +41,78 @@ public class DetectionServiceImpl implements DetectionService {
 
     private final GoogleTranslateService googleTranslateService;
 
-    //이미지 업로드
-    public ResponseEntity<?> uploadAnimals(MultipartFile file) throws IOException {
+    // //이미지 업로드
+    // public ResponseEntity<?> uploadAnimals(MultipartFile file) throws IOException {
+    //     String path = detection_service_url + "/comm/detect";
+
+    //     try {
+    //         // 파일을 멀티파트 폼 데이터로 전송
+    //         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    //         body.add("file", new ByteArrayResource(file.getBytes()) {
+    //             @Override
+    //             public String getFilename() {
+    //                 return file.getOriginalFilename();
+    //             }
+    //         });
+    //         //TODO : DETECTION 서버 누끼따기 에러 고치고 FLASK CONFIG 서버 알아보기
+    //         body.add("S3_BUCKET", bucket);
+    //         body.add("S3_KEY", accessKey);
+    //         body.add("S3_SECRET", secretKey);
+    //         body.add("S3_REGION", region);
+
+    //         ResponseEntity<AnimalDetectionResponseDTO> response = webClient.post()
+    //                 .uri(path)
+    //                 .contentType(MediaType.MULTIPART_FORM_DATA)
+    //                 .body(BodyInserters.fromMultipartData(body))
+    //                 .retrieve()
+    //                 .toEntity(AnimalDetectionResponseDTO.class)
+    //                 .block();
+
+    //         AnimalDetectionResponseDTO animalDetectionResponseDTO = response.getBody();
+
+    //         String translatedAnimalType = googleTranslateService.translateToKorean(animalDetectionResponseDTO.getAnimal_type());
+    //         // 번역된 값을 DTO에 설정
+    //         animalDetectionResponseDTO.setAnimal_type(translatedAnimalType);
+
+    //         return ResponseEntity.status(response.getStatusCode()).body(animalDetectionResponseDTO);
+    //     } catch (Exception e) {
+    //         throw e;
+    //     }
+    // }
+    
+    public Mono<ResponseEntity<?>> uploadAnimals(MultipartFile file) {
         String path = detection_service_url + "/comm/detect";
-
-        try {
-            // 파일을 멀티파트 폼 데이터로 전송
-            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("file", new ByteArrayResource(file.getBytes()) {
-                @Override
-                public String getFilename() {
-                    return file.getOriginalFilename();
-                }
-            });
-            //TODO : DETECTION 서버 누끼따기 에러 고치고 FLASK CONFIG 서버 알아보기
-            body.add("S3_BUCKET", bucket);
-            body.add("S3_KEY", accessKey);
-            body.add("S3_SECRET", secretKey);
-            body.add("S3_REGION", region);
-
-            ResponseEntity<AnimalDetectionResponseDTO> response = webClient.post()
-                    .uri(path)
-                    .contentType(MediaType.MULTIPART_FORM_DATA)
-                    .body(BodyInserters.fromMultipartData(body))
-                    .retrieve()
-                    .toEntity(AnimalDetectionResponseDTO.class)
-                    .block();
-
-            AnimalDetectionResponseDTO animalDetectionResponseDTO = response.getBody();
-
-            String translatedAnimalType = googleTranslateService.translateToKorean(animalDetectionResponseDTO.getAnimal_type());
-            // 번역된 값을 DTO에 설정
-            animalDetectionResponseDTO.setAnimal_type(translatedAnimalType);
-
-            return ResponseEntity.status(response.getStatusCode()).body(animalDetectionResponseDTO);
-        } catch (Exception e) {
-            throw e;
-        }
+    
+        // 파일을 멀티파트 폼 데이터로 전송
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", new ByteArrayResource(file.getBytes()) {
+            @Override
+            public String getFilename() {
+                return file.getOriginalFilename();
+            }
+        });
+        body.add("S3_BUCKET", bucket);
+        body.add("S3_KEY", accessKey);
+        body.add("S3_SECRET", secretKey);
+        body.add("S3_REGION", region);
+    
+        return webClient.post()
+                .uri(path)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(body))
+                .retrieve()
+                .toEntity(AnimalDetectionResponseDTO.class)
+                .flatMap(response -> {
+                    AnimalDetectionResponseDTO animalDetectionResponseDTO = response.getBody();
+    
+    
+                    return Mono.just(animalDetectionResponseDTO)
+                            .flatMap(dto -> googleTranslateService.translateToKoreanAsync(dto.getAnimal_type()))
+                            .map(translatedAnimalType -> {
+                                animalDetectionResponseDTO.setAnimal_type(translatedAnimalType);
+                                return ResponseEntity.status(response.getStatusCode()).body(animalDetectionResponseDTO);
+                            });
+                })
+                .onErrorResume(e -> Mono.just(ResponseEntity.internalServerError().body("Error processing the request: " + e.getMessage())));
     }
 }
